@@ -1,0 +1,77 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.11.0">
+
+    <ControlTemplate x:Key="BuildError">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256">
+                <Polygon Points="10,50 50,10 128,88 206,10 246,50 166,128 246,206 206,246 128,166 50,246 10,206 88,128"
+                         Fill="#BE1400"
+                         Stroke="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" 
+                         StrokeThickness="16" />
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BuildDone">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256">
+                <Polygon Points="10,146 94,228 246,76 206,36 94,150 50,106"
+                         Fill="#00BA00" 
+                         Stroke="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" 
+                         StrokeThickness="16" />
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BuildCancelled">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256">
+                <Path Fill="#BE1400"
+                      Stroke="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"
+                      StrokeThickness="16">
+                    <Path.Data>
+                        <CombinedGeometry GeometryCombineMode="Union">
+                            <CombinedGeometry.Geometry1>
+                                <CombinedGeometry GeometryCombineMode="Xor">
+                                    <CombinedGeometry.Geometry1>
+                                        <EllipseGeometry RadiusX="120" RadiusY="120" Center="128,128" />
+                                    </CombinedGeometry.Geometry1>
+                                    <CombinedGeometry.Geometry2>
+                                        <EllipseGeometry RadiusX="70" RadiusY="70" Center="128,128" />
+                                    </CombinedGeometry.Geometry2>
+                                </CombinedGeometry>
+                            </CombinedGeometry.Geometry1>
+                            <CombinedGeometry.Geometry2>
+                                <PathGeometry Figures="M50,90 168,198 198,158 90,60" />
+                            </CombinedGeometry.Geometry2>
+                        </CombinedGeometry>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BuildErrorDone">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256">
+                <Polygon Points="10,146 94,228 246,76 206,36 94,150 50,106"
+                         Fill="#00BA00" 
+                         Stroke="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" 
+                         StrokeThickness="16"/>
+                <Polygon Points="10,50 50,10 128,88 206,10 246,50 166,128 246,206 206,246 128,166 50,246 10,206 88,128"
+                         Fill="#BE1400"
+                         Stroke="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}" 
+                         StrokeThickness="16">
+                    <Polygon.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                            <TranslateTransform X="130" Y="130"/>
+                        </TransformGroup>
+                    </Polygon.RenderTransform>
+                </Polygon>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+</ResourceDictionary>

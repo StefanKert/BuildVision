@@ -1,0 +1,138 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.11.0">
+    
+    <ControlTemplate x:Key="ErrorsIndicator">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="32" Height="32">
+                <Ellipse Canvas.Left="0"
+                            Canvas.Top="0"
+                            Width="32"
+                            Height="32"
+                            Stroke="WhiteSmoke"
+                            StrokeThickness="2"
+                            Fill="#BE1400" />
+                <Rectangle Canvas.Left="10"
+                            Canvas.Top="7"
+                            Width="21"
+                            Height="4"
+                            Fill="WhiteSmoke">
+                    <Rectangle.RenderTransform>
+                        <RotateTransform Angle="45"/>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+                <Rectangle Canvas.Left="7"
+                            Canvas.Top="22"
+                            Width="21"
+                            Height="4"
+                            Fill="WhiteSmoke">
+                    <Rectangle.RenderTransform>
+                        <RotateTransform Angle="-45"/>
+                    </Rectangle.RenderTransform>
+                </Rectangle>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="WarningsIndicator">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="64" Height="64">
+                <Path Fill="#FFFFC700"
+                        StrokeThickness="4"
+                        Stroke="WhiteSmoke"
+                        StrokeMiterLimit="4" 
+                        Stretch="Fill" 
+                        Height="64" 
+                        Width="64">
+                    <Path.Data>
+                        <PathGeometry Figures="m 10.038476 62.025202 c -0.4162286 0.802105 -0.9068057 1.552026 -0.9068513 2.432327 l 0.0041 0.367916 c 0 1.899956 1.4872993 3.048547 3.1972173 3.048547 l 55.249838 0 c 1.710056 0 3.182777 -1.423839 3.182777 -3.323795 l -0.01815 -0.369553 c 0 -0.880304 -0.432764 -1.644714 -0.906718 -2.43233 L 42.478301 12.664456 c -1.208919 -1.343255 -3.168859 -1.343255 -4.377964 1.83e-4 L 10.038476 62.025202 z"
+                                          FillRule="NonZero" />
+                    </Path.Data>
+                </Path>
+                <Ellipse Canvas.Left="28"
+                            Canvas.Top="46"
+                            Width="8"
+                            Height="8"
+                            Fill="Black"/>
+                <Rectangle Canvas.Left="28"
+                            Canvas.Top="22"
+                            Width="8"
+                            Height="20"
+                            Fill="Black"/>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="MessagesIndicator">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="32" Height="32">
+                <Ellipse Stroke="WhiteSmoke"
+                            Fill="#FF0059BD"
+                            StrokeThickness="2"
+                            Width="32"
+                            Height="32"/>
+                <Ellipse Fill="WhiteSmoke"
+                             Canvas.Left="14"
+                             Canvas.Top="6"
+                             Width="4"
+                             Height="4"/>
+                <Rectangle Fill="WhiteSmoke"
+                               Canvas.Left="14"
+                               Canvas.Top="12"
+                               Height="14"
+                               Width="4"/>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="SuccessProjectsIndicator">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256" 
+                    Background="Transparent">
+                <Border Canvas.Left="16"
+                        Canvas.Top="16"
+                        Width="224"
+                        Height="224"
+                        BorderBrush="Gray"
+                        BorderThickness="16,58,16,16"
+                        CornerRadius="0"
+                        Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"/>
+                <Polygon Points="10,146 94,228 246,76 206,36 94,150 50,106"
+                         Fill="#00BA00">
+                    <Polygon.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                            <TranslateTransform X="68" Y="88"/>
+                        </TransformGroup>
+                    </Polygon.RenderTransform>
+                </Polygon>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="ErrorProjectsIndicator">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256" 
+                    Background="Transparent">
+                <Border Canvas.Left="16"
+                        Canvas.Top="16"
+                        Width="224"
+                        Height="224"
+                        BorderBrush="Gray"
+                        BorderThickness="16,58,16,16"
+                        CornerRadius="0"
+                        Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"/>
+                <Polygon Points="10,50 50,10 128,88 206,10 246,50 166,128 246,206 206,246 128,166 50,246 10,206 88,128" 
+                         Fill="#BE1400">
+                    <Polygon.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                            <TranslateTransform X="68" Y="88"/>
+                        </TransformGroup>
+                    </Polygon.RenderTransform>
+                </Polygon>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+</ResourceDictionary>

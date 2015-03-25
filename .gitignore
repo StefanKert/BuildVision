@@ -1,0 +1,8 @@
+BuildVision.sln.ide/
+BuildVision.*.suo
+Source/BuildVision.csproj.user
+Source/bin/
+Source/obj/
+Source/StyleCop.Cache
+Source/BuildVision.csproj.DotSettings
+.vs/

@@ -1,0 +1,94 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ControlTemplate x:Key="BuildError">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256">
+                <Polygon Points="10,50 50,10 128,88 206,10 246,50 166,128 246,206 206,246 128,166 50,246 10,206 88,128" 
+                         Fill="#BE1400"/>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BuildDone">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256">
+                <Polygon Points="10,146 94,228 246,76 206,36 94,150 50,106"
+                         Fill="#00BA00" />
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BuildCancelled">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256">
+                <Path Fill="#BE1400">
+                    <Path.Data>
+                        <CombinedGeometry GeometryCombineMode="Union">
+                            <CombinedGeometry.Geometry1>
+                                <CombinedGeometry GeometryCombineMode="Xor">
+                                    <CombinedGeometry.Geometry1>
+                                        <EllipseGeometry RadiusX="120" RadiusY="120" Center="128,128" />
+                                    </CombinedGeometry.Geometry1>
+                                    <CombinedGeometry.Geometry2>
+                                        <EllipseGeometry RadiusX="70" RadiusY="70" Center="128,128" />
+                                    </CombinedGeometry.Geometry2>
+                                </CombinedGeometry>
+                            </CombinedGeometry.Geometry1>
+                            <CombinedGeometry.Geometry2>
+                                <PathGeometry Figures="M50,90 168,198 198,158 90,60" />
+                            </CombinedGeometry.Geometry2>
+                        </CombinedGeometry>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="Building">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="64" Height="64">
+                <Path Fill="#FF2A7FFF">
+                    <Path.Data>
+                        <PathGeometry Figures="m 32.186126 52.104166 c 0.744903 0.464761 14.176493 -8.816489 14.921396 -9.28125 C 47.852425 42.358155 62 34.471188 62 33.541666 c 0 -0.929522 -14.147575 -8.847739 -14.892478 -9.3125 -0.744903 -0.464761 -14.176494 -9.746012 -14.921396 -9.28125 -0.449897 0.2807 -0.34708 5.876512 -0.202422 11.09375 l -26.083525 0 c -0.256324 0 -0.462679 0.223 -0.462679 0.5 l 0 14 c 0 0.277 0.206355 0.5 0.462679 0.5 l 26.083525 0 c -0.144659 5.217237 -0.247474 10.7818 0.202422 11.0625 z" 
+                                      FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+    
+    <ControlTemplate x:Key="Skipped">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="60" Height="60" RenderTransformOrigin="0.5,0.5">
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="0.7" ScaleX="1" />
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+                <Path Fill="#FF999999">
+                    <Path.Data>
+                        <PathGeometry Figures="m 3.8461063 31.488466 0 -9.975689 25.9571517 0 25.957152 0 0 9.975689 0 9.97569 -25.957152 0 -25.9571517 0 0 -9.97569 z" 
+                                      FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+    
+    <ControlTemplate x:Key="Pending">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="60" Height="60">
+                <Rectangle Canvas.Left="19" 
+                           Canvas.Top="18" 
+                           Width="23" 
+                           Height="23" 
+                           Fill="#FF999999" 
+                           StrokeThickness="3" 
+                           Stroke="#FF0079FF" 
+                           StrokeMiterLimit="4"/>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+</ResourceDictionary>

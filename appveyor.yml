@@ -5,3 +5,13 @@ os: Visual Studio 2014 CTP4
 branches:
   only:
     - master
+
+build:
+  verbosity: minimal
+
+deploy:
+- provider: GitHub
+  auth_token:
+    secure: 7tnXVDiH/SFCiysgula8OgEFGUUp4nVUU1RLnPhBuZaph/7nW6sFQ9UFOFedJM5Q
+  draft: true
+  prerelease: true

@@ -6,6 +6,9 @@ branches:
   only:
     - master
 
+before_build:
+- ps: .\bump-version.ps1
+
 build:
   verbosity: minimal
 

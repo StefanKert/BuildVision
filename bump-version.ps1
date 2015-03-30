@@ -5,6 +5,7 @@ $appveyorFile = "appveyor.yml"
 If ($env:APPVEYOR)
 {
     $version = $env:APPVEYOR_BUILD_VERSION
+    echo "Version $version"
 }
 Else
 {

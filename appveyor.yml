@@ -7,17 +7,20 @@ branches:
     - master
 
 before_build:
-- ps: .\bump-version.ps1
+  - ps: .\bump-version.ps1
 
 build:
   verbosity: minimal
 
+artifacts:
+  - path: Source\bin\Release\BuildVision.vsix
+
 deploy:
-- provider: GitHub
-  tag: v$(appveyor_build_version)
-  release: v$(appveyor_build_version)
-  auth_token:
-    secure: 7tnXVDiH/SFCiysgula8OgEFGUUp4nVUU1RLnPhBuZaph/7nW6sFQ9UFOFedJM5Q
-  artifact: Source\bin\Release\BuildVision.vsix
-  draft: true
-  prerelease: true
+  - provider: GitHub
+    tag: v$(appveyor_build_version)
+    release: v$(appveyor_build_version)
+    auth_token:
+      secure: 7tnXVDiH/SFCiysgula8OgEFGUUp4nVUU1RLnPhBuZaph/7nW6sFQ9UFOFedJM5Q
+    artifact: Source\bin\Release\BuildVision.vsix
+    draft: true
+    prerelease: true

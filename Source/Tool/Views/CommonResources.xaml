@@ -116,6 +116,12 @@
                       RenderTransformOrigin="0.5,0.5"
                       Stroke="#FF666666"
                       StrokeThickness="2">
+                    <Path.RenderTransform>
+                        <TransformGroup>
+                            <!-- It is used below in Storyboards to animate arrow. -->
+                            <RotateTransform Angle="0" />
+                        </TransformGroup>
+                    </Path.RenderTransform>
                 </Path>
                 <ContentPresenter x:Name="HeaderContent"
                                   Grid.Column="1"

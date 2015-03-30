@@ -19,15 +19,15 @@ Else
 
     (Get-Content $appveyorFile) `
         -replace '(version: )[0-9.]*(\.{build})', "`${1}$version`$2" |
-      Out-File $appveyorFile
+      Out-File -Encoding UTF8 $appveyorFile
 }
 
 (Get-Content $packageFile) `
     -replace '(PackageVersion) = "[0-9.]*"', "`${1} = ""$version""" |
-  Out-File $packageFile
+  Out-File -Encoding UTF8 $packageFile
 
 (Get-Content $manifestFile) `
     -replace '(<Version>)[0-9.]*', "`${1}$version" |
-  Out-File $manifestFile
+  Out-File -Encoding UTF8 $manifestFile
 
 echo "Done."

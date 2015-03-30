@@ -468,47 +468,38 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
         public ProjectItem FindProjectItem(object property, FindProjectProperty findProjectProperty, bool createIfNotFound = true)
         {
             ProjectItem found;
+            List<ProjectItem> projList = ProjectsList.ToList();
             switch (findProjectProperty)
             {
                 case FindProjectProperty.UniqueName:
                     var uniqueName = (string)property;
-                    found = ProjectsList.FirstOrDefault(item => item.StorageProject != null && item.StorageProject.UniqueName == uniqueName)
-                        ?? ProjectsList.FirstOrDefault(item => item.UniqueName == uniqueName);
+                    found = projList.Find(item => item.UniqueName == uniqueName);
                     break;
 
                 case FindProjectProperty.FullName:
                     var fullName = (string)property;
-                    found = ProjectsList.FirstOrDefault(item => item.StorageProject != null && item.StorageProject.FullName == fullName)
-                        ?? ProjectsList.FirstOrDefault(item => item.FullName == fullName);
+                    found = projList.Find(item => item.FullName == fullName);
                     break;
 
                 case FindProjectProperty.ProjectObject:
-                    found = ProjectsList.FirstOrDefault(item => ReferenceEquals(item.StorageProject, property));
+                    found = projList.Find(item => ReferenceEquals(item.StorageProject, property));
                     break;
 
                 case FindProjectProperty.UniqueNameProjectDefinition:
                     {
                         var projDef = (UniqueNameProjectDefinition)property;
-                        found = ProjectsList.FirstOrDefault(item => item.StorageProject != null
-                                                                && item.StorageProject.UniqueName == projDef.UniqueName
-                                                                && item.StorageProject.ConfigurationManager.ActiveConfiguration.ConfigurationName == projDef.Configuration
-                                                                && PlatformsIsEquals(item.StorageProject.ConfigurationManager.ActiveConfiguration.PlatformName, projDef.Platform))
-                            ?? ProjectsList.FirstOrDefault(item => item.UniqueName == projDef.UniqueName
-                                                                && item.Configuration == projDef.Configuration
-                                                                && PlatformsIsEquals(item.Platform, projDef.Platform));
+                        found = projList.Find(item => item.UniqueName == projDef.UniqueName
+                                                      && item.Configuration == projDef.Configuration
+                                                      && PlatformsIsEquals(item.Platform, projDef.Platform));
                     }
                     break;
 
                 case FindProjectProperty.FullNameProjectDefinition:
                     {
                         var projDef = (FullNameProjectDefinition)property;
-                        found = ProjectsList.FirstOrDefault(item => item.StorageProject != null
-                                                                && item.StorageProject.FullName == projDef.FullName
-                                                                && item.StorageProject.ConfigurationManager.ActiveConfiguration.ConfigurationName == projDef.Configuration
-                                                                && PlatformsIsEquals(item.StorageProject.ConfigurationManager.ActiveConfiguration.PlatformName, projDef.Platform))
-                            ?? ProjectsList.FirstOrDefault(item => item.FullName == projDef.FullName
-                                                                && item.Configuration == projDef.Configuration
-                                                                && PlatformsIsEquals(item.Platform, projDef.Platform));
+                        found = projList.Find(item => item.FullName == projDef.FullName
+                                                      && item.Configuration == projDef.Configuration
+                                                      && PlatformsIsEquals(item.Platform, projDef.Platform));
                     }
                     break;
 

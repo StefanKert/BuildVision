@@ -1,3 +1,8 @@
+v1.3.1    31.03.2015
+	+ Continous Integration for BuildVision repository: each commit to master branch initiates a build and creates pre-release, which is available for download from https://github.com/nagits/BuildVision/releases.
+	% Fix Visual Studio crashing if grouping in the Project List is enabled (#1).
+	% Fix "Collection was modified" exception on building.
+
 v1.3.0    26.03.2015
 	~ BuildVision is now Open Source on GitHub.
 	~ Improve UI.

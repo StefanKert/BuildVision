@@ -1,0 +1,101 @@
+v1.3.1    31.03.2015
+	+ Continous Integration for BuildVision repository: each commit to master branch initiates a build and creates pre-release, which is available for download from https://github.com/nagits/BuildVision/releases.
+	% Fix Visual Studio crashing if grouping in the Project List is enabled (#1).
+	% Fix "Collection was modified" exception on building.
+
+v1.3.0    26.03.2015
+	~ BuildVision is now Open Source on GitHub.
+	~ Improve UI.
+	~ Move all settings to the VS Settings Dialog. I'm sorry, your current settings will be dropped.
+	% Fix Hide window feature.
+	% Fix styles for the VS Blue Theme.
+	% Fix grid grouping by non-string columns.
+	% Fix setting for the "Copy build output files to the Clipboard" feature.
+	% Fix navigating to the Error Item if you click on the DataGridRow border.
+	~ Minor performance optimizations.
+	~ Other minor improvements.
+
+v1.2.2    19.02.2015
+	% Fixed Visual Studio crashing if grouping in project list is enabled (in versions 1.2.0 and 1.2.1).
+	% Fixed width of the error list if grouping in project list is enabled.
+	~ Other minor changes.
+
+v1.2.1    05.02.2015
+	% Fixed colors in error list (bug in v1.2.0).
+	% Fixed default datetime format in project list.
+	~ Minor improvements in error list.
+
+v1.2.0    29.01.2015
+	+ Support for Visual Studio 2015.
+	+ Build, rebuild and clean solution buttons, cancel button in main window.
+	% Do not steal window focus during a build.
+	~ Two modes for the list of projects: 
+		* add all projects to the list at the beginning of building solution;
+		* or add each project to the list in the build order (by default);
+		- old mode (observable list) is removed.
+	~ Project item details (error list) reworked: display errors only (without warnings and messages), automatic opening.
+	~ Remove RU localization.
+	~ Less saturated colors in UI.
+	~ Other minor changes.
+
+v1.1.0 beta    02.09.2013
+	+ Support for Visual Studio 2013.
+	+ Ability to view and navigate through errors in the project.
+	~ Improved the navigation through errors.
+	~ Errors are not reset after "UpToDate".
+	~ Other minor changes.
+	
+v1.0.9 alpha    19.07.2013
+	Fixed: now null-values are always at the bottom of the table, independently of the sort direction. 
+	+ *Configurable menu item "Copy output files to clipboard" for a selected item in the table of projects.
+	+ *Stop build at first error (stops the Build or Rebuild immediately, if an error occurs or one project fails to build).
+	+ New project state - BuildCanceled.
+	+ *Navigate to build failure reason (first MSBuild error).
+	~ Other minor bugs fixed.
+	~ Other minor changes, refactoring.
+	__________________
+	* Look in the options
+
+v1.0.8 alpha    27.06.2013
+	Fixed: unnecessary spaces in the list of projects with any grouping after the Batch build.
+	Fixed: some errors, if SolutionFolder was created in the solution.
+	Fixed: context menu usability mistakes.
+	+ FullPath and SolutionFolder columns.
+	+ Ability to format the group header (grouping in the list of projects).
+	+ Build progress on the Windows TaskBar (available since Windows 7).
+
+v1.0.7 alpha    15.06.2013
+	Fixed: nasty summary values "N\A" on the indicator panel at the beginning of build.
+	~ Other minor changes, refactoring.
+
+v1.0.6 alpha    27.05.2013
+	+ Different configurations are taken into account with Batch Build.
+	Fixed: fixed bugs, if a single project is open, not the solution.
+	Fixed: error "Clipboard can't open" for the "Copy output file to clipboard" menu item.
+	~ Other minor changes.	
+
+v1.0.5 alpha    02.05.2013
+	Fixed: mouse scroll does not work in a table if the cursor over an expander (group).
+	Fixed: freezes window interface with certain settings of the columns order.
+	Fixed: exception when trying to write to the status bar (rarely).
+	+ Added to known types of projects (Type column): ASP.NET MVC 1,2,3,4.
+	+ MainType column (e.g. Type - "WPF; Windows", MainType - "WPF").
+	~ Other minor changes, refactoring.
+
+v1.0.4 alpha    27.04.2013
+	Fixed: no vertical scrollbar for group in the list of projects.
+
+v1.0.3 alpha    31.03.2013
+	Fixed: some project properties resets after renaming, adding or removing it from solution.
+	Fixed: wrong target project name in some cases when building single project.
+
+v1.0.2 alpha    22.03.2013
+	+ New project state - UpToDate (build up to date)
+
+v1.0.1 alpha    20.03.2013
+	+ Table|SelectedProject|OpenContainingFolder
+	+ Table|SelectedProject|CopyOutputAssemblyToClipboard
+	+ Table|SelectedProject|Build\Rebuild\Clean
+
+v1.0.0 alpha    02.03.2013
+	Initial release.

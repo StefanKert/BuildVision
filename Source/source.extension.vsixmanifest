@@ -8,7 +8,7 @@
     <Locale>1033</Locale>
     <Icon>Resources\Package.ico</Icon>
     <PreviewImage>Resources\PreviewImage.png</PreviewImage>
-    <MoreInfoUrl>https://buildvision.uservoice.com/</MoreInfoUrl>
+    <MoreInfoUrl>https://github.com/nagits/BuildVision</MoreInfoUrl>
     <GettingStartedGuide>http://visualstudiogallery.msdn.microsoft.com/23d3c821-ca2d-4e1a-a005-4f70f12f77ba</GettingStartedGuide>
     <License>Resources\license.txt</License>
     <ReleaseNotes>Resources\notes.rtf</ReleaseNotes>

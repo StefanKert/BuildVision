@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -21,7 +22,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
     {
         private readonly IPackageContext _packageContext;
         private readonly FindProjectItemDelegate _findProjectItem;
-        private readonly List<ProjectItem> _buildingProjects = new List<ProjectItem>();
+        private readonly List<ProjectItem> _buildingProjects;
+        private readonly object _buildingProjectsLockObject;
 
         /* ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
          * 
@@ -95,7 +97,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             get { return _buildedProjects; }
         }
 
-        public override IEnumerable<ProjectItem> BuildingProjects
+        public override IReadOnlyList<ProjectItem> BuildingProjects
         {
             get { return _buildingProjects; }
         }
@@ -149,6 +151,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         public BuildContext(IPackageContext packageContext, FindProjectItemDelegate findProjectItem)
         {
             _buildedProjects = new BuildedProjectsCollection();
+            _buildingProjects = new List<ProjectItem>();
+            _buildingProjectsLockObject = ((ICollection)_buildingProjects).SyncRoot;
 
             _packageContext = packageContext;
             _findProjectItem = findProjectItem;
@@ -280,6 +284,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             IDictionary<string, string> projectProperties = projectEntry.Properties;
             if (projectProperties.ContainsKey("Configuration") && projectProperties.ContainsKey("Platform"))
             {
+                // TODO: Use find by FullNameProjectDefinition for the Batch Build only.
                 string projectConfiguration = projectProperties["Configuration"];
                 string projectPlatform = projectProperties["Platform"];
                 var projectDefinition = new FullNameProjectDefinition(projectFile, projectConfiguration, projectPlatform);
@@ -378,7 +383,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                     throw new InvalidOperationException();
             }
 
-            _buildingProjects.Add(currentProject);
+            lock (_buildingProjectsLockObject)
+            {
+                _buildingProjects.Add(currentProject);
+            }
 
             ProjectState projectState;
             switch (_buildAction)
@@ -425,9 +433,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                     throw new InvalidOperationException();
             }
 
-            _buildingProjects.Remove(currentProject);
+            lock (_buildingProjectsLockObject)
+            {
+                _buildingProjects.Remove(currentProject);
+            }
 
-            var buildedProject = _buildedProjects[currentProject];
+            BuildedProject buildedProject = _buildedProjects[currentProject];
             buildedProject.Success = success;
 
             ProjectState projectState;
@@ -536,8 +547,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
             _buildCancelled = false;
             _buildCancelledInternally = false;
-            _buildingProjects.Clear();
+
             _buildedProjects.Clear();
+            lock (_buildingProjectsLockObject)
+            {
+                _buildingProjects.Clear();
+            }
 
             _buildedSolution = null;
             _buildingSolution = new BuildedSolution(_packageContext.GetDTE().Solution);
@@ -588,7 +603,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
             _buildedSolution = _buildingSolution;
             _buildingSolution = null;
-            _buildingProjects.Clear();
+
+            lock (_buildingProjectsLockObject)
+            {
+                _buildingProjects.Clear();
+            }
 
             _buildFinishTime = DateTime.Now;
             _currentState = BuildState.Done;

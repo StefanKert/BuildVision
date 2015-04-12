@@ -218,7 +218,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
                 {
                     _buildStartTime = value;
                     OnPropertyChanged("BuildStartTime");
-                    OnPropertyChanged("BuildStartTime2");
                     OnPropertyChanged("BuildElapsedTime");
                 }
             }
@@ -238,7 +237,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
                 {
                     _buildFinishTime = value;
                     OnPropertyChanged("BuildFinishTime");
-                    OnPropertyChanged("BuildFinishTime2");
                     OnPropertyChanged("BuildElapsedTime");
                 }
             }
@@ -250,10 +248,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         {
             get
             {
-                if (BuildStartTime == null || BuildFinishTime == null)
+                if (_buildStartTime == null)
                     return null;
 
-                return BuildFinishTime.Value.Subtract(BuildStartTime.Value);
+                if (_buildFinishTime == null)
+                    return DateTime.Now.Subtract(_buildStartTime.Value);
+
+                return _buildFinishTime.Value.Subtract(_buildStartTime.Value);
             }
         }
 
@@ -445,6 +446,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         {
             if (buildedProjectInfo != null)
                 ErrorsBox = buildedProjectInfo.ErrorsBox;
+        }
+
+        public void RaiseBuildElapsedTimeChanged()
+        {
+            OnPropertyChanged("BuildElapsedTime");
         }
 
         private void UpdateProperties()

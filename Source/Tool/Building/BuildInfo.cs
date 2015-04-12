@@ -23,7 +23,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         public abstract BuildedProjectsCollection BuildedProjects { get; }
 
-        public abstract IEnumerable<ProjectItem> BuildingProjects { get; }
+        public abstract IReadOnlyList<ProjectItem> BuildingProjects { get; }
 
         public abstract BuildedSolution BuildedSolution { get; }
 

@@ -5,6 +5,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Models;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
+    // TODO: thread-safety.
     public class BuildedProjectsCollection : List<BuildedProject>
     {
         public int BuildSuccessCount
@@ -30,26 +31,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         {
             get
             {
-                var proj = this.FirstOrDefault(p => p.UniqueName == pi.UniqueName && p.Configuration == pi.Configuration && p.Platform == pi.Platform);
+                var proj = Find(p => p.UniqueName == pi.UniqueName && p.Configuration == pi.Configuration && p.Platform == pi.Platform);
                 if (proj == null)
                 {
                     proj = new BuildedProject(pi.UniqueName, pi.FullName, pi.Configuration, pi.Platform);
                     Add(proj);
                 }
 
-                return proj;
-            }
-        }
-
-        /// <summary>
-        /// Get <see cref="BuildedProject"/> by <see cref="ProjectItem.UniqueName"/>. 
-        /// If not exists, returns <c>null</c>.
-        /// </summary>
-        public BuildedProject this[string uniqueName]
-        {
-            get
-            {
-                var proj = this.FirstOrDefault(p => p.UniqueName == uniqueName);
                 return proj;
             }
         }

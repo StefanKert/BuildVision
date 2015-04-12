@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 
@@ -31,6 +33,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         private readonly SolutionEvents _solutionEvents;
 
         private bool _buildErrorIsNavigated;
+        private string _origTextCurrentState;
 
         public Tool(
             IPackageContext packageContext,
@@ -215,8 +218,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                 _dteStatusBar.FreezeOutput(1);
         }
 
-        private string _origTextCurrentState;
-
         private void BuildEvents_OnBuildProcess()
         {
             try
@@ -227,6 +228,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                 _viewModel.TextCurrentState = msg;
                 OutputInStatusBar(msg, true);
                 //_dte.SuppressUI = false;
+
+                IReadOnlyList<ProjectItem> buildingProjects = _buildContext.BuildingProjects;
+                lock (((ICollection)buildingProjects).SyncRoot)
+                {
+                    for (int i = 0; i < buildingProjects.Count; i++)
+                        buildingProjects[i].RaiseBuildElapsedTimeChanged();
+                }
             }
             catch (Exception ex)
             {

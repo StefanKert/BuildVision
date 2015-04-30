@@ -497,52 +497,69 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
             return filePaths.Distinct();
         }
 
-        #region FindProjectItem
-
         /// <summary>
         /// Find file in the Project.
         /// </summary>
         /// <param name="project">The project.</param>
-        /// <param name="fileName">File name.</param>
+        /// <param name="filePath">File path, relative to the <paramref name="project"/> root.</param>
         /// <returns>The found file or <c>null</c>.</returns>
-        public static ProjectItem FindProjectItem(this Project project, string fileName)
+        private static ProjectItem FindProjectItem(this Project project, string filePath)
         {
-            return FindProjectItem(project.ProjectItems, fileName);
+            return FindProjectItem(project.ProjectItems, filePath);
         }
 
         /// <summary>
         /// Find file in projects collection.
         /// </summary>
         /// <param name="items">Projects collection.</param>
-        /// <param name="fileName">File name.</param>
+        /// <param name="filePath">File path, relative to the <paramref name="items"/> root.</param>
         /// <returns>The found file or <c>null</c>.</returns>
-        public static ProjectItem FindProjectItem(this ProjectItems items, string fileName)
+        private static ProjectItem FindProjectItem(this ProjectItems items, string filePath)
         {
-            string atom = fileName.Substring(0, fileName.IndexOf("\\", StringComparison.Ordinal) + 1);
-            foreach (ProjectItem item in items)
+            if (string.IsNullOrEmpty(filePath))
+                throw new ArgumentException("Argument `filePath` is null or empty.", "filePath");
+
+            int backslashIndex = filePath.IndexOf("\\", StringComparison.Ordinal);
+            bool findFolder = (backslashIndex != -1);
+            if (findFolder)
             {
-                if (atom.StartsWith(item.Name))
+                string folderName = filePath.Substring(0, backslashIndex);
+                foreach (ProjectItem item in items)
                 {
-                    var ritem = FindProjectItem(item.ProjectItems, fileName.Substring(fileName.IndexOf("\\", StringComparison.Ordinal) + 1));
-                    if (ritem != null)
-                        return ritem;
+                    if (item.Kind != Constants.vsProjectItemKindVirtualFolder &&
+                        item.Kind != Constants.vsProjectItemKindPhysicalFolder)
+                        continue;
+
+                    if (folderName == item.Name)
+                    {
+                        string nextpath = filePath.Substring(backslashIndex + 1);
+                        return FindProjectItem(item.ProjectItems, nextpath);
+                    }
                 }
-
-                if (item.Name == fileName)
-                    return item;
-
-                if (item.ProjectItems.Count > 0)
+            }
+            else
+            {
+                string fileName = filePath;
+                foreach (ProjectItem item in items)
                 {
-                    var ritem = FindProjectItem(item.ProjectItems, fileName.Substring(fileName.IndexOf("\\", StringComparison.Ordinal) + 1));
-                    if (ritem != null)
-                        return ritem;
+                    if (item.Kind != Constants.vsProjectItemKindPhysicalFile) 
+                        continue;
+
+                    if (item.Name == fileName)
+                        return item;
+
+                    // Nested item, e.g. Default.aspx or MainWindow.xaml.
+                    if (item.ProjectItems.Count > 0)
+                    {
+                        ProjectItem childItem = FindProjectItem(item.ProjectItems, fileName);
+                        if (childItem != null)
+                            return childItem;
+                    }
                 }
             }
 
             return null;
         }
-
-        #endregion FindProjectItem
 
         /// <summary>
         /// Navigate to the Error Item in the Visual Studio Editor.

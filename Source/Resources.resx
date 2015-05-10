@@ -580,4 +580,7 @@ on build done</value>
   <data name="SelectedProjectItem_CopyBuildOutputFilesToClipboard_CopyMenuItem" xml:space="preserve">
     <value>Copy to the Clipboard</value>
   </data>
+  <data name="OpenGeneralSettingsMenuItem" xml:space="preserve">
+    <value>All Settings...</value>
+  </data>
 </root>

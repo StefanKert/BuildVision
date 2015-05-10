@@ -936,6 +936,15 @@ namespace AlekseyNagovitsyn.BuildVision {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All Settings....
+        /// </summary>
+        public static string OpenGeneralSettingsMenuItem {
+            get {
+                return ResourceManager.GetString("OpenGeneralSettingsMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BuildVision.
         /// </summary>
         public static string ProductName {

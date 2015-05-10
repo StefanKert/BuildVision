@@ -312,6 +312,17 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             }
         }
 
+        public ICommand OpenGeneralSettingsAction
+        {
+            get
+            {
+                return new RelayCommand(obj =>
+                {
+                    _packageContext.ShowOptionPage(typeof(GeneralSettingsDialogPage));
+                });
+            }
+        }
+
         // Should be initialized by View.
         public ObservableCollection<DataGridColumn> GridColumnsRef
         {

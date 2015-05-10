@@ -1,4 +1,5 @@
-﻿using System.Collections.Specialized;
+﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -68,15 +69,34 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views
 
         private void ProjectsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            switch (e.Action)
             {
-                foreach (ProjectItem item in e.NewItems)
-                    item.PropertyChanged += SolutionItemOnProjectPropertyChanged;
-            }
-            else if (e.Action == NotifyCollectionChangedAction.Remove)
-            {
-                foreach (ProjectItem item in e.OldItems)
-                    item.PropertyChanged -= SolutionItemOnProjectPropertyChanged;
+                case NotifyCollectionChangedAction.Add:
+                    foreach (ProjectItem item in e.NewItems)
+                    {
+                        item.PropertyChanged += SolutionItemOnProjectPropertyChanged;
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    var collection = (ICollection<ProjectItem>)sender;
+                    if (collection.Count == 0)
+                        break;
+
+                    // Copy items for thread safety. Collection may be changed in other thread, while foreach works.
+                    var items = new List<ProjectItem>(collection);
+                    foreach (ProjectItem item in items)
+                    {
+                        item.PropertyChanged += SolutionItemOnProjectPropertyChanged;
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (ProjectItem item in e.OldItems)
+                    {
+                        item.PropertyChanged -= SolutionItemOnProjectPropertyChanged;
+                    }
+                    break;
             }
         }
 

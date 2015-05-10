@@ -163,6 +163,11 @@
                        RequestNavigate="HyperlinkOnRequestNavigate">
                        Send email...
             </Hyperlink>
+            <Hyperlink NavigateUri="https://github.com/nagits/BuildVision" 
+                       ToolTip="https://github.com/nagits/BuildVision"
+                       RequestNavigate="HyperlinkOnRequestNavigate">
+                       Open GitHub repo...
+            </Hyperlink>
         </TextBlock>
     </Grid>
 

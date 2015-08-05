@@ -24,3 +24,6 @@ Indicators Panel, which is located above the table of projects, displays total n
 ![Build completed on Dark Theme](Screenshots/screenshot2.png)
 ![Rebuild started on Light Theme](Screenshots/screenshot3.png)
 ![Build failed on Light Theme](Screenshots/screenshot4.png)
+
+##### Configuring
+You can configure BuildVision via "Tools → Options... → BuildVision".

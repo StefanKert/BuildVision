@@ -296,7 +296,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
             try
             {
                 var parentItem = project.ParentProjectItem;
-                return (parentItem != null) ? parentItem.ContainingProject : null;
+                return parentItem?.ContainingProject;
             }
             catch (Exception ex)
             {
@@ -315,9 +315,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
 
             var service = GetService(proj.DTE, typeof(IVsSolution));
             var solution = (IVsSolution)service;
-
-            IVsHierarchy hierarchy;
-            int result = solution.GetProjectOfUniqueName(proj.UniqueName, out hierarchy);
+            int result = solution.GetProjectOfUniqueName(proj.UniqueName, out var hierarchy);
 
             if (result == 0)
             {
@@ -336,12 +334,10 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
         public static object GetService(object serviceProviderObject, Guid guid)
         {
             object service = null;
-            IntPtr serviceIntPtr;
-
             Guid sidGuid = guid;
             Guid iidGuid = sidGuid;
             var serviceProvider = (IServiceProvider)serviceProviderObject;
-            int hr = serviceProvider.QueryService(ref sidGuid, ref iidGuid, out serviceIntPtr);
+            int hr = serviceProvider.QueryService(ref sidGuid, ref iidGuid, out var serviceIntPtr);
 
             if (hr != 0)
             {

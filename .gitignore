@@ -6,3 +6,4 @@ Source/obj/
 Source/StyleCop.Cache
 Source/BuildVision.csproj.DotSettings
 .vs/
+packages/

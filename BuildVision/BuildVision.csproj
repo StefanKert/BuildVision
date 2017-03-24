@@ -138,9 +138,8 @@
   <ItemGroup>
     <Compile Include="Core\Logging\BindingErrorListener.cs" />
     <Compile Include="Core\BuildVisionPackage.Package.cs" />
-    <Compile Include="Helpers\AppVersionInfo.cs" />
-    <Compile Include="Helpers\ClipboardHelper.cs" />
-    <Compile Include="Helpers\FilePathHelper.cs" />
+    <Compile Include="Helpers\DisplayStringAttribute.cs" />
+    <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Tool\Building\FindProjectProperty.cs" />
     <Compile Include="Tool\Building\FullNameProjectDefinition.cs" />
     <Compile Include="Tool\Building\RegisterLoggerResult.cs" />
@@ -178,7 +177,6 @@
     <Compile Include="Tool\Views\Converters\GridColumnSettingsToInitialColumnHeaderConverter.cs" />
     <Compile Include="Tool\Views\Extensions\DataGridColumnExtensions.cs" />
     <Compile Include="Tool\Views\Extensions\EnumerationExtension.cs" />
-    <Compile Include="Helpers\ObjectExtensions.cs" />
     <Compile Include="Tool\Models\Settings\ProjectItem\BuildOutputFileTypes.cs" />
     <Compile Include="Helpers\UIHierarchyExtensions.cs" />
     <Compile Include="Tool\Building\BuildContext.cs" />
@@ -213,11 +211,8 @@
     <Compile Include="Tool\Building\BuildMessages.cs" />
     <Compile Include="Tool\Models\Settings\BuildMessages\BuildMessagesSettings.cs" />
     <Compile Include="Tool\Models\Settings\BuildMessages\BuildMajorMessageFormat.cs" />
-    <Compile Include="Helpers\DisplayStringAttribute.cs" />
-    <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Tool\Building\ErrorsBox.cs" />
     <Compile Include="Helpers\ToolWindowManager.cs" />
-    <Compile Include="Helpers\ObjectContractExtensions.cs" />
     <Compile Include="Helpers\SolutionProjectsExtensions.cs" />
     <Compile Include="Helpers\StyleConverting.cs" />
     <Compile Include="Helpers\WindowExtensions.cs" />
@@ -250,7 +245,6 @@
     <Compile Include="Tool\Models\Settings\ToolWindow\WindowState.cs" />
     <Compile Include="Tool\Models\Settings\ToolWindow\WindowStateAction.cs" />
     <Compile Include="Tool\Views\Converters\AlternatingRowBackgroundConverter.cs" />
-    <Compile Include="Helpers\CustomStringFormatProvider.cs" />
     <Compile Include="Tool\Views\Converters\ExpanderIsExpandedConverter.cs" />
     <Compile Include="Tool\Views\Converters\InvertSolidColorBrushConverter.cs" />
     <Compile Include="Tool\Views\Converters\IsErrorToBorderThicknessConverter.cs" />
@@ -281,15 +275,11 @@
     <Compile Include="Tool\Views\Settings\SettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\ViewModels\RelayCommand.cs" />
     <Compile Include="Tool\ViewModels\BuildProgressViewModel.cs" />
     <Compile Include="Tool\Models\Settings\Sorting\ProjectItemColumnSorter.cs" />
     <Compile Include="Tool\Models\Settings\Sorting\PropertyColumnSorter.cs" />
     <Compile Include="Tool\Models\Settings\Sorting\SortDescription.cs" />
     <Compile Include="Tool\ViewModels\ControlViewModel.cs" />
-    <Compile Include="Tool\ViewModels\NotifyPropertyChangedBase.cs" />
-    <Compile Include="Tool\ViewModels\ViewCommandEventArgs.cs" />
-    <Compile Include="Tool\ViewModels\ViewModelBase.cs" />
     <Compile Include="Tool\Views\Components\SpinnerControl.xaml.cs">
       <DependentUpon>SpinnerControl.xaml</DependentUpon>
     </Compile>
@@ -454,7 +444,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\BuildVision.Common\BuildVision.Common.csproj">
+      <Project>{848412d1-95bf-4e56-a9ef-2926af5c6d67}</Project>
+      <Name>BuildVision.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <UseCodebase>true</UseCodebase>
   </PropertyGroup>

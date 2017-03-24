@@ -7,8 +7,9 @@
              xmlns:res="clr-namespace:AlekseyNagovitsyn.BuildVision"
              xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions"
              xmlns:helpers="clr-namespace:AlekseyNagovitsyn.BuildVision.Helpers"
-             xmlns:settings="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings"
-             xmlns:buildProgress="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress"
+             xmlns:settings="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings" 
+             xmlns:buildProgress="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress" 
+             xmlns:common="clr-namespace:AlekseyNagovitsyn.BuildVision.Helpers;assembly=BuildVision.Common" 
              mc:Ignorable="d"
              d:DesignWidth="500"
              d:DesignHeight="270"
@@ -16,7 +17,7 @@
 
     <UserControl.Resources>
         <settings:GeneralSettings x:Key="DesignViewModel"/>
-        <helpers:AppVersionInfo x:Key="AppVersionInfo"/>
+        <common:AppVersionInfo x:Key="AppVersionInfo"/>
     </UserControl.Resources>
 
     <Grid>

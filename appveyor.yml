@@ -1,6 +1,6 @@
 ﻿version: 1.5.0.{build}
 configuration: Release
-os: Visual Studio 2014 CTP4
+os: Visual Studio 2017
 skip_tags: true
 
 branches:
@@ -16,7 +16,7 @@ build:
   verbosity: minimal
 
 artifacts:
-  - path: Source\bin\Release\BuildVision.vsix
+  - path: BuildVision\bin\Release\BuildVision.vsix
 
 deploy:
   - provider: GitHub
@@ -24,6 +24,6 @@ deploy:
     release: v$(appveyor_build_version)
     auth_token:
       secure: 7tnXVDiH/SFCiysgula8OgEFGUUp4nVUU1RLnPhBuZaph/7nW6sFQ9UFOFedJM5Q
-    artifact: Source\bin\Release\BuildVision.vsix
+    artifact: BuildVision\bin\Release\BuildVision.vsix
     draft: true
     prerelease: true

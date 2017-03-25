@@ -1,10 +1,8 @@
 BuildVision.sln.ide/
 BuildVision.*.suo
-Source/BuildVision.csproj.user
-Source/bin/
-Source/obj/
-Source/StyleCop.Cache
-Source/BuildVision.csproj.DotSettings
+BuildVision/BuildVision.csproj.user
+BuildVision/StyleCop.Cache
+BuildVision/BuildVision.csproj.DotSettings
 .vs/
 packages/
 obj/

@@ -9,6 +9,7 @@ branches:
     - dev
 
 before_build:
+  - nuget restore
   - ps: .\bump-version.ps1
 
 build:

@@ -15,10 +15,23 @@ using EnvDTE;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 {
+
+    public class VisualStudioProject
+    {
+        public string UniqueName { get; set; }
+        public string Name { get; set; }
+        public string FullName { get; set; }
+        public string FullPath { get; set; }
+        public string Language { get; set; }
+        public string CommonType { get; set; }
+        public string Configuration { get; set; }
+        public string Platform { get; set; }
+    }
+
     [DataContract]
     public class ProjectItem : NotifyPropertyChangedBase
     {
-        private const string ResourcesUri = @"Tool/Views/ProjectItem.Resources.xaml";
+        private const string ResourcesUri = @"Tool/Views/Resources/ProjectItem.Resources.xaml";
 
         public ProjectItem()
         {
@@ -26,22 +39,14 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 
         public ProjectItem(Project project)
         {
-            _storageProject = project;
+            StorageProject = project;
             UpdateProperties();
             State = ProjectState.Pending;
         }
 
-        private Project _storageProject;
-        public Project StorageProject
-        {
-            get { return _storageProject; }
-        }
-
-        private bool _isBatchBuildProject;
-        public bool IsBatchBuildProject
-        {
-            get { return _isBatchBuildProject; }
-        }
+        public Project StorageProject { get; private set; }
+        
+        public bool IsBatchBuildProject { get; set; }
 
         [DataMember(Name = "UniqueName")]
         private string _uniqueName;
@@ -437,8 +442,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
             pi.Configuration = configuration;
             pi.Platform = platform;
             pi.ErrorsBox = new ErrorsBox();
-            pi._isBatchBuildProject = true;
-            pi._storageProject = StorageProject;
+            pi.IsBatchBuildProject = true;
+            pi.StorageProject = StorageProject;
             return pi;
         }
 
@@ -455,7 +460,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 
         private void UpdateProperties()
         {
-            Project project = _storageProject;
+            Project project = StorageProject;
             if (project != null)
             {
                 object projObject;
@@ -537,7 +542,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         {
             try
             {
-                Project project = _storageProject;
+                Project project = StorageProject;
 
                 UniqueName = project.UniqueName;
                 Name = project.Name;
@@ -563,5 +568,4 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
             }
         }
     }
-
 }

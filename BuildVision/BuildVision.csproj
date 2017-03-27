@@ -301,22 +301,22 @@
     <Compile Include="Tool\Views\Converters\SubtractConstantConverter.cs" />
     <Compile Include="Tool\Views\Extensions\TextBlockUtils.cs" />
     <Compile Include="Tool\Views\Extensions\VisualHelper.cs" />
-    <Compile Include="Tool\Views\ProjectItemDetailsView.xaml.cs">
+    <Compile Include="Tool\Views\Components\ProjectItemDetailsView.xaml.cs">
       <DependentUpon>ProjectItemDetailsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tool\Views\GridSettingsControl.xaml.cs">
+    <Compile Include="Tool\Views\Settings\GridSettingsControl.xaml.cs">
       <DependentUpon>GridSettingsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tool\Views\GeneralSettingsControl.xaml.cs">
+    <Compile Include="Tool\Views\Settings\GeneralSettingsControl.xaml.cs">
       <DependentUpon>GeneralSettingsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tool\Views\BuildMessagesSettingsControl.xaml.cs">
+    <Compile Include="Tool\Views\Settings\BuildMessagesSettingsControl.xaml.cs">
       <DependentUpon>BuildMessagesSettingsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tool\Views\WindowSettingsControl.xaml.cs">
+    <Compile Include="Tool\Views\Settings\WindowSettingsControl.xaml.cs">
       <DependentUpon>WindowSettingsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tool\Views\VectorResources.cs" />
+    <Compile Include="Tool\Views\Extensions\VectorResources.cs" />
     <Compile Include="Tool\Views\Extensions\BindingExtensions.cs" />
     <Compile Include="Tool\Views\Settings\SettingsDialogPage.cs">
       <SubType>Component</SubType>
@@ -340,7 +340,7 @@
     <Compile Include="Tool\Views\Converters\ValueConverterGroup.cs" />
     <Compile Include="Tool\Views\Converters\VisibilityToBooleanConverter.cs" />
     <Compile Include="Tool\Views\Converters\IndicatorVectorIconConverter.cs" />
-    <Compile Include="Tool\Views\ControlView.xaml.cs">
+    <Compile Include="Tool\Views\Components\ControlView.xaml.cs">
       <DependentUpon>ControlView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Tool\ToolWindow.cs" />
@@ -348,7 +348,7 @@
     <Compile Include="Core\BuildVisionPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\PkgCmdID.cs" />
-    <Compile Include="Tool\Views\ProjectItemSettingsControl.xaml.cs">
+    <Compile Include="Tool\Views\Settings\ProjectItemSettingsControl.xaml.cs">
       <DependentUpon>ProjectItemSettingsControl.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -401,15 +401,15 @@
     <None Include="Resources\Images_32bit.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Tool\Views\GridSettingsControl.xaml">
+    <Page Include="Tool\Views\Settings\GridSettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Tool\Views\GeneralSettingsControl.xaml">
+    <Page Include="Tool\Views\Settings\GeneralSettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Tool\Views\BuildMessagesSettingsControl.xaml">
+    <Page Include="Tool\Views\Settings\BuildMessagesSettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -441,7 +441,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Tool\Views\WindowSettingsControl.xaml">
+    <Page Include="Tool\Views\Settings\WindowSettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -457,11 +457,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tool\Views\ProjectItemDetailsView.xaml">
+    <Page Include="Tool\Views\Components\ProjectItemDetailsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tool\Views\ControlView.xaml">
+    <Page Include="Tool\Views\Components\ControlView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -469,7 +469,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tool\Views\ProjectItemSettingsControl.xaml">
+    <Page Include="Tool\Views\Settings\ProjectItemSettingsControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

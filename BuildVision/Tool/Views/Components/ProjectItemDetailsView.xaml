@@ -14,8 +14,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/CommonResources.xaml" />
-                <ResourceDictionary Source="Styles/ScrollViewerStyle.xaml" />
+                <ResourceDictionary Source="../Resources/CommonResources.xaml" />
+                <ResourceDictionary Source="../Styles/ScrollViewerStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <CollectionViewSource x:Key="ErrorsCollectionViewSource"

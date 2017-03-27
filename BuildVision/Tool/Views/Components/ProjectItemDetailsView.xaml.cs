@@ -30,7 +30,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views
 
         public ProjectItemDetailsView()
         {
-            InitializeComponent();            
+            InitializeComponent();
         }
 
         private void ProjectItemDetailsViewOnLoaded(object sender, RoutedEventArgs e)

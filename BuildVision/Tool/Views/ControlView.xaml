@@ -25,9 +25,9 @@
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="CommonResources.xaml" />
-                <ResourceDictionary Source="ScrollViewerStyle.xaml" />
-                <ResourceDictionary Source="DataGridColumnHeaderStyle.xaml" />
+                <ResourceDictionary Source="Resources/CommonResources.xaml" />
+                <ResourceDictionary Source="Styles/ScrollViewerStyle.xaml" />
+                <ResourceDictionary Source="Styles/DataGridColumnHeaderStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <viewModels:ControlViewModel x:Key="DesignViewModel"/>

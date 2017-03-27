@@ -26,6 +26,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Resources/CommonResources.xaml" />
+                <ResourceDictionary Source="../Resources/BuildAction.Resources.xaml"/>
                 <ResourceDictionary Source="../Styles/ScrollViewerStyle.xaml" />
                 <ResourceDictionary Source="../Styles/DataGridColumnHeaderStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
@@ -63,7 +64,7 @@
                 <converters:InverseBooleanConverter />
                 <converters:BooleanToVisibilityConverter />
             </converters:ValueConverterGroup>
-            
+
             <converters:ValueConverterGroup x:Key="PositiveNumberToVisibilityConverter">
                 <converters:NumberToIsPositiveConverter/>
                 <BooleanToVisibilityConverter/>
@@ -105,14 +106,14 @@
             <CompositeCollection x:Key="GridColumnsMenuItems">
                 <CollectionContainer Collection="{Binding Source={StaticResource GridColumnsCollection}}" />
                 <Separator />
-                <MenuItem Command="{Binding OpenGridColumnsSettingsAction}"
+              <MenuItem Command="{Binding OpenGridColumnsSettingsAction}"
                           CommandParameter="{Binding Source={StaticResource GridColumnsCollection}}"
                           Header="{x:Static res:Resources.GridColumnsOpenSettingsMenuItem}"
                           IsCheckable="False"
                           IsChecked="False"
                           StaysOpenOnClick="False" />
             </CompositeCollection>
-
+            
             <CompositeCollection x:Key="CopyBuildOutputFilesToClipboardMenuItems">
                 <MenuItem Command="{Binding SelectedProjectCopyBuildOutputFilesToClipboardAction}"
                           Header="{x:Static res:Resources.SelectedProjectItem_CopyBuildOutputFilesToClipboard_CopyMenuItem}"/>
@@ -152,7 +153,7 @@
                 <MenuItem Command="{Binding SelectedProjectCleanAction}" Header="{x:Static res:Resources.BuildActionClean}" />
                 <Separator />
                 <MenuItem Command="{Binding SelectedProjectOpenContainingFolderAction}" Header="{x:Static res:Resources.SelectedProjectItem_OpenContainingFolder_MenuItem}" />
-                <MenuItem Header="{x:Static res:Resources.SelectedProjectItem_CopyBuildOutputFilesToClipboard_ParentMenuItem}"
+                <MenuItem Header="{x:Static res:Resources.SelectedProjectItem_CopyBuildOutputFilesToClipboard_ParentMenuItem}" 
                           ItemsSource="{Binding Source={StaticResource CopyBuildOutputFilesToClipboardMenuItems}}"/>
             </CompositeCollection>
 
@@ -171,7 +172,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel 
+       <StackPanel 
             Grid.Row="0"
             Height="auto"
             Orientation="Vertical">
@@ -215,7 +216,7 @@
 
             <!-- Progress indicator -->
             <Grid>
-                <Line Name="Line"
+                              <Line Name="Line"
                       Margin="0,3,3,3"
                       Panel.ZIndex="1"
                       Stretch="Fill"
@@ -304,162 +305,33 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <WrapPanel 
+                          <WrapPanel 
                     Grid.Column="0"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Center"
                     Margin="0,0,0,0"
                     Orientation="Horizontal">
-
+                  
                     <Button Name="BuildSolutionButton"
                             Command="{Binding BuildSolutionAction}"
                             Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
                             IsEnabled="{Binding SolutionItem.IsEmpty, Converter={StaticResource InverseBoolean}}"
                             ToolTip="{x:Static res:Resources.BuildSolutionButtonTooltip}">
-                        <StackPanel Orientation="Horizontal">
-                            <Viewbox Width="16"
-                                 Height="16"
-                                 Stretch="Uniform">
-                                <Canvas Width="100" Height="100">
-                                    <Rectangle Canvas.Left="0"
-                                           Canvas.Top="40"
-                                           Width="10"
-                                           Height="60"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="90"
-                                           Canvas.Top="40"
-                                           Width="10"
-                                           Height="60"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="10"
-                                           Canvas.Top="90"
-                                           Width="80"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="20"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="45"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="70"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="58"
-                                           Canvas.Top="70"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="33"
-                                           Canvas.Top="70"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="45"
-                                           Canvas.Top="0"
-                                           Width="10"
-                                           Height="25"
-                                           Fill="{Binding ElementName=BuildSolutionButtonPolygon1, Path=Fill}" />
-                                    <Polygon Name="BuildSolutionButtonPolygon1"
-                                             Points="25,15 75,15 50,45">
-                                        <Polygon.Style>
-                                            <Style TargetType="Polygon">
-                                                <Setter Property="Fill" Value="Gray" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=BuildSolutionButton, Path=IsMouseOver}" Value="True">
-                                                        <Setter Property="Fill" Value="#399AFC" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Polygon.Style>
-                                    </Polygon>
-                                </Canvas>
-                            </Viewbox>
+                         <StackPanel Orientation="Horizontal">
+                            <ContentControl Template="{StaticResource BuildSolutionButton}"/>
                         </StackPanel>
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource ToolBarButtonBaseStyle}" />
                         </Button.Style>
                     </Button>
 
-                    <Button Name="RebuildSolutionButton"
+                      <Button Name="RebuildSolutionButton"
                             Command="{Binding RebuildSolutionAction}"
                             Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
                             IsEnabled="{Binding SolutionItem.IsEmpty, Converter={StaticResource InverseBoolean}}"
                             ToolTip="{x:Static res:Resources.RebuildSolutionButtonTooltip}">
                         <StackPanel Orientation="Horizontal">
-                            <Viewbox Width="16"
-                                 Height="16"
-                                 Stretch="Uniform">
-                                <Canvas Width="100" Height="100">
-                                    <Rectangle Canvas.Left="0"
-                                           Canvas.Top="40"
-                                           Width="10"
-                                           Height="60"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="90"
-                                           Canvas.Top="40"
-                                           Width="10"
-                                           Height="60"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="10"
-                                           Canvas.Top="90"
-                                           Width="80"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="20"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="45"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray"
-                                           Visibility="Collapsed" />
-                                    <Rectangle Canvas.Left="70"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="58"
-                                           Canvas.Top="70"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="33"
-                                           Canvas.Top="70"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="45"
-                                           Canvas.Top="0"
-                                           Width="10"
-                                           Height="25"
-                                           Fill="{Binding ElementName=RebuildSolutionButtonPolygon1, Path=Fill}" />
-                                    <Polygon Points="25,15 75,15 50,45" 
-                                             Fill="{Binding ElementName=RebuildSolutionButtonPolygon1, Path=Fill}" />
-                                    <Polygon Name="RebuildSolutionButtonPolygon1"
-                                             Points="25,35 75,35 50,65">
-                                        <Polygon.Style>
-                                            <Style TargetType="Polygon">
-                                                <Setter Property="Fill" Value="Gray" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=RebuildSolutionButton, Path=IsMouseOver}" Value="True">
-                                                        <Setter Property="Fill" Value="#399AFC" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Polygon.Style>
-                                    </Polygon>
-                                </Canvas>
-                            </Viewbox>
+                            <ContentControl Template="{StaticResource RebuildSolutionButton}"/>
                         </StackPanel>
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource ToolBarButtonBaseStyle}" />
@@ -472,169 +344,22 @@
                             IsEnabled="{Binding SolutionItem.IsEmpty, Converter={StaticResource InverseBoolean}}"
                             ToolTip="{x:Static res:Resources.CleanSolutionButtonTooltip}">
                         <StackPanel Orientation="Horizontal">
-                            <Viewbox Width="16"
-                                 Height="16"
-                                 Stretch="Uniform">
-                                <Canvas Width="100" Height="100">
-                                    <Rectangle Canvas.Left="0"
-                                           Canvas.Top="40"
-                                           Width="10"
-                                           Height="60"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="90"
-                                           Canvas.Top="40"
-                                           Width="10"
-                                           Height="60"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="10"
-                                           Canvas.Top="90"
-                                           Width="80"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="20"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="45"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray"
-                                           Visibility="Collapsed" />
-                                    <Rectangle Canvas.Left="70"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="58"
-                                           Canvas.Top="70"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="33"
-                                           Canvas.Top="70"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Canvas Width="128" 
-                                            Height="128"
-                                            Canvas.Left="10"
-                                            Canvas.Top="0">
-                                        <Canvas.RenderTransform>
-                                            <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
-                                        </Canvas.RenderTransform>
-                                        <Path>
-                                            <Path.Data>
-                                                <PathGeometry Figures="m 80.839352 126.21041 c 19.382138 -7.62246 40.553388 -32.520564 45.985518 -54.080519 1.9315 -7.666081 1.19136 -8.587519 -6.89787 -8.587519 -10.58084 0 -21.608968 -3.827257 -32.455148 -11.263404 l -4.3675 -2.994357 -17.0489 17.048905 -17.04891 17.048904 1.79599 4.829976 c 2.74924 7.39358 10.25938 22.020384 14.7731 28.772194 7.35822 11.00673 8.68939 11.81132 15.26372 9.22582 z m -20.48864 -66.210645 16.48864 -16.542606 -4.32846 -4.066701 c -3.7308 -3.505183 -4.75974 -3.980446 -7.45193 -3.442009 -1.71791 0.343581 -4.17299 1.610672 -5.45575 2.815757 L 57.270932 40.95527 37.295752 20.998821 17.32057 1.0423734 l -4.92495 0 c -4.0816501 0 -5.4477601 0.500876 -7.9781601 2.92516 -3.54111004 3.392593 -4.67989004 7.8373096 -3.09635 12.0852446 0.61294 1.644277 9.7356501 11.636757 20.2726701 22.205511 l 19.158232 19.215917 -2.05732 2.284083 c -2.88587 3.203961 -3.46082 5.373722 -2.26367 8.542767 0.99324 2.62928 5.66246 8.241316 6.85678 8.241316 0.31586 0 7.99416 -7.444173 17.06291 -16.542607 z" FillRule="NonZero"/>
-                                            </Path.Data>
-                                            <Path.Style>
-                                                <Style TargetType="Path">
-                                                    <Setter Property="Fill" Value="Gray" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding ElementName=CleanSolutionButton, Path=IsMouseOver}" Value="True">
-                                                            <Setter Property="Fill" Value="#D0A200" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Path.Style>
-                                        </Path>
-                                    </Canvas>
-
-                                </Canvas>
-                            </Viewbox>
+                            <ContentControl Template="{StaticResource CleanSolutionButton}" />
                         </StackPanel>
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource ToolBarButtonBaseStyle}" />
                         </Button.Style>
                     </Button>
 
-                    <Button Name="CancelBuildSolutionButton"
+                   <Button Name="CancelBuildSolutionButton"
                             Command="{Binding CancelBuildSolutionAction}"
                             Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource BoolToVisibilityConverter}}"
                             HorizontalAlignment="Stretch"
                             MinWidth="66"
                             ToolTip="{x:Static res:Resources.CancelBuildSolutionButtonTooltip}">
                         <StackPanel Orientation="Horizontal">
-                            <Viewbox Width="16"
-                                 Height="16"
-                                 Stretch="Uniform">
-                                <Canvas Width="100" Height="100">
-                                    <Canvas.RenderTransform>
-                                        <TranslateTransform X="0" Y="-8"/>
-                                    </Canvas.RenderTransform>
-                                    <Rectangle Canvas.Left="0"
-                                           Canvas.Top="40"
-                                           Width="10"
-                                           Height="60"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="90"
-                                           Canvas.Top="40"
-                                           Width="10"
-                                           Height="60"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="10"
-                                           Canvas.Top="90"
-                                           Width="80"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="20"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray"
-                                           Visibility="Collapsed" />
-                                    <Rectangle Canvas.Left="45"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray"
-                                           Visibility="Collapsed" />
-                                    <Rectangle Canvas.Left="70"
-                                           Canvas.Top="50"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray"
-                                           Visibility="Collapsed" />
-                                    <Rectangle Canvas.Left="58"
-                                           Canvas.Top="70"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Rectangle Canvas.Left="33"
-                                           Canvas.Top="70"
-                                           Width="10"
-                                           Height="10"
-                                           Fill="Gray" />
-                                    <Line X1="30"
-                                          Y1="20"
-                                          X2="70"
-                                          Y2="60"
-                                          StrokeThickness="12"
-                                          Stroke="{Binding ElementName=CancelBuildSolutionButtonLine1, Path=Stroke}" />
-                                    <Line Name="CancelBuildSolutionButtonLine1"
-                                          X1="70"
-                                          Y1="20"
-                                          X2="30"
-                                          Y2="60"
-                                          StrokeThickness="12">
-                                        <Line.Style>
-                                            <Style TargetType="Line">
-                                                <Setter Property="Stroke" Value="Gray" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding ElementName=CancelBuildSolutionButton, Path=IsMouseOver}" Value="True">
-                                                        <Setter Property="Stroke" Value="Red" />
-                                                    </DataTrigger>
-                                                    <Trigger Property="IsEnabled" Value="False">
-                                                        <Setter Property="Stroke" Value="Red" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Line.Style>
-                                    </Line>
-                                </Canvas>
-                            </Viewbox>
-                            <TextBlock Margin="2,0,0,0"  Text="{x:Static res:Resources.CancelBuildSolutionButtonCaption}" />
+                            <ContentControl Template="{StaticResource CancelBuildSolutionButton}" />
+                            <TextBlock Margin="2,0,0,0" Text="{x:Static res:Resources.CancelBuildSolutionButtonCaption}" />
                         </StackPanel>
                         <Button.Style>
                             <Style TargetType="Button" BasedOn="{StaticResource ToolBarButtonBaseStyle}">
@@ -652,8 +377,8 @@
                     </Button>
 
                 </WrapPanel>
-                
-                <Border Grid.Column="1" 
+
+                                <Border Grid.Column="1" 
                         Width="2" 
                         BorderThickness="2" 
                         BorderBrush="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarMenuSeparatorBrushKey}}"
@@ -767,38 +492,38 @@
             false if the ScrollViewer scrolls in terms of physical units. 
             The default is false.  
         -->
-        <DataGrid Name="Grid"
-                  Grid.Row="1"
+        <DataGrid Name="Grid" 
+                  Grid.Row="1" 
                   AlternatingRowBackground="{Binding ElementName=Grid,
                                                      Path=RowBackground,
                                                      Converter={StaticResource AlternatingRowBackgroundConverter}}"
-                  AlternationCount="2"
-                  AreRowDetailsFrozen="True"
-                  AutoGenerateColumns="False"
-                  Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolboxBackgroundKey}}"
-                  BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.PanelBorderKey}}"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  CanUserReorderColumns="True"
-                  CanUserResizeRows="False"
-                  CanUserSortColumns="True"
-                  EnableColumnVirtualization="False"
-                  EnableRowVirtualization="False"
-                  GridLinesVisibility="None"
-                  HeadersVisibility="{Binding GridHeadersVisibility}"
-                  IsReadOnly="True"
-                  ItemsSource="{Binding GroupedProjectsList,
-                                        NotifyOnTargetUpdated=True}"
-                  RowBackground="{DynamicResource {x:Static vsfx:VsBrushes.ToolboxBackgroundKey}}"
-                  ScrollViewer.CanContentScroll="{Binding GridGroupPropertyName,
-                                                          Converter={StaticResource StringIsNullOrEmptyConverter}}"
-                  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                  ScrollViewer.IsDeferredScrollingEnabled="False"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  SelectedItem="{Binding SelectedProjectItem}"
-                  SelectionMode="Single"
-                  SelectionUnit="FullRow"
-                  Sorting="GridOnSorting"
+                  AlternationCount="2" 
+                  AreRowDetailsFrozen="True" 
+                  AutoGenerateColumns="False" 
+                  Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolboxBackgroundKey}}" 
+                  BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.PanelBorderKey}}" 
+                  CanUserAddRows="False" 
+                  CanUserDeleteRows="False" 
+                  CanUserReorderColumns="True" 
+                  CanUserResizeRows="False" 
+                  CanUserSortColumns="True" 
+                  EnableColumnVirtualization="False" 
+                  EnableRowVirtualization="False" 
+                  GridLinesVisibility="None" 
+                  HeadersVisibility="{Binding GridHeadersVisibility}" 
+                  IsReadOnly="True" 
+                  ItemsSource="{Binding GroupedProjectsList, 
+                                        NotifyOnTargetUpdated=True}" 
+                  RowBackground="{DynamicResource {x:Static vsfx:VsBrushes.ToolboxBackgroundKey}}" 
+                  ScrollViewer.CanContentScroll="{Binding GridGroupPropertyName, 
+                                                          Converter={StaticResource StringIsNullOrEmptyConverter}}" 
+                  ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                  ScrollViewer.IsDeferredScrollingEnabled="False" 
+                  ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                  SelectedItem="{Binding SelectedProjectItem}" 
+                  SelectionMode="Single" 
+                  SelectionUnit="FullRow" 
+                  Sorting="GridOnSorting" 
                   VirtualizingStackPanel.IsVirtualizing="False">
 
             <DataGrid.Style>
@@ -955,7 +680,7 @@
 
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <views:ProjectItemDetailsView Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollContentPresenter}},
+                                 <views:ProjectItemDetailsView Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollContentPresenter}},
                                                                   Path=ActualWidth,
                                                                   Converter={StaticResource SubtractConstantConverter},
                                                                   ConverterParameter=6}"

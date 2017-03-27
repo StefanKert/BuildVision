@@ -13,8 +13,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
     public static class BuildImages
     {
-        private const string BuildActionResourcesUri = @"Tool/Views/BuildAction.Resources.xaml";
-        private const string BuildStateResourcesUri = @"Tool/Views/BuildState.Resources.xaml";
+        private const string BuildActionResourcesUri = @"Tool/Views/Resources/BuildAction.Resources.xaml";
+        private const string BuildStateResourcesUri = @"Tool/Views/Resources/BuildState.Resources.xaml";
 
         public static ControlTemplate GetBuildBeginImage(BuildInfo buildInfo)
         {

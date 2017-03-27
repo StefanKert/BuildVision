@@ -15,7 +15,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
         private bool _isUpdateError;
         private string _lastErrorMessage;
 
-        public const string ResourcesUri = @"Tool/Views/ValueIndicator.Resources.xaml";
+        public const string ResourcesUri = @"Tool/Views/Resources/ValueIndicator.Resources.xaml";
 
         public abstract string Header { get; }
 

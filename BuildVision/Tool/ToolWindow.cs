@@ -73,8 +73,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         private ControlView CreateMyControl()
         {
             var packageContext = (IPackageContext)Package;
-            var viewMode = new ControlViewModel(new ControlModel(), packageContext);
-            var view = new ControlView { DataContext = viewMode };
+            var viewModel = new ControlViewModel(new ControlModel(), packageContext);
+            var view = new ControlView { DataContext = viewModel };
             return view;
         }
 

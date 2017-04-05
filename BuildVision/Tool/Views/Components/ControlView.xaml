@@ -534,6 +534,12 @@
 
             <DataGrid.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="{x:Static res:Resources.SelectedProjectItemMenuItems}"
+                              ItemsSource="{Binding Source={StaticResource SelectedProjectMenuItems}}"
+                              Visibility="{Binding SelectedProjectItem,
+                                                   Converter={StaticResource NotNullToVisibilityConverter}}" />
+                    <Separator Visibility="{Binding SelectedProjectItem,
+                                                   Converter={StaticResource NotNullToVisibilityConverter}}" />
                     <MenuItem Header="{x:Static res:Resources.GridHeaderVisibleMenuItem}"
                               IsCheckable="True"
                               IsChecked="{Binding GridHeadersVisibility,
@@ -553,10 +559,8 @@
                     </MenuItem>
                     <MenuItem Header="{x:Static res:Resources.GridColumnsGroupMenuItems}" 
                               ItemsSource="{Binding GridColumnsGroupMenuItems}" />
-                    <MenuItem Header="{x:Static res:Resources.SelectedProjectItemMenuItems}"
-                              ItemsSource="{Binding Source={StaticResource SelectedProjectMenuItems}}"
-                              Visibility="{Binding SelectedProjectItem,
-                                                   Converter={StaticResource NotNullToVisibilityConverter}}" />
+                    <MenuItem Command="{Binding OpenGeneralSettingsAction}"
+                              Header="{x:Static res:Resources.OpenGeneralSettingsMenuItem}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
 

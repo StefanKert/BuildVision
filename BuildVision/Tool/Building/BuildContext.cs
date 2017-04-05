@@ -278,7 +278,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 return true;
 
             string projectFile = projectEntry.FileName;
-            if (ProjectExtensions.ProjectIsHidden(projectFile))
+            if (ProjectExtensions.IsProjectHidden(projectFile))
                 return false;
 
             IDictionary<string, string> projectProperties = projectEntry.Properties;
@@ -334,7 +334,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 case vsWindowType.vsWindowTypeDocument:
                 case vsWindowType.vsWindowTypeDesigner:
                 case vsWindowType.vsWindowTypeCodeWindow:
-                    if (gotFocus.Project != null && !gotFocus.Project.ProjectIsHidden())
+                    if (gotFocus.Project != null && !gotFocus.Project.IsHidden())
                         _activeProjectContext = gotFocus;
                     break;
 

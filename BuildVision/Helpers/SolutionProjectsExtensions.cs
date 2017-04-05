@@ -11,8 +11,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
     public static class SolutionProjectsExtensions
     {
         public static IList<Project> GetProjects(this Solution solution)
-        {
-            var withHiddenProjects = false;
+        {            
             var list = new List<Project>();
             foreach(var proj in solution.Projects)
             {
@@ -22,7 +21,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
 
                 if (project.Kind == ProjectKinds.vsProjectKindSolutionFolder)
                     list.AddRange(project.GetSubProjects());
-                else if (withHiddenProjects || !project.ProjectIsHidden())
+                else if (!project.IsHidden())
                     list.Add(project);
             }
             return list;
@@ -30,7 +29,6 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
 
         public static Project GetProject(this Solution solution, Func<Project, bool> cond)
         {
-            var withHiddenProjects = false;
             Projects projects = solution.Projects;
             var item = projects.GetEnumerator();
             while (item.MoveNext())
@@ -45,7 +43,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
                     if (sub != null)
                         return sub;
                 }
-                else if (withHiddenProjects || !project.ProjectIsHidden())
+                else if (!project.IsHidden())
                 {
                     if (cond(project))
                         return project;

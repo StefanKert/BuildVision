@@ -692,10 +692,8 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
             }
         }
 
-
         public static Project GetSubProject(this Project solutionFolder, Func<Project, bool> cond)
         {
-            var withHiddenProjects = false;
             for (int i = 1; i <= solutionFolder.ProjectItems.Count; i++)
             {
                 Project subProject = solutionFolder.ProjectItems.Item(i).SubProject;
@@ -709,7 +707,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
                     if (sub != null)
                         return sub;
                 }
-                else if (withHiddenProjects || !ProjectIsHidden(subProject))
+                else if (!IsHidden(subProject))
                 {
                     if (cond(subProject))
                         return subProject;
@@ -721,7 +719,6 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
 
         public static IEnumerable<Project> GetSubProjects(this Project solutionFolder)
         {
-            var withHiddenProjects = false;
             var list = new List<Project>();
             for (int i = 1; i <= solutionFolder.ProjectItems.Count; i++)
             {
@@ -732,14 +729,14 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
                 // If this is another solution folder, do a recursive call, otherwise add
                 if (subProject.Kind == ProjectKinds.vsProjectKindSolutionFolder)
                     list.AddRange(GetSubProjects(subProject));
-                else if (withHiddenProjects || !ProjectIsHidden(subProject))
+                else if (!subProject.IsHidden())
                     list.Add(subProject);
             }
 
             return list;
         }
 
-        public static bool ProjectIsHidden(this Project project)
+        public static bool IsHidden(this Project project)
         {
             try
             {
@@ -765,7 +762,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
             }
         }
 
-        public static bool ProjectIsHidden(string projectFileName)
+        public static bool IsProjectHidden(string projectFileName)
         {
             try
             {

@@ -186,6 +186,7 @@
     <Compile Include="Core\BuildVisionPackage.Package.cs" />
     <Compile Include="Helpers\DisplayStringAttribute.cs" />
     <Compile Include="Helpers\EnumExtensions.cs" />
+    <Compile Include="Helpers\PropertiesExtensions.cs" />
     <Compile Include="Tool\Building\FindProjectProperty.cs" />
     <Compile Include="Tool\Building\FullNameProjectDefinition.cs" />
     <Compile Include="Tool\Building\RegisterLoggerResult.cs" />

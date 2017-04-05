@@ -278,7 +278,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 return true;
 
             string projectFile = projectEntry.FileName;
-            if (SolutionProjectsExtensions.ProjectIsHidden(projectFile))
+            if (ProjectExtensions.ProjectIsHidden(projectFile))
                 return false;
 
             IDictionary<string, string> projectProperties = projectEntry.Properties;

@@ -524,7 +524,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
         /// </summary>
         /// <param name="project">The project - owner of the Error Item.</param>
         /// <param name="errorItem">The Error Item.</param>
-        public static bool NavigateToErrorItem(this Project project, ErrorItem errorItem)
+        public static bool NavigateToErrorItem(this Project project, Tool.Building.ErrorItem errorItem)
         {
             try
             {

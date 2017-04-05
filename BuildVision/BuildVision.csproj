@@ -202,7 +202,6 @@
     <Compile Include="Tool\Models\Settings\Columns\BaseGridColumnSettings.cs" />
     <Compile Include="Tool\Models\Settings\Columns\GridColumnAttribute.cs" />
     <Compile Include="Tool\Models\Settings\GeneralSettings.cs" />
-    <Compile Include="Tool\PropertyNotFoundException.cs" />
     <Compile Include="Tool\Models\Settings\Sorting\SortOrder.cs" />
     <Compile Include="Tool\Models\Settings\WindowSettings.cs" />
     <Compile Include="Tool\Views\Settings\BuildMessagesSettingsDialogPage.cs">
@@ -498,6 +497,10 @@
     <ProjectReference Include="..\BuildVision.Common\BuildVision.Common.csproj">
       <Project>{848412d1-95bf-4e56-a9ef-2926af5c6d67}</Project>
       <Name>BuildVision.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildVision.Contracts\BuildVision.Contracts.csproj">
+      <Project>{13d64a57-5db3-4cc7-ac2b-9034e767d754}</Project>
+      <Name>BuildVision.Contracts</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

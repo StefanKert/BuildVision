@@ -169,7 +169,10 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
                     if (property == null || property.Value == null)
                         return Resources.GridCellNoneText;
 
-                    var outputType = (prjOutputType)property.Value;
+                    if (!Enum.TryParse(property.Value.ToString(), out prjOutputType outputType))
+                    {
+                        return property.Value.ToString();
+                    }
                     switch (outputType)
                     {
                         case prjOutputType.prjOutputTypeWinExe:

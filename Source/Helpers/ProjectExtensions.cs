@@ -23,6 +23,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
                 {"{F184B08F-C81C-45F6-A57F-5ABD9991F28F}", "Windows"}, // VB.NET
                 {"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}", "Windows"}, // C++
                 {"{F2A71F9B-5D33-465A-A702-920D77279786}", "Windows"}, // F#
+                {"{9A19103F-16F7-4668-BE54-9A1E7A4F7556}", "Windows"},
                 {"{349C5851-65DF-11DA-9384-00065B846F21}", "Web Application"},
                 {"{E24C65DC-7377-472B-9ABA-BC803B73C61A}", "Web Site"},
                 {"{603c0e0b-db56-11dc-be95-000d561079b0}", "ASP.NET MVC1"},

@@ -319,10 +319,15 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
             IVsHierarchy hierarchy;
             int result = solution.GetProjectOfUniqueName(proj.UniqueName, out hierarchy);
 
+            if (!string.IsNullOrEmpty(proj.Kind))
+            {
+                return proj.Kind;
+            }
+
             if (result == 0)
             {
-                var aggregatableProject = (IVsAggregatableProject)hierarchy;
-                result = aggregatableProject.GetAggregateProjectTypeGuids(out projectTypeGuids);
+                var aggregatableProject = hierarchy as IVsAggregatableProject;
+                result = aggregatableProject?.GetAggregateProjectTypeGuids(out projectTypeGuids) ?? -1;
             }
 
             return projectTypeGuids;

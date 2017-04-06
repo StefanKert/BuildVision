@@ -16,11 +16,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         FullName,
 
         /// <summary>
-        /// By <see cref="EnvDTE.Project"/> instance reference.
-        /// </summary>
-        ProjectObject,
-
-        /// <summary>
         /// By UniqueName, Configuration, Platform properties (<see cref="Building.UniqueNameProjectDefinition"/>).
         /// </summary>
         UniqueNameProjectDefinition,

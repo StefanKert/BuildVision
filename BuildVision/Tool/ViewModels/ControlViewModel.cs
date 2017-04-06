@@ -492,10 +492,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                     found = projList.Find(item => item.FullName == fullName);
                     break;
 
-                case FindProjectProperty.ProjectObject:
-                    found = projList.Find(item => ReferenceEquals(item.StorageProject, property));
-                    break;
-
                 case FindProjectProperty.UniqueNameProjectDefinition:
                     {
                         var projDef = (UniqueNameProjectDefinition)property;
@@ -532,10 +528,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                 case FindProjectProperty.FullName:
                     var fullName = (string)property;
                     proj = SolutionItem.StorageSolution.GetProject(item => item.FullName == fullName);
-                    break;
-
-                case FindProjectProperty.ProjectObject:
-                    proj = SolutionItem.StorageSolution.GetProject(item => ReferenceEquals(item, property));
                     break;
 
                 case FindProjectProperty.UniqueNameProjectDefinition:

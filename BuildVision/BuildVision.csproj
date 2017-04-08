@@ -195,8 +195,7 @@
     <Compile Include="Tool\DataGrid\DataGridContentControlColumn.cs" />
     <Compile Include="Tool\Models\AssociatedProjectStateVectorIconAttribute.cs" />
     <Compile Include="Tool\Models\AssociatedTemplateAttribute.cs" />
-    <Compile Include="Tool\Models\ColumnsOrder.cs" />
-    <Compile Include="Tool\Models\ObservableRangeCollection.cs" />
+    <Compile Include="Tool\Models\ProjectState.cs" />
     <Compile Include="Tool\Models\ProjectStateAttribute.cs" />
     <Compile Include="Tool\Models\ProjectStateExtensions.cs" />
     <Compile Include="Tool\Models\Settings\Columns\BaseGridColumnSettings.cs" />
@@ -204,6 +203,8 @@
     <Compile Include="Tool\Models\Settings\GeneralSettings.cs" />
     <Compile Include="Tool\Models\Settings\Sorting\SortOrder.cs" />
     <Compile Include="Tool\Models\Settings\WindowSettings.cs" />
+    <Compile Include="Tool\Models\ViewModelHelper.cs" />
+    <Compile Include="Tool\Models\VisualStudioProject.cs" />
     <Compile Include="Tool\Views\Settings\BuildMessagesSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -288,7 +289,6 @@
     <Compile Include="Tool\Models\ControlModel.cs" />
     <Compile Include="Tool\Models\Settings\ControlSettings.cs" />
     <Compile Include="Tool\Models\ProjectItem.cs" />
-    <Compile Include="Tool\Models\ProjectState.cs" />
     <Compile Include="Tool\Tool.cs" />
     <Compile Include="Tool\Models\Settings\ToolWindow\WindowState.cs" />
     <Compile Include="Tool\Models\Settings\ToolWindow\WindowStateAction.cs" />

@@ -262,7 +262,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 }
 
                 BuildedProject buildedProject = _buildedProjects[projectItem];
-                buildedProject.ErrorsBox.Keep(errorLevel, e);
+                buildedProject.ErrorsBox.Keep(errorLevel, e, _packageContext.GetDTE().Solution.GetProject(x => x.UniqueName == projectItem.UniqueName));
                 OnErrorRaised(this, new BuildErrorRaisedEventArgs(errorLevel, buildedProject));
             }
             catch (Exception ex)

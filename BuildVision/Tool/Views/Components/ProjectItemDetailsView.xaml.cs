@@ -43,14 +43,9 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views
         {
             try
             {
-                var proj = ProjectItem.StorageProject;
-                if (proj == null)
-                    return;
-
                 var row = (DataGridRow)sender;
                 var errorItem = (ErrorItem)row.Item;
-                proj.NavigateToErrorItem(errorItem);
-
+                errorItem.Project.NavigateToErrorItem(errorItem);
                 e.Handled = true;
             }
             catch (Exception ex)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using Microsoft.Build.Framework;
+using EnvDTE;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
@@ -47,7 +48,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             get { return _errors; }
         }
 
-        public void Keep(ErrorLevel errorLevel, BuildEventArgs e)
+        public void Keep(ErrorLevel errorLevel, BuildEventArgs e, Project project)
         {
             switch (errorLevel)
             {
@@ -68,7 +69,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 return;
 
             int errorNumber = _errors.Count + _warnings.Count + _messages.Count + 1;
-            var errorItem = new ErrorItem(errorNumber, errorLevel, e);
+            var errorItem = new ErrorItem(errorNumber, errorLevel, e, project);
 
             switch (errorLevel)
             {

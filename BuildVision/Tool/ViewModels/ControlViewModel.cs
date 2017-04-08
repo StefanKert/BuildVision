@@ -80,7 +80,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         public ControlTemplate ImageCurrentState
         {
-            get 
+            get
             {
                 return Model.ImageCurrentState;
             }
@@ -215,8 +215,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                     string header = column.Header;
                     var menuItem = new MenuItem
                     {
-                        Header = !string.IsNullOrEmpty(header) 
-                                    ? header 
+                        Header = !string.IsNullOrEmpty(header)
+                                    ? header
                                     : ColumnsManager.GetInitialColumnHeader(column),
                         Tag = column.PropertyNameId
                     };
@@ -241,7 +241,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
         {
             get
             {
-                return new RelayCommand(obj => 
+                return new RelayCommand(obj =>
                 {
                     GridGroupPropertyName = (obj != null) ? obj.ToString() : string.Empty;
                 });
@@ -300,28 +300,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
         }
 
         #endregion //Grid sorting
-
-        public ICommand OpenGridColumnsSettingsAction
-        {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    _packageContext.ShowOptionPage(typeof(GridSettingsDialogPage));
-                });
-            }
-        }
-
-        public ICommand OpenGeneralSettingsAction
-        {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    _packageContext.ShowOptionPage(typeof(GeneralSettingsDialogPage));
-                });
-            }
-        }
 
         // Should be initialized by View.
         public ObservableCollection<DataGridColumn> GridColumnsRef
@@ -476,7 +454,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             BuildProgressViewModel.OnBuildCancelled();
         }
 
-        public ProjectItem FindProjectItem(object property, FindProjectProperty findProjectProperty, bool createIfNotFound = true)
+        public ProjectItem FindProjectItem(object property, FindProjectProperty findProjectProperty)
         {
             ProjectItem found;
             List<ProjectItem> projList = ProjectsList.ToList();
@@ -484,18 +462,18 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             {
                 case FindProjectProperty.UniqueName:
                     var uniqueName = (string)property;
-                    found = projList.Find(item => item.UniqueName == uniqueName);
+                    found = projList.FirstOrDefault(item => item.UniqueName == uniqueName);
                     break;
 
                 case FindProjectProperty.FullName:
                     var fullName = (string)property;
-                    found = projList.Find(item => item.FullName == fullName);
+                    found = projList.FirstOrDefault(item => item.FullName == fullName);
                     break;
 
                 case FindProjectProperty.UniqueNameProjectDefinition:
                     {
                         var projDef = (UniqueNameProjectDefinition)property;
-                        found = projList.Find(item => item.UniqueName == projDef.UniqueName
+                        found = projList.FirstOrDefault(item => item.UniqueName == projDef.UniqueName
                                                       && item.Configuration == projDef.Configuration
                                                       && PlatformsIsEquals(item.Platform, projDef.Platform));
                     }
@@ -504,7 +482,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                 case FindProjectProperty.FullNameProjectDefinition:
                     {
                         var projDef = (FullNameProjectDefinition)property;
-                        found = projList.Find(item => item.FullName == projDef.FullName
+                        found = projList.FirstOrDefault(item => item.FullName == projDef.FullName
                                                       && item.Configuration == projDef.Configuration
                                                       && PlatformsIsEquals(item.Platform, projDef.Platform));
                     }
@@ -513,7 +491,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                 default:
                     throw new ArgumentOutOfRangeException("findProjectProperty");
             }
-
             if (found != null)
                 return found;
 
@@ -555,7 +532,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             if (proj == null)
                 return null;
 
-            var newProjItem = new ProjectItem(proj);
+            var newProjItem = new ProjectItem();
+            ViewModelHelper.UpdateProperties(proj, newProjItem);
             ProjectsList.Add(newProjItem);
             return newProjItem;
         }
@@ -578,11 +556,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         public DataGridHeadersVisibility GridHeadersVisibility
         {
-            get 
-            { 
-                return _settings.GridSettings.ShowColumnsHeader 
-                    ? DataGridHeadersVisibility.Column 
-                    : DataGridHeadersVisibility.None; 
+            get
+            {
+                return _settings.GridSettings.ShowColumnsHeader
+                    ? DataGridHeadersVisibility.Column
+                    : DataGridHeadersVisibility.None;
             }
             set
             {
@@ -596,7 +574,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
         }
 
         private ProjectItem _selectedProjectItem;
-        public ProjectItem SelectedProjectItem 
+        public ProjectItem SelectedProjectItem
         {
             get { return _selectedProjectItem; }
             set
@@ -609,310 +587,71 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             }
         }
 
-        public ICommand SelectedProjectOpenContainingFolderAction
+        private void OpenContainingFolder()
         {
-            get
+            try
             {
-                return new RelayCommand(obj =>
-                {
-                    try
-                    {
-                        string dir = Path.GetDirectoryName(SelectedProjectItem.FullName);
-                        Debug.Assert(dir != null);
-                        Process.Start(dir);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.Trace(string.Format(
-                            "Unable to open folder '{0}' containing the project '{1}'.", 
-                            SelectedProjectItem.FullName, 
-                            SelectedProjectItem.UniqueName));
+                string dir = Path.GetDirectoryName(SelectedProjectItem.FullName);
+                Debug.Assert(dir != null);
+                Process.Start(dir);
+            }
+            catch (Exception ex)
+            {
+                ex.Trace(string.Format(
+                    "Unable to open folder '{0}' containing the project '{1}'.",
+                    SelectedProjectItem.FullName,
+                    SelectedProjectItem.UniqueName));
 
-                        MessageBox.Show(
-                            ex.Message + "\n\nSee log for details.", 
-                            Resources.ProductName, 
-                            MessageBoxButton.OK, 
-                            MessageBoxImage.Error);
-                    }
-                },
-                canExecute: obj =>
-                {
-                    return (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.FullName));
-                });
+                MessageBox.Show(
+                    ex.Message + "\n\nSee log for details.",
+                    Resources.ProductName,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
         }
 
-        public ICommand SelectedProjectCopyBuildOutputFilesToClipboardAction
+        public ICommand SelectedProjectOpenContainingFolderAction => new RelayCommand(obj => OpenContainingFolder(),
+                canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.FullName)));
+    
+        public ICommand SelectedProjectCopyBuildOutputFilesToClipboardAction => new RelayCommand(
+            obj => ProjectCopyBuildOutputFilesToClipBoard(SelectedProjectItem),
+            canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard.IsEmpty));
+
+        public ICommand SelectedProjectBuildAction => new RelayCommand(
+            obj => RaiseCommandForSelectedProject(SolutionItem, SelectedProjectItem, (int)VSConstants.VSStd97CmdID.BuildCtx),
+            canExecute: obj => IsProjectItemEnabledForActions());
+
+
+        public ICommand SelectedProjectRebuildAction => new RelayCommand(
+            obj => RaiseCommandForSelectedProject(SolutionItem, SelectedProjectItem, (int)VSConstants.VSStd97CmdID.RebuildCtx),
+            canExecute: obj => IsProjectItemEnabledForActions());
+
+        public ICommand SelectedProjectCleanAction => new RelayCommand(
+            obj => RaiseCommandForSelectedProject(SolutionItem, SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx),
+            canExecute: obj => IsProjectItemEnabledForActions());
+
+        private bool IsProjectItemEnabledForActions()
         {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    try
-                    {
-                        ProjectItem projItem = SelectedProjectItem;
-                        Project project = projItem.StorageProject;
-                        BuildOutputFileTypes fileTypes = ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard;
-                        if (fileTypes.IsEmpty)
-                        {
-                            MessageBox.Show(
-                                @"Nothing to copy: all file types unchecked.", 
-                                Resources.ProductName,
-                                MessageBoxButton.OK, 
-                                MessageBoxImage.Error);
-                            return;
-                        }
-
-                        string[] filePaths = project.GetBuildOutputFilePaths(fileTypes, projItem.Configuration, projItem.Platform).ToArray();
-                        if (filePaths.Length == 0)
-                        {
-                            MessageBox.Show(
-                                @"Nothing copied: selected build output groups are empty.",
-                                Resources.ProductName,
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Information);
-                            return;
-                        }
-
-                        string[] existFilePaths = filePaths.Where(File.Exists).ToArray();
-                        if (existFilePaths.Length == 0)
-                        {
-                            string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Nothing copied. {0} wasn't found{1}", filePaths);
-                            MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
-                            return;
-                        }
-
-                        ClipboardHelper.SetFileDropList(existFilePaths);
-
-                        if (existFilePaths.Length == filePaths.Length)
-                        {
-                            string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
-                            MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
-                        }
-                        else
-                        {
-                            string[] notExistFilePaths = filePaths.Except(existFilePaths).ToArray();
-                            string copiedMsg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
-                            string notFoundMsg = GetCopyBuildOutputFilesToClipboardActionMessage("{0} wasn't found{1}", notExistFilePaths);
-                            string msg = string.Concat(copiedMsg, Environment.NewLine, Environment.NewLine, notFoundMsg);
-                            MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
-                        }
-                    }
-                    catch (Win32Exception ex)
-                    {
-                        string msg = string.Format(
-                            "Error copying files to the Clipboard: 0x{0:X} ({1})", 
-                            ex.ErrorCode, 
-                            ex.Message);
-
-                        ex.Trace(msg);
-                        MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.TraceUnknownException();
-                        MessageBox.Show(ex.Message, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
-                    }
-                },
-                canExecute: obj =>
-                {
-                    return (SelectedProjectItem != null 
-                        && SelectedProjectItem.StorageProject != null 
-                        && !ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard.IsEmpty);
-                });
-            }
+            return (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !SelectedProjectItem.IsBatchBuildProject);
         }
 
-        private string GetCopyBuildOutputFilesToClipboardActionMessage(string template, string[] filePaths)
-        {
-            const int MaxFilePathLinesInMessage = 30;
-            const int MaxFilePathLengthInMessage = 60;
+        public ICommand BuildSolutionAction => new RelayCommand(obj => BuildSolution());
 
-            string filesCountArg = string.Concat(filePaths.Length, " file", filePaths.Length == 1 ? string.Empty : "s");
-            string filesListArg;
-            if (filePaths.Length < MaxFilePathLinesInMessage)
-            {
-                IEnumerable<string> shortenedFilePaths = FilePathHelper.ShortenPaths(filePaths, MaxFilePathLengthInMessage);
-                filesListArg = string.Concat(":", Environment.NewLine, string.Join(Environment.NewLine, shortenedFilePaths));
-            }
-            else
-            {
-                filesListArg = ".";
-            }
+        public ICommand RebuildSolutionAction => new RelayCommand(obj => RebuildSolution());
 
-            string msg = string.Format(template, filesCountArg, filesListArg);
-            return msg;
-        }
+        public ICommand CleanSolutionAction => new RelayCommand(obj => CleanSolution());
 
-        public ICommand SelectedProjectBuildAction
-        {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    try
-                    {
-                        RaiseCommandForSelectedProject((int)VSConstants.VSStd97CmdID.BuildCtx);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.TraceUnknownException();
-                    }
-                },
-                canExecute: obj =>
-                {
-                    return (SelectedProjectItem != null && SelectedProjectItem.StorageProject != null
-                            && SolutionItem != null && SolutionItem.StorageSolution != null && !SelectedProjectItem.IsBatchBuildProject);
-                });
-            }
-        }
+        public ICommand CancelBuildSolutionAction => new RelayCommand(obj => CancelBuildSolution());
 
-        public ICommand SelectedProjectRebuildAction
-        {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    try
-                    {
-                        RaiseCommandForSelectedProject((int)VSConstants.VSStd97CmdID.RebuildCtx);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.TraceUnknownException();
-                    }
-                },
-                canExecute: obj =>
-                {
-                    return (SelectedProjectItem != null && SelectedProjectItem.StorageProject != null && !SelectedProjectItem.IsBatchBuildProject);
-                });
-            }
-        }
+        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => _packageContext.ShowOptionPage(typeof(GridSettingsDialogPage)));
 
-        public ICommand SelectedProjectCleanAction
-        {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    try
-                    {
-                        RaiseCommandForSelectedProject((int)VSConstants.VSStd97CmdID.CleanCtx);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.TraceUnknownException();
-                    }
-                },
-                canExecute: obj =>
-                {
-                    return (SelectedProjectItem != null && SelectedProjectItem.StorageProject != null && !SelectedProjectItem.IsBatchBuildProject);
-                });
-            }
-        }
+        public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => _packageContext.ShowOptionPage(typeof(GeneralSettingsDialogPage)));
 
-        private void RaiseCommandForSelectedProject(int commandId)
-        {
-            var dte2 = (EnvDTE80.DTE2)SolutionItem.StorageSolution.DTE;
-            UIHierarchy solutionExplorer = dte2.ToolWindows.SolutionExplorer;
-            UIHierarchyItem item = solutionExplorer.FindHierarchyItem(SelectedProjectItem.StorageProject);
-            if (item == null)
-                throw new Exception(string.Format("Project '{0}' not found in SolutionExplorer.", SelectedProjectItem.StorageProject.UniqueName));
-
-            solutionExplorer.Parent.Activate();
-            item.Select(vsUISelectionType.vsUISelectionTypeSelect);
-
-            object customIn = null;
-            object customOut = null;
-            dte2.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), commandId, ref customIn, ref customOut);
-        }
-
-        public ICommand BuildSolutionAction
-        {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    try
-                    {
-                        object customIn = null;
-                        object customOut = null;
-                        const int CommandId = (int)VSConstants.VSStd97CmdID.BuildSln;
-                        var dte2 = (EnvDTE80.DTE2)SolutionItem.StorageSolution.DTE;
-                        dte2.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.TraceUnknownException();
-                    }
-                });
-            }
-        }
-
-        public ICommand RebuildSolutionAction
-        {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    try
-                    {
-                        object customIn = null;
-                        object customOut = null;
-                        const int CommandId = (int)VSConstants.VSStd97CmdID.RebuildSln;
-                        var dte2 = (EnvDTE80.DTE2)SolutionItem.StorageSolution.DTE;
-                        dte2.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.TraceUnknownException();
-                    }
-                });
-            }
-        }
-
-        public ICommand CleanSolutionAction
-        {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    try
-                    {
-                        object customIn = null;
-                        object customOut = null;
-                        const int CommandId = (int)VSConstants.VSStd97CmdID.CleanSln;
-                        var dte2 = (EnvDTE80.DTE2)SolutionItem.StorageSolution.DTE;
-                        dte2.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.TraceUnknownException();
-                    }
-                });
-            }
-        }
-
-        public ICommand CancelBuildSolutionAction
-        {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    try
-                    {
-                        object customIn = null;
-                        object customOut = null;
-                        const int CommandId = (int)VSConstants.VSStd97CmdID.CancelBuild;
-                        var dte2 = (EnvDTE80.DTE2)SolutionItem.StorageSolution.DTE;
-                        dte2.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.TraceUnknownException();
-                    }
-                });
-            }
-        }
+        public event Action BuildSolution;
+        public event Action CleanSolution;
+        public event Action RebuildSolution;
+        public event Action CancelBuildSolution;
+        public event Action<ProjectItem> ProjectCopyBuildOutputFilesToClipBoard;
+        public event Action<SolutionItem, ProjectItem, int> RaiseCommandForSelectedProject;
     }
 }

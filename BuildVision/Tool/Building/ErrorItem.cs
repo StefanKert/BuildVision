@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using Microsoft.Build.Framework;
+using EnvDTE;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
@@ -99,8 +100,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             get { return _message; }
         }
 
-        public ErrorItem(int? errorNumber, ErrorLevel errorLevel, BuildEventArgs args)
+        public Project Project { get; set; }
+
+        public ErrorItem(int? errorNumber, ErrorLevel errorLevel, BuildEventArgs args, Project project)
         {
+            Project = project;
             _number = errorNumber;
             _level = errorLevel;
             switch (errorLevel)

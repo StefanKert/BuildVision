@@ -142,7 +142,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
             {
                 try
                 {
-                    var projectItem = new ProjectItem(project);
+                    var projectItem = new ProjectItem();
+                    ViewModelHelper.UpdateProperties(project, projectItem);
                     projectItems.Add(projectItem);
                 }
                 catch (Exception ex)

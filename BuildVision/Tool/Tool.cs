@@ -19,6 +19,11 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using WindowState = AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.ToolWindow.WindowState;
+using Microsoft.VisualStudio;
+using System.Windows;
+using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
+using System.ComponentModel;
+using System.IO;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool
 {
@@ -34,6 +39,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
 
         private bool _buildErrorIsNavigated;
         private string _origTextCurrentState;
+        private IPackageContext _packageContext;
 
         public Tool(
             IPackageContext packageContext,
@@ -41,6 +47,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             IBuildDistributor buildDistributor, 
             ControlViewModel viewModel)
         {
+            _packageContext = packageContext;
             _dte = packageContext.GetDTE();
             if (_dte == null)
                 throw new InvalidOperationException("Unable to get DTE instance.");
@@ -92,7 +99,189 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                                             _viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
                                         };
 
+
+            _viewModel.CancelBuildSolution += CancelBuildSolution;
+            _viewModel.CleanSolution += CleanSolution;
+            _viewModel.RebuildSolution += RebuildSolution;
+            _viewModel.BuildSolution += BuildSolution;
+            _viewModel.RaiseCommandForSelectedProject += RaiseCommandForSelectedProject;
+            _viewModel.ProjectCopyBuildOutputFilesToClipBoard += ProjectCopyBuildOutputFilesToClipBoard;
             UpdateSolutionItem();
+        }
+
+        private void RaiseCommandForSelectedProject(SolutionItem solutionItem, ProjectItem selectedProjectItem, int commandId)
+        {
+            try
+            {
+                var dte2 = (EnvDTE80.DTE2)solutionItem.StorageSolution.DTE;
+                UIHierarchy solutionExplorer = dte2.ToolWindows.SolutionExplorer;
+                var project = _dte.Solution.GetProject(x => x.UniqueName == selectedProjectItem.UniqueName);
+                UIHierarchyItem item = solutionExplorer.FindHierarchyItem(project);
+                if (item == null)
+                    throw new Exception(string.Format("Project '{0}' not found in SolutionExplorer.", selectedProjectItem.UniqueName));
+
+                solutionExplorer.Parent.Activate();
+                item.Select(vsUISelectionType.vsUISelectionTypeSelect);
+
+                object customIn = null;
+                object customOut = null;
+                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), commandId, ref customIn, ref customOut);
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
+        private void ProjectCopyBuildOutputFilesToClipBoard(ProjectItem projItem)
+        {
+            try
+            {
+                Project project = _dte.Solution.GetProject(x => x.UniqueName == projItem.UniqueName);
+                BuildOutputFileTypes fileTypes = _packageContext.ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard;
+                if (fileTypes.IsEmpty)
+                {
+                    MessageBox.Show(
+                        @"Nothing to copy: all file types unchecked.",
+                        Resources.ProductName,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return;
+                }
+
+                string[] filePaths = project.GetBuildOutputFilePaths(fileTypes, projItem.Configuration, projItem.Platform).ToArray();
+                if (filePaths.Length == 0)
+                {
+                    MessageBox.Show(
+                        @"Nothing copied: selected build output groups are empty.",
+                        Resources.ProductName,
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Information);
+                    return;
+                }
+
+                string[] existFilePaths = filePaths.Where(File.Exists).ToArray();
+                if (existFilePaths.Length == 0)
+                {
+                    string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Nothing copied. {0} wasn't found{1}", filePaths);
+                    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                ClipboardHelper.SetFileDropList(existFilePaths);
+
+                if (existFilePaths.Length == filePaths.Length)
+                {
+                    string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
+                    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    string[] notExistFilePaths = filePaths.Except(existFilePaths).ToArray();
+                    string copiedMsg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
+                    string notFoundMsg = GetCopyBuildOutputFilesToClipboardActionMessage("{0} wasn't found{1}", notExistFilePaths);
+                    string msg = string.Concat(copiedMsg, Environment.NewLine, Environment.NewLine, notFoundMsg);
+                    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
+            }
+            catch (Win32Exception ex)
+            {
+                string msg = string.Format(
+                    "Error copying files to the Clipboard: 0x{0:X} ({1})",
+                    ex.ErrorCode,
+                    ex.Message);
+
+                ex.Trace(msg);
+                MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+                MessageBox.Show(ex.Message, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private string GetCopyBuildOutputFilesToClipboardActionMessage(string template, string[] filePaths)
+        {
+            const int MaxFilePathLinesInMessage = 30;
+            const int MaxFilePathLengthInMessage = 60;
+
+            string filesCountArg = string.Concat(filePaths.Length, " file", filePaths.Length == 1 ? string.Empty : "s");
+            string filesListArg;
+            if (filePaths.Length < MaxFilePathLinesInMessage)
+            {
+                IEnumerable<string> shortenedFilePaths = FilePathHelper.ShortenPaths(filePaths, MaxFilePathLengthInMessage);
+                filesListArg = string.Concat(":", Environment.NewLine, string.Join(Environment.NewLine, shortenedFilePaths));
+            }
+            else
+            {
+                filesListArg = ".";
+            }
+
+            string msg = string.Format(template, filesCountArg, filesListArg);
+            return msg;
+        }
+
+        private void BuildSolution()
+        {
+            try
+            {
+                object customIn = null;
+                object customOut = null;
+                const int CommandId = (int)VSConstants.VSStd97CmdID.BuildSln;
+                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
+
+        private void RebuildSolution()
+        {
+            try
+            {
+                object customIn = null;
+                object customOut = null;
+                const int CommandId = (int)VSConstants.VSStd97CmdID.RebuildSln;
+                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
+
+        private void CleanSolution()
+        {
+            try
+            {
+                object customIn = null;
+                object customOut = null;
+                const int CommandId = (int)VSConstants.VSStd97CmdID.CleanSln;
+                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
+        private void CancelBuildSolution()
+        {
+            try
+            {
+                object customIn = null;
+                object customOut = null;
+                const int CommandId = (int)VSConstants.VSStd97CmdID.CancelBuild;
+                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
         }
 
         private void UpdateSolutionItem()
@@ -326,11 +515,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
 
             try
             {
-                var projectItem = _viewModel.FindProjectItem(errorItem.ProjectFile, FindProjectProperty.FullName);
+                var projectItem = _viewModel.ProjectsList.FirstOrDefault(x => x.FullName == errorItem.ProjectFile);
                 if (projectItem == null)
                     return false;
 
-                var project = projectItem.StorageProject;
+
+                var project = _dte.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName);
                 if (project == null)
                     return false;
 

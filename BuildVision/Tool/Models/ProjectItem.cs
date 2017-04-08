@@ -1,32 +1,14 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Windows.Controls;
-
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
 using AlekseyNagovitsyn.BuildVision.Helpers;
 using AlekseyNagovitsyn.BuildVision.Tool.Building;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
 using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
 
-using EnvDTE;
-
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 {
-
-    public class VisualStudioProject
-    {
-        public string UniqueName { get; set; }
-        public string Name { get; set; }
-        public string FullName { get; set; }
-        public string FullPath { get; set; }
-        public string Language { get; set; }
-        public string CommonType { get; set; }
-        public string Configuration { get; set; }
-        public string Platform { get; set; }
-    }
 
     [DataContract]
     public class ProjectItem : NotifyPropertyChangedBase
@@ -35,18 +17,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 
         public ProjectItem()
         {
-        }
-
-        public ProjectItem(Project project)
-        {
-            StorageProject = project;
-            UpdateProperties();
             State = ProjectState.Pending;
         }
 
-        public Project StorageProject { get; private set; }
-        
         public bool IsBatchBuildProject { get; set; }
+
+        #region Properties
 
         [DataMember(Name = "UniqueName")]
         private string _uniqueName;
@@ -436,6 +412,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
             }
         }
 
+        #endregion
+
         public ProjectItem GetBatchBuildCopy(string configuration, string platform)
         {
             var pi = this.Clone();
@@ -443,7 +421,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
             pi.Platform = platform;
             pi.ErrorsBox = new ErrorsBox();
             pi.IsBatchBuildProject = true;
-            pi.StorageProject = StorageProject;
             return pi;
         }
 
@@ -456,116 +433,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         public void RaiseBuildElapsedTimeChanged()
         {
             OnPropertyChanged("BuildElapsedTime");
-        }
-
-        private void UpdateProperties()
-        {
-            Project project = StorageProject;
-            if (project != null)
-            {
-                object projObject;
-                try
-                {
-                    projObject = project.Object;
-                }
-                catch (Exception ex)
-                {
-                    ex.TraceUnknownException();
-                    projObject = null;
-                }
-
-                try
-                {
-                    if (projObject == null)
-                    {
-                        UniqueName = project.UniqueName;
-                        Name = project.Name;
-                        return;
-                    }
-
-                    UpdateNameProperties();
-                    Language = project.GetLanguageName();
-                    CommonType = ProjectExtensions.GetProjectType(project.Kind, project.DTE.Version /* "12.0" */);
-                }
-                catch (Exception ex)
-                {
-                    ex.TraceUnknownException();
-                }
-
-                #region Set ActiveConfiguration (Configuration and Platform)
-
-                Configuration config;
-                try
-                {
-                    config = project.ConfigurationManager.ActiveConfiguration;
-                }
-                catch (Exception ex)
-                {
-                    ex.TraceUnknownException();
-                    config = null;
-                }
-
-                if (config != null)
-                {
-                    Configuration = config.ConfigurationName;
-                    Platform = config.PlatformName;
-                }
-                else
-                {
-                    Configuration = @"N\A";
-                    Platform = @"N\A";
-                }
-
-                #endregion
-
-                try
-                {
-                    Framework = project.GetFrameworkString();
-
-                    var flavourTypes = project.GetFlavourTypes().ToList();
-                    FlavourType = string.Join("; ", flavourTypes);
-                    MainFlavourType = flavourTypes.FirstOrDefault();
-
-                    OutputType = project.GetOutputType();
-                    ExtenderNames = project.GetExtenderNames();
-
-                    RootNamespace = project.GetRootNamespace();
-                }
-                catch (Exception ex)
-                {
-                    ex.TraceUnknownException();
-                }
-            }
-        }
-
-        private void UpdateNameProperties()
-        {
-            try
-            {
-                Project project = StorageProject;
-
-                UniqueName = project.UniqueName;
-                Name = project.Name;
-                FullName = project.FullName;
-
-                try
-                {
-                    FullPath = string.IsNullOrWhiteSpace(_fullName) ? null : Path.GetDirectoryName(_fullName);
-                }
-                catch (SystemException ex)
-                {
-                    // PathTooLongException, ArgumentException (invalid characters).
-                    ex.TraceUnknownException();
-                    FullPath = null;
-                }
-
-                SolutionFolder = project.GetTreePath(false) ?? @"\";
-                // TODO: SolutionPath = project.GetTreePath(true);
-            }
-            catch (Exception ex)
-            {
-                ex.TraceUnknownException();
-            }
         }
     }
 }

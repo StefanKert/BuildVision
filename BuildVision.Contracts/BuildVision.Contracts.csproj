@@ -47,11 +47,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuildActions.cs" />
+    <Compile Include="BuildedSolution.cs" />
     <Compile Include="BuildScopes.cs" />
     <Compile Include="BuildState.cs" />
     <Compile Include="ColumnsOrder.cs" />
+    <Compile Include="ErrorLevel.cs" />
+    <Compile Include="FindProjectProperty.cs" />
+    <Compile Include="FullNameProjectDefinition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyNotFoundException.cs" />
+    <Compile Include="RegisterLoggerResult.cs" />
+    <Compile Include="UniqueNameProjectDefinition.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

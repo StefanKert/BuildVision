@@ -17,26 +17,9 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         private readonly List<ErrorItem> _messages = new List<ErrorItem>();
 
-        private int _errorsCount;
-
-        private int _warningsCount;
-
-        private int _messagesCount;
-
-        public int ErrorsCount
-        {
-            get { return _errorsCount; }
-        }
-
-        public int WarningsCount
-        {
-            get { return _warningsCount; }
-        }
-
-        public int MessagesCount
-        {
-            get { return _messagesCount; }
-        }
+        public int ErrorsCount { get; private set; }
+        public int WarningsCount { get; private set; }
+        public int MessagesCount { get; private set; }
 
         public bool IsEmpty
         {
@@ -53,13 +36,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             switch (errorLevel)
             {
                 case ErrorLevel.Message:
-                    _messagesCount++;
+                    MessagesCount++;
                     break;
                 case ErrorLevel.Warning:
-                    _warningsCount++;
+                    WarningsCount++;
                     break;
                 case ErrorLevel.Error:
-                    _errorsCount++;
+                    ErrorsCount++;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("errorLevel");

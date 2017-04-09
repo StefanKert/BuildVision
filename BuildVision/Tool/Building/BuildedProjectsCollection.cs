@@ -8,20 +8,9 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
     // TODO: thread-safety.
     public class BuildedProjectsCollection : List<BuildedProject>
     {
-        public int BuildSuccessCount
-        {
-            get { return this.Count(p => p.Success == true); }
-        }
-
-        public int BuildErrorCount
-        {
-            get { return this.Count(p => p.Success == false); }
-        }
-
-        public bool BuildWithoutErrors
-        {
-            get { return this.All(p => p.Success == null || p.Success == true); }
-        }
+        public int BuildSuccessCount =>  this.Count(p => p.Success == true);
+        public int BuildErrorCount => this.Count(p => p.Success == false);
+        public bool BuildWithoutErrors => this.All(p => p.Success == null || p.Success == true); 
 
         /// <summary>
         /// Get <see cref="BuildedProject"/> by <see cref="ProjectItem.UniqueName"/>. 

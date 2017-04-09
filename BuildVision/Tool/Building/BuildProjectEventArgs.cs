@@ -10,11 +10,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         public DateTime EventTime { get; private set; }
         public BuildedProject BuildedProjectInfo { get; private set; }
 
-        public BuildProjectEventArgs(
-            ProjectItem projectItem, 
-            ProjectState projectState, 
-            DateTime eventTime, 
-            BuildedProject buildedProjectInfo)
+        public BuildProjectEventArgs(ProjectItem projectItem, ProjectState projectState, DateTime eventTime, BuildedProject buildedProjectInfo)
         {
             ProjectItem = projectItem;
             ProjectState = projectState;

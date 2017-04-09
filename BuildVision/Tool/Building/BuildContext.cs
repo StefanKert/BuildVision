@@ -569,7 +569,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             }
 
             BuildedSolution = null;
-            BuildingSolution = new BuildedSolution(_packageContext.GetDTE().Solution);
+            var solution = _packageContext.GetDTE().Solution;
+            BuildingSolution = new BuildedSolution(solution.FullName, solution.FileName);
 
             OnBuildBegin(this, EventArgs.Empty);
 

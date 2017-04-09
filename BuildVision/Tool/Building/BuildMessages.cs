@@ -5,8 +5,6 @@ using System.Linq;
 using AlekseyNagovitsyn.BuildVision.Tool.Models;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages;
 
-using EnvDTE;
-
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using BuildVision.Contracts;
 
@@ -14,10 +12,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
     public static class BuildMessages
     {
-        public static string GetBuildBeginMajorMessage(
-            SolutionItem solutionItem, 
-            IBuildInfo buildInfo, 
-            BuildMessagesSettings labelsSettings)
+        public static string GetBuildBeginMajorMessage(SolutionItem solutionItem,  IBuildInfo buildInfo, BuildMessagesSettings labelsSettings)
         {
             var buildAction = buildInfo.BuildAction;
             var buildScope = buildInfo.BuildScope;

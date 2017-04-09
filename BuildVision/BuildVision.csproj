@@ -189,9 +189,6 @@
     <Compile Include="Helpers\ProjectItemExtensions.cs" />
     <Compile Include="Helpers\ProjectItemsExtensions.cs" />
     <Compile Include="Helpers\PropertiesExtensions.cs" />
-    <Compile Include="Tool\Building\FindProjectProperty.cs" />
-    <Compile Include="Tool\Building\FullNameProjectDefinition.cs" />
-    <Compile Include="Tool\Building\RegisterLoggerResult.cs" />
     <Compile Include="Tool\DataGrid\DataGridContentControlColumn.cs" />
     <Compile Include="Tool\Models\AssociatedProjectStateVectorIconAttribute.cs" />
     <Compile Include="Tool\Models\AssociatedTemplateAttribute.cs" />
@@ -231,7 +228,6 @@
     <Compile Include="Tool\Building\BuildContext.cs" />
     <Compile Include="Tool\Building\BuildedProject.cs" />
     <Compile Include="Tool\Building\BuildedProjectsCollection.cs" />
-    <Compile Include="Tool\Building\BuildedSolution.cs" />
     <Compile Include="Tool\Building\BuildErrorRaisedEventArgs.cs" />
     <Compile Include="Tool\Building\BuildInfo.cs">
       <DependentUpon>BuildContext.cs</DependentUpon>
@@ -240,12 +236,9 @@
     <Compile Include="Tool\Building\BuildProjectContextEntry.cs" />
     <Compile Include="Tool\Building\BuildProjectEventArgs.cs" />
     <Compile Include="Tool\Building\ErrorItem.cs" />
-    <Compile Include="Tool\Building\ErrorLevel.cs" />
-    <Compile Include="Tool\Building\FindProjectItemDelegate.cs" />
     <Compile Include="Tool\Building\IBuildDistributor.cs">
       <DependentUpon>BuildContext.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tool\Building\UniqueNameProjectDefinition.cs" />
     <Compile Include="Helpers\ProjectExtensions.cs" />
     <Compile Include="Core\Common\IPackageContext.cs" />
     <Compile Include="Core\Logging\TraceManager.cs" />

@@ -12,43 +12,15 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         public const string DefaultSortPropertyName = "Number";
         private readonly List<string> _invalidFileNames = new List<string> { "CSC", "MSBUILD", "LINK" };
 
-        private bool _canNavigateTo;
-        private int? _number;
-        private ErrorLevel _level;
-        private string _code;
-        private string _file;
-        private string _projectFile;
-        private int _lineNumber;
-        private int _columnNumber;
-        private int _endLineNumber;
-        private int _endColumnNumber;
-        private string _subcategory;
-        private string _message;
 
-        public bool CanNavigateTo
-        {
-            get { return _canNavigateTo; }
-        }
+        public bool CanNavigateTo { get; private set; }
+        public int? Number { get; private set; }
 
-        public int? Number
-        {
-            get { return _number; }
-        }
+        public ErrorLevel Level { get; private set; }
 
-        public ErrorLevel Level
-        {
-            get { return _level; }
-        }
+        public string Code { get; private set; }
 
-        public string Code
-        {
-            get { return _code; }
-        }
-
-        public string File
-        {
-            get { return _file; }
-        }
+        public string File { get; private set; }
 
         public string FileName
         {
@@ -56,57 +28,35 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             {
                 try
                 {
-                    return Path.GetFileName(_file);
+                    return Path.GetFileName(File);
                 }
                 catch (ArgumentException)
                 {
-                    return _file;
+                    return File;
                 }
             }
         }
 
-        public string ProjectFile
-        {
-            get { return _projectFile; }
-        }
+        public string ProjectFile { get; private set; }
 
-        public int LineNumber
-        {
-            get { return _lineNumber; }
-        }
+        public int LineNumber { get; private set; }
+        public int ColumnNumber { get; private set; }
 
-        public int ColumnNumber
-        {
-            get { return _columnNumber; }
-        }
+        public int EndLineNumber { get; private set; }
 
-        public int EndLineNumber
-        {
-            get { return _endLineNumber; }
-        }
+        public int EndColumnNumber { get; private set; }
 
-        public int EndColumnNumber
-        {
-            get { return _endColumnNumber; }
-        }
+        public string Subcategory { get; private set; }
 
-        public string Subcategory
-        {
-            get { return _subcategory; }
-        }
+        public string Message { get; private set; }
 
-        public string Message
-        {
-            get { return _message; }
-        }
-
-        public Project Project { get; set; }
+        public Project Project { get; }
 
         public ErrorItem(int? errorNumber, ErrorLevel errorLevel, BuildEventArgs args, Project project)
         {
             Project = project;
-            _number = errorNumber;
-            _level = errorLevel;
+            Number = errorNumber;
+            Level = errorLevel;
             switch (errorLevel)
             {
                 case ErrorLevel.Message:
@@ -130,41 +80,41 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         private void Init(BuildErrorEventArgs e)
         {
-            _code = e.Code;
-            _file = e.File;
-            _projectFile = e.ProjectFile;
-            _lineNumber = e.LineNumber;
-            _columnNumber = e.ColumnNumber;
-            _endLineNumber = e.EndLineNumber;
-            _endColumnNumber = e.EndColumnNumber;
-            _subcategory = e.Subcategory;
-            _message = e.Message;
+            Code = e.Code;
+            File = e.File;
+            ProjectFile = e.ProjectFile;
+            LineNumber = e.LineNumber;
+            ColumnNumber = e.ColumnNumber;
+            EndLineNumber = e.EndLineNumber;
+            EndColumnNumber = e.EndColumnNumber;
+            Subcategory = e.Subcategory;
+            Message = e.Message;
         }
 
         private void Init(BuildWarningEventArgs e)
         {
-            _code = e.Code;
-            _file = e.File;
-            _projectFile = e.ProjectFile;
-            _lineNumber = e.LineNumber;
-            _columnNumber = e.ColumnNumber;
-            _endLineNumber = e.EndLineNumber;
-            _endColumnNumber = e.EndColumnNumber;
-            _subcategory = e.Subcategory;
-            _message = e.Message;
+            Code = e.Code;
+            File = e.File;
+            ProjectFile = e.ProjectFile;
+            LineNumber = e.LineNumber;
+            ColumnNumber = e.ColumnNumber;
+            EndLineNumber = e.EndLineNumber;
+            EndColumnNumber = e.EndColumnNumber;
+            Subcategory = e.Subcategory;
+            Message = e.Message;
         }
 
         private void Init(BuildMessageEventArgs e)
         {
-            _code = e.Code;
-            _file = e.File;
-            _projectFile = e.ProjectFile;
-            _lineNumber = e.LineNumber;
-            _columnNumber = e.ColumnNumber;
-            _endLineNumber = e.EndLineNumber;
-            _endColumnNumber = e.EndColumnNumber;
-            _subcategory = e.Subcategory;
-            _message = e.Message;
+            Code = e.Code;
+            File = e.File;
+            ProjectFile = e.ProjectFile;
+            LineNumber = e.LineNumber;
+            ColumnNumber = e.ColumnNumber;
+            EndLineNumber = e.EndLineNumber;
+            EndColumnNumber = e.EndColumnNumber;
+            Subcategory = e.Subcategory;
+            Message = e.Message;
         }
 
         // 1. EnvDTE.TextSelection.MoveToLineAndOffset requires line and offset numbers beginning at one.
@@ -173,25 +123,25 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         // regardless of BuildErrorEventArgs.LineNumber and BuildErrorEventArgs.ColumnNumber.
         private void VerifyValues()
         {
-            if (_invalidFileNames.Contains(_file) && _lineNumber == 0 && _columnNumber == 0)
+            if (_invalidFileNames.Contains(File) && LineNumber == 0 & ColumnNumber == 0)
             {
-                _canNavigateTo = false;
+                CanNavigateTo = false;
                 return;
             }
 
-            if (_lineNumber < 1)
-                _lineNumber = 1;
+            if (LineNumber < 1)
+                LineNumber = 1;
 
-            if (_columnNumber < 1)
-                _columnNumber = 1;
+            if (ColumnNumber < 1)
+                ColumnNumber = 1;
 
-            if (_endLineNumber == 0 && _endColumnNumber == 0)
+            if (EndLineNumber == 0 && EndColumnNumber == 0)
             {
-                _endLineNumber = _lineNumber;
-                _endColumnNumber = _columnNumber;
+                EndLineNumber = LineNumber;
+                EndColumnNumber = ColumnNumber;
             }
 
-            _canNavigateTo = true;
+            CanNavigateTo = true;
         }
     }
 }

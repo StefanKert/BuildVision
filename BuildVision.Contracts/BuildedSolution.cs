@@ -1,7 +1,5 @@
 using System.IO;
 
-using EnvDTE;
-
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
     public class BuildedSolution
@@ -10,10 +8,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         public string Name { get; set; }
 
-        public BuildedSolution(Solution solution)
+        public BuildedSolution(string fullName, string fileName)
         {
-            FullName = solution.FullName;
-            Name = Path.GetFileNameWithoutExtension(solution.FileName);
+            FullName = fullName;
+            Name = Path.GetFileNameWithoutExtension(fileName);
         }
     }
 }

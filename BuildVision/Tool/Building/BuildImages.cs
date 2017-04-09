@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using AlekseyNagovitsyn.BuildVision.Tool.Models;
 using AlekseyNagovitsyn.BuildVision.Tool.Views;
 
-using EnvDTE;
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using BuildVision.Contracts;
 
@@ -31,7 +30,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         public static ControlTemplate GetBuildDoneImage(IBuildInfo buildInfo, IEnumerable<ProjectItem> allProjects, out ControlTemplate stateImage)
         {
-            if (buildInfo == null || buildInfo.BuildAction == null || buildInfo.BuildScope == null)
+            if (buildInfo?.BuildAction == null || buildInfo?.BuildScope == null)
             {
                 stateImage = null;
                 return VectorResources.TryGet(BuildActionResourcesUri, "StandBy");

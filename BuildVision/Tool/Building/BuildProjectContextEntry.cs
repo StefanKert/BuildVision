@@ -18,11 +18,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         public bool IsInvalid { get; set; }
 
-        public BuildProjectContextEntry(
-            int instanceId, 
-            int contextId, 
-            string fileName, 
-            IDictionary<string, string> properties)
+        public BuildProjectContextEntry(int instanceId, int contextId, string fileName, IDictionary<string, string> properties)
         {
             InstanceId = instanceId;
             ContextId = contextId;

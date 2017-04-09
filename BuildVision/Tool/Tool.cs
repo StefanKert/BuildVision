@@ -106,6 +106,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             _viewModel.BuildSolution += BuildSolution;
             _viewModel.RaiseCommandForSelectedProject += RaiseCommandForSelectedProject;
             _viewModel.ProjectCopyBuildOutputFilesToClipBoard += ProjectCopyBuildOutputFilesToClipBoard;
+            _viewModel.ShowOptionPage += (pageType) => _packageContext.ShowOptionPage(pageType);
             UpdateSolutionItem();
         }
 

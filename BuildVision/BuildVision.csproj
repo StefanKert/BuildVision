@@ -239,7 +239,6 @@
     <Compile Include="Tool\Building\BuildOutputLogger.cs" />
     <Compile Include="Tool\Building\BuildProjectContextEntry.cs" />
     <Compile Include="Tool\Building\BuildProjectEventArgs.cs" />
-    <Compile Include="Tool\Building\BuildState.cs" />
     <Compile Include="Tool\Building\ErrorItem.cs" />
     <Compile Include="Tool\Building\ErrorLevel.cs" />
     <Compile Include="Tool\Building\FindProjectItemDelegate.cs" />

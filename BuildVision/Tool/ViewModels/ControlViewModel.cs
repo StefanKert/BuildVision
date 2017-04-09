@@ -33,23 +33,15 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 {
     public class ControlViewModel : ViewModelBase
     {
-        private readonly ControlModel _model;
-        private readonly ControlSettings _settings;
-        private readonly BuildProgressViewModel _buildProgressViewModel;
-        private readonly IPackageContext _packageContext;
-
         private BuildState _buildState;
         private BuildInfo _buildInfo;
         private ObservableCollection<DataGridColumn> _gridColumnsRef;
 
         public ControlViewModel(ControlModel model, IPackageContext packageContext)
         {
-            _model = model;
-            _packageContext = packageContext;
-
-            _settings = packageContext.ControlSettings;
-            _buildProgressViewModel = new BuildProgressViewModel(_settings);
-
+            Model = model;
+            ControlSettings = packageContext.ControlSettings;
+            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
             packageContext.ControlSettingsChanged += OnControlSettingsChanged;
         }
 
@@ -58,25 +50,16 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
         /// </summary>
         internal ControlViewModel()
         {
-            _model = new ControlModel();
-            _settings = new ControlSettings();
-            _buildProgressViewModel = new BuildProgressViewModel(_settings);
+            Model = new ControlModel();
+            ControlSettings = new ControlSettings();
+            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
         }
 
-        public ControlModel Model
-        {
-            get { return _model; }
-        }
+        public ControlModel Model { get; }
 
-        public BuildProgressViewModel BuildProgressViewModel
-        {
-            get { return _buildProgressViewModel; }
-        }
+        public BuildProgressViewModel BuildProgressViewModel { get; }
 
-        public ControlSettings ControlSettings
-        {
-            get { return _settings; }
-        }
+        public ControlSettings ControlSettings { get; }
 
         public ControlTemplate ImageCurrentState
         {
@@ -171,12 +154,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         public string GridGroupPropertyName
         {
-            get { return _settings.GridSettings.GroupPropertyName; }
+            get { return ControlSettings.GridSettings.GroupPropertyName; }
             set
             {
-                if (_settings.GridSettings.GroupPropertyName != value)
+                if (ControlSettings.GridSettings.GroupPropertyName != value)
                 {
-                    _settings.GridSettings.GroupPropertyName = value;
+                    ControlSettings.GridSettings.GroupPropertyName = value;
                     OnPropertyChanged("GridGroupPropertyName");
                     OnPropertyChanged("GroupedProjectsList");
                     OnPropertyChanged("GridColumnsGroupMenuItems");
@@ -192,7 +175,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                 if (string.IsNullOrEmpty(GridGroupPropertyName))
                     return string.Empty;
 
-                return _settings.GridSettings.Columns[GridGroupPropertyName].Header;
+                return ControlSettings.GridSettings.Columns[GridGroupPropertyName].Header;
             }
         }
 
@@ -254,12 +237,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         public SortDescription GridSortDescription
         {
-            get { return _settings.GridSettings.SortDescription; }
+            get { return ControlSettings.GridSettings.SortDescription; }
             set
             {
-                if (_settings.GridSettings.SortDescription != value)
+                if (ControlSettings.GridSettings.SortDescription != value)
                 {
-                    _settings.GridSettings.SortDescription = value;
+                    ControlSettings.GridSettings.SortDescription = value;
                     OnPropertyChanged("GridSortDescription");
                     OnPropertyChanged("GroupedProjectsList");
                 }
@@ -317,34 +300,34 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
         public void GenerateColumns()
         {
             Debug.Assert(_gridColumnsRef != null);
-            ColumnsManager.GenerateColumns(_gridColumnsRef, _packageContext.ControlSettings.GridSettings);
+            ColumnsManager.GenerateColumns(_gridColumnsRef, ControlSettings.GridSettings);
         }
 
         public void SyncColumnSettings()
         {
             Debug.Assert(_gridColumnsRef != null);
-            ColumnsManager.SyncColumnSettings(_gridColumnsRef, _packageContext.ControlSettings.GridSettings);
+            ColumnsManager.SyncColumnSettings(_gridColumnsRef, ControlSettings.GridSettings);
         }
 
         private void OnControlSettingsChanged(object sender, EventArgs eventArgs)
         {
             var package = (IPackageContext)sender;
-            _settings.InitFrom(package.ControlSettings);
+            ControlSettings.InitFrom(package.ControlSettings);
 
             GenerateColumns();
 
             if (_buildState == BuildState.Done)
             {
-                _model.TextCurrentState = BuildMessages.GetBuildDoneMessage(
+                Model.TextCurrentState = BuildMessages.GetBuildDoneMessage(
                     Model.SolutionItem,
                     _buildInfo,
-                    _settings.BuildMessagesSettings);
+                    ControlSettings.BuildMessagesSettings);
             }
 
             // Raise all properties have changed.
             OnPropertyChanged(null);
 
-            _buildProgressViewModel.ResetTaskBarInfo(false);
+            BuildProgressViewModel.ResetTaskBarInfo(false);
         }
 
         // TODO: Rewrite using CollectionViewSource? 
@@ -558,16 +541,16 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
         {
             get
             {
-                return _settings.GridSettings.ShowColumnsHeader
+                return ControlSettings.GridSettings.ShowColumnsHeader
                     ? DataGridHeadersVisibility.Column
                     : DataGridHeadersVisibility.None;
             }
             set
             {
                 bool showColumnsHeader = (value != DataGridHeadersVisibility.None);
-                if (_settings.GridSettings.ShowColumnsHeader != showColumnsHeader)
+                if (ControlSettings.GridSettings.ShowColumnsHeader != showColumnsHeader)
                 {
-                    _settings.GridSettings.ShowColumnsHeader = showColumnsHeader;
+                    ControlSettings.GridSettings.ShowColumnsHeader = showColumnsHeader;
                     OnPropertyChanged("GridHeadersVisibility");
                 }
             }
@@ -643,10 +626,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         public ICommand CancelBuildSolutionAction => new RelayCommand(obj => CancelBuildSolution());
 
-        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => _packageContext.ShowOptionPage(typeof(GridSettingsDialogPage)));
+        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => ShowOptionPage(typeof(GridSettingsDialogPage)));
 
-        public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => _packageContext.ShowOptionPage(typeof(GeneralSettingsDialogPage)));
+        public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => ShowOptionPage(typeof(GeneralSettingsDialogPage)));
 
+
+        public event Action<Type> ShowOptionPage;
         public event Action BuildSolution;
         public event Action CleanSolution;
         public event Action RebuildSolution;

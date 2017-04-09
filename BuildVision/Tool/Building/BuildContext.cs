@@ -23,45 +23,28 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
     public class BuildContext : IBuildInfo, IBuildDistributor
     {
-        private readonly IPackageContext _packageContext;
-        private readonly List<ProjectItem> _buildingProjects;
-        private readonly object _buildingProjectsLockObject;
+        private const int BuildInProcessCountOfQuantumSleep = 5;
+        private const int BuildInProcessQuantumSleep = 50;
 
-        /* ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
-         * 
-         * These variables should be declared within the class scope rather than inside the function.
-         * Otherwise, the problem is that when the function scope is left by calling code, the local *Events variable is marked
-         * as avilable for garbage collection. Eventually the variable is collected, the event is disconnected...
-         * See https://msdn.microsoft.com/en-us/library/ms165650(v=vs.80).aspx, Eventing variables.
-         */
+        private readonly object _buildingProjectsLockObject;
+        private readonly object _buildProcessLockObject = new object();
+
+        private readonly IPackageContext _packageContext;
         private readonly BuildEvents _buildEvents;
         private readonly WindowEvents _windowEvents;
         private readonly CommandEvents _commandEvents;
-        // ReSharper restore PrivateFieldCanBeConvertedToLocalVariable
-
-        private readonly object _buildProcessLockObject = new object();
-
         private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
-        private BuildOutputLogger _buildLogger;
-
-        private const int BuildInProcessCountOfQuantumSleep = 5;
-        private const int BuildInProcessQuantumSleep = 50;
+        private BuildOutputLogger _buildLogger;    
         private CancellationTokenSource _buildProcessCancellationToken;
-
-        private BuildedSolution _buildingSolution;
         private Window _activeProjectContext;
-        private Project _buildScopeProject;
         private bool _buildCancelledInternally;
-
-        #region Implementation BuildInfo
-
-        private bool _buildCancelled;
-       
-        private DateTime? _buildStartTime;
-        private DateTime? _buildFinishTime;
-        private readonly BuildedProjectsCollection _buildedProjects;
-        private BuildedSolution _buildedSolution;
         private ControlViewModel _viewModel;
+        private bool _buildCancelled;
+
+        public bool BuildIsCancelled
+        {
+            get { return _buildCancelled && !_buildCancelledInternally; }
+        }
 
         public BuildActions? BuildAction { get; private set; }
 
@@ -69,58 +52,25 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         public BuildState CurrentBuildState { get; private set; }
 
-        public bool BuildIsCancelled
-        {
-            get { return _buildCancelled && !_buildCancelledInternally; }
-        }
+        public DateTime? BuildStartTime { get; private set; }
 
-        public DateTime? BuildStartTime
-        {
-            get { return _buildStartTime; }
-        }
+        public DateTime? BuildFinishTime { get; private set; }
 
-        public DateTime? BuildFinishTime
-        {
-            get { return _buildFinishTime; }
-        }
+        public BuildedProjectsCollection BuildedProjects { get; }
 
-        public BuildedProjectsCollection BuildedProjects
-        {
-            get { return _buildedProjects; }
-        }
+        public IList<ProjectItem> BuildingProjects { get; }
 
-        public IReadOnlyList<ProjectItem> BuildingProjects
-        {
-            get { return _buildingProjects; }
-        }
+        public BuildedSolution BuildedSolution { get; private set; }
 
-        public BuildedSolution BuildedSolution 
-        {
-            get { return _buildedSolution; }
-        }
+        public BuildedSolution BuildingSolution { get; private set; }
 
-        public Project BuildScopeProject
-        {
-            get { return _buildScopeProject; }
-        }
+        public Project BuildScopeProject { get; private set; }
 
         public void OverrideBuildProperties(BuildActions? buildAction = null, BuildScopes? buildScope = null)
         {
             BuildAction = buildAction ?? BuildAction;
             BuildScope = buildScope ?? BuildScope;
         }
-
-        #endregion
-
-        #region Implementation IBuildDistributor
-
-        public event EventHandler OnBuildBegin = delegate { };
-        public event EventHandler OnBuildProcess = delegate { };
-        public event EventHandler OnBuildDone = delegate { };
-        public event EventHandler OnBuildCancelled = delegate { };
-        public event EventHandler<BuildProjectEventArgs> OnBuildProjectBegin = delegate { };
-        public event EventHandler<BuildProjectEventArgs> OnBuildProjectDone = delegate { };
-        public event EventHandler<BuildErrorRaisedEventArgs> OnErrorRaised = delegate { };
 
         public void CancelBuild()
         {
@@ -138,14 +88,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             }
         }
 
-        #endregion
-
         public BuildContext(IPackageContext packageContext, ControlViewModel viewModel)
         {
             _viewModel = viewModel;
-            _buildedProjects = new BuildedProjectsCollection();
-            _buildingProjects = new List<ProjectItem>();
-            _buildingProjectsLockObject = ((ICollection)_buildingProjects).SyncRoot;
+            BuildedProjects = new BuildedProjectsCollection();
+            BuildingProjects = new List<ProjectItem>();
+            _buildingProjectsLockObject = ((ICollection)BuildingProjects).SyncRoot;
 
             _packageContext = packageContext;
 
@@ -163,8 +111,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
             _commandEvents.AfterExecute += CommandEvents_AfterExecute;
         }
-
-        #region Parsing errors with logger
 
         public ProjectItem FindProjectItem(object property, FindProjectProperty findProjectProperty)
         {
@@ -266,7 +212,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             return false;
         }
 
-
         private void RegisterLogger()
         {
             _buildLogger = null;
@@ -289,8 +234,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             }
         }
 
-        private bool VerifyLoggerBuildEvent(BuildOutputLogger loggerSender, 
-            BuildEventArgs eventArgs, ErrorLevel errorLevel)
+        private bool VerifyLoggerBuildEvent(BuildOutputLogger loggerSender, BuildEventArgs eventArgs, ErrorLevel errorLevel)
         {
             var bec = eventArgs.BuildEventContext;
             bool becIsInvalid = (bec == null
@@ -314,10 +258,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             return true;
         }
 
-        private void EventSource_ErrorRaised(
-            BuildOutputLogger loggerSender,
-            LazyFormattedBuildEventArgs e,
-            ErrorLevel errorLevel)
+        private void EventSource_ErrorRaised(BuildOutputLogger loggerSender, LazyFormattedBuildEventArgs e, ErrorLevel errorLevel)
         {
             try
             {
@@ -328,33 +269,22 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 int projectInstanceId = e.BuildEventContext.ProjectInstanceId;
                 int projectContextId = e.BuildEventContext.ProjectContextId;
 
-                BuildProjectContextEntry projectEntry = loggerSender.Projects.Find(t =>
-                    t.InstanceId == projectInstanceId
-                    && t.ContextId == projectContextId);
-
+                var projectEntry = loggerSender.Projects.Find(t => t.InstanceId == projectInstanceId && t.ContextId == projectContextId);
                 if (projectEntry == null)
                 {
-                    TraceManager.Trace(
-                        string.Format(
-                            "Project entry not found by ProjectInstanceId='{0}' and ProjectContextId='{1}'.",
-                            projectInstanceId,
-                            projectContextId), 
-                        EventLogEntryType.Warning);
-
+                    TraceManager.Trace(string.Format("Project entry not found by ProjectInstanceId='{0}' and ProjectContextId='{1}'.", projectInstanceId, projectContextId), EventLogEntryType.Warning);
                     return;
                 }
-
                 if (projectEntry.IsInvalid)
                     return;
 
-                ProjectItem projectItem;
-                if (!GetProjectItem(projectEntry, out projectItem))
+                if (!GetProjectItem(projectEntry, out var projectItem))
                 {
                     projectEntry.IsInvalid = true;
                     return;
                 }
 
-                BuildedProject buildedProject = _buildedProjects[projectItem];
+                BuildedProject buildedProject = BuildedProjects[projectItem];
                 buildedProject.ErrorsBox.Keep(errorLevel, e, _packageContext.GetDTE().Solution.GetProject(x => x.UniqueName == projectItem.UniqueName));
                 OnErrorRaised(this, new BuildErrorRaisedEventArgs(errorLevel, buildedProject));
             }
@@ -409,10 +339,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             return true;
         }
 
-        #endregion
-
-        #region Common DTE event handlers
-
         private void WindowEvents_WindowActivated(Window gotFocus, Window lostFocus)
         {
             if (gotFocus == null)
@@ -447,11 +373,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             }
         }
 
-        private void BuildEvents_OnBuildProjectBegin(
-            string project,
-            string projectconfig,
-            string platform,
-            string solutionconfig)
+        private void BuildEvents_OnBuildProjectBegin(string project, string projectconfig, string platform, string solutionconfig)
         {
             if (BuildAction == BuildActions.BuildActionDeploy)
                 return;
@@ -478,7 +400,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
             lock (_buildingProjectsLockObject)
             {
-                _buildingProjects.Add(currentProject);
+                BuildingProjects.Add(currentProject);
             }
 
             ProjectState projectState;
@@ -503,8 +425,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             OnBuildProjectBegin(this, new BuildProjectEventArgs(currentProject, projectState, eventTime, null));
         }
 
-        private void BuildEvents_OnBuildProjectDone(string project, string projectconfig,
-            string platform, string solutionconfig, bool success)
+        private void BuildEvents_OnBuildProjectDone(string project, string projectconfig, string platform, string solutionconfig, bool success)
         {
             if (BuildAction == BuildActions.BuildActionDeploy)
                 return;
@@ -528,10 +449,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
             lock (_buildingProjectsLockObject)
             {
-                _buildingProjects.Remove(currentProject);
+                BuildingProjects.Remove(currentProject);
             }
 
-            BuildedProject buildedProject = _buildedProjects[currentProject];
+            BuildedProject buildedProject = BuildedProjects[currentProject];
             buildedProject.Success = success;
 
             ProjectState projectState;
@@ -581,8 +502,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
             CurrentBuildState = BuildState.InProgress;
 
-            _buildStartTime = DateTime.Now;
-            _buildFinishTime = null;
+            BuildStartTime = DateTime.Now;
+            BuildFinishTime = null;
             BuildAction = (BuildActions) action;
 
             switch (scope)
@@ -615,22 +536,22 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                         {
                             case 0:
                                 TraceManager.TraceError("Unable to get target projects in Solution Explorer (vsBuildScope.vsBuildScopeProject)");
-                                _buildScopeProject = null;
+                                BuildScopeProject = null;
                                 break;
 
                             case 1:
                                 var item = (UIHierarchyItem)items.GetValue(0);
-                                _buildScopeProject = (Project)item.Object;
+                                BuildScopeProject = (Project)item.Object;
                                 break;
 
                             default:
-                                _buildScopeProject = null;
+                                BuildScopeProject = null;
                                 break;
                         }
                         break;
 
                     case vsWindowType.vsWindowTypeDocument:
-                        _buildScopeProject = projContext.Project;
+                        BuildScopeProject = projContext.Project;
                         break;
 
                     default:
@@ -641,14 +562,14 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             _buildCancelled = false;
             _buildCancelledInternally = false;
 
-            _buildedProjects.Clear();
+            BuildedProjects.Clear();
             lock (_buildingProjectsLockObject)
             {
-                _buildingProjects.Clear();
+                BuildingProjects.Clear();
             }
 
-            _buildedSolution = null;
-            _buildingSolution = new BuildedSolution(_packageContext.GetDTE().Solution);
+            BuildedSolution = null;
+            BuildingSolution = new BuildedSolution(_packageContext.GetDTE().Solution);
 
             OnBuildBegin(this, EventArgs.Empty);
 
@@ -694,20 +615,26 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
             _buildProcessCancellationToken.Cancel();
 
-            _buildedSolution = _buildingSolution;
-            _buildingSolution = null;
+            BuildedSolution = BuildingSolution;
+            BuildingSolution = null;
 
             lock (_buildingProjectsLockObject)
             {
-                _buildingProjects.Clear();
+                BuildingProjects.Clear();
             }
 
-            _buildFinishTime = DateTime.Now;
+            BuildFinishTime = DateTime.Now;
             CurrentBuildState = BuildState.Done;
 
             OnBuildDone(this, EventArgs.Empty);
         }
 
-        #endregion
+        public event EventHandler OnBuildBegin = delegate { };
+        public event EventHandler OnBuildProcess = delegate { };
+        public event EventHandler OnBuildDone = delegate { };
+        public event EventHandler OnBuildCancelled = delegate { };
+        public event EventHandler<BuildProjectEventArgs> OnBuildProjectBegin = delegate { };
+        public event EventHandler<BuildProjectEventArgs> OnBuildProjectDone = delegate { };
+        public event EventHandler<BuildErrorRaisedEventArgs> OnErrorRaised = delegate { };
     }
 }

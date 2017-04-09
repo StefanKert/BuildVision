@@ -457,7 +457,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                 OutputInStatusBar(msg, true);
                 //_dte.SuppressUI = false;
 
-                IReadOnlyList<ProjectItem> buildingProjects = _buildContext.BuildingProjects;
+                var buildingProjects = _buildContext.BuildingProjects;
                 lock (((ICollection)buildingProjects).SyncRoot)
                 {
                     for (int i = 0; i < buildingProjects.Count; i++)

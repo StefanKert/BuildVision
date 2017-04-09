@@ -24,7 +24,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         BuildedProjectsCollection BuildedProjects { get; }
 
-        IReadOnlyList<ProjectItem> BuildingProjects { get; }
+        IList<ProjectItem> BuildingProjects { get; }
 
         BuildedSolution BuildedSolution { get; }
 

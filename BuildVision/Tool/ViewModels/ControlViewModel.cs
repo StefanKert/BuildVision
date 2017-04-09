@@ -32,7 +32,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
     public class ControlViewModel : BindableBase
     {
         private BuildState _buildState;
-        private BuildInfo _buildInfo;
+        private IBuildInfo _buildInfo;
         private ObservableCollection<DataGridColumn> _gridColumnsRef;
 
         public ControlModel Model { get; }
@@ -311,7 +311,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             OnPropertyChanged(nameof(ValueIndicators));
         }
 
-        public void UpdateIndicators(BuildInfo buildContext)
+        public void UpdateIndicators(IBuildInfo buildContext)
         {
             foreach (ValueIndicator indicator in ValueIndicators)
                 indicator.UpdateValue(buildContext);
@@ -359,21 +359,21 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             BuildProgressViewModel.OnBuildProjectDone(success);
         }
 
-        public void OnBuildBegin(int projectsCount, BuildInfo buildContext)
+        public void OnBuildBegin(int projectsCount, IBuildInfo buildContext)
         {
             _buildState = BuildState.InProgress;
             _buildInfo = buildContext;
             BuildProgressViewModel.OnBuildBegin(projectsCount);
         }
 
-        public void OnBuildDone(BuildInfo buildInfo)
+        public void OnBuildDone(IBuildInfo buildInfo)
         {
             _buildInfo = buildInfo;
             _buildState = BuildState.Done;
             BuildProgressViewModel.OnBuildDone();
         }
 
-        public void OnBuildCancelled(BuildInfo buildInfo)
+        public void OnBuildCancelled(IBuildInfo buildInfo)
         {
             _buildInfo = buildInfo;
             BuildProgressViewModel.OnBuildCancelled();

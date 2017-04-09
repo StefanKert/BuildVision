@@ -8,6 +8,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages;
 using EnvDTE;
 
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
@@ -15,7 +16,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
     {
         public static string GetBuildBeginMajorMessage(
             SolutionItem solutionItem, 
-            BuildInfo buildInfo, 
+            IBuildInfo buildInfo, 
             BuildMessagesSettings labelsSettings)
         {
             var buildAction = buildInfo.BuildAction;
@@ -40,17 +41,17 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             string unitName;
             switch (buildScope.Value)
             {
-                case vsBuildScope.vsBuildScopeSolution:
+                case BuildScopes.BuildScopeSolution:
                     unitName = Resources.BuildScopeSolution_UnitName;
                     if (labelsSettings.ShowSolutionName)
                         unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, solutionItem.Name);
                     break;
 
-                case vsBuildScope.vsBuildScopeBatch:
+                case BuildScopes.BuildScopeBatch:
                     unitName = Resources.BuildScopeBatch_UnitName;
                     break;
 
-                case vsBuildScope.vsBuildScopeProject:
+                case BuildScopes.BuildScopeProject:
                     unitName = Resources.BuildScopeProject_UnitName;
                     if (labelsSettings.ShowProjectName)
                     {
@@ -62,7 +63,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                         else
                         {
                             unitName = Resources.BuildScopeBatch_UnitName;
-                            buildInfo.OverrideBuildProperties(buildScope: vsBuildScope.vsBuildScopeBatch);
+                            buildInfo.OverrideBuildProperties(buildScope: BuildScopes.BuildScopeBatch);
                         }
                     }
                     break;
@@ -75,22 +76,22 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             string beginAtString;
             switch (buildAction.Value)
             {
-                case vsBuildAction.vsBuildActionRebuildAll:
+                case BuildActions.BuildActionRebuildAll:
                     actionName = Resources.BuildActionRebuildAll;
                     beginAtString = Resources.BuildActionRebuildAll_BeginAtString;
                     break;
 
-                case vsBuildAction.vsBuildActionBuild:
+                case BuildActions.BuildActionBuild:
                     actionName = Resources.BuildActionBuild;
                     beginAtString = Resources.BuildActionBuild_BeginAtString;
                     break;
 
-                case vsBuildAction.vsBuildActionClean:
+                case BuildActions.BuildActionClean:
                     actionName = Resources.BuildActionClean;
                     beginAtString = Resources.BuildActionClean_BeginAtString;
                     break;
 
-                case vsBuildAction.vsBuildActionDeploy:
+                case BuildActions.BuildActionDeploy:
                     return Resources.UnknownBuildActionOrScope_BuildBeginText;
 
                 default:
@@ -117,7 +118,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         }
 
         public static string GetBuildBeginExtraMessage(
-            BuildInfo buildInfo,
+            IBuildInfo buildInfo,
             BuildMessagesSettings labelsSettings)
         {
             if (buildInfo == null
@@ -170,7 +171,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         public static string GetBuildDoneMessage(
             SolutionItem solutionItem,
-            BuildInfo buildInfo,
+            IBuildInfo buildInfo,
             BuildMessagesSettings labelsSettings)
         {
             return GetBuildDoneMajorMessage(solutionItem, buildInfo, labelsSettings)
@@ -179,7 +180,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         private static string GetBuildDoneMajorMessage(
             SolutionItem solutionItem,
-            BuildInfo buildInfo,
+            IBuildInfo buildInfo,
             BuildMessagesSettings labelsSettings)
         {
             if (buildInfo == null)
@@ -207,17 +208,17 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             string unitName;
             switch (buildScope.Value)
             {
-                case vsBuildScope.vsBuildScopeSolution:
+                case BuildScopes.BuildScopeSolution:
                     unitName = Resources.BuildScopeSolution_UnitName;
                     if (labelsSettings.ShowSolutionName)
                         unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, solutionItem.Name);
                     break;
 
-                case vsBuildScope.vsBuildScopeBatch:
+                case BuildScopes.BuildScopeBatch:
                     unitName = Resources.BuildScopeBatch_UnitName;
                     break;
 
-                case vsBuildScope.vsBuildScopeProject:
+                case BuildScopes.BuildScopeProject:
                     unitName = Resources.BuildScopeProject_UnitName;
                     if (labelsSettings.ShowProjectName)
                     {
@@ -259,30 +260,30 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         private static void GetBuildDoneActionAndResultStrings(
             SolutionItem solutionItem,
-            BuildInfo buildInfo,
+            IBuildInfo buildInfo,
             out string actionName,
             out string resultName)
         {
-            vsBuildAction? buildAction = buildInfo.BuildAction;
+            var buildAction = buildInfo.BuildAction;
 
             if (buildAction == null)
                 throw new InvalidOperationException();
 
             switch (buildAction.Value)
             {
-                case vsBuildAction.vsBuildActionBuild:
+                case BuildActions.BuildActionBuild:
                     actionName = Resources.BuildActionBuild;
                     break;
 
-                case vsBuildAction.vsBuildActionRebuildAll:
+                case BuildActions.BuildActionRebuildAll:
                     actionName = Resources.BuildActionRebuildAll;
                     break;
 
-                case vsBuildAction.vsBuildActionClean:
+                case BuildActions.BuildActionClean:
                     actionName = Resources.BuildActionClean;
                     break;
 
-                case vsBuildAction.vsBuildActionDeploy:
+                case BuildActions.BuildActionDeploy:
                     throw new InvalidOperationException();
 
                 default:
@@ -293,17 +294,17 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             int errorStateProjectsCount = solutionItem.Projects.Count(item => item.State.IsErrorState());
 
             if (buildInfo.BuildIsCancelled)
-                resultName = buildAction.Value == vsBuildAction.vsBuildActionClean ? Resources.BuildActionCancelled_Clean : Resources.BuildActionCancelled;
+                resultName = buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionCancelled_Clean : Resources.BuildActionCancelled;
             else if (!buildWithoutErrors)
-                resultName = buildAction.Value == vsBuildAction.vsBuildActionClean ? Resources.BuildActionFailed_Clean : Resources.BuildActionFailed;
+                resultName = buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionFailed_Clean : Resources.BuildActionFailed;
             else if (/*buildWithoutErrors &&*/ errorStateProjectsCount == 0)
-                resultName = buildAction.Value == vsBuildAction.vsBuildActionClean ? Resources.BuildActionFinishedSuccessfully_Clean : Resources.BuildActionFinishedSuccessfully;
+                resultName = buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionFinishedSuccessfully_Clean : Resources.BuildActionFinishedSuccessfully;
             else
-                resultName = buildAction.Value == vsBuildAction.vsBuildActionClean ? Resources.BuildActionFinished_Clean : Resources.BuildActionFinished;
+                resultName = buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionFinished_Clean : Resources.BuildActionFinished;
         }
 
         private static string GetBuildDoneExtraMessage(
-            BuildInfo buildInfo, 
+            IBuildInfo buildInfo, 
             BuildMessagesSettings labelsSettings)
         {
             if (buildInfo == null 

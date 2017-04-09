@@ -8,6 +8,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Views;
 
 using EnvDTE;
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
@@ -16,10 +17,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         private const string BuildActionResourcesUri = @"Tool/Views/Resources/BuildAction.Resources.xaml";
         private const string BuildStateResourcesUri = @"Tool/Views/Resources/BuildState.Resources.xaml";
 
-        public static ControlTemplate GetBuildBeginImage(BuildInfo buildInfo)
+        public static ControlTemplate GetBuildBeginImage(IBuildInfo buildInfo)
         {
-            vsBuildAction? buildAction = buildInfo.BuildAction;
-            vsBuildScope? buildScope = buildInfo.BuildScope;
+            var buildAction = buildInfo.BuildAction;
+            var buildScope = buildInfo.BuildScope;
 
             if (buildAction == null || buildScope == null)
                 return null;
@@ -28,7 +29,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             return VectorResources.TryGet(BuildActionResourcesUri, actionKey);
         }
 
-        public static ControlTemplate GetBuildDoneImage(BuildInfo buildInfo, IEnumerable<ProjectItem> allProjects, out ControlTemplate stateImage)
+        public static ControlTemplate GetBuildDoneImage(IBuildInfo buildInfo, IEnumerable<ProjectItem> allProjects, out ControlTemplate stateImage)
         {
             if (buildInfo == null || buildInfo.BuildAction == null || buildInfo.BuildScope == null)
             {
@@ -60,20 +61,20 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             return VectorResources.TryGet(BuildActionResourcesUri, actionKey);
         }
 
-        private static string GetBuildActionResourceKey(vsBuildAction buildAction)
+        private static string GetBuildActionResourceKey(BuildActions buildAction)
         {
             switch (buildAction)
             {
-                case vsBuildAction.vsBuildActionBuild:
+                case BuildActions.BuildActionBuild:
                     return "Build";
 
-                case vsBuildAction.vsBuildActionRebuildAll:
+                case BuildActions.BuildActionRebuildAll:
                     return "Rebuild";
 
-                case vsBuildAction.vsBuildActionClean:
+                case BuildActions.BuildActionClean:
                     return "Clean";
 
-                case vsBuildAction.vsBuildActionDeploy:
+                case BuildActions.BuildActionDeploy:
                     throw new InvalidOperationException();
 
                 default:

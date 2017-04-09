@@ -4,31 +4,32 @@ using System.Collections.Generic;
 using EnvDTE;
 
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
-    public abstract class BuildInfo
+    public interface IBuildInfo
     {
-        public abstract vsBuildAction? BuildAction { get; }
+        BuildActions? BuildAction { get; }
 
-        public abstract vsBuildScope? BuildScope { get; }
+        BuildScopes? BuildScope { get; }
 
-        public abstract bool BuildIsCancelled { get; }
+        BuildState CurrentBuildState { get; }
 
-        public abstract BuildState CurrentBuildState { get; }
+        bool BuildIsCancelled { get; }
 
-        public abstract DateTime? BuildStartTime { get; }
+        DateTime? BuildStartTime { get; }
 
-        public abstract DateTime? BuildFinishTime { get; }
+        DateTime? BuildFinishTime { get; }
 
-        public abstract BuildedProjectsCollection BuildedProjects { get; }
+        BuildedProjectsCollection BuildedProjects { get; }
 
-        public abstract IReadOnlyList<ProjectItem> BuildingProjects { get; }
+        IReadOnlyList<ProjectItem> BuildingProjects { get; }
 
-        public abstract BuildedSolution BuildedSolution { get; }
+        BuildedSolution BuildedSolution { get; }
 
-        public abstract void OverrideBuildProperties(vsBuildAction? buildAction = null, vsBuildScope? buildScope = null);
+        void OverrideBuildProperties(BuildActions? buildAction = null, BuildScopes? buildScope = null);
 
-        public abstract Project BuildScopeProject { get; }
+        Project BuildScopeProject { get; }
     }
 }

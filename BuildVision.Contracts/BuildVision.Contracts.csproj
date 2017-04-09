@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BuildActions.cs" />
+    <Compile Include="BuildScopes.cs" />
     <Compile Include="BuildState.cs" />
     <Compile Include="ColumnsOrder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -17,10 +17,11 @@ using Microsoft.VisualStudio;
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
 using System.Linq;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
-    public class BuildContext : BuildInfo, IBuildDistributor
+    public class BuildContext : IBuildInfo, IBuildDistributor
     {
         private readonly IPackageContext _packageContext;
         private readonly List<ProjectItem> _buildingProjects;
@@ -54,70 +55,59 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         #region Implementation BuildInfo
 
-        private vsBuildAction? _buildAction;
-        private vsBuildScope? _buildScope;
         private bool _buildCancelled;
-        private BuildState _currentState;
+       
         private DateTime? _buildStartTime;
         private DateTime? _buildFinishTime;
         private readonly BuildedProjectsCollection _buildedProjects;
         private BuildedSolution _buildedSolution;
         private ControlViewModel _viewModel;
 
-        public override vsBuildAction? BuildAction
-        {
-            get { return _buildAction; }
-        }
+        public BuildActions? BuildAction { get; private set; }
 
-        public override vsBuildScope? BuildScope
-        {
-            get { return _buildScope; }
-        }
+        public BuildScopes? BuildScope { get; private set; }
 
-        public override bool BuildIsCancelled
+        public BuildState CurrentBuildState { get; private set; }
+
+        public bool BuildIsCancelled
         {
             get { return _buildCancelled && !_buildCancelledInternally; }
         }
 
-        public override BuildState CurrentBuildState
-        {
-            get { return _currentState; }
-        }
-
-        public override DateTime? BuildStartTime
+        public DateTime? BuildStartTime
         {
             get { return _buildStartTime; }
         }
 
-        public override DateTime? BuildFinishTime
+        public DateTime? BuildFinishTime
         {
             get { return _buildFinishTime; }
         }
 
-        public override BuildedProjectsCollection BuildedProjects
+        public BuildedProjectsCollection BuildedProjects
         {
             get { return _buildedProjects; }
         }
 
-        public override IReadOnlyList<ProjectItem> BuildingProjects
+        public IReadOnlyList<ProjectItem> BuildingProjects
         {
             get { return _buildingProjects; }
         }
 
-        public override BuildedSolution BuildedSolution 
+        public BuildedSolution BuildedSolution 
         {
             get { return _buildedSolution; }
         }
 
-        public override void OverrideBuildProperties(vsBuildAction? buildAction = null, vsBuildScope? buildScope = null)
-        {
-            _buildAction = buildAction ?? _buildAction;
-            _buildScope = buildScope ?? _buildScope;
-        }
-
-        public override Project BuildScopeProject
+        public Project BuildScopeProject
         {
             get { return _buildScopeProject; }
+        }
+
+        public void OverrideBuildProperties(BuildActions? buildAction = null, BuildScopes? buildScope = null)
+        {
+            BuildAction = buildAction ?? BuildAction;
+            BuildScope = buildScope ?? BuildScope;
         }
 
         #endregion
@@ -134,7 +124,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         public void CancelBuild()
         {
-            if (_currentState != BuildState.InProgress || _buildCancelled || _buildCancelledInternally)
+            if (CurrentBuildState != BuildState.InProgress || _buildCancelled || _buildCancelledInternally)
                 return;
 
             try
@@ -463,13 +453,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             string platform,
             string solutionconfig)
         {
-            if (_buildAction == vsBuildAction.vsBuildActionDeploy)
+            if (BuildAction == BuildActions.BuildActionDeploy)
                 return;
 
             var eventTime = DateTime.Now;
 
             ProjectItem currentProject;
-            if (_buildScope == vsBuildScope.vsBuildScopeBatch)
+            if (BuildScope == BuildScopes.BuildScopeBatch)
             {
                 var projectDefinition = new UniqueNameProjectDefinition(project, projectconfig, platform);
                 currentProject = FindProjectItem(projectDefinition, FindProjectProperty.UniqueNameProjectDefinition);
@@ -492,18 +482,18 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             }
 
             ProjectState projectState;
-            switch (_buildAction)
+            switch (BuildAction)
             {
-                case vsBuildAction.vsBuildActionBuild:
-                case vsBuildAction.vsBuildActionRebuildAll:
+                case BuildActions.BuildActionBuild:
+                case BuildActions.BuildActionRebuildAll:
                     projectState = ProjectState.Building;
                     break;
 
-                case vsBuildAction.vsBuildActionClean:
+                case BuildActions.BuildActionClean:
                     projectState = ProjectState.Cleaning;
                     break;
 
-                case vsBuildAction.vsBuildActionDeploy:
+                case BuildActions.BuildActionDeploy:
                     throw new InvalidOperationException("vsBuildActionDeploy not supported");
 
                 default:
@@ -516,13 +506,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         private void BuildEvents_OnBuildProjectDone(string project, string projectconfig,
             string platform, string solutionconfig, bool success)
         {
-            if (_buildAction == vsBuildAction.vsBuildActionDeploy)
+            if (BuildAction == BuildActions.BuildActionDeploy)
                 return;
 
             var eventTime = DateTime.Now;
 
             ProjectItem currentProject;
-            if (_buildScope == vsBuildScope.vsBuildScopeBatch)
+            if (BuildScope == BuildScopes.BuildScopeBatch)
             {
                 var projectDefinition = new UniqueNameProjectDefinition(project, projectconfig, platform);
                 currentProject = FindProjectItem(projectDefinition, FindProjectProperty.UniqueNameProjectDefinition);
@@ -545,10 +535,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             buildedProject.Success = success;
 
             ProjectState projectState;
-            switch (_buildAction)
+            switch (BuildAction)
             {
-                case vsBuildAction.vsBuildActionBuild:
-                case vsBuildAction.vsBuildActionRebuildAll:
+                case BuildActions.BuildActionBuild:
+                case BuildActions.BuildActionRebuildAll:
                     if (success)
                     {
                         bool upToDate = (_buildLogger != null && _buildLogger.Projects != null
@@ -568,11 +558,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                     }
                     break;
 
-                case vsBuildAction.vsBuildActionClean:
+                case BuildActions.BuildActionClean:
                     projectState = success ? ProjectState.CleanDone : ProjectState.CleanError;
                     break;
 
-                case vsBuildAction.vsBuildActionDeploy:
+                case BuildActions.BuildActionDeploy:
                     throw new InvalidOperationException("vsBuildActionDeploy not supported");
 
                 default:
@@ -589,23 +579,23 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
             RegisterLogger();
 
-            _currentState = BuildState.InProgress;
+            CurrentBuildState = BuildState.InProgress;
 
             _buildStartTime = DateTime.Now;
             _buildFinishTime = null;
-            _buildAction = action;
+            BuildAction = (BuildActions) action;
 
             switch (scope)
             {
                 case vsBuildScope.vsBuildScopeSolution:
                 case vsBuildScope.vsBuildScopeBatch:
                 case vsBuildScope.vsBuildScopeProject:
-                    _buildScope = scope;
+                    BuildScope = (BuildScopes) scope;
                     break;
 
                 case 0:
                     // Scope may be 0 in case of Clean solution, then Start (F5).
-                    _buildScope = vsBuildScope.vsBuildScopeSolution;
+                    BuildScope = (BuildScopes)vsBuildScope.vsBuildScopeSolution;
                     break;
 
                 default:
@@ -672,7 +662,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         {
             lock (_buildProcessLockObject)
             {
-                if (_buildAction == vsBuildAction.vsBuildActionDeploy)
+                if (BuildAction == BuildActions.BuildActionDeploy)
                     return;
 
                 var token = (CancellationToken)state;
@@ -693,10 +683,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         private void BuildEvents_OnBuildDone()
         {
-            if (_buildAction == vsBuildAction.vsBuildActionDeploy)
+            if (BuildAction == BuildActions.BuildActionDeploy)
                 return;
 
-            if (_currentState != BuildState.InProgress)
+            if (CurrentBuildState != BuildState.InProgress)
             {
                 // Start command (F5), when Build is not required.
                 return;
@@ -713,7 +703,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             }
 
             _buildFinishTime = DateTime.Now;
-            _currentState = BuildState.Done;
+            CurrentBuildState = BuildState.Done;
 
             OnBuildDone(this, EventArgs.Empty);
         }

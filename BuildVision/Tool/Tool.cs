@@ -24,6 +24,7 @@ using System.Windows;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
 using System.ComponentModel;
 using System.IO;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool
 {
@@ -32,7 +33,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         private readonly DTE _dte;
         private readonly IVsStatusbar _dteStatusBar;
         private readonly ToolWindowManager _toolWindowManager;
-        private readonly BuildInfo _buildContext;
+        private readonly IBuildInfo _buildContext;
         private readonly IBuildDistributor _buildDistributor;
         private readonly ControlViewModel _viewModel;
         private readonly SolutionEvents _solutionEvents;
@@ -43,7 +44,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
 
         public Tool(
             IPackageContext packageContext,
-            BuildInfo buildContext, 
+            IBuildInfo buildContext, 
             IBuildDistributor buildDistributor, 
             ControlViewModel viewModel)
         {
@@ -300,9 +301,9 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                 currentProject.BuildStartTime = e.EventTime;
 
                 _viewModel.OnBuildProjectBegin();
-                if (_buildContext.BuildScope == vsBuildScope.vsBuildScopeSolution &&
-                    (_buildContext.BuildAction == vsBuildAction.vsBuildActionBuild ||
-                     _buildContext.BuildAction == vsBuildAction.vsBuildActionRebuildAll))
+                if (_buildContext.BuildScope == BuildScopes.BuildScopeSolution &&
+                    (_buildContext.BuildAction == BuildActions.BuildActionBuild ||
+                     _buildContext.BuildAction == BuildActions.BuildActionRebuildAll))
                 {
                     currentProject.BuildOrder = _viewModel.BuildProgressViewModel.CurrentQueuePosOfBuildingProject;
                 }
@@ -333,7 +334,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                 if (!_viewModel.ProjectsList.Contains(currentProject))
                     _viewModel.ProjectsList.Add(currentProject);
 
-                var buildInfo = (BuildInfo)sender;
+                var buildInfo = (IBuildInfo)sender;
                 if (ReferenceEquals(_viewModel.CurrentProject, e.ProjectItem) && buildInfo.BuildingProjects.Any())
                     _viewModel.CurrentProject = buildInfo.BuildingProjects.Last();
             }
@@ -394,12 +395,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             }
         }
 
-        public void OnBuildBegin(BuildInfo buildContext)
+        public void OnBuildBegin(IBuildInfo buildContext)
         {
             int projectsCount = -1;
             switch (buildContext.BuildScope)
             {
-                case vsBuildScope.vsBuildScopeSolution:
+                case BuildScopes.BuildScopeSolution:
                     if (_viewModel.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
                     {
                         projectsCount = _viewModel.ProjectsList.Count;
@@ -419,8 +420,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                     }
                     break;
 
-                case vsBuildScope.vsBuildScopeBatch:
-                case vsBuildScope.vsBuildScopeProject:
+                case BuildScopes.BuildScopeBatch:
+                case BuildScopes.BuildScopeProject:
                     break;
 
                 default:
@@ -473,7 +474,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         {
             try
             {
-                if (_buildContext.BuildScope == vsBuildScope.vsBuildScopeSolution)
+                if (_buildContext.BuildScope == BuildScopes.BuildScopeSolution)
                 {
                     foreach (var projectItem in _viewModel.ProjectsList)
                     {
@@ -531,7 +532,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         private void BuildEvents_OnErrorRaised(object sender, BuildErrorRaisedEventArgs args)
         {
             bool buildNeedToCancel = (args.ErrorLevel == ErrorLevel.Error
-                                      && _buildContext.BuildAction != vsBuildAction.vsBuildActionClean
+                                      && _buildContext.BuildAction != BuildActions.BuildActionClean
                                       && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError);
             if (buildNeedToCancel)
                 _buildDistributor.CancelBuild();

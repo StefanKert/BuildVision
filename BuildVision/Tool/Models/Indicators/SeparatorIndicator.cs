@@ -7,7 +7,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators
 {
     public class SeparatorIndicator : ValueIndicator
     {
-        protected override int? GetValue(BuildInfo buildContext)
+        protected override int? GetValue(IBuildInfo buildContext)
         {
             return null;
         }

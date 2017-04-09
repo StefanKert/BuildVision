@@ -21,7 +21,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
 
         public abstract string Description { get; }
 
-        protected abstract int? GetValue(BuildInfo buildContext);
+        protected abstract int? GetValue(IBuildInfo buildContext);
 
         public int? Value
         {
@@ -90,7 +90,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
             get { return double.NaN; }
         }
 
-        public void UpdateValue(BuildInfo buildContext)
+        public void UpdateValue(IBuildInfo buildContext)
         {
             UpdateValueAction(buildContext);
         }
@@ -118,7 +118,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
             RaiseValueChanged();
         }
 
-        private void UpdateValueAction(BuildInfo buildContext)
+        private void UpdateValueAction(IBuildInfo buildContext)
         {
             IsUpdateError = false;
             _isEnabled = true;

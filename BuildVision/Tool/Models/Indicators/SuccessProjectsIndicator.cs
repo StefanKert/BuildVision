@@ -9,7 +9,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators
 {
     public class SuccessProjectsIndicator : ValueIndicator
     {
-        protected override int? GetValue(DTE dte, BuildInfo buildContext)
+        protected override int? GetValue(BuildInfo buildContext)
         {
             try
             {

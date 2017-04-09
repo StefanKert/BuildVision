@@ -9,7 +9,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators
 {
     public class ErrorsIndicator : ValueIndicator
     {
-        protected override int? GetValue(DTE dte, BuildInfo buildContext)
+        protected override int? GetValue( BuildInfo buildContext)
         {
             return buildContext.BuildedProjects.Sum(proj => proj.ErrorsBox.ErrorsCount);
         }

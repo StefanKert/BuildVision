@@ -10,9 +10,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
-using Microsoft.VisualStudio;
-using EnvDTE;
-
 using AlekseyNagovitsyn.BuildVision.Core.Common;
 using AlekseyNagovitsyn.BuildVision.Tool.Building;
 using AlekseyNagovitsyn.BuildVision.Core.Logging;
@@ -28,32 +25,15 @@ using AlekseyNagovitsyn.BuildVision.Tool.Views.Settings;
 using Process = System.Diagnostics.Process;
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using SortDescription = AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting.SortDescription;
+using Microsoft.VisualStudio;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 {
-    public class ControlViewModel : ViewModelBase
+    public class ControlViewModel : BindableBase
     {
         private BuildState _buildState;
         private BuildInfo _buildInfo;
         private ObservableCollection<DataGridColumn> _gridColumnsRef;
-
-        public ControlViewModel(ControlModel model, IPackageContext packageContext)
-        {
-            Model = model;
-            ControlSettings = packageContext.ControlSettings;
-            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
-            packageContext.ControlSettingsChanged += OnControlSettingsChanged;
-        }
-
-        /// <summary>
-        /// Uses as design-time ViewModel. 
-        /// </summary>
-        internal ControlViewModel()
-        {
-            Model = new ControlModel();
-            ControlSettings = new ControlSettings();
-            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
-        }
 
         public ControlModel Model { get; }
 
@@ -63,94 +43,33 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         public ControlTemplate ImageCurrentState
         {
-            get
-            {
-                return Model.ImageCurrentState;
-            }
-            set
-            {
-                if (Model.ImageCurrentState != value)
-                {
-                    Model.ImageCurrentState = value;
-                    OnPropertyChanged("ImageCurrentState");
-                }
-            }
+            get => Model.ImageCurrentState;
+            set => SetProperty(() => Model.ImageCurrentState, val => Model.ImageCurrentState = val, value);
         }
 
         public ControlTemplate ImageCurrentStateResult
         {
-            get
-            {
-                return Model.ImageCurrentStateResult;
-            }
-            set
-            {
-                if (Model.ImageCurrentStateResult != value)
-                {
-                    Model.ImageCurrentStateResult = value;
-                    OnPropertyChanged("ImageCurrentStateResult");
-                }
-            }
+            get => Model.ImageCurrentStateResult;
+            set => SetProperty(() => Model.ImageCurrentStateResult, val => Model.ImageCurrentStateResult = val, value);
         }
 
         public string TextCurrentState
         {
-            get { return Model.TextCurrentState; }
-            set
-            {
-                if (Model.TextCurrentState != value)
-                {
-                    Model.TextCurrentState = value;
-                    OnPropertyChanged("TextCurrentState");
-                }
-            }
+            get => Model.TextCurrentState;
+            set => SetProperty(() => Model.TextCurrentState, val => Model.TextCurrentState = val, value);
         }
 
         public ProjectItem CurrentProject
         {
-            get { return Model.CurrentProject; }
-            set
-            {
-                if (Model.CurrentProject != value)
-                {
-                    Model.CurrentProject = value;
-                    OnPropertyChanged("CurrentProject");
-                }
-            }
+            get => Model.CurrentProject;
+            set => SetProperty(() => Model.CurrentProject, val => Model.CurrentProject = val, value);
         }
 
-        public ObservableCollection<ValueIndicator> ValueIndicators
-        {
-            get { return Model.ValueIndicators; }
-        }
+        public ObservableCollection<ValueIndicator> ValueIndicators => Model.ValueIndicators;
 
-        public void ResetIndicators(ResetIndicatorMode resetMode)
-        {
-            foreach (ValueIndicator indicator in ValueIndicators)
-                indicator.ResetValue(resetMode);
+        public SolutionItem SolutionItem => Model.SolutionItem; 
 
-            OnPropertyChanged("ValueIndicators");
-        }
-
-        public void UpdateIndicators(DTE dte, BuildInfo buildContext)
-        {
-            foreach (ValueIndicator indicator in ValueIndicators)
-                indicator.UpdateValue(dte, buildContext);
-
-            OnPropertyChanged("ValueIndicators");
-        }
-
-        public SolutionItem SolutionItem
-        {
-            get { return Model.SolutionItem; }
-        }
-
-        public ObservableCollection<ProjectItem> ProjectsList
-        {
-            get { return Model.SolutionItem.Projects; }
-        }
-
-        #region Grid grouping
+        public ObservableCollection<ProjectItem> ProjectsList => Model.SolutionItem.Projects; 
 
         public string GridGroupPropertyName
         {
@@ -160,10 +79,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                 if (ControlSettings.GridSettings.GroupPropertyName != value)
                 {
                     ControlSettings.GridSettings.GroupPropertyName = value;
-                    OnPropertyChanged("GridGroupPropertyName");
-                    OnPropertyChanged("GroupedProjectsList");
-                    OnPropertyChanged("GridColumnsGroupMenuItems");
-                    OnPropertyChanged("GridGroupHeaderName");
+                    OnPropertyChanged(nameof(GridGroupPropertyName));
+                    OnPropertyChanged(nameof(GroupedProjectsList));
+                    OnPropertyChanged(nameof(GridColumnsGroupMenuItems));
+                    OnPropertyChanged(nameof(GridGroupHeaderName));
                 }
             }
         }
@@ -179,62 +98,46 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             }
         }
 
-        public CompositeCollection GridColumnsGroupMenuItems
+        public CompositeCollection GridColumnsGroupMenuItems =>  CreateContextMenu();
+
+        private CompositeCollection CreateContextMenu()
         {
-            get
+            var collection = new CompositeCollection();
+            collection.Add(new MenuItem
             {
-                var collection = new CompositeCollection();
-                collection.Add(new MenuItem
-                {
-                    Header = Resources.NoneMenuItem,
-                    Tag = string.Empty
-                });
+                Header = Resources.NoneMenuItem,
+                Tag = string.Empty
+            });
 
-                foreach (GridColumnSettings column in ControlSettings.GridSettings.Columns)
-                {
-                    if (!ColumnsManager.ColumnIsGroupable(column))
-                        continue;
-
-                    string header = column.Header;
-                    var menuItem = new MenuItem
-                    {
-                        Header = !string.IsNullOrEmpty(header)
-                                    ? header
-                                    : ColumnsManager.GetInitialColumnHeader(column),
-                        Tag = column.PropertyNameId
-                    };
-
-                    collection.Add(menuItem);
-                }
-
-                foreach (MenuItem menuItem in collection)
-                {
-                    menuItem.IsCheckable = false;
-                    menuItem.StaysOpenOnClick = false;
-                    menuItem.IsChecked = (GridGroupPropertyName == (string)menuItem.Tag);
-                    menuItem.Command = GridGroupPropertyMenuItemClicked;
-                    menuItem.CommandParameter = menuItem.Tag;
-                }
-
-                return collection;
-            }
-        }
-
-        public ICommand GridGroupPropertyMenuItemClicked
-        {
-            get
+            foreach (GridColumnSettings column in ControlSettings.GridSettings.Columns)
             {
-                return new RelayCommand(obj =>
+                if (!ColumnsManager.ColumnIsGroupable(column))
+                    continue;
+
+                string header = column.Header;
+                var menuItem = new MenuItem
                 {
-                    GridGroupPropertyName = (obj != null) ? obj.ToString() : string.Empty;
-                });
+                    Header = !string.IsNullOrEmpty(header)
+                                ? header
+                                : ColumnsManager.GetInitialColumnHeader(column),
+                    Tag = column.PropertyNameId
+                };
+
+                collection.Add(menuItem);
             }
+
+            foreach (MenuItem menuItem in collection)
+            {
+                menuItem.IsCheckable = false;
+                menuItem.StaysOpenOnClick = false;
+                menuItem.IsChecked = (GridGroupPropertyName == (string)menuItem.Tag);
+                menuItem.Command = GridGroupPropertyMenuItemClicked;
+                menuItem.CommandParameter = menuItem.Tag;
+            }
+
+            return collection;
         }
-
-        #endregion //Grid grouping
-
-        #region Grid sorting
-
+ 
         public SortDescription GridSortDescription
         {
             get { return ControlSettings.GridSettings.SortDescription; }
@@ -243,46 +146,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                 if (ControlSettings.GridSettings.SortDescription != value)
                 {
                     ControlSettings.GridSettings.SortDescription = value;
-                    OnPropertyChanged("GridSortDescription");
-                    OnPropertyChanged("GroupedProjectsList");
+                    OnPropertyChanged(nameof(GridSortDescription));
+                    OnPropertyChanged(nameof(GroupedProjectsList));
                 }
             }
         }
-
-        public ICommand GridSorting
-        {
-            get
-            {
-                return new RelayCommand(obj =>
-                {
-                    var e = (DataGridSortingEventArgs)obj;
-
-                    ListSortDirection? oldSortDirection = e.Column.SortDirection;
-                    ListSortDirection? newSortDirection;
-                    switch (oldSortDirection)
-                    {
-                        case null:
-                            newSortDirection = ListSortDirection.Ascending;
-                            break;
-                        case ListSortDirection.Ascending:
-                            newSortDirection = ListSortDirection.Descending;
-                            break;
-                        case ListSortDirection.Descending:
-                            newSortDirection = null;
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-
-                    e.Handled = true;
-                    e.Column.SortDirection = newSortDirection;
-
-                    GridSortDescription = new SortDescription(newSortDirection.ToMedia(), e.Column.GetBindedProperty());
-                });
-            }
-        }
-
-        #endregion //Grid sorting
 
         // Should be initialized by View.
         public ObservableCollection<DataGridColumn> GridColumnsRef
@@ -295,39 +163,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                     GenerateColumns();
                 }
             }
-        }
-
-        public void GenerateColumns()
-        {
-            Debug.Assert(_gridColumnsRef != null);
-            ColumnsManager.GenerateColumns(_gridColumnsRef, ControlSettings.GridSettings);
-        }
-
-        public void SyncColumnSettings()
-        {
-            Debug.Assert(_gridColumnsRef != null);
-            ColumnsManager.SyncColumnSettings(_gridColumnsRef, ControlSettings.GridSettings);
-        }
-
-        private void OnControlSettingsChanged(object sender, EventArgs eventArgs)
-        {
-            var package = (IPackageContext)sender;
-            ControlSettings.InitFrom(package.ControlSettings);
-
-            GenerateColumns();
-
-            if (_buildState == BuildState.Done)
-            {
-                Model.TextCurrentState = BuildMessages.GetBuildDoneMessage(
-                    Model.SolutionItem,
-                    _buildInfo,
-                    ControlSettings.BuildMessagesSettings);
-            }
-
-            // Raise all properties have changed.
-            OnPropertyChanged(null);
-
-            BuildProgressViewModel.ResetTaskBarInfo(false);
         }
 
         // TODO: Rewrite using CollectionViewSource? 
@@ -348,6 +183,100 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
                 return groupedList;
             }
+        }
+
+        public DataGridHeadersVisibility GridHeadersVisibility
+        {
+            get
+            {
+                return ControlSettings.GridSettings.ShowColumnsHeader
+                    ? DataGridHeadersVisibility.Column
+                    : DataGridHeadersVisibility.None;
+            }
+            set
+            {
+                bool showColumnsHeader = (value != DataGridHeadersVisibility.None);
+                if (ControlSettings.GridSettings.ShowColumnsHeader != showColumnsHeader)
+                {
+                    ControlSettings.GridSettings.ShowColumnsHeader = showColumnsHeader;
+                    OnPropertyChanged(nameof(GridHeadersVisibility));
+                }
+            }
+        }
+
+        private ProjectItem _selectedProjectItem;
+        public ProjectItem SelectedProjectItem
+        {
+            get => _selectedProjectItem; 
+            set => SetProperty(ref _selectedProjectItem, value);
+        }
+
+        public ControlViewModel(ControlModel model, IPackageContext packageContext)
+        {
+            Model = model;
+            ControlSettings = packageContext.ControlSettings;
+            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
+            packageContext.ControlSettingsChanged += OnControlSettingsChanged;
+        }
+
+        /// <summary>
+        /// Uses as design-time ViewModel. 
+        /// </summary>
+        internal ControlViewModel()
+        {
+            Model = new ControlModel();
+            ControlSettings = new ControlSettings();
+            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
+        }
+
+        private void OpenContainingFolder()
+        {
+            try
+            {
+                string dir = Path.GetDirectoryName(SelectedProjectItem.FullName);
+                Debug.Assert(dir != null);
+                Process.Start(dir);
+            }
+            catch (Exception ex)
+            {
+                ex.Trace(string.Format(
+                    "Unable to open folder '{0}' containing the project '{1}'.",
+                    SelectedProjectItem.FullName,
+                    SelectedProjectItem.UniqueName));
+
+                MessageBox.Show(
+                    ex.Message + "\n\nSee log for details.",
+                    Resources.ProductName,
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
+        }
+
+        private void ReorderGrid(object obj)
+        {
+            var e = (DataGridSortingEventArgs)obj;
+
+            ListSortDirection? oldSortDirection = e.Column.SortDirection;
+            ListSortDirection? newSortDirection;
+            switch (oldSortDirection)
+            {
+                case null:
+                    newSortDirection = ListSortDirection.Ascending;
+                    break;
+                case ListSortDirection.Ascending:
+                    newSortDirection = ListSortDirection.Descending;
+                    break;
+                case ListSortDirection.Descending:
+                    newSortDirection = null;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            e.Handled = true;
+            e.Column.SortDirection = newSortDirection;
+
+            GridSortDescription = new SortDescription(newSortDirection.ToMedia(), e.Column.GetBindedProperty());
         }
 
         private static ProjectItemColumnSorter GetProjectItemSorter(SortDescription sortDescription)
@@ -374,6 +303,51 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             return null;
         }
 
+        public void ResetIndicators(ResetIndicatorMode resetMode)
+        {
+            foreach (ValueIndicator indicator in ValueIndicators)
+                indicator.ResetValue(resetMode);
+
+            OnPropertyChanged(nameof(ValueIndicators));
+        }
+
+        public void UpdateIndicators(BuildInfo buildContext)
+        {
+            foreach (ValueIndicator indicator in ValueIndicators)
+                indicator.UpdateValue(buildContext);
+
+            OnPropertyChanged(nameof(ValueIndicators));
+        }
+
+        public void GenerateColumns()
+        {
+            Debug.Assert(_gridColumnsRef != null);
+            ColumnsManager.GenerateColumns(_gridColumnsRef, ControlSettings.GridSettings);
+        }
+
+        public void SyncColumnSettings()
+        {
+            Debug.Assert(_gridColumnsRef != null);
+            ColumnsManager.SyncColumnSettings(_gridColumnsRef, ControlSettings.GridSettings);
+        }
+
+        private void OnControlSettingsChanged(ControlSettings settings)
+        {
+            ControlSettings.InitFrom(settings);
+
+            GenerateColumns();
+
+            if (_buildState == BuildState.Done)
+            {
+                Model.TextCurrentState = BuildMessages.GetBuildDoneMessage(Model.SolutionItem, _buildInfo, ControlSettings.BuildMessagesSettings);
+            }
+
+            // Raise all properties have changed.
+            OnPropertyChanged(null);
+
+            BuildProgressViewModel.ResetTaskBarInfo(false);
+        }
+
         public void OnBuildProjectBegin()
         {
             BuildProgressViewModel.OnBuildProjectBegin();
@@ -385,42 +359,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             BuildProgressViewModel.OnBuildProjectDone(success);
         }
 
-        public void OnBuildBegin(BuildInfo buildContext)
+        public void OnBuildBegin(int projectsCount, BuildInfo buildContext)
         {
             _buildState = BuildState.InProgress;
             _buildInfo = buildContext;
-
-            int projectsCount = -1;
-            switch (buildContext.BuildScope)
-            {
-                case vsBuildScope.vsBuildScopeSolution:
-                    if (ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
-                    {
-                        projectsCount = ProjectsList.Count;
-                    }
-                    else
-                    {
-                        try
-                        {
-                            Solution solution = SolutionItem.StorageSolution;
-                            if (solution != null)
-                                projectsCount = solution.GetProjects().Count;
-                        }
-                        catch (Exception ex)
-                        {
-                            ex.Trace("Unable to count projects in solution.");
-                        }
-                    }
-                    break;
-
-                case vsBuildScope.vsBuildScopeBatch:
-                case vsBuildScope.vsBuildScopeProject:
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
             BuildProgressViewModel.OnBuildBegin(projectsCount);
         }
 
@@ -437,161 +379,16 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             BuildProgressViewModel.OnBuildCancelled();
         }
 
-        public ProjectItem FindProjectItem(object property, FindProjectProperty findProjectProperty)
+        private bool IsProjectItemEnabledForActions()
         {
-            ProjectItem found;
-            List<ProjectItem> projList = ProjectsList.ToList();
-            switch (findProjectProperty)
-            {
-                case FindProjectProperty.UniqueName:
-                    var uniqueName = (string)property;
-                    found = projList.FirstOrDefault(item => item.UniqueName == uniqueName);
-                    break;
-
-                case FindProjectProperty.FullName:
-                    var fullName = (string)property;
-                    found = projList.FirstOrDefault(item => item.FullName == fullName);
-                    break;
-
-                case FindProjectProperty.UniqueNameProjectDefinition:
-                    {
-                        var projDef = (UniqueNameProjectDefinition)property;
-                        found = projList.FirstOrDefault(item => item.UniqueName == projDef.UniqueName
-                                                      && item.Configuration == projDef.Configuration
-                                                      && PlatformsIsEquals(item.Platform, projDef.Platform));
-                    }
-                    break;
-
-                case FindProjectProperty.FullNameProjectDefinition:
-                    {
-                        var projDef = (FullNameProjectDefinition)property;
-                        found = projList.FirstOrDefault(item => item.FullName == projDef.FullName
-                                                      && item.Configuration == projDef.Configuration
-                                                      && PlatformsIsEquals(item.Platform, projDef.Platform));
-                    }
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException("findProjectProperty");
-            }
-            if (found != null)
-                return found;
-
-            Project proj;
-            switch (findProjectProperty)
-            {
-                case FindProjectProperty.UniqueName:
-                    var uniqueName = (string)property;
-                    proj = SolutionItem.StorageSolution.GetProject(item => item.UniqueName == uniqueName);
-                    break;
-
-                case FindProjectProperty.FullName:
-                    var fullName = (string)property;
-                    proj = SolutionItem.StorageSolution.GetProject(item => item.FullName == fullName);
-                    break;
-
-                case FindProjectProperty.UniqueNameProjectDefinition:
-                    {
-                        var projDef = (UniqueNameProjectDefinition)property;
-                        proj = SolutionItem.StorageSolution.GetProject(item => item.UniqueName == projDef.UniqueName
-                                                                && item.ConfigurationManager.ActiveConfiguration.ConfigurationName == projDef.Configuration
-                                                                && PlatformsIsEquals(item.ConfigurationManager.ActiveConfiguration.PlatformName, projDef.Platform));
-                    }
-                    break;
-
-                case FindProjectProperty.FullNameProjectDefinition:
-                    {
-                        var projDef = (FullNameProjectDefinition)property;
-                        proj = SolutionItem.StorageSolution.GetProject(item => item.FullName == projDef.FullName
-                                                                && item.ConfigurationManager.ActiveConfiguration.ConfigurationName == projDef.Configuration
-                                                                && PlatformsIsEquals(item.ConfigurationManager.ActiveConfiguration.PlatformName, projDef.Platform));
-                    }
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException("findProjectProperty");
-            }
-
-            if (proj == null)
-                return null;
-
-            var newProjItem = new ProjectItem();
-            ViewModelHelper.UpdateProperties(proj, newProjItem);
-            ProjectsList.Add(newProjItem);
-            return newProjItem;
+            return (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !SelectedProjectItem.IsBatchBuildProject);
         }
 
-        private bool PlatformsIsEquals(string platformName1, string platformName2)
-        {
-            if (string.Compare(platformName1, platformName2, StringComparison.InvariantCultureIgnoreCase) == 0)
-                return true;
+        #region Commands
 
-            // The ambiguity between Project.ActiveConfiguration.PlatformName and
-            // ProjectStartedEventArgs.ProjectPlatform in Microsoft.Build.Utilities.Logger
-            // (see BuildOutputLogger).
-            bool isAnyCpu1 = (platformName1 == "Any CPU" || platformName1 == "AnyCPU");
-            bool isAnyCpu2 = (platformName2 == "Any CPU" || platformName2 == "AnyCPU");
-            if (isAnyCpu1 && isAnyCpu2)
-                return true;
+        public ICommand GridSorting => new RelayCommand(obj => ReorderGrid(obj));
 
-            return false;
-        }
-
-        public DataGridHeadersVisibility GridHeadersVisibility
-        {
-            get
-            {
-                return ControlSettings.GridSettings.ShowColumnsHeader
-                    ? DataGridHeadersVisibility.Column
-                    : DataGridHeadersVisibility.None;
-            }
-            set
-            {
-                bool showColumnsHeader = (value != DataGridHeadersVisibility.None);
-                if (ControlSettings.GridSettings.ShowColumnsHeader != showColumnsHeader)
-                {
-                    ControlSettings.GridSettings.ShowColumnsHeader = showColumnsHeader;
-                    OnPropertyChanged("GridHeadersVisibility");
-                }
-            }
-        }
-
-        private ProjectItem _selectedProjectItem;
-        public ProjectItem SelectedProjectItem
-        {
-            get { return _selectedProjectItem; }
-            set
-            {
-                if (_selectedProjectItem != value)
-                {
-                    _selectedProjectItem = value;
-                    OnPropertyChanged("SelectedProjectItem");
-                }
-            }
-        }
-
-        private void OpenContainingFolder()
-        {
-            try
-            {
-                string dir = Path.GetDirectoryName(SelectedProjectItem.FullName);
-                Debug.Assert(dir != null);
-                Process.Start(dir);
-            }
-            catch (Exception ex)
-            {
-                ex.Trace(string.Format(
-                    "Unable to open folder '{0}' containing the project '{1}'.",
-                    SelectedProjectItem.FullName,
-                    SelectedProjectItem.UniqueName));
-
-                MessageBox.Show(
-                    ex.Message + "\n\nSee log for details.",
-                    Resources.ProductName,
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
-        }
+        public ICommand GridGroupPropertyMenuItemClicked => new RelayCommand(obj => GridGroupPropertyName = (obj != null) ? obj.ToString() : string.Empty);
 
         public ICommand SelectedProjectOpenContainingFolderAction => new RelayCommand(obj => OpenContainingFolder(),
                 canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.FullName)));
@@ -613,11 +410,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             obj => RaiseCommandForSelectedProject(SolutionItem, SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx),
             canExecute: obj => IsProjectItemEnabledForActions());
 
-        private bool IsProjectItemEnabledForActions()
-        {
-            return (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !SelectedProjectItem.IsBatchBuildProject);
-        }
-
         public ICommand BuildSolutionAction => new RelayCommand(obj => BuildSolution());
 
         public ICommand RebuildSolutionAction => new RelayCommand(obj => RebuildSolution());
@@ -630,6 +422,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => ShowOptionPage(typeof(GeneralSettingsDialogPage)));
 
+        #endregion
 
         public event Action<Type> ShowOptionPage;
         public event Action BuildSolution;

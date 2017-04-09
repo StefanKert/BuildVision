@@ -35,7 +35,7 @@ namespace AlekseyNagovitsyn.BuildVision.Core
                 ToolWindowPane toolWindow = GetToolWindow();
                 IPackageContext packageContext = this;
                 ControlViewModel viewModel = ToolWindow.GetViewModel(toolWindow);
-                var buildContext = new BuildContext(packageContext, viewModel.FindProjectItem);
+                var buildContext = new BuildContext(packageContext, viewModel);
                 var tool = new Tool.Tool(packageContext, buildContext, buildContext, viewModel);
             }
             catch (Exception ex)
@@ -44,11 +44,11 @@ namespace AlekseyNagovitsyn.BuildVision.Core
             }
         }
 
-        public event EventHandler ControlSettingsChanged = delegate { };
+        public event Action<ControlSettings> ControlSettingsChanged = delegate { };
 
         public void NotifyControlSettingsChanged()
         {
-            ControlSettingsChanged(this, EventArgs.Empty);
+            ControlSettingsChanged(ControlSettings);
         }
 
         public ControlSettings ControlSettings

@@ -342,7 +342,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                 ex.TraceUnknownException();
             }
 
-            _viewModel.UpdateIndicators(_dte, _buildContext);
+            _viewModel.UpdateIndicators(_buildContext);
 
             try
             {
@@ -386,13 +386,50 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
 
                 _viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
 
-                _viewModel.OnBuildBegin(_buildContext);
+                OnBuildBegin(_buildContext);
             }
             catch (Exception ex)
             {
                 ex.TraceUnknownException();
             }
         }
+
+        public void OnBuildBegin(BuildInfo buildContext)
+        {
+            int projectsCount = -1;
+            switch (buildContext.BuildScope)
+            {
+                case vsBuildScope.vsBuildScopeSolution:
+                    if (_viewModel.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
+                    {
+                        projectsCount = _viewModel.ProjectsList.Count;
+                    }
+                    else
+                    {
+                        try
+                        {
+                            Solution solution = _viewModel.SolutionItem.StorageSolution;
+                            if (solution != null)
+                                projectsCount = solution.GetProjects().Count;
+                        }
+                        catch (Exception ex)
+                        {
+                            ex.Trace("Unable to count projects in solution.");
+                        }
+                    }
+                    break;
+
+                case vsBuildScope.vsBuildScopeBatch:
+                case vsBuildScope.vsBuildScopeProject:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            _viewModel.OnBuildBegin(projectsCount, _buildContext);
+        }
+
 
         private void OutputInStatusBar(string str, bool freeze)
         {
@@ -445,7 +482,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                     }
                 }
 
-                _viewModel.UpdateIndicators(_dte, _buildContext);
+                _viewModel.UpdateIndicators(_buildContext);
 
                 string message = BuildMessages.GetBuildDoneMessage(
                     _viewModel.SolutionItem, 

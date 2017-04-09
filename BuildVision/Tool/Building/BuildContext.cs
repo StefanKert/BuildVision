@@ -15,13 +15,14 @@ using EnvDTE;
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio;
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
+using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
+using System.Linq;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
     public class BuildContext : BuildInfo, IBuildDistributor
     {
         private readonly IPackageContext _packageContext;
-        private readonly FindProjectItemDelegate _findProjectItem;
         private readonly List<ProjectItem> _buildingProjects;
         private readonly object _buildingProjectsLockObject;
 
@@ -61,6 +62,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         private DateTime? _buildFinishTime;
         private readonly BuildedProjectsCollection _buildedProjects;
         private BuildedSolution _buildedSolution;
+        private ControlViewModel _viewModel;
 
         public override vsBuildAction? BuildAction
         {
@@ -148,14 +150,14 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         #endregion
 
-        public BuildContext(IPackageContext packageContext, FindProjectItemDelegate findProjectItem)
+        public BuildContext(IPackageContext packageContext, ControlViewModel viewModel)
         {
+            _viewModel = viewModel;
             _buildedProjects = new BuildedProjectsCollection();
             _buildingProjects = new List<ProjectItem>();
             _buildingProjectsLockObject = ((ICollection)_buildingProjects).SyncRoot;
 
             _packageContext = packageContext;
-            _findProjectItem = findProjectItem;
 
             Events dteEvents = packageContext.GetDTE().Events;
             _buildEvents = dteEvents.BuildEvents;
@@ -173,6 +175,107 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         }
 
         #region Parsing errors with logger
+
+        public ProjectItem FindProjectItem(object property, FindProjectProperty findProjectProperty)
+        {
+            ProjectItem found;
+            List<ProjectItem> projList = _viewModel.ProjectsList.ToList();
+            switch (findProjectProperty)
+            {
+                case FindProjectProperty.UniqueName:
+                    var uniqueName = (string)property;
+                    found = projList.FirstOrDefault(item => item.UniqueName == uniqueName);
+                    break;
+
+                case FindProjectProperty.FullName:
+                    var fullName = (string)property;
+                    found = projList.FirstOrDefault(item => item.FullName == fullName);
+                    break;
+
+                case FindProjectProperty.UniqueNameProjectDefinition:
+                    {
+                        var projDef = (UniqueNameProjectDefinition)property;
+                        found = projList.FirstOrDefault(item => item.UniqueName == projDef.UniqueName
+                                                      && item.Configuration == projDef.Configuration
+                                                      && PlatformsIsEquals(item.Platform, projDef.Platform));
+                    }
+                    break;
+
+                case FindProjectProperty.FullNameProjectDefinition:
+                    {
+                        var projDef = (FullNameProjectDefinition)property;
+                        found = projList.FirstOrDefault(item => item.FullName == projDef.FullName
+                                                      && item.Configuration == projDef.Configuration
+                                                      && PlatformsIsEquals(item.Platform, projDef.Platform));
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException("findProjectProperty");
+            }
+            if (found != null)
+                return found;
+
+            Project proj;
+            switch (findProjectProperty)
+            {
+                case FindProjectProperty.UniqueName:
+                    var uniqueName = (string)property;
+                    proj = _viewModel.SolutionItem.StorageSolution.GetProject(item => item.UniqueName == uniqueName);
+                    break;
+
+                case FindProjectProperty.FullName:
+                    var fullName = (string)property;
+                    proj = _viewModel.SolutionItem.StorageSolution.GetProject(item => item.FullName == fullName);
+                    break;
+
+                case FindProjectProperty.UniqueNameProjectDefinition:
+                    {
+                        var projDef = (UniqueNameProjectDefinition)property;
+                        proj = _viewModel.SolutionItem.StorageSolution.GetProject(item => item.UniqueName == projDef.UniqueName
+                                                                && item.ConfigurationManager.ActiveConfiguration.ConfigurationName == projDef.Configuration
+                                                                && PlatformsIsEquals(item.ConfigurationManager.ActiveConfiguration.PlatformName, projDef.Platform));
+                    }
+                    break;
+
+                case FindProjectProperty.FullNameProjectDefinition:
+                    {
+                        var projDef = (FullNameProjectDefinition)property;
+                        proj = _viewModel.SolutionItem.StorageSolution.GetProject(item => item.FullName == projDef.FullName
+                                                                && item.ConfigurationManager.ActiveConfiguration.ConfigurationName == projDef.Configuration
+                                                                && PlatformsIsEquals(item.ConfigurationManager.ActiveConfiguration.PlatformName, projDef.Platform));
+                    }
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException("findProjectProperty");
+            }
+
+            if (proj == null)
+                return null;
+
+            var newProjItem = new ProjectItem();
+            ViewModelHelper.UpdateProperties(proj, newProjItem);
+            _viewModel.ProjectsList.Add(newProjItem);
+            return newProjItem;
+        }
+
+        private bool PlatformsIsEquals(string platformName1, string platformName2)
+        {
+            if (string.Compare(platformName1, platformName2, StringComparison.InvariantCultureIgnoreCase) == 0)
+                return true;
+
+            // The ambiguity between Project.ActiveConfiguration.PlatformName and
+            // ProjectStartedEventArgs.ProjectPlatform in Microsoft.Build.Utilities.Logger
+            // (see BuildOutputLogger).
+            bool isAnyCpu1 = (platformName1 == "Any CPU" || platformName1 == "AnyCPU");
+            bool isAnyCpu2 = (platformName2 == "Any CPU" || platformName2 == "AnyCPU");
+            if (isAnyCpu1 && isAnyCpu2)
+                return true;
+
+            return false;
+        }
+
 
         private void RegisterLogger()
         {
@@ -288,7 +391,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 string projectConfiguration = projectProperties["Configuration"];
                 string projectPlatform = projectProperties["Platform"];
                 var projectDefinition = new FullNameProjectDefinition(projectFile, projectConfiguration, projectPlatform);
-                projectItem = _findProjectItem(projectDefinition, FindProjectProperty.FullNameProjectDefinition);
+                projectItem = FindProjectItem(projectDefinition, FindProjectProperty.FullNameProjectDefinition);
                 if (projectItem == null)
                 {
                     TraceManager.Trace(
@@ -302,7 +405,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             }
             else
             {
-                projectItem = _findProjectItem(projectFile, FindProjectProperty.FullName);
+                projectItem = FindProjectItem(projectFile, FindProjectProperty.FullName);
                 if (projectItem == null)
                 {
                     TraceManager.Trace(
@@ -369,16 +472,16 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             if (_buildScope == vsBuildScope.vsBuildScopeBatch)
             {
                 var projectDefinition = new UniqueNameProjectDefinition(project, projectconfig, platform);
-                currentProject = _findProjectItem(projectDefinition, FindProjectProperty.UniqueNameProjectDefinition);
+                currentProject = FindProjectItem(projectDefinition, FindProjectProperty.UniqueNameProjectDefinition);
                 if (currentProject == null)
                 {
-                    var proj = _findProjectItem(project, FindProjectProperty.UniqueName);
+                    var proj = FindProjectItem(project, FindProjectProperty.UniqueName);
                     currentProject = (proj ?? new ProjectItem()).GetBatchBuildCopy(projectconfig, platform);
                 }
             }
             else
             {
-                currentProject = _findProjectItem(project, FindProjectProperty.UniqueName);
+                currentProject = FindProjectItem(project, FindProjectProperty.UniqueName);
                 if (currentProject == null)
                     throw new InvalidOperationException();
             }
@@ -422,13 +525,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             if (_buildScope == vsBuildScope.vsBuildScopeBatch)
             {
                 var projectDefinition = new UniqueNameProjectDefinition(project, projectconfig, platform);
-                currentProject = _findProjectItem(projectDefinition, FindProjectProperty.UniqueNameProjectDefinition);
+                currentProject = FindProjectItem(projectDefinition, FindProjectProperty.UniqueNameProjectDefinition);
                 if (currentProject == null)
                     throw new InvalidOperationException();
             }
             else
             {
-                currentProject = _findProjectItem(project, FindProjectProperty.UniqueName);
+                currentProject = FindProjectItem(project, FindProjectProperty.UniqueName);
                 if (currentProject == null)
                     throw new InvalidOperationException();
             }

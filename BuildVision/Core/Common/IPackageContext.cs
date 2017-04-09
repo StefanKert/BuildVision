@@ -13,7 +13,7 @@ namespace AlekseyNagovitsyn.BuildVision.Core.Common
     {
         ControlSettings ControlSettings { get; }
         void SaveSettings();
-        event EventHandler ControlSettingsChanged;
+        event Action<ControlSettings> ControlSettingsChanged;
         void NotifyControlSettingsChanged();
 
         DTE GetDTE();

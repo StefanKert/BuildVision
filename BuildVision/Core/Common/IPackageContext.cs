@@ -6,6 +6,7 @@ using EnvDTE;
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using EnvDTE80;
 
 namespace AlekseyNagovitsyn.BuildVision.Core.Common
 {
@@ -17,6 +18,7 @@ namespace AlekseyNagovitsyn.BuildVision.Core.Common
         void NotifyControlSettingsChanged();
 
         DTE GetDTE();
+        DTE2 GetDTE2();
         ToolWindowPane GetToolWindow();
         IVsUIShell GetUIShell();
         IVsSolution GetSolution();

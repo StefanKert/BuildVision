@@ -9,6 +9,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
 using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
 
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -123,6 +124,11 @@ namespace AlekseyNagovitsyn.BuildVision.Core
             var shellSettingsManager = new ShellSettingsManager(serviceProvider);
             WritableSettingsStore writableSettingsStore = shellSettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
             return writableSettingsStore;
+        }
+
+        public DTE2 GetDTE2()
+        {
+            return (DTE2)GetService(typeof(DTE2));
         }
     }
 }

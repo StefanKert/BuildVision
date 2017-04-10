@@ -29,8 +29,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
                 Items.Add(item);
             }
 
-            OnPropertyChanged(new PropertyChangedEventArgs("Count"));
-            OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Count)));
+            OnPropertyChanged(new PropertyChangedEventArgs(nameof(Items)));
             OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
     }

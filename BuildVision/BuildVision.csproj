@@ -224,7 +224,6 @@
     <Compile Include="Tool\Views\Converters\GridColumnSettingsToInitialColumnHeaderConverter.cs" />
     <Compile Include="Tool\Views\Extensions\DataGridColumnExtensions.cs" />
     <Compile Include="Tool\Views\Extensions\EnumerationExtension.cs" />
-    <Compile Include="Tool\Models\Settings\ProjectItem\BuildOutputFileTypes.cs" />
     <Compile Include="Helpers\UIHierarchyExtensions.cs" />
     <Compile Include="Tool\Building\BuildContext.cs" />
     <Compile Include="Tool\Building\BuildedProject.cs" />

@@ -50,6 +50,7 @@
     <Compile Include="BaseGridColumnSettings.cs" />
     <Compile Include="BuildActions.cs" />
     <Compile Include="BuildedSolution.cs" />
+    <Compile Include="BuildOutputFileTypes.cs" />
     <Compile Include="BuildScopes.cs" />
     <Compile Include="BuildState.cs" />
     <Compile Include="ColumnsOrder.cs" />

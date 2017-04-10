@@ -41,11 +41,5 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
                 return null;
             }
         }
-
-        public static T TryGetPropertyValueOrDefault<T>(this Properties properties, string propertyName)
-            where T : class
-        {
-            return TryGetPropertyValueOrDefault(properties, propertyName) as T;
-        }
     }
 }

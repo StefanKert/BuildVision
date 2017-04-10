@@ -7,29 +7,14 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators
 {
     public class SeparatorIndicator : ValueIndicator
     {
+        public override string Header => Resources.SeparatorIndicator_Header;
+        public override string Description => null;
+        public override string StringValue => string.Empty;
+        public override double Width => 20;
+
         protected override int? GetValue(IBuildInfo buildContext)
         {
             return null;
-        }
-
-        public override string Header
-        {
-            get { return Resources.SeparatorIndicator_Header; }
-        }
-
-        public override string Description
-        {
-            get { return null; }
-        }
-
-        public override string StringValue
-        {
-            get { return string.Empty; }
-        }
-
-        public override double Width
-        {
-            get { return 20; }
         }
     }
 }

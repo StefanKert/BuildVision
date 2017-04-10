@@ -22,23 +22,6 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
             return FindHierarchyItem(hierarchy, (object)item);
         }
 
-        /// <summary>
-        /// <see cref="FindHierarchyItem(EnvDTE.UIHierarchy,EnvDTE.Project)"/>
-        /// </summary>
-        public static UIHierarchyItem FindHierarchyItem(this UIHierarchy hierarchy, Solution item)
-        {
-            return FindHierarchyItem(hierarchy, (object)item);
-        }
-
-        /// <summary>
-        /// <see cref="FindHierarchyItem(EnvDTE.UIHierarchy,EnvDTE.Project)"/>
-        /// </summary>
-        public static UIHierarchyItem FindHierarchyItem(this UIHierarchy hierarchy, ProjectItem item)
-        {
-            return FindHierarchyItem(hierarchy, (object)item);
-        }
-
-
         private static UIHierarchyItem FindHierarchyItem(UIHierarchy hierarchy, object item)
         {
             // This gets children of the root note in the hierarchy

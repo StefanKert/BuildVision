@@ -102,43 +102,6 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
             return project.Properties.TryGetPropertyValueOrDefault(propertyName);
         }
 
-        public static T TryGetPropertyValueOrDefault<T>(this Project project, string propertyName)
-            where T : class
-        {
-            return project.Properties.TryGetPropertyValueOrDefault<T>(propertyName);
-        }
-
-        public static string GetTargetAssemblyPath(this Project project, string configuration = null, string platform = null)
-        {
-            Configuration targetConfig;
-            try
-            {
-                if (configuration != null && platform != null)
-                    targetConfig = project.ConfigurationManager.Item(configuration, platform);
-                else
-                    targetConfig = project.ConfigurationManager.ActiveConfiguration;
-            }
-            catch (ArgumentException ex)
-            {
-                throw new Exception(string.Format("Configuration not found: {0} {1}", configuration, platform), ex);
-            }
-
-            try
-            {
-                string fullPath = project.Properties.Item("FullPath").Value.ToString();
-                string outputPath = targetConfig.Properties.Item("OutputPath").Value.ToString();
-                string outputDir = Path.Combine(fullPath, outputPath);
-                string outputFileName = project.Properties.Item("OutputFileName").Value.ToString();
-                string assemblyPath = Path.Combine(outputDir, outputFileName);
-                return assemblyPath;
-            }
-            catch (ArgumentException)
-            {
-                // Item not found in Properties collection.
-                return null;
-            }
-        }
-
         public static IEnumerable<string> GetBuildOutputFilePaths(
             this Project project,
             BuildOutputFileTypes fileTypes,

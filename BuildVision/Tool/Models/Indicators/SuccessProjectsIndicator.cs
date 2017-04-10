@@ -9,6 +9,9 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators
 {
     public class SuccessProjectsIndicator : ValueIndicator
     {
+        public override string Header => Resources.SuccessProjectsIndicator_Header;
+        public override string Description => Resources.SuccessProjectsIndicator_Description;
+
         protected override int? GetValue(IBuildInfo buildContext)
         {
             try
@@ -19,16 +22,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators
             {
                 return null;
             }
-        }
-
-        public override string Header
-        {
-            get { return Resources.SuccessProjectsIndicator_Header; }
-        }
-
-        public override string Description
-        {
-            get { return Resources.SuccessProjectsIndicator_Description; }
         }
     }
 }

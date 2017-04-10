@@ -195,8 +195,9 @@
     <Compile Include="Tool\Models\ProjectState.cs" />
     <Compile Include="Tool\Models\ProjectStateAttribute.cs" />
     <Compile Include="Tool\Models\ProjectStateExtensions.cs" />
-    <Compile Include="Tool\Models\Settings\Columns\BaseGridColumnSettings.cs" />
     <Compile Include="Tool\Models\Settings\Columns\GridColumnAttribute.cs" />
+    <Compile Include="Tool\Models\Settings\Columns\GridColumnSettings.cs" />
+    <Compile Include="Tool\Models\Settings\Columns\GridColumnSettingsCollection.cs" />
     <Compile Include="Tool\Models\Settings\GeneralSettings.cs" />
     <Compile Include="Tool\Models\Settings\Sorting\SortOrder.cs" />
     <Compile Include="Tool\Models\Settings\WindowSettings.cs" />
@@ -256,7 +257,6 @@
     <Compile Include="Helpers\ToolWindowManager.cs" />
     <Compile Include="Helpers\SolutionProjectsExtensions.cs" />
     <Compile Include="Helpers\StyleConverting.cs" />
-    <Compile Include="Helpers\WindowExtensions.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -273,10 +273,6 @@
     <Compile Include="Tool\Models\Indicators\Core\ValueIndicatorsFactory.cs" />
     <Compile Include="Tool\Models\Indicators\WarningsIndicator.cs" />
     <Compile Include="Tool\Models\SolutionItem.cs" />
-    <Compile Include="Tool\Models\Settings\Columns\NonGroupableAttribute.cs" />
-    <Compile Include="Tool\Models\Settings\Columns\NonSortableAttribute.cs" />
-    <Compile Include="Tool\Models\Settings\Columns\GridColumnSettings.cs" />
-    <Compile Include="Tool\Models\Settings\Columns\GridColumnSettingsCollection.cs" />
     <Compile Include="Tool\Models\Settings\GridSettings.cs" />
     <Compile Include="Tool\Models\ControlModel.cs" />
     <Compile Include="Tool\Models\Settings\ControlSettings.cs" />

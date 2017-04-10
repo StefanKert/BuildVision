@@ -6,7 +6,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages
 {
     [DataContract]
-    public class BuildMessagesSettings : NotifyPropertyChangedBase
+    public class BuildMessagesSettings : BindableBase
     {
         [DataMember(Name = "MajorMessageFormat")]
         private BuildMajorMessageFormat _majorMessageFormat = BuildMajorMessageFormat.Entire;
@@ -46,11 +46,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages
             get { return _majorMessageFormat; }
             set 
             {
-                if (_majorMessageFormat != value)
-                {
-                    _majorMessageFormat = value;
-                    OnPropertyChanged("MajorMessageFormat");
-                }
+                SetProperty(ref _majorMessageFormat, value);
             }
         }
 
@@ -59,11 +55,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages
             get { return _showSolutionName; }
             set 
             {
-                if (_showSolutionName != value)
-                {
-                    _showSolutionName = value;
-                    OnPropertyChanged("ShowSolutionName");
-                }
+                SetProperty(ref _showSolutionName, value);
             }
         }
 
@@ -72,11 +64,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages
             get { return _showProjectName; }
             set
             {
-                if (_showProjectName != value)
-                {
-                    _showProjectName = value;
-                    OnPropertyChanged("ShowProjectName");
-                }
+                SetProperty(ref _showProjectName, value);
             }
         }
 
@@ -136,11 +124,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages
             get { return _showExtraMessage; }
             set 
             {
-                if (_showExtraMessage != value)
-                {
-                    _showExtraMessage = value;
-                    OnPropertyChanged("ShowExtraMessage");
-                }
+                SetProperty(ref _showExtraMessage, value);
             }
         }
 
@@ -149,11 +133,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages
             get { return _extraMessageDelay; }
             set 
             {
-                if (_extraMessageDelay != value)
-                {
-                    _extraMessageDelay = value;
-                    OnPropertyChanged("ExtraMessageDelay");
-                }
+                SetProperty(ref _extraMessageDelay, value);
             }
         }
 
@@ -162,11 +142,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages
             get { return _extraMessageFormat; }
             set 
             {
-                if (_extraMessageFormat != value)
-                {
-                    _extraMessageFormat = value;
-                    OnPropertyChanged("ExtraMessageFormat");
-                }
+                SetProperty(ref _extraMessageFormat, value);
             }
         }
 

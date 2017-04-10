@@ -4,16 +4,16 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress
 {
     public enum ResetTaskBarItemInfoCondition
     {
-        [DisplayString(ResourceName = "ResetTaskBarItemInfoCondition_Never")]
+        [DisplayString(ResourceName = nameof(Resources.ResetTaskBarItemInfoCondition_Never))]
         Never,
 
-        [DisplayString(ResourceName = "ResetTaskBarItemInfoCondition_Immediately")]
+        [DisplayString(ResourceName = nameof(Resources.ResetTaskBarItemInfoCondition_Immediately))]
         Immediately,
 
-        [DisplayString(ResourceName = "ResetTaskBarItemInfoCondition_AfterDelay")]
+        [DisplayString(ResourceName = nameof(Resources.ResetTaskBarItemInfoCondition_AfterDelay))]
         AfterDelay,
 
-        [DisplayString(ResourceName = "ResetTaskBarItemInfoCondition_ByMouseClick")]
+        [DisplayString(ResourceName = nameof(Resources.ResetTaskBarItemInfoCondition_ByMouseClick))]
         ByMouseClick
     }
 }

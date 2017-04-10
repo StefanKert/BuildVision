@@ -9,19 +9,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators
 {
     public class ErrorsIndicator : ValueIndicator
     {
+        public override string Header => Resources.ErrorsIndicator_Header;
+        public override string Description => Resources.ErrorsIndicator_Description;
+
         protected override int? GetValue( IBuildInfo buildContext)
         {
             return buildContext.BuildedProjects.Sum(proj => proj.ErrorsBox.ErrorsCount);
-        }
-
-        public override string Header
-        {
-            get { return Resources.ErrorsIndicator_Header; }
-        }
-
-        public override string Description
-        {
-            get { return Resources.ErrorsIndicator_Description; }
         }
     }
 }

@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -46,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseGridColumnSettings.cs" />
     <Compile Include="BuildActions.cs" />
     <Compile Include="BuildedSolution.cs" />
     <Compile Include="BuildScopes.cs" />
@@ -54,6 +56,8 @@
     <Compile Include="ErrorLevel.cs" />
     <Compile Include="FindProjectProperty.cs" />
     <Compile Include="FullNameProjectDefinition.cs" />
+    <Compile Include="NonGroupableAttribute.cs" />
+    <Compile Include="NonSortableAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyNotFoundException.cs" />
     <Compile Include="RegisterLoggerResult.cs" />

@@ -4,13 +4,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress
 {
     public enum NavigateToBuildFailureReasonCondition
     {
-        [DisplayString(ResourceName = "NavigateToBuildFailureReasonCondition_Disabled")]
+        [DisplayString(ResourceName = nameof(Resources.NavigateToBuildFailureReasonCondition_Disabled))]
         Disabled,
 
-        [DisplayString(ResourceName = "NavigateToBuildFailureReasonCondition_OnErrorRaised")]
+        [DisplayString(ResourceName = nameof(Resources.NavigateToBuildFailureReasonCondition_OnErrorRaised))]
         OnErrorRaised,
 
-        [DisplayString(ResourceName = "NavigateToBuildFailureReasonCondition_OnBuildDone")]
+        [DisplayString(ResourceName = nameof(Resources.NavigateToBuildFailureReasonCondition_OnBuildDone))]
         OnBuildDone
     }
 }

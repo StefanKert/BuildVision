@@ -398,16 +398,16 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard.IsEmpty));
 
         public ICommand SelectedProjectBuildAction => new RelayCommand(
-            obj => RaiseCommandForSelectedProject(SolutionItem, SelectedProjectItem, (int)VSConstants.VSStd97CmdID.BuildCtx),
+            obj => RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.BuildCtx),
             canExecute: obj => IsProjectItemEnabledForActions());
 
 
         public ICommand SelectedProjectRebuildAction => new RelayCommand(
-            obj => RaiseCommandForSelectedProject(SolutionItem, SelectedProjectItem, (int)VSConstants.VSStd97CmdID.RebuildCtx),
+            obj => RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.RebuildCtx),
             canExecute: obj => IsProjectItemEnabledForActions());
 
         public ICommand SelectedProjectCleanAction => new RelayCommand(
-            obj => RaiseCommandForSelectedProject(SolutionItem, SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx),
+            obj => RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx),
             canExecute: obj => IsProjectItemEnabledForActions());
 
         public ICommand BuildSolutionAction => new RelayCommand(obj => BuildSolution());
@@ -430,6 +430,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
         public event Action RebuildSolution;
         public event Action CancelBuildSolution;
         public event Action<ProjectItem> ProjectCopyBuildOutputFilesToClipBoard;
-        public event Action<SolutionItem, ProjectItem, int> RaiseCommandForSelectedProject;
+        public event Action<ProjectItem, int> RaiseCommandForSelectedProject;
     }
 }

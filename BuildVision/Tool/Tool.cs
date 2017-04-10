@@ -25,12 +25,14 @@ using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
 using System.ComponentModel;
 using System.IO;
 using BuildVision.Contracts;
+using EnvDTE80;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool
 {
     public class Tool
     {
         private readonly DTE _dte;
+        private readonly DTE2 _dte2;
         private readonly IVsStatusbar _dteStatusBar;
         private readonly ToolWindowManager _toolWindowManager;
         private readonly IBuildInfo _buildContext;
@@ -50,6 +52,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         {
             _packageContext = packageContext;
             _dte = packageContext.GetDTE();
+            _dte2 = packageContext.GetDTE2();
             if (_dte == null)
                 throw new InvalidOperationException("Unable to get DTE instance.");
 
@@ -111,12 +114,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             UpdateSolutionItem();
         }
 
-        private void RaiseCommandForSelectedProject(SolutionItem solutionItem, ProjectItem selectedProjectItem, int commandId)
+        private void RaiseCommandForSelectedProject(ProjectItem selectedProjectItem, int commandId)
         {
             try
             {
-                var dte2 = (EnvDTE80.DTE2)solutionItem.StorageSolution.DTE;
-                UIHierarchy solutionExplorer = dte2.ToolWindows.SolutionExplorer;
+                UIHierarchy solutionExplorer = _dte2.ToolWindows.SolutionExplorer;
                 var project = _dte.Solution.GetProject(x => x.UniqueName == selectedProjectItem.UniqueName);
                 UIHierarchyItem item = solutionExplorer.FindHierarchyItem(project);
                 if (item == null)
@@ -288,7 +290,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
 
         private void UpdateSolutionItem()
         {
-            _viewModel.SolutionItem.UpdateSolution(_dte.Solution);
+            ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
         }
 
         private void BuildEvents_OnBuildProjectBegin(object sender, BuildProjectEventArgs e)
@@ -378,7 +380,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
 
                 if (_viewModel.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
                 {
-                    _viewModel.SolutionItem.UpdateProjects();
+                    ViewModelHelper.UpdateProjects(_viewModel.SolutionItem);
                 }
                 else
                 {
@@ -409,7 +411,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                     {
                         try
                         {
-                            Solution solution = _viewModel.SolutionItem.StorageSolution;
+                            Solution solution = _dte.Solution;
                             if (solution != null)
                                 projectsCount = solution.GetProjects().Count;
                         }
@@ -547,7 +549,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             }
         }
 
-        private bool NavigateToErrorItem(ErrorItem errorItem)
+        private bool NavigateToErrorItem(Building.ErrorItem errorItem)
         {
             if (errorItem == null || string.IsNullOrEmpty(errorItem.File) || string.IsNullOrEmpty(errorItem.ProjectFile))
                 return false;

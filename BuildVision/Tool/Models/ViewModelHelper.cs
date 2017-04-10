@@ -6,6 +6,7 @@ using AlekseyNagovitsyn.BuildVision.Core.Logging;
 using AlekseyNagovitsyn.BuildVision.Helpers;
 
 using EnvDTE;
+using System.Collections.Generic;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 {
@@ -116,6 +117,93 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
             {
                 ex.TraceUnknownException();
             }
+        }
+
+        public static void UpdateSolution(Solution solution, SolutionItem solutionItem)
+        {
+            solutionItem.StorageSolution = solution;
+            UpdateSolutionProperties(solutionItem);
+        }
+
+        private static void UpdateSolutionProperties(SolutionItem solutionItem)
+        {
+            try
+            {
+                var solution = solutionItem.StorageSolution;
+                if (solution == null)
+                {
+                    solutionItem.Name = Resources.GridCellNATextInBrackets;
+                    solutionItem.FullName = Resources.GridCellNATextInBrackets;
+                    solutionItem.IsEmpty = true;
+                }
+                else if (string.IsNullOrEmpty(solution.FileName))
+                {
+                    if (solution.Count != 0 /* projects count */)
+                    {
+                        var project = solution.Item(1);
+                        solutionItem.Name = Path.GetFileNameWithoutExtension(project.FileName);
+                        solutionItem.FullName = project.FullName;
+                        solutionItem.IsEmpty = false;
+                    }
+                    else
+                    {
+                        solutionItem.Name = Resources.GridCellNATextInBrackets;
+                        solutionItem.FullName = Resources.GridCellNATextInBrackets;
+                        solutionItem.IsEmpty = true;
+                    }
+                }
+                else
+                {
+                    solutionItem.Name = Path.GetFileNameWithoutExtension(solution.FileName);
+                    solutionItem.FullName = solution.FullName;
+                    solutionItem.IsEmpty = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+
+                solutionItem.Name = Resources.GridCellNATextInBrackets;
+                solutionItem.FullName = Resources.GridCellNATextInBrackets;
+                solutionItem.IsEmpty = true;
+            }
+        }
+
+        public static void UpdateProjects(SolutionItem solutionItem)
+        {
+            solutionItem.Projects.Clear();
+
+            Solution solution = solutionItem.StorageSolution;
+            if (solution == null)
+                return;
+
+            IList<Project> dteProjects;
+            try
+            {
+                dteProjects = solution.GetProjects();
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+                return;
+            }
+
+            var projectItems = new List<ProjectItem>(dteProjects.Count);
+            foreach (Project project in dteProjects)
+            {
+                try
+                {
+                    var projectItem = new ProjectItem();
+                    ViewModelHelper.UpdateProperties(project, projectItem);
+                    projectItems.Add(projectItem);
+                }
+                catch (Exception ex)
+                {
+                    ex.TraceUnknownException();
+                }
+            }
+
+            solutionItem.Projects.AddRange(projectItems);
         }
     }
 }

@@ -5,15 +5,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 {
     public class AssociatedTemplateAttribute : ProjectStateAttribute
     {
-        private readonly ControlTemplate _controlTemplate;
-        public ControlTemplate ControlTemplate
-        {
-            get { return _controlTemplate; }
-        }
+        public ControlTemplate ControlTemplate { get; }
 
         public AssociatedTemplateAttribute(string resourcesUri, string resourceKey)
         {
-            _controlTemplate = VectorResources.TryGet(resourcesUri, resourceKey);
+            ControlTemplate = VectorResources.TryGet(resourcesUri, resourceKey);
         }
     }
 }

@@ -285,13 +285,75 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 }
 
                 BuildedProject buildedProject = BuildedProjects[projectItem];
-                buildedProject.ErrorsBox.Keep(errorLevel, e, _packageContext.GetDTE().Solution.GetProject(x => x.UniqueName == projectItem.UniqueName));
+                var errorItem = new ErrorItem(errorLevel, (eI) =>
+                {
+                    _packageContext.GetDTE().Solution.GetProject(x => x.UniqueName == projectItem.UniqueName).NavigateToErrorItem(eI);
+                });
+
+                switch (errorLevel)
+                {
+                    case ErrorLevel.Message:
+                        Init(errorItem, (BuildMessageEventArgs)e);
+                        break;
+
+                    case ErrorLevel.Warning:
+                        Init(errorItem, (BuildWarningEventArgs)e);
+                        break;
+
+                    case ErrorLevel.Error:
+                        Init(errorItem, (BuildErrorEventArgs)e);
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException("errorLevel");
+                }
+                errorItem.VerifyValues();
+                buildedProject.ErrorsBox.AddErrorItem(errorItem);
                 OnErrorRaised(this, new BuildErrorRaisedEventArgs(errorLevel, buildedProject));
             }
             catch (Exception ex)
             {
                 ex.TraceUnknownException();
             }
+        }
+
+        private void Init(ErrorItem item, BuildErrorEventArgs e)
+        {
+            item.Code = e.Code;
+            item.File = e.File;
+            item.ProjectFile = e.ProjectFile;
+            item.LineNumber = e.LineNumber;
+            item.ColumnNumber = e.ColumnNumber;
+            item.EndLineNumber = e.EndLineNumber;
+            item.EndColumnNumber = e.EndColumnNumber;
+            item.Subcategory = e.Subcategory;
+            item.Message = e.Message;
+        }
+
+        private void Init(ErrorItem item, BuildWarningEventArgs e)
+        {
+            item.Code = e.Code;
+            item.File = e.File;
+            item.ProjectFile = e.ProjectFile;
+            item.LineNumber = e.LineNumber;
+            item.ColumnNumber = e.ColumnNumber;
+            item.EndLineNumber = e.EndLineNumber;
+            item.EndColumnNumber = e.EndColumnNumber;
+            item.Subcategory = e.Subcategory;
+            item.Message = e.Message;
+        }
+
+        private void Init(ErrorItem item, BuildMessageEventArgs e)
+        {
+            item.Code = e.Code;
+            item.File = e.File;
+            item.ProjectFile = e.ProjectFile;
+            item.LineNumber = e.LineNumber;
+            item.ColumnNumber = e.ColumnNumber;
+            item.EndLineNumber = e.EndLineNumber;
+            item.EndColumnNumber = e.EndColumnNumber;
+            item.Subcategory = e.Subcategory;
+            item.Message = e.Message;
         }
 
         private bool GetProjectItem(BuildProjectContextEntry projectEntry, out ProjectItem projectItem)

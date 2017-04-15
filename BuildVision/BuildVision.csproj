@@ -235,7 +235,6 @@
     <Compile Include="Tool\Building\BuildOutputLogger.cs" />
     <Compile Include="Tool\Building\BuildProjectContextEntry.cs" />
     <Compile Include="Tool\Building\BuildProjectEventArgs.cs" />
-    <Compile Include="Tool\Building\ErrorItem.cs" />
     <Compile Include="Tool\Building\IBuildDistributor.cs">
       <DependentUpon>BuildContext.cs</DependentUpon>
     </Compile>
@@ -252,7 +251,6 @@
     <Compile Include="Tool\Building\BuildMessages.cs" />
     <Compile Include="Tool\Models\Settings\BuildMessages\BuildMessagesSettings.cs" />
     <Compile Include="Tool\Models\Settings\BuildMessages\BuildMajorMessageFormat.cs" />
-    <Compile Include="Tool\Building\ErrorsBox.cs" />
     <Compile Include="Helpers\ToolWindowManager.cs" />
     <Compile Include="Helpers\SolutionProjectsExtensions.cs" />
     <Compile Include="Helpers\StyleConverting.cs" />

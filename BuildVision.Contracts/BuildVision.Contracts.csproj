@@ -54,7 +54,9 @@
     <Compile Include="BuildScopes.cs" />
     <Compile Include="BuildState.cs" />
     <Compile Include="ColumnsOrder.cs" />
+    <Compile Include="ErrorItem.cs" />
     <Compile Include="ErrorLevel.cs" />
+    <Compile Include="ErrorsBox.cs" />
     <Compile Include="FindProjectProperty.cs" />
     <Compile Include="FullNameProjectDefinition.cs" />
     <Compile Include="NonGroupableAttribute.cs" />

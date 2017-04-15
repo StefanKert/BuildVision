@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:building="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Building;assembly=BuildVision.Contracts" 
-             xmlns:errorItems="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Building" 
+             xmlns:errorItems="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Building;assembly=BuildVision.Contracts" 
              xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d"

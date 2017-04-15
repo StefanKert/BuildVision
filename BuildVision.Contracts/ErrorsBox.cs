@@ -2,9 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-using Microsoft.Build.Framework;
-using EnvDTE;
-
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
     public class ErrorsBox : IEnumerable<ErrorItem>
@@ -31,9 +28,9 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             get { return _errors; }
         }
 
-        public void Keep(ErrorLevel errorLevel, BuildEventArgs e, Project project)
+        public void AddErrorItem(ErrorItem errorItem)
         {
-            switch (errorLevel)
+            switch (errorItem.Level)
             {
                 case ErrorLevel.Message:
                     MessagesCount++;
@@ -48,13 +45,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                     throw new ArgumentOutOfRangeException("errorLevel");
             }
 
-            if (KeepErrorsOnly && errorLevel != ErrorLevel.Error)
+            if (KeepErrorsOnly && errorItem.Level != ErrorLevel.Error)
                 return;
 
             int errorNumber = _errors.Count + _warnings.Count + _messages.Count + 1;
-            var errorItem = new ErrorItem(errorNumber, errorLevel, e, project);
-
-            switch (errorLevel)
+            errorItem.Number = errorNumber;
+            switch (errorItem.Level)
             {
                 case ErrorLevel.Message:
                     _messages.Add(errorItem);

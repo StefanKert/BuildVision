@@ -112,88 +112,44 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             _commandEvents.AfterExecute += CommandEvents_AfterExecute;
         }
 
-        public ProjectItem FindProjectItem(object property, FindProjectProperty findProjectProperty)
+        public ProjectItem FindProjectItemInProjectsByUniqueName(string uniqueName, string configuration, string platform)
         {
-            ProjectItem found;
-            List<ProjectItem> projList = _viewModel.ProjectsList.ToList();
-            switch (findProjectProperty)
-            {
-                case FindProjectProperty.UniqueName:
-                    var uniqueName = (string)property;
-                    found = projList.FirstOrDefault(item => item.UniqueName == uniqueName);
-                    break;
+            return _viewModel.ProjectsList.FirstOrDefault(item => item.UniqueName == uniqueName
+                                                       && item.Configuration == configuration
+                                                       && PlatformsIsEquals(item.Platform, platform));
+        }
 
-                case FindProjectProperty.FullName:
-                    var fullName = (string)property;
-                    found = projList.FirstOrDefault(item => item.FullName == fullName);
-                    break;
+        public ProjectItem FindProjectItemInProjectsByUniqueName(string uniqueName)
+        {
+            return _viewModel.ProjectsList.FirstOrDefault(item => item.UniqueName == uniqueName);
+        }
 
-                case FindProjectProperty.UniqueNameProjectDefinition:
-                    {
-                        var projDef = (UniqueNameProjectDefinition)property;
-                        found = projList.FirstOrDefault(item => item.UniqueName == projDef.UniqueName
-                                                      && item.Configuration == projDef.Configuration
-                                                      && PlatformsIsEquals(item.Platform, projDef.Platform));
-                    }
-                    break;
 
-                case FindProjectProperty.FullNameProjectDefinition:
-                    {
-                        var projDef = (FullNameProjectDefinition)property;
-                        found = projList.FirstOrDefault(item => item.FullName == projDef.FullName
-                                                      && item.Configuration == projDef.Configuration
-                                                      && PlatformsIsEquals(item.Platform, projDef.Platform));
-                    }
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException("findProjectProperty");
-            }
-            if (found != null)
-                return found;
-
-            Project proj;
-            switch (findProjectProperty)
-            {
-                case FindProjectProperty.UniqueName:
-                    var uniqueName = (string)property;
-                    proj = _viewModel.SolutionItem.StorageSolution.GetProject(item => item.UniqueName == uniqueName);
-                    break;
-
-                case FindProjectProperty.FullName:
-                    var fullName = (string)property;
-                    proj = _viewModel.SolutionItem.StorageSolution.GetProject(item => item.FullName == fullName);
-                    break;
-
-                case FindProjectProperty.UniqueNameProjectDefinition:
-                    {
-                        var projDef = (UniqueNameProjectDefinition)property;
-                        proj = _viewModel.SolutionItem.StorageSolution.GetProject(item => item.UniqueName == projDef.UniqueName
-                                                                && item.ConfigurationManager.ActiveConfiguration.ConfigurationName == projDef.Configuration
-                                                                && PlatformsIsEquals(item.ConfigurationManager.ActiveConfiguration.PlatformName, projDef.Platform));
-                    }
-                    break;
-
-                case FindProjectProperty.FullNameProjectDefinition:
-                    {
-                        var projDef = (FullNameProjectDefinition)property;
-                        proj = _viewModel.SolutionItem.StorageSolution.GetProject(item => item.FullName == projDef.FullName
-                                                                && item.ConfigurationManager.ActiveConfiguration.ConfigurationName == projDef.Configuration
-                                                                && PlatformsIsEquals(item.ConfigurationManager.ActiveConfiguration.PlatformName, projDef.Platform));
-                    }
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException("findProjectProperty");
-            }
-
+        public ProjectItem AddProjectToVisibleProjectsByUniqueName(string uniqueName)
+        {
+            var proj = _viewModel.SolutionItem.AllProjects.FirstOrDefault(x => x.UniqueName == uniqueName);
             if (proj == null)
-                return null;
+                throw new InvalidOperationException();
+            _viewModel.ProjectsList.Add(proj);
+            return proj;
+        }
 
-            var newProjItem = new ProjectItem();
-            ViewModelHelper.UpdateProperties(proj, newProjItem);
-            _viewModel.ProjectsList.Add(newProjItem);
-            return newProjItem;
+        public ProjectItem AddProjectToVisibleProjectsByUniqueName(string uniqueName, string configuration, string platform)
+        {
+            ProjectItem currentProject = _viewModel.SolutionItem.AllProjects.FirstOrDefault(item => item.UniqueName == uniqueName
+                                                            && item.Configuration == configuration
+                                                          && PlatformsIsEquals(item.Platform, platform));
+            if (currentProject == null)
+            {
+                currentProject = _viewModel.SolutionItem.AllProjects.FirstOrDefault(x => x.UniqueName == uniqueName);
+                if (currentProject == null)
+                    throw new InvalidOperationException();
+                currentProject = currentProject.GetBatchBuildCopy(configuration, platform);
+                _viewModel.SolutionItem.AllProjects.Add(currentProject);
+            }
+
+            _viewModel.ProjectsList.Add(currentProject);
+            return currentProject;
         }
 
         private bool PlatformsIsEquals(string platformName1, string platformName2)
@@ -367,32 +323,31 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 return false;
 
             IDictionary<string, string> projectProperties = projectEntry.Properties;
-            if (projectProperties.ContainsKey("Configuration") && projectProperties.ContainsKey("Platform"))
+            var project = _viewModel.ProjectsList.FirstOrDefault(x => x.FullName == projectFile);
+
+
+            if (BuildScope == BuildScopes.BuildScopeBatch && projectProperties.ContainsKey("Configuration") && projectProperties.ContainsKey("Platform"))
             {
-                // TODO: Use find by FullNameProjectDefinition for the Batch Build only.
                 string projectConfiguration = projectProperties["Configuration"];
                 string projectPlatform = projectProperties["Platform"];
-                var projectDefinition = new FullNameProjectDefinition(projectFile, projectConfiguration, projectPlatform);
-                projectItem = FindProjectItem(projectDefinition, FindProjectProperty.FullNameProjectDefinition);
+                projectItem = FindProjectItemInProjectsByUniqueName(project.UniqueName, projectConfiguration, projectPlatform);
                 if (projectItem == null)
                 {
                     TraceManager.Trace(
-                        string.Format("Project Item not found by: FullName='{0}', Configuration='{1}, Platform='{2}'.", 
-                            projectDefinition.FullName, 
-                            projectDefinition.Configuration, 
-                            projectDefinition.Platform),
+                        string.Format("Project Item not found by: UniqueName='{0}', Configuration='{1}, Platform='{2}'.",
+                            project.UniqueName,
+                            projectConfiguration,
+                            projectPlatform),
                         EventLogEntryType.Warning);
                     return false;
                 }
             }
             else
             {
-                projectItem = FindProjectItem(projectFile, FindProjectProperty.FullName);
+                projectItem = FindProjectItemInProjectsByUniqueName(project.UniqueName);
                 if (projectItem == null)
                 {
-                    TraceManager.Trace(
-                        string.Format("Project Item not found by FullName='{0}'.", projectFile),
-                        EventLogEntryType.Warning);
+                    TraceManager.Trace(string.Format("Project Item not found by FullName='{0}'.", projectFile), EventLogEntryType.Warning);
                     return false;
                 }
             }
@@ -445,19 +400,15 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             ProjectItem currentProject;
             if (BuildScope == BuildScopes.BuildScopeBatch)
             {
-                var projectDefinition = new UniqueNameProjectDefinition(project, projectconfig, platform);
-                currentProject = FindProjectItem(projectDefinition, FindProjectProperty.UniqueNameProjectDefinition);
+                currentProject = FindProjectItemInProjectsByUniqueName(project, projectconfig, platform);
                 if (currentProject == null)
-                {
-                    var proj = FindProjectItem(project, FindProjectProperty.UniqueName);
-                    currentProject = (proj ?? new ProjectItem()).GetBatchBuildCopy(projectconfig, platform);
-                }
+                    currentProject = AddProjectToVisibleProjectsByUniqueName(project, projectconfig, platform);
             }
             else
             {
-                currentProject = FindProjectItem(project, FindProjectProperty.UniqueName);
+                currentProject = FindProjectItemInProjectsByUniqueName(project);
                 if (currentProject == null)
-                    throw new InvalidOperationException();
+                    currentProject = AddProjectToVisibleProjectsByUniqueName(project);
             }
 
             lock (_buildingProjectsLockObject)
@@ -497,14 +448,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             ProjectItem currentProject;
             if (BuildScope == BuildScopes.BuildScopeBatch)
             {
-                var projectDefinition = new UniqueNameProjectDefinition(project, projectconfig, platform);
-                currentProject = FindProjectItem(projectDefinition, FindProjectProperty.UniqueNameProjectDefinition);
+                currentProject = FindProjectItemInProjectsByUniqueName(project, projectconfig, platform);
                 if (currentProject == null)
                     throw new InvalidOperationException();
             }
             else
             {
-                currentProject = FindProjectItem(project, FindProjectProperty.UniqueName);
+                currentProject = FindProjectItemInProjectsByUniqueName(project);
                 if (currentProject == null)
                     throw new InvalidOperationException();
             }

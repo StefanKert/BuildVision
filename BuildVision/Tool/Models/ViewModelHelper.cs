@@ -121,15 +121,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 
         public static void UpdateSolution(Solution solution, SolutionItem solutionItem)
         {
-            solutionItem.StorageSolution = solution;
-            UpdateSolutionProperties(solutionItem);
+            UpdateSolutionProperties(solutionItem, solution);
         }
 
-        private static void UpdateSolutionProperties(SolutionItem solutionItem)
+        private static void UpdateSolutionProperties(SolutionItem solutionItem, Solution solution)
         {
             try
             {
-                var solution = solutionItem.StorageSolution;
                 if (solution == null)
                 {
                     solutionItem.Name = Resources.GridCellNATextInBrackets;
@@ -169,11 +167,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
             }
         }
 
-        public static void UpdateProjects(SolutionItem solutionItem)
+        public static void UpdateProjects(SolutionItem solutionItem, Solution solution)
         {
-            solutionItem.Projects.Clear();
+            solutionItem.AllProjects.Clear();
 
-            Solution solution = solutionItem.StorageSolution;
             if (solution == null)
                 return;
 
@@ -194,7 +191,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
                 try
                 {
                     var projectItem = new ProjectItem();
-                    ViewModelHelper.UpdateProperties(project, projectItem);
+                    UpdateProperties(project, projectItem);
                     projectItems.Add(projectItem);
                 }
                 catch (Exception ex)
@@ -203,7 +200,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
                 }
             }
 
-            solutionItem.Projects.AddRange(projectItems);
+            solutionItem.AllProjects.AddRange(projectItems);
         }
     }
 }

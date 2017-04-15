@@ -57,7 +57,6 @@
     <Compile Include="ErrorItem.cs" />
     <Compile Include="ErrorLevel.cs" />
     <Compile Include="ErrorsBox.cs" />
-    <Compile Include="FindProjectProperty.cs" />
     <Compile Include="FullNameProjectDefinition.cs" />
     <Compile Include="NonGroupableAttribute.cs" />
     <Compile Include="NonSortableAttribute.cs" />

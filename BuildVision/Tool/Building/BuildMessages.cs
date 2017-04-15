@@ -219,7 +219,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                     {
                         // Skip dependent projects. The last project in the list is the target project.
                         string uniqProjName = buildInfo.BuildedProjects[buildInfo.BuildedProjects.Count - 1].UniqueName;
-                        ProjectItem projItem = solutionItem.Projects.FirstOrDefault(item => item.UniqueName == uniqProjName);
+                        ProjectItem projItem = solutionItem.AllProjects.FirstOrDefault(item => item.UniqueName == uniqProjName);
                         Debug.Assert(projItem != null);
 
                         unitName += string.Format(Resources.BuildScopeProject_ProjectNameTemplate, projItem.Name);
@@ -286,7 +286,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             }
 
             bool buildWithoutErrors = buildInfo.BuildedProjects.BuildWithoutErrors;
-            int errorStateProjectsCount = solutionItem.Projects.Count(item => item.State.IsErrorState());
+            int errorStateProjectsCount = solutionItem.AllProjects.Count(item => item.State.IsErrorState());
 
             if (buildInfo.BuildIsCancelled)
                 resultName = buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionCancelled_Clean : Resources.BuildActionCancelled;

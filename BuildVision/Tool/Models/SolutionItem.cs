@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
-using AlekseyNagovitsyn.BuildVision.Helpers;
 using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
-
-using EnvDTE;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 {
@@ -33,13 +27,14 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
             set => SetProperty(ref _isEmpty, value);
         }
 
-        public Solution StorageSolution { get; set; }
-
         public ObservableCollection<ProjectItem> Projects { get; }
+
+        public List<ProjectItem> AllProjects { get; }
 
         public SolutionItem()
         {
             Projects = new ObservableRangeCollection<ProjectItem>();
+            AllProjects = new List<ProjectItem>();
         }
     }
 }

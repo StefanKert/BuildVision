@@ -378,14 +378,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                 _viewModel.ImageCurrentState = BuildImages.GetBuildBeginImage(_buildContext);
                 _viewModel.ImageCurrentStateResult = null;
 
+                ViewModelHelper.UpdateProjects(_viewModel.SolutionItem, _dte.Solution);
+                _viewModel.ProjectsList.Clear();
+
                 if (_viewModel.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
-                {
-                    ViewModelHelper.UpdateProjects(_viewModel.SolutionItem);
-                }
-                else
-                {
-                    _viewModel.ProjectsList.Clear();                    
-                }
+                    _viewModel.ProjectsList.AddRange(_viewModel.SolutionItem.AllProjects);
 
                 _viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
 

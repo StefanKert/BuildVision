@@ -45,7 +45,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views
             {
                 var row = (DataGridRow)sender;
                 var errorItem = (ErrorItem)row.Item;
-                errorItem.Project.NavigateToErrorItem(errorItem);
+                errorItem.GoToError();
                 e.Handled = true;
             }
             catch (Exception ex)

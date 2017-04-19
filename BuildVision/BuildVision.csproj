@@ -227,9 +227,7 @@
     <Compile Include="Tool\Views\Extensions\EnumerationExtension.cs" />
     <Compile Include="Helpers\UIHierarchyExtensions.cs" />
     <Compile Include="Tool\Building\BuildContext.cs" />
-    <Compile Include="Tool\Building\BuildedProject.cs" />
     <Compile Include="Tool\Building\BuildedProjectsCollection.cs" />
-    <Compile Include="Tool\Building\BuildErrorRaisedEventArgs.cs" />
     <Compile Include="Tool\Building\BuildInfo.cs">
       <DependentUpon>BuildContext.cs</DependentUpon>
     </Compile>

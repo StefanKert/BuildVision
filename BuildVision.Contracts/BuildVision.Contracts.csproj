@@ -49,7 +49,9 @@
   <ItemGroup>
     <Compile Include="BaseGridColumnSettings.cs" />
     <Compile Include="BuildActions.cs" />
+    <Compile Include="BuildedProject.cs" />
     <Compile Include="BuildedSolution.cs" />
+    <Compile Include="BuildErrorRaisedEventArgs.cs" />
     <Compile Include="BuildOutputFileTypes.cs" />
     <Compile Include="BuildScopes.cs" />
     <Compile Include="BuildState.cs" />

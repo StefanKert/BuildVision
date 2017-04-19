@@ -194,7 +194,6 @@
     <Compile Include="Tool\Models\AssociatedProjectStateVectorIconAttribute.cs" />
     <Compile Include="Tool\Models\AssociatedTemplateAttribute.cs" />
     <Compile Include="Tool\Models\ProjectState.cs" />
-    <Compile Include="Tool\Models\ProjectStateAttribute.cs" />
     <Compile Include="Tool\Models\ProjectStateExtensions.cs" />
     <Compile Include="Tool\Models\Settings\Columns\GridColumnAttribute.cs" />
     <Compile Include="Tool\Models\Settings\Columns\GridColumnSettings.cs" />
@@ -203,7 +202,6 @@
     <Compile Include="Tool\Models\Settings\Sorting\SortOrder.cs" />
     <Compile Include="Tool\Models\Settings\WindowSettings.cs" />
     <Compile Include="Tool\Models\ViewModelHelper.cs" />
-    <Compile Include="Tool\Models\VisualStudioProject.cs" />
     <Compile Include="Tool\Views\Settings\BuildMessagesSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>

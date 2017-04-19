@@ -25,9 +25,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
             ValueIndicators = ValueIndicatorsFactory.CreateCollection();
             SolutionItem = new SolutionItem();
             TextCurrentState = BuildMessages.GetBuildDoneMessage(null, null, null);
-
-            ControlTemplate stateImage;
-            ImageCurrentState = BuildImages.GetBuildDoneImage(null, null, out stateImage);
+            ImageCurrentState = BuildImages.GetBuildDoneImage(null, null, out ControlTemplate stateImage);
             ImageCurrentStateResult = stateImage;
         }
     }

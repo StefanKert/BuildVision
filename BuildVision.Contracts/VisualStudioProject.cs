@@ -1,5 +1,4 @@
-﻿using AlekseyNagovitsyn.BuildVision.Tool.Models;
-using System;
+﻿using System;
 
 namespace BuildVision.Contracts
 {

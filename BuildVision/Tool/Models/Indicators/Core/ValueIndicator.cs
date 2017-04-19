@@ -5,6 +5,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Building;
 using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
 
 using EnvDTE;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
 {

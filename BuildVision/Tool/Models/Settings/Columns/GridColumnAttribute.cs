@@ -1,3 +1,4 @@
+using BuildVision.Contracts;
 using System;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns

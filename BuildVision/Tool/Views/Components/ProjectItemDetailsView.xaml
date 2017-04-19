@@ -4,8 +4,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:building="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Building;assembly=BuildVision.Contracts" 
-             xmlns:errorItems="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Building;assembly=BuildVision.Contracts" 
+             xmlns:contracts="clr-namespace:BuildVision.Contracts;assembly=BuildVision.Contracts" 
              xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              mc:Ignorable="d"
@@ -23,7 +22,7 @@
                                   Source="{Binding ElementName=Control,
                                                    Path=ProjectItem.ErrorsBox}">
                 <CollectionViewSource.SortDescriptions>
-                    <componentModel:SortDescription PropertyName="{x:Static errorItems:ErrorItem.DefaultSortPropertyName}" 
+                    <componentModel:SortDescription PropertyName="{x:Static contracts:ErrorItem.DefaultSortPropertyName}" 
                                                     Direction="Ascending"/>
                 </CollectionViewSource.SortDescriptions>
             </CollectionViewSource>
@@ -64,15 +63,15 @@
                             <TextBlock x:Name="LevelTextBlock" Text="●" />
 
                             <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding Level}" Value="{x:Static building:ErrorLevel.Error}">
+                                <DataTrigger Binding="{Binding Level}" Value="{x:Static contracts:ErrorLevel.Error}">
                                     <Setter TargetName="LevelTextBlock" Property="Foreground" Value="#E51400" />
                                 </DataTrigger>
 
-                                <DataTrigger Binding="{Binding Level}" Value="{x:Static building:ErrorLevel.Warning}">
+                                <DataTrigger Binding="{Binding Level}" Value="{x:Static contracts:ErrorLevel.Warning}">
                                     <Setter TargetName="LevelTextBlock"  Property="Foreground" Value="DarkOrange" />
                                 </DataTrigger>
 
-                                <DataTrigger Binding="{Binding Level}" Value="{x:Static building:ErrorLevel.Message}">
+                                <DataTrigger Binding="{Binding Level}" Value="{x:Static contracts:ErrorLevel.Message}">
                                     <Setter TargetName="LevelTextBlock"  Property="Foreground" Value="DodgerBlue" />
                                 </DataTrigger>
                             </DataTemplate.Triggers>

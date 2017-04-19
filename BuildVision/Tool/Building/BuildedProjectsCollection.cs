@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using AlekseyNagovitsyn.BuildVision.Tool.Models;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {

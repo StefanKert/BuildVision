@@ -8,6 +8,7 @@ using AlekseyNagovitsyn.BuildVision.Core.Common;
 using AlekseyNagovitsyn.BuildVision.Helpers;
 
 using Microsoft.VisualStudio.Shell;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
 {

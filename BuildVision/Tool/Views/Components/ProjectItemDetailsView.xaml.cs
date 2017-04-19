@@ -12,6 +12,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions;
 
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using UIElement = System.Windows.UIElement;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Views
 {

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.Contracts
 {
     public class ErrorItem
     {

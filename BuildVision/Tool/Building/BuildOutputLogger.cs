@@ -8,6 +8,7 @@ using AlekseyNagovitsyn.BuildVision.Core.Logging;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {

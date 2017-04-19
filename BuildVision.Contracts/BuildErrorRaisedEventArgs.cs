@@ -1,6 +1,6 @@
 using System;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.Contracts
 {
     public class BuildErrorRaisedEventArgs : EventArgs
     {

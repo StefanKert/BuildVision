@@ -5,6 +5,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Building;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
 using BuildVision.Common;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 {

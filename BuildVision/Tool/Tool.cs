@@ -19,6 +19,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using WindowState = AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.ToolWindow.WindowState;
+using ErrorItem = BuildVision.Contracts.ErrorItem;
 using Microsoft.VisualStudio;
 using System.Windows;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
@@ -26,6 +27,7 @@ using System.ComponentModel;
 using System.IO;
 using BuildVision.Contracts;
 using EnvDTE80;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool
 {
@@ -546,7 +548,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             }
         }
 
-        private bool NavigateToErrorItem(Building.ErrorItem errorItem)
+        private bool NavigateToErrorItem(ErrorItem errorItem)
         {
             if (errorItem == null || string.IsNullOrEmpty(errorItem.File) || string.IsNullOrEmpty(errorItem.ProjectFile))
                 return false;

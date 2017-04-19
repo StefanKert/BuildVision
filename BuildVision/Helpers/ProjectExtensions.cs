@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
 using System.IO;
 using System.Text;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Helpers
 {
@@ -487,7 +488,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
         /// </summary>
         /// <param name="project">The project - owner of the Error Item.</param>
         /// <param name="errorItem">The Error Item.</param>
-        public static bool NavigateToErrorItem(this Project project, Tool.Building.ErrorItem errorItem)
+        public static bool NavigateToErrorItem(this Project project, global::BuildVision.Contracts.ErrorItem errorItem)
         {
             try
             {

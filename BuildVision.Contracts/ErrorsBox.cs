@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.Contracts
 {
     public class ErrorsBox : IEnumerable<ErrorItem>
     {

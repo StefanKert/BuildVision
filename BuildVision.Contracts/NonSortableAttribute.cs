@@ -1,6 +1,6 @@
 using System;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns
+namespace BuildVision.Contracts
 {
     [AttributeUsage(AttributeTargets.All, AllowMultiple = false, Inherited = false)]
     public class NonSortableAttribute : Attribute { }

@@ -25,6 +25,7 @@ using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using SortDescription = AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting.SortDescription;
 using Microsoft.VisualStudio;
 using BuildVision.Common;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 {

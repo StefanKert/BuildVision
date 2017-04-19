@@ -17,6 +17,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting;
 using AlekseyNagovitsyn.BuildVision.Tool.Views;
 using AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
 {

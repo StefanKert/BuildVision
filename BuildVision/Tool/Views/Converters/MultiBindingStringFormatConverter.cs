@@ -5,6 +5,7 @@ using System.Windows.Data;
 
 using AlekseyNagovitsyn.BuildVision.Core.Logging;
 using AlekseyNagovitsyn.BuildVision.Helpers;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
 {

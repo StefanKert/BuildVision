@@ -1,6 +1,6 @@
 using System;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool
+namespace BuildVision.Contracts
 {
     public class PropertyNotFoundException : Exception
     {

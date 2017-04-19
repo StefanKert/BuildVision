@@ -1,5 +1,6 @@
 using System;
 using AlekseyNagovitsyn.BuildVision.Tool.Models;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {

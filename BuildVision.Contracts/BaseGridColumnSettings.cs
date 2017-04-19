@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns
+namespace BuildVision.Contracts
 {
     [DataContract]
     public abstract class BaseGridColumnSettings : Attribute

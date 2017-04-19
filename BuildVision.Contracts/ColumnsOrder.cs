@@ -1,4 +1,4 @@
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models
+namespace BuildVision.Contracts
 {
     public enum ColumnsOrder
     {

@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings
+namespace BuildVision.Contracts
 {
     /// <remarks>
     /// See https://msdn.microsoft.com/en-us/library/Microsoft.VisualStudio.Shell.Interop.BuildOutputGroup.aspx

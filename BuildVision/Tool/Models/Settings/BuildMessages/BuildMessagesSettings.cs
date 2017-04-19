@@ -2,6 +2,7 @@ using System;
 using System.Runtime.Serialization;
 
 using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages
 {

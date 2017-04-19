@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Common
 {
     /// <summary>
     /// <see cref="object"/> extensions

@@ -2,7 +2,6 @@
 
 using AlekseyNagovitsyn.BuildVision.Core.Common;
 using AlekseyNagovitsyn.BuildVision.Core.Logging;
-using AlekseyNagovitsyn.BuildVision.Helpers;
 using AlekseyNagovitsyn.BuildVision.Tool;
 using AlekseyNagovitsyn.BuildVision.Tool.Building;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
@@ -14,6 +13,7 @@ using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell.Settings;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Core
 {

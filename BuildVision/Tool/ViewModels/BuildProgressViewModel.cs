@@ -6,17 +6,13 @@ using System.Windows.Shell;
 
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 {
     public class BuildProgressViewModel : NotifyPropertyChangedBase
     {
         private readonly ControlSettings _settings;
-
-        public BuildProgressViewModel(ControlSettings settings)
-        {
-            _settings = settings;
-        }
 
         #region Properties and fields
 
@@ -26,9 +22,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         private double _incProgressValue;
 
-        /// <summary>
-        /// From 0.0 to 1.0.
-        /// </summary>
         private double _actionProgressValue;
 
         private bool _actionProgressIsMarquee;
@@ -42,10 +35,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
         private bool _actionProgressIsPaused;
 
         private readonly Lazy<TaskbarItemInfo> _taskbarItemInfo = new Lazy<TaskbarItemInfo>(() =>
-            {
-                var window = Application.Current.MainWindow;
-                return window.TaskbarItemInfo ?? (window.TaskbarItemInfo = new TaskbarItemInfo());
-            });
+        {
+            var window = Application.Current.MainWindow;
+            return window.TaskbarItemInfo ?? (window.TaskbarItemInfo = new TaskbarItemInfo());
+        });
 
         /// <summary>
         /// Gets the taskbar interface for the Visual Studio application instance.
@@ -87,6 +80,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
         }
 
         #endregion
+
+        public BuildProgressViewModel(ControlSettings settings)
+        {
+            _settings = settings;
+        }
 
         private void UpdateTaskBarInfo()
         {

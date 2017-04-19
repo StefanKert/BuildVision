@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Common
 {
     public static class ClipboardHelper
     {

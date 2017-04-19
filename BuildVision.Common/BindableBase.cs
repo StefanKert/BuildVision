@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
+namespace BuildVision.Common
 {
     [DataContract]
     public abstract class BindableBase : INotifyPropertyChanged

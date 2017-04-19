@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models
+namespace BuildVision.Common
 {
     public class ObservableRangeCollection<T> : ObservableCollection<T>
     {

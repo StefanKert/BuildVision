@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Common
 {
     public static class ObjectContractExtensions
     {

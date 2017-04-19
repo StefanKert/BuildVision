@@ -24,6 +24,7 @@ using Process = System.Diagnostics.Process;
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using SortDescription = AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting.SortDescription;
 using Microsoft.VisualStudio;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 {

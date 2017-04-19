@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models
+namespace BuildVision.Common
 {
     public static class ObservableCollectionExtensions
     {

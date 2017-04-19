@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Common
 {
     public class AppVersionInfo
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Common
 {
     /// <remarks>
     /// U - String.ToUpper, 

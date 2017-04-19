@@ -1,4 +1,4 @@
-namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
+namespace BuildVision.Common
 {
     using System.ComponentModel;
     using System.Runtime.Serialization;

@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using BuildVision.Common;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
+
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 {

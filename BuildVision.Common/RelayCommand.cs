@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
+namespace BuildVision.Common
 {
     /// <summary>
     /// A command whose sole purpose is to 

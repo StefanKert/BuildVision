@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using System.Windows.Controls;
-using AlekseyNagovitsyn.BuildVision.Helpers;
 using AlekseyNagovitsyn.BuildVision.Tool.Building;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
-using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 {

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Common
 {
     public static class FilePathHelper
     {

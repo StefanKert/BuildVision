@@ -182,8 +182,9 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Logging\BindingErrorListener.cs" />
     <Compile Include="Core\BuildVisionPackage.Package.cs" />
+    <Compile Include="Core\Logging\BindingErrorListener.cs" />
+    <Compile Include="Core\Logging\TraceManager.cs" />
     <Compile Include="Helpers\DisplayStringAttribute.cs" />
     <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Helpers\ProjectItemExtensions.cs" />
@@ -240,7 +241,6 @@
     </Compile>
     <Compile Include="Helpers\ProjectExtensions.cs" />
     <Compile Include="Core\Common\IPackageContext.cs" />
-    <Compile Include="Core\Logging\TraceManager.cs" />
     <Compile Include="Tool\Models\Indicators\Core\ResetIndicatorMode.cs" />
     <Compile Include="Tool\Models\Settings\BuildProgress\BuildProgressSettings.cs" />
     <Compile Include="Tool\Models\Settings\BuildProgress\NavigateToBuildFailureReasonCondition.cs" />

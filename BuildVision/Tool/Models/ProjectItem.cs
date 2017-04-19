@@ -179,7 +179,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         }
 
         [GridColumn("ProjectItemHeader_StateBitmap", ColumnsOrder.StateBitmap, true, ImageKey = GridColumnAttribute.EmptyHeaderImageKey)]
-        [NonSortable, NonGroupable]
         public ControlTemplate StateBitmap
         {
             get { return _state.GetAssociatedContent(); }
@@ -189,7 +188,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         private DateTime? _buildStartTime;
 
         [GridColumn("ProjectItemHeader_BuildStartTime", ColumnsOrder.BuildStartTime, true, ValueStringFormat = @"HH:mm:ss", DateTimeExampleValue = @"2012-07-27T20:06:12.3691406+06:00")]
-        [NonGroupable]
         public DateTime? BuildStartTime
         {
             get { return _buildStartTime; }
@@ -208,7 +206,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         private DateTime? _buildFinishTime;
 
         [GridColumn("ProjectItemHeader_BuildFinishTime", ColumnsOrder.BuildFinishTime, true, ValueStringFormat = @"HH:mm:ss", DateTimeExampleValue = @"2012-07-27T20:06:12.3691406+06:00")]
-        [NonGroupable]
         public DateTime? BuildFinishTime
         {
             get { return _buildFinishTime; }
@@ -224,7 +221,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         }
 
         [GridColumn("ProjectItemHeader_BuildElapsedTime", ColumnsOrder.BuildElapsedTime, true, ValueStringFormat = @"mm\:ss", TimeSpanExampleValue = @"00:09:21.60")]
-        [NonGroupable]
         public TimeSpan? BuildElapsedTime
         {
             get
@@ -364,7 +360,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         private int? _buildOrder;
 
         [GridColumn("ProjectItemHeader_BuildOrder", ColumnsOrder.BuildOrder, false, ImageDictionaryUri = ResourcesUri, ImageKey = "BuildOrder", Width = 23, ExampleValue = 4)]
-        [NonGroupable]
         public int? BuildOrder
         {
             get { return _buildOrder; }

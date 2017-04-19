@@ -41,7 +41,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings
             get 
             {
                 yield return GridColumnSettings.Empty;
-                foreach (GridColumnSettings column in Columns.Where(ColumnsManager.ColumnIsSortable))
+                foreach (GridColumnSettings column in Columns.Where(x => ColumnsManager.ColumnIsSortable(x.PropertyNameId)))
                     yield return column;
             }
         }

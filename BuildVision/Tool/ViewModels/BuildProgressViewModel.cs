@@ -10,11 +10,9 @@ using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 {
-    public class BuildProgressViewModel : NotifyPropertyChangedBase
+    public class BuildProgressViewModel : BindableBase
     {
         private readonly ControlSettings _settings;
-
-        #region Properties and fields
 
         private CancellationTokenSource _resetTaskBarInfoCts;
 
@@ -40,46 +38,21 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
             return window.TaskbarItemInfo ?? (window.TaskbarItemInfo = new TaskbarItemInfo());
         });
 
-        /// <summary>
-        /// Gets the taskbar interface for the Visual Studio application instance.
-        /// </summary>
-        private TaskbarItemInfo TaskbarItemInfo
-        {
-            get { return _taskbarItemInfo.Value; }
-        }
+        private TaskbarItemInfo TaskbarItemInfo => _taskbarItemInfo.Value; 
 
-        public int CurrentQueuePosOfBuildingProject
-        {
-            get { return (_currentQueuePosOfBuildingProject); }
-        }
+        public int CurrentQueuePosOfBuildingProject => _currentQueuePosOfBuildingProject;
 
         public bool ActionProgressIsVisible
         {
-            get { return _actionProgressIsVisible; }
-            set
-            {
-                if (_actionProgressIsVisible != value)
-                {
-                    _actionProgressIsVisible = value;
-                    OnPropertyChanged("ActionProgressIsVisible");
-                }
-            }
+            get => _actionProgressIsVisible; 
+            set => SetProperty(ref _actionProgressIsVisible, value);
         }
 
         public bool ActionProgressIsPaused
         {
-            get { return _actionProgressIsPaused; }
-            set
-            {
-                if (_actionProgressIsPaused != value)
-                {
-                    _actionProgressIsPaused = value;
-                    OnPropertyChanged("ActionProgressIsPaused");
-                }
-            }
+            get => _actionProgressIsPaused;
+            set => SetProperty(ref _actionProgressIsPaused, value);
         }
-
-        #endregion
 
         public BuildProgressViewModel(ControlSettings settings)
         {

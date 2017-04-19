@@ -214,7 +214,6 @@
     <Compile Include="Tool\Views\Settings\WindowSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Tool\Views\Converters\ColumnWidthConverter.cs" />
     <Compile Include="Tool\Views\Converters\GridColumnSettingsToColumnExampleValueConverter.cs" />
     <Compile Include="Tool\Views\Converters\GridColumnSettingsToInitialColumnHeaderConverter.cs" />

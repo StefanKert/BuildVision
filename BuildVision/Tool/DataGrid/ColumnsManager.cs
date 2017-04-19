@@ -23,6 +23,20 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
 {
     public static class ColumnsManager
     {
+        private static List<string> _nonSortableColumns = new List<string>
+        {
+            nameof(ProjectItem.StateBitmap)
+        };
+
+        private static List<string> _nonGroupableColumns = new List<string>
+        {
+            nameof(ProjectItem.StateBitmap),
+            nameof(ProjectItem.BuildStartTime),
+            nameof(ProjectItem.BuildFinishTime),
+            nameof(ProjectItem.BuildElapsedTime),
+            nameof(ProjectItem.BuildOrder),
+        };
+
         private static readonly Type _itemRowType = typeof(ProjectItem);
 
         public static string GetInitialColumnHeader(GridColumnSettings gridColumnSettings)
@@ -51,30 +65,18 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
             }
         }
 
-        public static bool ColumnIsSortable(GridColumnSettings gridColumnSettings)
+        public static bool ColumnIsSortable(string propertyName)
         {
-            try
-            {
-                var attr = GetPropertyAttribute<NonSortableAttribute>(gridColumnSettings.PropertyNameId);
-                return (attr == null);
-            }
-            catch (PropertyNotFoundException)
-            {
+            if (_nonSortableColumns.Contains(propertyName))
                 return false;
-            }
+            return true;
         }
 
         public static bool ColumnIsGroupable(GridColumnSettings gridColumnSettings)
         {
-            try
-            {
-                var attr = GetPropertyAttribute<NonGroupableAttribute>(gridColumnSettings.PropertyNameId);
-                return (attr == null);
-            }
-            catch (PropertyNotFoundException)
-            {
+            if (_nonGroupableColumns.Contains(gridColumnSettings.PropertyNameId))
                 return false;
-            }
+            return true;
         }
 
         public static void GenerateColumns(ObservableCollection<DataGridColumn> columns, GridSettings gridSettings)
@@ -199,7 +201,15 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
         private static DataGridBoundColumn CreateColumn(PropertyInfo property)
         {
             DataGridBoundColumn column;
+            column = CreateColumnForProperty(property);
+            column.CanUserSort = ColumnIsSortable(property.Name);
+            column.Binding = new Binding(property.Name);
+            return column;
+        }
 
+        private static DataGridBoundColumn CreateColumnForProperty(PropertyInfo property)
+        {
+            DataGridBoundColumn column;
             if (property.PropertyType == typeof(BitmapSource) || property.PropertyType == typeof(ImageSource))
                 column = new DataGridImageColumn();
             else if (property.PropertyType == typeof(ControlTemplate))
@@ -208,20 +218,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
                 column = new DataGridCheckBoxColumn();
             else
                 column = new DataGridTextColumn();
-
-            var nonSortableAttribute = property.GetCustomAttribute<NonSortableAttribute>();
-            column.CanUserSort = (nonSortableAttribute == null);
-
-            column.Binding = new Binding(property.Name);
-
             return column;
         }
 
-        private static void InitColumn(
-            DataGridBoundColumn column, 
-            GridColumnAttribute columnConfiguration,
-            GridColumnSettings columnSettings,
-            SortDescription sortDescription)
+        private static void InitColumn(DataGridBoundColumn column, GridColumnAttribute columnConfiguration, GridColumnSettings columnSettings, SortDescription sortDescription)
         {
             if (string.IsNullOrEmpty(columnConfiguration.ImageKey))
             {

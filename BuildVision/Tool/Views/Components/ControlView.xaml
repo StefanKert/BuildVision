@@ -10,8 +10,7 @@
              xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:core="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core"
              xmlns:viewModels="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.ViewModels"
-             xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions"
-             mc:Ignorable="d"
+             xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions" xmlns:converters1="http://schemas.microsoft.com/netfx/2007/xaml/presentation" mc:Ignorable="d"
              Name="OwnerUserControl"
              Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"
              DataContextChanged="OnDataContextChanged"
@@ -33,7 +32,7 @@
 
             <viewModels:ControlViewModel x:Key="DesignViewModel"/>
 
-            <converters:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters1:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
             <converters:VisibilityToBooleanConverter x:Key="VisibilityToBoolConverter" />
             <converters:GridColumnHeadersVisibilityToBooleanConverter x:Key="ColumnHeadersVisibilityToBool" />
             <converters:InverseBooleanConverter x:Key="InverseBoolean" />
@@ -45,24 +44,24 @@
 
             <converters:ValueConverterGroup x:Key="InvertedBoolToVisibilityConverter">
                 <converters:InverseBooleanConverter />
-                <converters:BooleanToVisibilityConverter />
+                <converters1:BooleanToVisibilityConverter />
             </converters:ValueConverterGroup>
 
             <converters:ValueConverterGroup x:Key="NotNullToVisibilityConverter">
                 <converters:ObjectToIsNullConverter />
                 <converters:InverseBooleanConverter />
-                <converters:BooleanToVisibilityConverter />
+                <converters1:BooleanToVisibilityConverter />
             </converters:ValueConverterGroup>
 
             <converters:ValueConverterGroup x:Key="IsSeparatorIndicatorToVisibilityConverter">
                 <converters:IsSeparatorIndicatorConverter />
-                <converters:BooleanToVisibilityConverter />
+                <converters1:BooleanToVisibilityConverter />
             </converters:ValueConverterGroup>
 
             <converters:ValueConverterGroup x:Key="IsSeparatorIndicatorToNotVisibilityConverter">
                 <converters:IsSeparatorIndicatorConverter />
                 <converters:InverseBooleanConverter />
-                <converters:BooleanToVisibilityConverter />
+                <converters1:BooleanToVisibilityConverter />
             </converters:ValueConverterGroup>
 
             <converters:ValueConverterGroup x:Key="PositiveNumberToVisibilityConverter">

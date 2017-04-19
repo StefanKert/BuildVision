@@ -6,16 +6,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns
     [DataContract]
     public class GridColumnSettings : BaseGridColumnSettings
     {
-        private static readonly GridColumnSettings _empty = new GridColumnSettings
-                                                                {
-                                                                    PropertyNameId = string.Empty,
-                                                                    Header = Resources.NoneMenuItem
-                                                                };
-
-        public static GridColumnSettings Empty
+        public static GridColumnSettings Empty { get; } = new GridColumnSettings
         {
-            get { return _empty; }
-        }
+            PropertyNameId = string.Empty,
+            Header = Resources.NoneMenuItem
+        };
 
         [DataMember]
         public string PropertyNameId { get; set; }

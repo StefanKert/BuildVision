@@ -191,9 +191,6 @@
     <Compile Include="Helpers\ProjectItemsExtensions.cs" />
     <Compile Include="Helpers\PropertiesExtensions.cs" />
     <Compile Include="Tool\DataGrid\DataGridContentControlColumn.cs" />
-    <Compile Include="Tool\Models\AssociatedProjectStateVectorIconAttribute.cs" />
-    <Compile Include="Tool\Models\AssociatedTemplateAttribute.cs" />
-    <Compile Include="Tool\Models\ProjectState.cs" />
     <Compile Include="Tool\Models\ProjectStateExtensions.cs" />
     <Compile Include="Tool\Models\Settings\Columns\GridColumnAttribute.cs" />
     <Compile Include="Tool\Models\Settings\Columns\GridColumnSettings.cs" />

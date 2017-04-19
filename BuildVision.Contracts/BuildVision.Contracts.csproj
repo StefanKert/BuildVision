@@ -62,7 +62,7 @@
     <Compile Include="FullNameProjectDefinition.cs" />
     <Compile Include="NonGroupableAttribute.cs" />
     <Compile Include="NonSortableAttribute.cs" />
-    <Compile Include="ProjectStateAttribute.cs" />
+    <Compile Include="ProjectState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyNotFoundException.cs" />
     <Compile Include="RegisterLoggerResult.cs" />

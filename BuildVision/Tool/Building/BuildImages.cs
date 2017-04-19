@@ -8,6 +8,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Views;
 
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using BuildVision.Contracts;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {

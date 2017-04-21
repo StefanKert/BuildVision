@@ -24,6 +24,7 @@ using BuildVision.Common;
 using BuildVision.Contracts;
 using BuildVision.UI;
 using AlekseyNagovitsyn.BuildVision.Tool.Building;
+using AlekseyNagovitsyn.BuildVision.Core.Logging;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 {
@@ -235,12 +236,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                 Process.Start(dir);
             }
             catch (Exception ex)
-            {
-                //TODO exception logging
-                //ex.Trace(string.Format(
-                //    "Unable to open folder '{0}' containing the project '{1}'.",
-                //    SelectedProjectItem.FullName,
-                //    SelectedProjectItem.UniqueName));
+            {                
+                ex.Trace(string.Format(
+                    "Unable to open folder '{0}' containing the project '{1}'.",
+                    SelectedProjectItem.FullName,
+                    SelectedProjectItem.UniqueName));
 
                 MessageBox.Show(
                     ex.Message + "\n\nSee log for details.",
@@ -293,8 +293,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
                 }
                 catch (PropertyNotFoundException ex)
                 {
-                    //TODO exception logging
-                    //ex.Trace("Trying to sort Project Items by nonexistent property.");
+                    ex.Trace("Trying to sort Project Items by nonexistent property.");
                     return null;
                 }
             }

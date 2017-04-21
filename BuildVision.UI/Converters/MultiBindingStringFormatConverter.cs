@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using BuildVision.Common;
+using AlekseyNagovitsyn.BuildVision.Core.Logging;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
 {
@@ -24,7 +25,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
             }
             catch (Exception ex)
             {
-                //TODO errorliging: ex.Trace("Format error: " + ex.Message);
+                ex.Trace("Format error: " + ex.Message);
                 return string.Format("<Format error: {0}>", ex.Message);
             }
         }

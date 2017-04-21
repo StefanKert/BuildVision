@@ -18,6 +18,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Views;
 using AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions;
 using BuildVision.Contracts;
 using BuildVision.UI;
+using AlekseyNagovitsyn.BuildVision.Core.Logging;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
 {
@@ -139,7 +140,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
             }
             catch (Exception ex)
             {
-                //TODO: errorhandling ex.TraceUnknownException();
+                ex.TraceUnknownException();
             }
         }
 
@@ -161,7 +162,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
             }
             catch (Exception ex)
             {
-                //TODO: errorhandling ex.TraceUnknownException();
+                ex.TraceUnknownException();
             }
         }
 
@@ -190,7 +191,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
             if (propertyInfo == null)
             {
                 var ex = new PropertyNotFoundException(propertyName, _itemRowType);
-                //TODO: errorhandling  ex.Trace("Unable to find attribute by property.");
+                ex.Trace("Unable to find attribute by property.");
                 throw ex;
             }
 

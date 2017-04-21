@@ -9,7 +9,7 @@
     <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AlekseyNagovitsyn.BuildVision</RootNamespace>
+    <RootNamespace>BuildVision</RootNamespace>
     <AssemblyName>BuildVision</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
@@ -46,6 +46,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -183,8 +184,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\BuildVisionPackage.Package.cs" />
-    <Compile Include="Core\Logging\BindingErrorListener.cs" />
-    <Compile Include="Core\Logging\TraceManager.cs" />
     <Compile Include="Helpers\ProjectItemExtensions.cs" />
     <Compile Include="Helpers\SolutionProjectsExtensions.cs" />
     <Compile Include="Helpers\ProjectExtensions.cs" />
@@ -193,7 +192,7 @@
     <Compile Include="Helpers\UIHierarchyExtensions.cs" />
     <Compile Include="Tool\Building\BuildContext.cs" />
     <Compile Include="Tool\Building\BuildOutputLogger.cs" />
-    <Compile Include="Core\Common\IPackageContext.cs" />
+    <Compile Include="Core\IPackageContext.cs" />
     <Compile Include="Tool\Views\Settings\BuildMessagesSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -238,7 +237,7 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="Core\BuildVision.vsct">
+    <VSCTCompile Include="BuildVision.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
   </ItemGroup>

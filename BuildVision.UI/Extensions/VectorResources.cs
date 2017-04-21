@@ -37,7 +37,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views
             {
                 return Get(resourceDictionaryRelativeUri, resourceKey);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }

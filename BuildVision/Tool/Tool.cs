@@ -22,7 +22,6 @@ using WindowState = AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.ToolWindo
 using ErrorItem = BuildVision.Contracts.ErrorItem;
 using Microsoft.VisualStudio;
 using System.Windows;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
 using System.ComponentModel;
 using System.IO;
 using BuildVision.Contracts;

@@ -2,6 +2,7 @@ using System;
 using AlekseyNagovitsyn.BuildVision.Tool.Building;
 using BuildVision.Common;
 using BuildVision.UI;
+using AlekseyNagovitsyn.BuildVision.Core.Logging;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
 {
@@ -131,7 +132,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
                 _value = null;
                 IsUpdateError = true;
                 LastErrorMessage = ex.Message;
-                //TODO errorlogging ex.TraceUnknownException();
+                ex.TraceUnknownException();
             }
 
             RaiseValueChanged();

@@ -17,22 +17,31 @@ using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Core
 {
-    /// <summary>
-    /// This is the class that implements the package exposed by this assembly.
-    /// </summary>
     public partial class BuildVisionPackage : IPackageContext
     {
         private const string SettingsCategoryName = "BuildVision";
 
         private const string SettingsPropertyName = "Settings";
 
-        private ControlSettings _controlSettings;
+        public ControlSettings ControlSettings { get; set; }
+
+        public DTE2 GetDTE2() => (DTE2)GetService(typeof(DTE2));
+
+        public DTE GetDTE() => (DTE)GetService(typeof(DTE));
+
+        public IVsUIShell GetUIShell() => (IVsUIShell)GetService(typeof(IVsUIShell));
+
+        public IVsSolution GetSolution() => (IVsSolution)GetService(typeof(IVsSolution));
+
+        public IVsStatusbar GetStatusBar() => (IVsStatusbar)GetService(typeof(SVsStatusbar));
+
+        public ToolWindowPane GetToolWindow() => GetWindowPane(typeof(ToolWindow));
 
         private void ToolInitialize()
         {
             try
             {
-                _controlSettings = LoadSettings(this);
+                ControlSettings = LoadSettings(this);
                 ToolWindowPane toolWindow = GetToolWindow();
                 IPackageContext packageContext = this;
                 ControlViewModel viewModel = ToolWindow.GetViewModel(toolWindow);
@@ -45,46 +54,14 @@ namespace AlekseyNagovitsyn.BuildVision.Core
             }
         }
 
-        public event Action<ControlSettings> ControlSettingsChanged = delegate { };
+        public void SaveSettings()
+        {
+            SaveSettings(ControlSettings, this);
+        }
 
         public void NotifyControlSettingsChanged()
         {
             ControlSettingsChanged(ControlSettings);
-        }
-
-        public ControlSettings ControlSettings
-        {
-            get { return _controlSettings; }
-        }
-
-        public void SaveSettings()
-        {
-            SaveSettings(_controlSettings, this);
-        }
-
-        public DTE GetDTE()
-        {
-            return (DTE)GetService(typeof(DTE));
-        }
-
-        public IVsUIShell GetUIShell()
-        {
-            return (IVsUIShell)GetService(typeof(IVsUIShell));
-        }
-
-        public IVsSolution GetSolution()
-        {
-            return (IVsSolution)GetService(typeof(IVsSolution));
-        }
-
-        public IVsStatusbar GetStatusBar()
-        {
-            return (IVsStatusbar)GetService(typeof(SVsStatusbar));
-        }
-
-        public ToolWindowPane GetToolWindow()
-        {
-            return GetWindowPane(typeof(ToolWindow));
         }
 
         private ToolWindowPane GetWindowPane(Type windowType)
@@ -126,9 +103,6 @@ namespace AlekseyNagovitsyn.BuildVision.Core
             return writableSettingsStore;
         }
 
-        public DTE2 GetDTE2()
-        {
-            return (DTE2)GetService(typeof(DTE2));
-        }
+        public event Action<ControlSettings> ControlSettingsChanged = delegate { };
     }
 }

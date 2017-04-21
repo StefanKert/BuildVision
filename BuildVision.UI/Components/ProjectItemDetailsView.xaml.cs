@@ -9,6 +9,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions;
 using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using UIElement = System.Windows.UIElement;
 using BuildVision.Contracts;
+using AlekseyNagovitsyn.BuildVision.Core.Logging;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Views
 {
@@ -47,8 +48,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views
             }
             catch (Exception ex)
             {
-                //TODO: logging
-                //ex.Trace("Navigate to error item exception.");
+                ex.Trace("Navigate to error item exception.");
             }
         }
 

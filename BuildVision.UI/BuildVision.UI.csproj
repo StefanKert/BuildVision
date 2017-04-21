@@ -120,6 +120,8 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Common\Logging\BindingErrorListener.cs" />
+    <Compile Include="Common\Logging\TraceManager.cs" />
     <Compile Include="Contracts\BuildedProjectsCollection.cs" />
     <Compile Include="Contracts\BuildProjectContextEntry.cs" />
     <Compile Include="Contracts\IBuildDistributor.cs" />

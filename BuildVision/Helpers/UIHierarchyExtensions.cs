@@ -1,6 +1,6 @@
+using EnvDTE;
 using System;
 using System.Collections;
-using EnvDTE;
 
 namespace AlekseyNagovitsyn.BuildVision.Helpers
 {
@@ -42,7 +42,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
         /// Enumerating children recursive would work, but it may be slow on large solution. 
         /// This tries to be smarter and faster 
         /// </summary>
-        public static UIHierarchyItem FindHierarchyItem(this UIHierarchyItems items, object item)
+        private static UIHierarchyItem FindHierarchyItem(this UIHierarchyItems items, object item)
         {
             // This creates the full hierarchy for the given item
             var itemHierarchy = new Stack();

@@ -10,6 +10,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Views.Settings;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using BuildVision.UI;
 
 namespace AlekseyNagovitsyn.BuildVision.Core
 {

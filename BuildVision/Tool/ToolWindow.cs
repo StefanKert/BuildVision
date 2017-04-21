@@ -9,6 +9,8 @@ using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
 using AlekseyNagovitsyn.BuildVision.Tool.Views;
 
 using Microsoft.VisualStudio.Shell;
+using AlekseyNagovitsyn.BuildVision.Tool.Building;
+using BuildVision.UI;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool
 {
@@ -73,7 +75,11 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         private ControlView CreateMyControl()
         {
             var packageContext = (IPackageContext)Package;
-            var viewModel = new ControlViewModel(new ControlModel(), packageContext);
+            var viewModel = new ControlViewModel(new ControlModel(), packageContext.ControlSettings);
+            packageContext.ControlSettingsChanged += (settings) =>
+            {
+                viewModel.OnControlSettingsChanged(settings, buildInfo => BuildMessages.GetBuildDoneMessage(viewModel.SolutionItem, buildInfo, viewModel.ControlSettings.BuildMessagesSettings));
+            };
             var view = new ControlView { DataContext = viewModel };
             return view;
         }

@@ -64,7 +64,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         public BuildedSolution BuildingSolution { get; private set; }
 
-        public Project BuildScopeProject { get; private set; }
+        public ProjectItem BuildScopeProject { get; private set; }
 
         public void OverrideBuildProperties(BuildActions? buildAction = null, BuildScopes? buildScope = null)
         {
@@ -553,7 +553,10 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
                             case 1:
                                 var item = (UIHierarchyItem)items.GetValue(0);
-                                BuildScopeProject = (Project)item.Object;
+
+                                var hierachyProjectItem = new ProjectItem();
+                                ViewModelHelper.UpdateProperties((Project)item.Object, hierachyProjectItem);
+                                BuildScopeProject = hierachyProjectItem;
                                 break;
 
                             default:
@@ -563,7 +566,9 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                         break;
 
                     case vsWindowType.vsWindowTypeDocument:
-                        BuildScopeProject = projContext.Project;
+                        var projectItem = new ProjectItem();
+                        ViewModelHelper.UpdateProperties(projContext.Project, projectItem);
+                        BuildScopeProject = projectItem;
                         break;
 
                     default:

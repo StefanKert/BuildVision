@@ -1,0 +1,196 @@
+﻿<UserControl x:Class="AlekseyNagovitsyn.BuildVision.Tool.Views.BuildMessagesSettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"     
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:components="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Components"
+             xmlns:converters="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Converters"
+             xmlns:res="clr-namespace:BuildVision.UI"
+             xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions"
+             xmlns:buildMessages1="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages"
+             mc:Ignorable="d"
+             d:DesignWidth="500"
+             d:DesignHeight="350"
+             d:DataContext="{Binding Source={StaticResource DesignViewModel}}">
+
+    <UserControl.Resources>
+
+        <buildMessages1:BuildMessagesSettings x:Key="DesignViewModel"/>
+        
+        <converters:ExtraLabelTemplateToTimeSpanFormatVisibility x:Key="ExtraLabelTemplateToTimeSpanFormatVisibility" />
+
+        <Style TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" MinWidth="100" />
+            <ColumnDefinition Width="*" MaxWidth="300" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0"
+               Grid.Column="0"
+               Content="{x:Static res:Resources.BuildMessagesSettings_BuildBeginStringFormatLabel}" />
+        <TextBox Grid.Row="0"
+                 Grid.Column="1"
+                 VerticalAlignment="Center">
+            <TextBox.Text>
+                <Binding Path="BuildBeginMajorMessageStringFormat" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <ExceptionValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <Label Grid.Row="1"
+               Grid.Column="0"
+               Content="{x:Static res:Resources.BuildMessagesSettings_BuildDoneStringFormatLabel}" />
+        <TextBox Grid.Row="1"
+                 Grid.Column="1"
+                 VerticalAlignment="Center">
+            <TextBox.Text>
+                <Binding Path="BuildDoneMajorMessageStringFormat" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <ExceptionValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <Label Grid.Row="2"
+               Grid.Column="0"
+               Content="{x:Static res:Resources.BuildMessagesSettings_StringTemplateLabel}" />
+        <ComboBox Grid.Row="2"
+                  Grid.Column="1"
+                  VerticalAlignment="Center"
+                  DisplayMemberPath="Description"
+                  ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type buildMessages1:BuildMajorMessageFormat}}}"
+                  SelectedValue="{Binding MajorMessageFormat}"
+                  SelectedValuePath="Value" />
+
+        <Label Grid.Row="3"
+               Grid.Column="0"
+               Content="{x:Static res:Resources.BuildMessagesSettings_DateTimeFormatLabel}" />
+        <TextBox Grid.Row="3"
+                 Grid.Column="1"
+                 VerticalAlignment="Center">
+            <TextBox.Text>
+                <Binding Path="DateTimeFormat" UpdateSourceTrigger="PropertyChanged">
+                    <Binding.ValidationRules>
+                        <ExceptionValidationRule />
+                    </Binding.ValidationRules>
+                </Binding>
+            </TextBox.Text>
+        </TextBox>
+
+        <Label Grid.Row="4"
+               Grid.Column="0"
+               Content="{x:Static res:Resources.BuildMessagesSettings_DisplayLabel}" />
+        <StackPanel Grid.Row="4"
+                    Grid.Column="1"
+                    Margin="0,5,0,5"                
+                    Orientation="Vertical">
+            <CheckBox Content="{x:Static res:Resources.BuildMessagesSettings_ShowSolutionNameCheckBox}" IsChecked="{Binding ShowSolutionName}" />
+            <CheckBox Content="{x:Static res:Resources.BuildMessagesSettings_ShowProjectNameCheckBox}" IsChecked="{Binding ShowProjectName}" />
+            <CheckBox Content="{x:Static res:Resources.BuildMessagesSettings_ShowAgoTimeCheckBox}" IsChecked="{Binding ShowExtraMessage}" />
+        </StackPanel>
+
+        <Label Grid.Row="5"
+               Grid.Column="0"
+               Content="{x:Static res:Resources.BuildMessagesSettings_ShowAgoTimeCheckBox}"
+               IsEnabled="{Binding ShowExtraMessage}"/>
+
+        <GroupBox Grid.Row="5"
+                  Grid.Column="1"
+                  Header="{x:Static res:Resources.BuildMessagesSettings_AgoTimeHeader}"
+                  IsEnabled="{Binding ShowExtraMessage}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" MinWidth="100" />
+                    <ColumnDefinition Width="*" MaxWidth="300" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Label Grid.Row="0"
+                       Grid.Column="0"
+                       Content="{x:Static res:Resources.BuildMessagesSettings_StringFormatLabel}" />
+                <TextBox Grid.Row="0"
+                         Grid.Column="1"
+                         VerticalAlignment="Center">
+                    <TextBox.Text>
+                        <Binding Path="ExtraMessageStringFormat" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <ExceptionValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <Label Grid.Row="1"
+                       Grid.Column="0"
+                       Content="{x:Static res:Resources.BuildMessagesSettings_DateTimeTemplateLabel}" />
+                <ComboBox Grid.Row="1"
+                          Grid.Column="1"
+                          VerticalAlignment="Center"
+                          DisplayMemberPath="Description"
+                          ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type buildMessages1:BuildExtraMessageFormat}}}"
+                          SelectedValue="{Binding ExtraMessageFormat}"
+                          SelectedValuePath="Value" />
+
+                <Label Grid.Row="2"
+                       Grid.Column="0"
+                       Content="{x:Static res:Resources.BuildMessagesSettings_DateTimeFormatLabel}"
+                       Visibility="{Binding ExtraMessageFormat,
+                       Converter={StaticResource ExtraLabelTemplateToTimeSpanFormatVisibility}}" />
+                <TextBox Grid.Row="2"
+                         Grid.Column="1"
+                         VerticalAlignment="Center"
+                         Visibility="{Binding ExtraMessageFormat,
+                         Converter={StaticResource ExtraLabelTemplateToTimeSpanFormatVisibility}}">
+                    <TextBox.Text>
+                        <Binding Path="TimeSpanFormat" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <ExceptionValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+
+                <Label Grid.Row="3"
+                       Grid.Column="0"
+                       Content="{x:Static res:Resources.BuildMessagesSettings_DelayLabel}" />
+                <components:SpinnerControl Grid.Row="3"
+                                           Grid.Column="1"
+                                           Width="70"
+                                           HorizontalAlignment="Left"
+                                           VerticalAlignment="Center"
+                                           Change="1"
+                                           Maximum="9999"
+                                           Minimum="0"
+                                           Value="{Binding ExtraMessageDelay, UpdateSourceTrigger=PropertyChanged}" />
+
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

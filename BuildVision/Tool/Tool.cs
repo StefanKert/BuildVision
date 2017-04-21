@@ -28,6 +28,8 @@ using System.IO;
 using BuildVision.Contracts;
 using EnvDTE80;
 using BuildVision.Common;
+using AlekseyNagovitsyn.BuildVision.Tool.Views.Settings;
+using BuildVision.UI;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool
 {
@@ -112,7 +114,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             _viewModel.BuildSolution += BuildSolution;
             _viewModel.RaiseCommandForSelectedProject += RaiseCommandForSelectedProject;
             _viewModel.ProjectCopyBuildOutputFilesToClipBoard += ProjectCopyBuildOutputFilesToClipBoard;
-            _viewModel.ShowOptionPage += (pageType) => _packageContext.ShowOptionPage(pageType);
+            _viewModel.ShowGeneralSettingsPage += () => _packageContext.ShowOptionPage(typeof(GeneralSettingsDialogPage));
+            _viewModel.ShowGridColumnsSettingsPage += () => _packageContext.ShowOptionPage(typeof(GridSettingsDialogPage));
             UpdateSolutionItem();
         }
 

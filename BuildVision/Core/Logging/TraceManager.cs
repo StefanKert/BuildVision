@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 
 using Microsoft.VisualStudio.Shell;
+using BuildVision.UI;
 
 namespace AlekseyNagovitsyn.BuildVision.Core.Logging
 {

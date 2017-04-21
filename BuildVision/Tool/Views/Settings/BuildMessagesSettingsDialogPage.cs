@@ -10,8 +10,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
     {
         protected override BuildMessagesSettings Settings
         {
-            get { return Package.ControlSettings.BuildMessagesSettings; }
-            set { Package.ControlSettings.BuildMessagesSettings = value; }
+            get { return ControlSettings.BuildMessagesSettings; }
+            set { ControlSettings.BuildMessagesSettings = value; }
         }
     }
 }

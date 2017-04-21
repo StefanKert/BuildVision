@@ -9,6 +9,7 @@ using AlekseyNagovitsyn.BuildVision.Helpers;
 
 using Microsoft.VisualStudio.Shell;
 using BuildVision.Common;
+using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
 {
@@ -77,6 +78,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
 
             base.ResetSettings();
         }
+
+        protected ControlSettings ControlSettings => Package.ControlSettings;
 
         protected IPackageContext Package
         {

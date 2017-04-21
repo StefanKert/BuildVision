@@ -14,8 +14,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
     {
         protected override GridSettings Settings
         {
-            get { return Package.ControlSettings.GridSettings; }
-            set { Package.ControlSettings.GridSettings = value; }
+            get { return ControlSettings.GridSettings; }
+            set { ControlSettings.GridSettings = value; }
         }
 
         protected override void OnActivate(CancelEventArgs e)

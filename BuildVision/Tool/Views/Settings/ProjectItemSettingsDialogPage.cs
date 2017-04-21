@@ -10,8 +10,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
     {
         protected override ProjectItemSettings Settings
         {
-            get { return Package.ControlSettings.ProjectItemSettings; }
-            set { Package.ControlSettings.ProjectItemSettings = value; }
+            get { return ControlSettings.ProjectItemSettings; }
+            set { ControlSettings.ProjectItemSettings = value; }
         }
     }
 }

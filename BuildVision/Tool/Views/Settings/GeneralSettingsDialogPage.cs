@@ -10,8 +10,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
     {
         protected override GeneralSettings Settings
         {
-            get { return Package.ControlSettings.GeneralSettings; }
-            set { Package.ControlSettings.GeneralSettings = value; }
+            get { return ControlSettings.GeneralSettings; }
+            set { ControlSettings.GeneralSettings = value; }
         }
     }
 }

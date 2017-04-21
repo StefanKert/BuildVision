@@ -10,8 +10,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
     {
         protected override WindowSettings Settings
         {
-            get { return Package.ControlSettings.WindowSettings; }
-            set { Package.ControlSettings.WindowSettings = value; }
+            get { return ControlSettings.WindowSettings; }
+            set { ControlSettings.WindowSettings = value; }
         }
     }
 }

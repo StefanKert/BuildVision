@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions
+namespace BuildVision.UI.Extensions
 {
     public class TextBlockUtils
     {

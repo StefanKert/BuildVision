@@ -18,7 +18,7 @@ using AlekseyNagovitsyn.BuildVision.Tool.Models;
 using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
 using AlekseyNagovitsyn.BuildVision.Tool.Views.Converters;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views
+namespace BuildVision.UI
 {
     /// <summary>
     /// Interaction logic for ControlView.xaml

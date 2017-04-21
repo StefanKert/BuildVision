@@ -8,19 +8,19 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings
     public class ControlSettings
     {
         [DataMember]
-        public GeneralSettings GeneralSettings { get; set; }
+        public BuildMessagesSettings BuildMessagesSettings { get; set; }
 
         [DataMember]
-        public WindowSettings WindowSettings { get; set; }
+        public GeneralSettings GeneralSettings { get; set; }
 
         [DataMember]
         public GridSettings GridSettings { get; set; }
 
         [DataMember]
-        public BuildMessagesSettings BuildMessagesSettings { get; set; }
+        public ProjectItemSettings ProjectItemSettings { get; set; }
 
         [DataMember]
-        public ProjectItemSettings ProjectItemSettings { get; set; }
+        public WindowSettings WindowSettings { get; set; }
 
         public ControlSettings()
         {

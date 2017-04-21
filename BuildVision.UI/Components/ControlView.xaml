@@ -1,16 +1,17 @@
-﻿<UserControl x:Class="AlekseyNagovitsyn.BuildVision.Tool.Views.ControlView"
+﻿<UserControl x:Class="BuildVision.UI.ControlView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:converters="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:BuildVision.UI"
-             xmlns:views="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views"
+             xmlns:views="clr-namespace:BuildVision.UI"
              xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:core="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core"
              xmlns:viewModels="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.ViewModels"
              xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions" 
+             xmlns:extensions1="clr-namespace:BuildVision.UI.Extensions" 
              xmlns:converters1="http://schemas.microsoft.com/netfx/2007/xaml/presentation" 
              mc:Ignorable="d"
              Name="OwnerUserControl"
@@ -211,8 +212,8 @@
                            FontSize="18"
                            Foreground="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"
                            Text="{Binding TextCurrentState}"
-                           TextTrimming="WordEllipsis"
-                           extensions:TextBlockUtils.AutoTooltip="True"/>
+                           TextTrimming="WordEllipsis" 
+                           extensions1:TextBlockUtils.AutoTooltip="True"/>
             </Grid>
 
             <!-- Progress indicator -->

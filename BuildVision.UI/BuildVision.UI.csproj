@@ -122,6 +122,9 @@
     </Compile>
     <Compile Include="Common\Logging\BindingErrorListener.cs" />
     <Compile Include="Common\Logging\TraceManager.cs" />
+    <Compile Include="Components\ErrorsGrid.xaml.cs">
+      <DependentUpon>ErrorsGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Contracts\BuildedProjectsCollection.cs" />
     <Compile Include="Contracts\BuildProjectContextEntry.cs" />
     <Compile Include="Contracts\IBuildDistributor.cs" />
@@ -164,27 +167,26 @@
     <Compile Include="Models\Indicators\SuccessProjectsIndicator.cs" />
     <Compile Include="Models\Indicators\WarningsIndicator.cs" />
     <Compile Include="Models\ProjectItem.cs" />
-    <Compile Include="Models\ProjectStateExtensions.cs" />
-    <Compile Include="Models\Settings\BuildMessages\BuildExtraMessageFormat.cs" />
-    <Compile Include="Models\Settings\BuildMessages\BuildMajorMessageFormat.cs" />
-    <Compile Include="Models\Settings\BuildMessages\BuildMessagesSettings.cs" />
-    <Compile Include="Models\Settings\BuildProgress\BuildProgressSettings.cs" />
-    <Compile Include="Models\Settings\BuildProgress\NavigateToBuildFailureReasonCondition.cs" />
-    <Compile Include="Models\Settings\BuildProgress\ResetTaskBarItemInfoCondition.cs" />
-    <Compile Include="Models\Settings\Columns\GridColumnAttribute.cs" />
-    <Compile Include="Models\Settings\Columns\GridColumnSettings.cs" />
-    <Compile Include="Models\Settings\Columns\GridColumnSettingsCollection.cs" />
-    <Compile Include="Models\Settings\ControlSettings.cs" />
-    <Compile Include="Models\Settings\GeneralSettings.cs" />
-    <Compile Include="Models\Settings\GridSettings.cs" />
-    <Compile Include="Models\Settings\ProjectItemSettings.cs" />
-    <Compile Include="Models\Settings\Sorting\ProjectItemColumnSorter.cs" />
-    <Compile Include="Models\Settings\Sorting\PropertyColumnSorter.cs" />
-    <Compile Include="Models\Settings\Sorting\SortDescription.cs" />
-    <Compile Include="Models\Settings\Sorting\SortOrder.cs" />
-    <Compile Include="Models\Settings\ToolWindow\WindowState.cs" />
-    <Compile Include="Models\Settings\ToolWindow\WindowStateAction.cs" />
-    <Compile Include="Models\Settings\WindowSettings.cs" />
+    <Compile Include="Extensions\ProjectStateExtensions.cs" />
+    <Compile Include="Models\BuildExtraMessageFormat.cs" />
+    <Compile Include="Models\BuildMajorMessageFormat.cs" />
+    <Compile Include="Settings\Models\BuildMessagesSettings.cs" />
+    <Compile Include="Settings\Models\BuildProgress\BuildProgressSettings.cs" />
+    <Compile Include="Models\NavigateToBuildFailureReasonCondition.cs" />
+    <Compile Include="Models\ResetTaskBarItemInfoCondition.cs" />
+    <Compile Include="Models\GridColumnAttribute.cs" />
+    <Compile Include="Settings\Models\Columns\GridColumnSettings.cs" />
+    <Compile Include="Settings\Models\Columns\GridColumnSettingsCollection.cs" />
+    <Compile Include="Settings\Models\ControlSettings.cs" />
+    <Compile Include="Settings\Models\GeneralSettings.cs" />
+    <Compile Include="Settings\Models\GridSettings.cs" />
+    <Compile Include="Settings\Models\ProjectItemSettings.cs" />
+    <Compile Include="Helpers\ProjectItemColumnSorter.cs" />
+    <Compile Include="Settings\Models\Sorting\SortDescription.cs" />
+    <Compile Include="Models\SortOrder.cs" />
+    <Compile Include="Models\WindowState.cs" />
+    <Compile Include="Settings\Models\ToolWindow\WindowStateAction.cs" />
+    <Compile Include="Settings\Models\WindowSettings.cs" />
     <Compile Include="Models\SolutionItem.cs" />
     <Compile Include="Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
@@ -272,6 +274,10 @@
     <Page Include="Components\ControlView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Components\ErrorsGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Components\ProjectItemDetailsView.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -193,11 +193,6 @@
     <Compile Include="Helpers\UIHierarchyExtensions.cs" />
     <Compile Include="Tool\Building\BuildContext.cs" />
     <Compile Include="Tool\Building\BuildOutputLogger.cs" />
-    <Compile Include="Tool\Building\BuildProjectContextEntry.cs" />
-    <Compile Include="Tool\Building\BuildProjectEventArgs.cs" />
-    <Compile Include="Tool\Building\IBuildDistributor.cs">
-      <DependentUpon>BuildContext.cs</DependentUpon>
-    </Compile>
     <Compile Include="Core\Common\IPackageContext.cs" />
     <Compile Include="Tool\Views\Settings\BuildMessagesSettingsDialogPage.cs">
       <SubType>Component</SubType>

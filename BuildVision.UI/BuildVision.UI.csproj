@@ -120,10 +120,13 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="BuildedProjectsCollection.cs" />
-    <Compile Include="BuildImages.cs" />
-    <Compile Include="BuildInfo.cs" />
-    <Compile Include="BuildMessages.cs" />
+    <Compile Include="Contracts\BuildedProjectsCollection.cs" />
+    <Compile Include="Contracts\BuildProjectContextEntry.cs" />
+    <Compile Include="Contracts\IBuildDistributor.cs" />
+    <Compile Include="Helpers\BuildImages.cs" />
+    <Compile Include="Contracts\BuildInfo.cs" />
+    <Compile Include="Helpers\BuildMessages.cs" />
+    <Compile Include="Contracts\BuildProjectEventArgs.cs" />
     <Compile Include="Components\ControlView.xaml.cs">
       <DependentUpon>ControlView.xaml</DependentUpon>
     </Compile>

@@ -6,7 +6,7 @@ using AlekseyNagovitsyn.BuildVision.Core.Logging;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
 {
-    public abstract class ValueIndicator : NotifyPropertyChangedBase
+    public abstract class ValueIndicator : BindableBase
     {
         private int? _value;
         private bool _isEnabled;
@@ -21,16 +21,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
 
         protected abstract int? GetValue(IBuildInfo buildContext);
 
-        public int? Value
-        {
-            get { return _value; }
-        }
-
-        public bool IsEnabled
-        {
-            get { return _isEnabled; }
-        }
-
+        public int? Value => _value;
+        public bool IsEnabled => _isEnabled;
         public virtual string StringValue
         {
             get
@@ -45,14 +37,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
         public bool IsUpdateError
         {
             get { return _isUpdateError; }
-            set
-            {
-                if (_isUpdateError != value)
-                {
-                    _isUpdateError = value;
-                    OnPropertyChanged("IsUpdateError");
-                }
-            }
+            set => SetProperty(ref _isUpdateError, value);
         }
 
         public string LastErrorMessage
@@ -60,12 +45,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
             get { return _lastErrorMessage; }
             set
             {
-                if (_lastErrorMessage != value)
-                {
-                    _lastErrorMessage = value;
-                    OnPropertyChanged("LastErrorMessage");
-                    OnPropertyChanged("ToolTip");
-                }
+                SetProperty(ref _lastErrorMessage, value);
+                OnPropertyChanged(nameof(ToolTip));
             }
         }
 
@@ -110,7 +91,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException("resetMode");
+                    throw new ArgumentOutOfRangeException(nameof(resetMode));
             }
 
             RaiseValueChanged();
@@ -140,9 +121,9 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
 
         private void RaiseValueChanged()
         {
-            OnPropertyChanged("Value");
-            OnPropertyChanged("StringValue");
-            OnPropertyChanged("IsEnabled");
+            OnPropertyChanged(nameof(Value));
+            OnPropertyChanged(nameof(StringValue));
+            OnPropertyChanged(nameof(IsEnabled));
         }
     }
 }

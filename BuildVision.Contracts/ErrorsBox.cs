@@ -18,15 +18,8 @@ namespace BuildVision.Contracts
         public int WarningsCount { get; private set; }
         public int MessagesCount { get; private set; }
 
-        public bool IsEmpty
-        {
-            get { return _errors.Count == 0 && _warnings.Count == 0 && _messages.Count == 0; }
-        }
-
-        public IList<ErrorItem> Errors
-        {
-            get { return _errors; }
-        }
+        public bool IsEmpty => _errors.Count == 0 && _warnings.Count == 0 && _messages.Count == 0;
+        public IList<ErrorItem> Errors => _errors;
 
         public void AddErrorItem(ErrorItem errorItem)
         {

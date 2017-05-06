@@ -87,16 +87,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             _solutionEvents.AfterClosing += () =>
                                             {
                                                 _viewModel.TextCurrentState = Resources.BuildDoneText_BuildNotStarted;
-
-                                                ControlTemplate stateImage;
-                                                _viewModel.ImageCurrentState = BuildImages.GetBuildDoneImage(null, null, out stateImage);
+                                                _viewModel.ImageCurrentState = BuildImages.GetBuildDoneImage(null, null, out ControlTemplate stateImage);
                                                 _viewModel.ImageCurrentStateResult = stateImage;
 
                                                 UpdateSolutionItem();
                                                 _viewModel.ProjectsList.Clear();
-
                                                 _viewModel.ResetIndicators(ResetIndicatorMode.Disable);
-
                                                 _viewModel.BuildProgressViewModel.ResetTaskBarInfo();
                                             };
 
@@ -122,9 +118,9 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         {
             try
             {
-                UIHierarchy solutionExplorer = _dte2.ToolWindows.SolutionExplorer;
+                var solutionExplorer = _dte2.ToolWindows.SolutionExplorer;
                 var project = _dte.Solution.GetProject(x => x.UniqueName == selectedProjectItem.UniqueName);
-                UIHierarchyItem item = solutionExplorer.FindHierarchyItem(project);
+                var item = solutionExplorer.FindHierarchyItem(project);
                 if (item == null)
                     throw new Exception(string.Format("Project '{0}' not found in SolutionExplorer.", selectedProjectItem.UniqueName));
 
@@ -160,11 +156,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                 string[] filePaths = project.GetBuildOutputFilePaths(fileTypes, projItem.Configuration, projItem.Platform).ToArray();
                 if (filePaths.Length == 0)
                 {
-                    MessageBox.Show(
-                        @"Nothing copied: selected build output groups are empty.",
-                        Resources.ProductName,
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Information);
+                    MessageBox.Show(@"Nothing copied: selected build output groups are empty.", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
                     return;
                 }
 
@@ -194,11 +186,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             }
             catch (Win32Exception ex)
             {
-                string msg = string.Format(
-                    "Error copying files to the Clipboard: 0x{0:X} ({1})",
-                    ex.ErrorCode,
-                    ex.Message);
-
+                string msg = string.Format("Error copying files to the Clipboard: 0x{0:X} ({1})", ex.ErrorCode, ex.Message);
                 ex.Trace(msg);
                 MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -371,10 +359,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
 
                 UpdateSolutionItem();
 
-                string message = BuildMessages.GetBuildBeginMajorMessage(
-                    _viewModel.SolutionItem, 
-                    _buildContext, 
-                    _viewModel.ControlSettings.BuildMessagesSettings);
+                string message = BuildMessages.GetBuildBeginMajorMessage(_viewModel.SolutionItem, _buildContext, _viewModel.ControlSettings.BuildMessagesSettings);
 
                 OutputInStatusBar(message, true);
                 _viewModel.TextCurrentState = message;

@@ -90,15 +90,13 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
         /// </summary>
         private static void CreateItemHierarchy(Stack itemHierarchy, object item)
         {
-            if (item is ProjectItem)
+            if (item is ProjectItem pi)
             {
-                var pi = (ProjectItem)item;
                 itemHierarchy.Push(pi);
                 CreateItemHierarchy(itemHierarchy, pi.Collection.Parent);
             }
-            else if (item is Project)
+            else if (item is Project p)
             {
-                var p = (Project)item;
                 itemHierarchy.Push(p);
                 if (p.ParentProjectItem != null)
                 {

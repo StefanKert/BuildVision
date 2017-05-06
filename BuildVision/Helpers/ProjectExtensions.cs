@@ -12,7 +12,6 @@ using Microsoft.Win32;
 using VSLangProj;
 using System.Globalization;
 using Microsoft.VisualStudio.Shell.Interop;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
 using System.IO;
 using System.Text;
 using BuildVision.Contracts;

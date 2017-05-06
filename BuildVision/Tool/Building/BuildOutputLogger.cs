@@ -23,15 +23,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             _id = id;
         }
 
-        public IEventSource EventSource
-        {
-            get { return _eventSource; }
-        }
-
-        public List<BuildProjectContextEntry> Projects
-        {
-            get { return _projects; }
-        }
+        public IEventSource EventSource => _eventSource;
+        public List<BuildProjectContextEntry> Projects => _projects;
 
         public override void Initialize(IEventSource eventSource)
         {
@@ -55,10 +48,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 e.GlobalProperties));
         }
 
-        public static RegisterLoggerResult Register(
-            Guid loggerId, 
-            LoggerVerbosity loggerVerbosity, 
-            out BuildOutputLogger buildLogger)
+        public static RegisterLoggerResult Register(Guid loggerId, LoggerVerbosity loggerVerbosity, out BuildOutputLogger buildLogger)
         {
             try
             {

@@ -10,7 +10,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 {
 
     [DataContract]
-    public class ProjectItem : NotifyPropertyChangedBase
+    public class ProjectItem : BindableBase
     {
         private const string ResourcesUri = @"Resources/ProjectItem.Resources.xaml";
 
@@ -29,15 +29,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_UniqueName", ColumnsOrder.UniqueName, false, ExampleValue = @"ConsoleApplication1\ConsoleApplication1.csproj")]
         public string UniqueName
         {
-            get { return _uniqueName; }
-            set 
-            {
-                if (_uniqueName != value)
-                {
-                    _uniqueName = value;
-                    OnPropertyChanged("UniqueName");
-                }
-            }
+            get => _uniqueName;
+            set => SetProperty(ref _uniqueName, value);
         }
 
         [DataMember(Name = "Name")]
@@ -46,15 +39,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_Name", ColumnsOrder.Name, true, ExampleValue = @"ConsoleApplication1")]
         public string Name
         {
-            get { return _name; }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    OnPropertyChanged("Name");
-                }
-            }
+            get => _name;
+            set => SetProperty(ref _name, value);
         }
 
         [DataMember(Name = "FullName")]
@@ -63,15 +49,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_FullName", ColumnsOrder.FullName, false, ExampleValue = @"D:\Projects\ConsoleApplication1\ConsoleApplication1.csproj")]
         public string FullName
         {
-            get { return _fullName; }
-            set 
-            {
-                if (_fullName != value)
-                {
-                    _fullName = value;
-                    OnPropertyChanged("FullName");
-                }
-            }
+            get => _fullName;
+            set => SetProperty(ref _fullName, value);
         }
 
         [DataMember(Name = "FullPath")]
@@ -80,15 +59,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_FullPath", ColumnsOrder.FullPath, false, ExampleValue = @"D:\Projects\ConsoleApplication1")]
         public string FullPath
         {
-            get { return _fullPath; }
-            set
-            {
-                if (_fullPath != value)
-                {
-                    _fullPath = value;
-                    OnPropertyChanged("FullPath");
-                }
-            }
+            get => _fullPath;
+            set => SetProperty(ref _fullPath, value);
         }
 
         [DataMember(Name = "Language")]
@@ -97,15 +69,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_Language", ColumnsOrder.Language, true, ExampleValue = @"C#")]
         public string Language
         {
-            get { return _language; }
-            set
-            {
-                if (_language != value)
-                {
-                    _language = value;
-                    OnPropertyChanged("Language");
-                }
-            }
+            get => _language;
+            set => SetProperty(ref _language, value);
         }
 
         [DataMember(Name = "CommonType")]
@@ -117,15 +82,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_CommonType", ColumnsOrder.CommonType, false, ExampleValue = @"Windows")]
         public string CommonType
         {
-            get { return _commonType; }
-            set
-            {
-                if (_commonType != value)
-                {
-                    _commonType = value;
-                    OnPropertyChanged("CommonType");
-                }
-            }
+            get => _commonType;
+            set => SetProperty(ref _commonType, value);
         }
 
         [DataMember(Name = "Configuration")]
@@ -134,15 +92,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_Configuration", ColumnsOrder.Configuration, true, ExampleValue = @"Debug")]
         public string Configuration
         {
-            get { return _configuration; }
-            set 
-            {
-                if (_configuration != value)
-                {
-                    _configuration = value;
-                    OnPropertyChanged("Configuration");
-                }
-            }
+            get => _configuration;
+            set => SetProperty(ref _configuration, value);
         }
 
         [DataMember(Name = "Platform")]
@@ -151,12 +102,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_Platform", ColumnsOrder.Platform, true, ExampleValue = @"x86")]
         public string Platform
         {
-            get { return _platform; }
-            set
-            {
-                _platform = value;
-                OnPropertyChanged("Platform");
-            }
+            get => _platform;
+            set => SetProperty(ref _platform, value);
         }
 
         [DataMember(Name = "State")]
@@ -165,23 +112,16 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_State", ColumnsOrder.State, true, ExampleValue = @"BuildDone")]
         public ProjectState State
         {
-            get { return _state; }
+            get => _state;
             set 
             {
-                if (_state != value)
-                {
-                    _state = value;
-                    OnPropertyChanged("State");
-                    OnPropertyChanged("StateBitmap");
-                }
+                SetProperty(ref _state, value);
+                OnPropertyChanged(nameof(StateBitmap));
             }
         }
 
         [GridColumn("ProjectItemHeader_StateBitmap", ColumnsOrder.StateBitmap, true, ImageKey = GridColumnAttribute.EmptyHeaderImageKey)]
-        public ControlTemplate StateBitmap
-        {
-            get { return _state.GetAssociatedContent(); }
-        }
+        public ControlTemplate StateBitmap => _state.GetAssociatedContent();
 
         [DataMember(Name = "BuildStartTime")]
         private DateTime? _buildStartTime;
@@ -189,15 +129,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_BuildStartTime", ColumnsOrder.BuildStartTime, true, ValueStringFormat = @"HH:mm:ss", DateTimeExampleValue = @"2012-07-27T20:06:12.3691406+06:00")]
         public DateTime? BuildStartTime
         {
-            get { return _buildStartTime; }
+            get => _buildStartTime;
             set
             {
-                if (_buildStartTime != value)
-                {
-                    _buildStartTime = value;
-                    OnPropertyChanged("BuildStartTime");
-                    OnPropertyChanged("BuildElapsedTime");
-                }
+                SetProperty(ref _buildStartTime, value);
+                OnPropertyChanged(nameof(BuildStartTime));
+                OnPropertyChanged(nameof(BuildElapsedTime));
             }
         }
 
@@ -207,15 +144,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_BuildFinishTime", ColumnsOrder.BuildFinishTime, true, ValueStringFormat = @"HH:mm:ss", DateTimeExampleValue = @"2012-07-27T20:06:12.3691406+06:00")]
         public DateTime? BuildFinishTime
         {
-            get { return _buildFinishTime; }
+            get => _buildFinishTime;
             set 
             {
-                if (_buildFinishTime != value)
-                {
-                    _buildFinishTime = value;
-                    OnPropertyChanged("BuildFinishTime");
-                    OnPropertyChanged("BuildElapsedTime");
-                }
+                SetProperty(ref _buildFinishTime, value);
+                OnPropertyChanged(nameof(BuildFinishTime));
+                OnPropertyChanged(nameof(BuildElapsedTime));
             }
         }
 
@@ -253,38 +187,19 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         }
 
         [GridColumn("ProjectItemHeader_ErrorsCount", ColumnsOrder.ErrorsCount, true, ImageDictionaryUri = ValueIndicator.ResourcesUri, ImageKey = "ErrorsIndicator", ExampleValue = 4)]
-        public int ErrorsCount
-        {
-            get { return ErrorsBox.ErrorsCount; }
-        }
-
+        public int ErrorsCount => ErrorsBox.ErrorsCount;
         [GridColumn("ProjectItemHeader_WarningsCount", ColumnsOrder.WarningsCount, true, ImageDictionaryUri = ValueIndicator.ResourcesUri, ImageKey = "WarningsIndicator", ExampleValue = 1253)]
-        public int WarningsCount
-        {
-            get { return ErrorsBox.WarningsCount; }
-        }
-
+        public int WarningsCount => ErrorsBox.WarningsCount;
         [GridColumn("ProjectItemHeader_MessagesCount", ColumnsOrder.MessagesCount, false, ImageDictionaryUri = ValueIndicator.ResourcesUri, ImageKey = "MessagesIndicator", ExampleValue = 2)]
-        public int MessagesCount
-        {
-            get { return ErrorsBox.MessagesCount; }
-        }
-
+        public int MessagesCount => ErrorsBox.MessagesCount;
         [DataMember(Name = "Framework")]
         private string _framework;
 
         [GridColumn("ProjectItemHeader_Framework", ColumnsOrder.Framework, false, ExampleValue = @"3.5")]
         public string Framework
         {
-            get { return _framework; }
-            set
-            {
-                if (_framework != value)
-                {
-                    _framework = value;
-                    OnPropertyChanged("Framework");
-                }
-            }
+            get => _framework;
+            set => SetProperty(ref _framework, value);
         }
 
         [DataMember(Name = "FlavourType")]
@@ -293,15 +208,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_FlavourType", ColumnsOrder.FlavourType, true, ExampleValue = @"Windows; VSTA")]
         public string FlavourType
         {
-            get { return _flavourType; }
-            set
-            {
-                if (_flavourType != value)
-                {
-                    _flavourType = value;
-                    OnPropertyChanged("FlavourType");
-                }
-            }
+            get => _flavourType;
+            set => SetProperty(ref _flavourType, value);
         }
 
         [DataMember(Name = "MainFlavourType")]
@@ -310,15 +218,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_MainFlavourType", ColumnsOrder.MainFlavourType, false, ExampleValue = @"VSTA")]
         public string MainFlavourType
         {
-            get { return _mainFlavourType; }
-            set
-            {
-                if (_mainFlavourType != value)
-                {
-                    _mainFlavourType = value;
-                    OnPropertyChanged("MainFlavourType");
-                }
-            }
+            get => _mainFlavourType;
+            set => SetProperty(ref _mainFlavourType, value);
         }
 
         [DataMember(Name = "OutputType")]
@@ -327,15 +228,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_OutputType", ColumnsOrder.OutputType, false, ExampleValue = @"Library")]
         public string OutputType
         {
-            get { return _outputType; }
-            set
-            {
-                if (_outputType != value)
-                {
-                    _outputType = value;
-                    OnPropertyChanged("OutputType");
-                }
-            }
+            get => _outputType;
+            set => SetProperty(ref _outputType, value);
         }
 
         [DataMember(Name = "ExtenderNames")]
@@ -344,15 +238,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_ExtenderNames", ColumnsOrder.ExtenderNames, false, ExampleValue = @"VST")]
         public string ExtenderNames
         {
-            get { return _extenderNames; }
-            set
-            {
-                if (_extenderNames != value)
-                {
-                    _extenderNames = value;
-                    OnPropertyChanged("ExtenderNames");
-                }
-            }
+            get => _extenderNames;
+            set => SetProperty(ref _extenderNames, value);
         }
 
         [DataMember(Name = "BuildOrder")]
@@ -361,15 +248,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_BuildOrder", ColumnsOrder.BuildOrder, false, ImageDictionaryUri = ResourcesUri, ImageKey = "BuildOrder", Width = 23, ExampleValue = 4)]
         public int? BuildOrder
         {
-            get { return _buildOrder; }
-            set
-            {
-                if (_buildOrder != value)
-                {
-                    _buildOrder = value;
-                    OnPropertyChanged("BuildOrder");
-                }
-            }
+            get => _buildOrder;
+            set => SetProperty(ref _buildOrder, value);
         }
 
         [DataMember(Name = "RootNamespace")]
@@ -378,15 +258,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_RootNamespace", ColumnsOrder.RootNamespace, false, ExampleValue = @"MyApplication")]
         public string RootNamespace
         {
-            get { return _rootNamespace; }
-            set
-            {
-                if (_rootNamespace != value)
-                {
-                    _rootNamespace = value;
-                    OnPropertyChanged("RootNamespace");
-                }
-            }
+            get => _rootNamespace;
+            set => SetProperty(ref _rootNamespace, value);
         }
 
         [DataMember(Name = "SolutionFolder")]
@@ -395,15 +268,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         [GridColumn("ProjectItemHeader_SolutionFolder", ColumnsOrder.SolutionFolder, false, ExampleValue = @"SolutionFolder1\SolutionFolder2")]
         public string SolutionFolder
         {
-            get { return _solutionFolder; }
-            set
-            {
-                if (_solutionFolder != value)
-                {
-                    _solutionFolder = value;
-                    OnPropertyChanged("SolutionFolder");
-                }
-            }
+            get => _solutionFolder;
+            set => SetProperty(ref _solutionFolder, value);
         }
 
         #endregion
@@ -426,7 +292,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 
         public void RaiseBuildElapsedTimeChanged()
         {
-            OnPropertyChanged("BuildElapsedTime");
+            OnPropertyChanged(nameof(BuildElapsedTime));
         }
     }
 }

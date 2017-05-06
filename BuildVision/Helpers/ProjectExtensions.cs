@@ -103,11 +103,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
             return project.Properties.TryGetPropertyValueOrDefault(propertyName);
         }
 
-        public static IEnumerable<string> GetBuildOutputFilePaths(
-            this Project project,
-            BuildOutputFileTypes fileTypes,
-            string configuration = null,
-            string platform = null)
+        public static IEnumerable<string> GetBuildOutputFilePaths(this Project project, BuildOutputFileTypes fileTypes, string configuration = null, string platform = null)
         {
             Configuration targetConfig;
             if (configuration != null && platform != null)
@@ -142,7 +138,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
                 }
                 catch (ArgumentException ex)
                 {
-                    var msg = string.Format("Build Output Group \"{0}\" not found (Project Kind is \"{1}\").", groupName, project.Kind);
+                    var msg = $"Build Output Group \"{groupName}\" not found (Project Kind is \"{project.Kind}\").";
                     ex.Trace(msg, EventLogEntryType.Warning);
                 }
             }

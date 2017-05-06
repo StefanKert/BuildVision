@@ -84,52 +84,45 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             _buildDistributor.OnBuildProjectDone += BuildEvents_OnBuildProjectDone;
             _buildDistributor.OnErrorRaised += BuildEvents_OnErrorRaised;
 
-            _solutionEvents.AfterClosing += () =>
-                                            {
-                                                _viewModel.TextCurrentState = Resources.BuildDoneText_BuildNotStarted;
-                                                _viewModel.ImageCurrentState = BuildImages.GetBuildDoneImage(null, null, out ControlTemplate stateImage);
-                                                _viewModel.ImageCurrentStateResult = stateImage;
+            _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
+            _solutionEvents.Opened += SolutionEvents_Opened;
 
-                                                UpdateSolutionItem();
-                                                _viewModel.ProjectsList.Clear();
-                                                _viewModel.ResetIndicators(ResetIndicatorMode.Disable);
-                                                _viewModel.BuildProgressViewModel.ResetTaskBarInfo();
-                                            };
-
-            _solutionEvents.Opened += () =>
-                                        {
-                                            UpdateSolutionItem();
-                                            _viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
-                                        };
-
-
-            _viewModel.CancelBuildSolution += CancelBuildSolution;
-            _viewModel.CleanSolution += CleanSolution;
-            _viewModel.RebuildSolution += RebuildSolution;
-            _viewModel.BuildSolution += BuildSolution;
+            _viewModel.CancelBuildSolution += () => RaiseCommand(VSConstants.VSStd97CmdID.CancelBuild); 
+            _viewModel.CleanSolution += () => RaiseCommand(VSConstants.VSStd97CmdID.CleanSln);
+            _viewModel.RebuildSolution += () => RaiseCommand(VSConstants.VSStd97CmdID.RebuildSln); 
+            _viewModel.BuildSolution += () => RaiseCommand(VSConstants.VSStd97CmdID.BuildSln);
             _viewModel.RaiseCommandForSelectedProject += RaiseCommandForSelectedProject;
             _viewModel.ProjectCopyBuildOutputFilesToClipBoard += ProjectCopyBuildOutputFilesToClipBoard;
             _viewModel.ShowGeneralSettingsPage += () => _packageContext.ShowOptionPage(typeof(GeneralSettingsDialogPage));
             _viewModel.ShowGridColumnsSettingsPage += () => _packageContext.ShowOptionPage(typeof(GridSettingsDialogPage));
+
             UpdateSolutionItem();
+        }
+
+        private void SolutionEvents_Opened()
+        {
+            UpdateSolutionItem();
+            _viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
+        }
+
+        private void SolutionEvents_AfterClosing()
+        {
+            _viewModel.TextCurrentState = Resources.BuildDoneText_BuildNotStarted;
+            _viewModel.ImageCurrentState = BuildImages.GetBuildDoneImage(null, null, out ControlTemplate stateImage);
+            _viewModel.ImageCurrentStateResult = stateImage;
+
+            UpdateSolutionItem();
+            _viewModel.ProjectsList.Clear();
+            _viewModel.ResetIndicators(ResetIndicatorMode.Disable);
+            _viewModel.BuildProgressViewModel.ResetTaskBarInfo();
         }
 
         private void RaiseCommandForSelectedProject(ProjectItem selectedProjectItem, int commandId)
         {
             try
             {
-                var solutionExplorer = _dte2.ToolWindows.SolutionExplorer;
-                var project = _dte.Solution.GetProject(x => x.UniqueName == selectedProjectItem.UniqueName);
-                var item = solutionExplorer.FindHierarchyItem(project);
-                if (item == null)
-                    throw new Exception(string.Format("Project '{0}' not found in SolutionExplorer.", selectedProjectItem.UniqueName));
-
-                solutionExplorer.Parent.Activate();
-                item.Select(vsUISelectionType.vsUISelectionTypeSelect);
-
-                object customIn = null;
-                object customOut = null;
-                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), commandId, ref customIn, ref customOut);
+                SelectProjectInSolutionExplorer(selectedProjectItem);
+                RaiseCommand((VSConstants.VSStd97CmdID) commandId);
             }
             catch (Exception ex)
             {
@@ -137,6 +130,17 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             }
         }
 
+        private void SelectProjectInSolutionExplorer(ProjectItem projectItem)
+        {
+            var solutionExplorer = _dte2.ToolWindows.SolutionExplorer;
+            var project = _dte.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName);
+            var item = solutionExplorer.FindHierarchyItem(project);
+            if (item == null)
+                throw new Exception($"Project '{projectItem.UniqueName}' not found in SolutionExplorer.");
+            solutionExplorer.Parent.Activate();
+            item.Select(vsUISelectionType.vsUISelectionTypeSelect);
+        }
+        
         private void ProjectCopyBuildOutputFilesToClipBoard(ProjectItem projItem)
         {
             try
@@ -145,11 +149,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
                 BuildOutputFileTypes fileTypes = _packageContext.ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard;
                 if (fileTypes.IsEmpty)
                 {
-                    MessageBox.Show(
-                        @"Nothing to copy: all file types unchecked.",
-                        Resources.ProductName,
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Error);
+                    MessageBox.Show(@"Nothing to copy: all file types unchecked.", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
 
@@ -218,61 +218,13 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             return msg;
         }
 
-        private void BuildSolution()
+        private void RaiseCommand(VSConstants.VSStd97CmdID command)
         {
             try
             {
                 object customIn = null;
                 object customOut = null;
-                const int CommandId = (int)VSConstants.VSStd97CmdID.BuildSln;
-                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
-            }
-            catch (Exception ex)
-            {
-                ex.TraceUnknownException();
-            }
-        }
-
-
-        private void RebuildSolution()
-        {
-            try
-            {
-                object customIn = null;
-                object customOut = null;
-                const int CommandId = (int)VSConstants.VSStd97CmdID.RebuildSln;
-                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
-            }
-            catch (Exception ex)
-            {
-                ex.TraceUnknownException();
-            }
-        }
-
-
-        private void CleanSolution()
-        {
-            try
-            {
-                object customIn = null;
-                object customOut = null;
-                const int CommandId = (int)VSConstants.VSStd97CmdID.CleanSln;
-                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
-            }
-            catch (Exception ex)
-            {
-                ex.TraceUnknownException();
-            }
-        }
-
-        private void CancelBuildSolution()
-        {
-            try
-            {
-                object customIn = null;
-                object customOut = null;
-                const int CommandId = (int)VSConstants.VSStd97CmdID.CancelBuild;
-                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), CommandId, ref customIn, ref customOut);
+                _dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), (int)command, ref customIn, ref customOut);
             }
             catch (Exception ex)
             {
@@ -519,9 +471,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
 
         private void BuildEvents_OnErrorRaised(object sender, BuildErrorRaisedEventArgs args)
         {
-            bool buildNeedToCancel = (args.ErrorLevel == ErrorLevel.Error
-                                      && _buildContext.BuildAction != BuildActions.BuildActionClean
-                                      && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError);
+            bool buildNeedToCancel = (args.ErrorLevel == ErrorLevel.Error && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError);
             if (buildNeedToCancel)
                 _buildDistributor.CancelBuild();
 
@@ -537,7 +487,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
 
         private bool NavigateToErrorItem(ErrorItem errorItem)
         {
-            if (errorItem == null || string.IsNullOrEmpty(errorItem.File) || string.IsNullOrEmpty(errorItem.ProjectFile))
+            if (string.IsNullOrEmpty(errorItem?.File) || string.IsNullOrEmpty(errorItem?.ProjectFile))
                 return false;
 
             try

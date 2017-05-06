@@ -74,6 +74,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 
         public void CancelBuild()
         {
+            if(BuildAction == BuildActions.BuildActionClean)
+                return;
             if (CurrentBuildState != BuildState.InProgress || _buildCancelled || _buildCancelledInternally)
                 return;
 

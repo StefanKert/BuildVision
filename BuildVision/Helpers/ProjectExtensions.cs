@@ -677,5 +677,11 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
                 return true;
             }
         }
+
+        public static Microsoft.Build.Evaluation.Project GetMsBuildProject(this Project project)
+        {
+            var root = Microsoft.Build.Construction.ProjectRootElement.Open(project.FullName);          
+            return new Microsoft.Build.Evaluation.Project(root);
+        }
     }
 }

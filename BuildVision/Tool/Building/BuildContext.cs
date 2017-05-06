@@ -588,9 +588,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             OnBuildBegin(this, EventArgs.Empty);
 
             _buildProcessCancellationToken = new CancellationTokenSource();
-            Task.Factory.StartNew(BuildEvents_BuildInProcess,
-                                    _buildProcessCancellationToken.Token,
-                                    _buildProcessCancellationToken.Token);
+            Task.Factory.StartNew(BuildEvents_BuildInProcess, _buildProcessCancellationToken.Token, _buildProcessCancellationToken.Token);
         }
 
         private void BuildEvents_BuildInProcess(object state)

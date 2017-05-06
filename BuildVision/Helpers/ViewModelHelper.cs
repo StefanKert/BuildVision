@@ -186,11 +186,14 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
                 return;
             }
 
+
+            
             var projectItems = new List<ProjectItem>(dteProjects.Count);
             foreach (Project project in dteProjects)
             {
                 try
                 {
+                    //var msBuildProject = project.GetMsBuildProject();
                     var projectItem = new ProjectItem();
                     UpdateProperties(project, projectItem);
                     projectItems.Add(projectItem);

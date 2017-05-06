@@ -14,8 +14,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
 {
     public static class BuildImages
     {
-        private const string BuildActionResourcesUri = @"Resources/BuildAction.Resources.xaml";
-        private const string BuildStateResourcesUri = @"Resources/BuildState.Resources.xaml";
+        public const string BuildActionResourcesUri = @"Resources/BuildAction.Resources.xaml";
+        public const string BuildStateResourcesUri = @"Resources/BuildState.Resources.xaml";
 
         public static ControlTemplate GetBuildBeginImage(IBuildInfo buildInfo)
         {
@@ -32,10 +32,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         public static ControlTemplate GetBuildDoneImage(IBuildInfo buildInfo, IEnumerable<ProjectItem> allProjects, out ControlTemplate stateImage)
         {
             if (buildInfo?.BuildAction == null || buildInfo?.BuildScope == null)
-            {
-                stateImage = null;
-                return VectorResources.TryGet(BuildActionResourcesUri, "StandBy");
-            }
+                throw new ArgumentNullException(nameof(buildInfo));
 
             if (allProjects == null)
                 throw new InvalidOperationException();

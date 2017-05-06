@@ -3,6 +3,8 @@ using System.Windows.Controls;
 
 using AlekseyNagovitsyn.BuildVision.Tool.Building;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
+using BuildVision.UI;
+using AlekseyNagovitsyn.BuildVision.Tool.Views;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models
 {
@@ -24,9 +26,9 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models
         {
             ValueIndicators = ValueIndicatorsFactory.CreateCollection();
             SolutionItem = new SolutionItem();
-            TextCurrentState = BuildMessages.GetBuildDoneMessage(null, null, null);
-            ImageCurrentState = BuildImages.GetBuildDoneImage(null, null, out ControlTemplate stateImage);
-            ImageCurrentStateResult = stateImage;
+            TextCurrentState = Resources.BuildDoneText_BuildNotStarted;
+            ImageCurrentState = VectorResources.TryGet(BuildImages.BuildActionResourcesUri, "StandBy");
+            ImageCurrentStateResult = null;
         }
     }
 }

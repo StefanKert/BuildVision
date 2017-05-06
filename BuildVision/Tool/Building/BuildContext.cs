@@ -41,10 +41,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         private ControlViewModel _viewModel;
         private bool _buildCancelled;
 
-        public bool BuildIsCancelled
-        {
-            get { return _buildCancelled && !_buildCancelledInternally; }
-        }
+        public bool BuildIsCancelled => _buildCancelled && !_buildCancelledInternally;
 
         public BuildActions? BuildAction { get; private set; }
 
@@ -65,30 +62,6 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
         public BuildedSolution BuildingSolution { get; private set; }
 
         public ProjectItem BuildScopeProject { get; private set; }
-
-        public void OverrideBuildProperties(BuildActions? buildAction = null, BuildScopes? buildScope = null)
-        {
-            BuildAction = buildAction ?? BuildAction;
-            BuildScope = buildScope ?? BuildScope;
-        }
-
-        public void CancelBuild()
-        {
-            if(BuildAction == BuildActions.BuildActionClean)
-                return;
-            if (CurrentBuildState != BuildState.InProgress || _buildCancelled || _buildCancelledInternally)
-                return;
-
-            try
-            {
-                _packageContext.GetDTE().ExecuteCommand("Build.Cancel");
-                _buildCancelledInternally = true;
-            }
-            catch (Exception ex)
-            {
-                ex.Trace("Cancel build failed.");
-            }
-        }
 
         public BuildContext(IPackageContext packageContext, ControlViewModel viewModel)
         {
@@ -114,18 +87,39 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             _commandEvents.AfterExecute += CommandEvents_AfterExecute;
         }
 
+        public void OverrideBuildProperties(BuildActions? buildAction = null, BuildScopes? buildScope = null)
+        {
+            BuildAction = buildAction ?? BuildAction;
+            BuildScope = buildScope ?? BuildScope;
+        }
+
+        public void CancelBuild()
+        {
+            if(BuildAction == BuildActions.BuildActionClean)
+                return;
+            if (CurrentBuildState != BuildState.InProgress || _buildCancelled || _buildCancelledInternally)
+                return;
+
+            try
+            {
+                _packageContext.GetDTE().ExecuteCommand("Build.Cancel");
+                _buildCancelledInternally = true;
+            }
+            catch (Exception ex)
+            {
+                ex.Trace("Cancel build failed.");
+            }
+        }
+
         public ProjectItem FindProjectItemInProjectsByUniqueName(string uniqueName, string configuration, string platform)
         {
-            return _viewModel.ProjectsList.FirstOrDefault(item => item.UniqueName == uniqueName
-                                                       && item.Configuration == configuration
-                                                       && PlatformsIsEquals(item.Platform, platform));
+            return _viewModel.ProjectsList.FirstOrDefault(item => item.UniqueName == uniqueName && item.Configuration == configuration && PlatformsIsEquals(item.Platform, platform));
         }
 
         public ProjectItem FindProjectItemInProjectsByUniqueName(string uniqueName)
         {
             return _viewModel.ProjectsList.FirstOrDefault(item => item.UniqueName == uniqueName);
         }
-
 
         public ProjectItem AddProjectToVisibleProjectsByUniqueName(string uniqueName)
         {

@@ -24,30 +24,28 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         private bool _actionProgressIsMarquee;
 
-        private int _currentQueuePosOfBuildingProject;
-
         private bool _actionProgressIsError;
 
-        private bool _actionProgressIsVisible;
-
-        private bool _actionProgressIsPaused;
 
         private readonly Lazy<TaskbarItemInfo> _taskbarItemInfo = new Lazy<TaskbarItemInfo>(() =>
         {
             var window = Application.Current.MainWindow;
             return window.TaskbarItemInfo ?? (window.TaskbarItemInfo = new TaskbarItemInfo());
         });
+        private TaskbarItemInfo TaskbarItemInfo => _taskbarItemInfo.Value;
 
-        private TaskbarItemInfo TaskbarItemInfo => _taskbarItemInfo.Value; 
 
+        private int _currentQueuePosOfBuildingProject;
         public int CurrentQueuePosOfBuildingProject => _currentQueuePosOfBuildingProject;
 
+        private bool _actionProgressIsVisible;
         public bool ActionProgressIsVisible
         {
             get => _actionProgressIsVisible; 
             set => SetProperty(ref _actionProgressIsVisible, value);
         }
 
+        private bool _actionProgressIsPaused;
         public bool ActionProgressIsPaused
         {
             get => _actionProgressIsPaused;

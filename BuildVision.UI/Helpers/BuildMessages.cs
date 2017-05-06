@@ -16,15 +16,42 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
     {
         public static string GetBuildBeginMajorMessage(SolutionItem solutionItem,  IBuildInfo buildInfo, BuildMessagesSettings labelsSettings)
         {
-            var buildAction = buildInfo.BuildAction;
-            var buildScope = buildInfo.BuildScope;
-
-            if (buildAction == null || buildScope == null)
+            if (buildInfo.BuildAction == null || buildInfo.BuildScope == null || buildInfo.BuildAction.Value == BuildActions.BuildActionDeploy)
                 return Resources.UnknownBuildActionOrScope_BuildBeginText;
 
             if (buildInfo.BuildStartTime == null)
                 throw new InvalidOperationException();
 
+            var mainString = GetMainString(solutionItem, buildInfo, labelsSettings);
+            return string.Format(labelsSettings.BuildBeginMajorMessageStringFormat, mainString);
+        }
+
+        private static string GetMainString(SolutionItem solutionItem, IBuildInfo buildInfo, BuildMessagesSettings labelsSettings)
+        {
+            var unitName = GetUnitName(solutionItem, buildInfo, labelsSettings);
+            var actionName = GetActionName(buildInfo.BuildAction.Value);
+            var beginAtString = GetBeginAtString(buildInfo.BuildAction.Value);
+            var timeString = GetTimeString(buildInfo, labelsSettings);
+            string mainString;
+            switch (labelsSettings.MajorMessageFormat)
+            {
+                case BuildMajorMessageFormat.Entire:
+                    mainString = string.Format(Resources.BuildBeginStateLabelTemplate_Default, actionName, unitName, beginAtString, timeString);
+                    break;
+
+                case BuildMajorMessageFormat.Unnamed:
+                    mainString = string.Format(Resources.BuildBeginStateLabelTemplate_ShortForm, actionName, beginAtString, timeString);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            return mainString;
+        }
+
+        private static string GetTimeString(IBuildInfo buildInfo, BuildMessagesSettings labelsSettings)
+        {
             string timeString;
             try
             {
@@ -35,8 +62,47 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 timeString = Resources.InvalidTimeStringFormat;
             }
 
+            return timeString;
+        }
+
+        private static string GetBeginAtString(BuildActions? buildAction)
+        {
+            switch (buildAction.Value)
+            {
+                case BuildActions.BuildActionRebuildAll:
+                    return Resources.BuildActionRebuildAll_BeginAtString;
+
+                case BuildActions.BuildActionBuild:
+                    return Resources.BuildActionBuild_BeginAtString;
+  
+                case BuildActions.BuildActionClean:
+                    return Resources.BuildActionClean_BeginAtString;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static string GetActionName(BuildActions buildAction)
+        {
+            switch (buildAction)
+            {
+                case BuildActions.BuildActionRebuildAll:
+                    return Resources.BuildActionRebuildAll;
+
+                case BuildActions.BuildActionBuild:
+                    return Resources.BuildActionBuild;
+
+                case BuildActions.BuildActionClean:
+                    return Resources.BuildActionClean;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private static string GetUnitName(SolutionItem solutionItem, IBuildInfo buildInfo, BuildMessagesSettings labelsSettings)
+        {
             string unitName;
-            switch (buildScope.Value)
+            switch (buildInfo.BuildScope.Value)
             {
                 case BuildScopes.BuildScopeSolution:
                     unitName = Resources.BuildScopeSolution_UnitName;
@@ -69,59 +135,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                     throw new ArgumentOutOfRangeException();
             }
 
-            string actionName;
-            string beginAtString;
-            switch (buildAction.Value)
-            {
-                case BuildActions.BuildActionRebuildAll:
-                    actionName = Resources.BuildActionRebuildAll;
-                    beginAtString = Resources.BuildActionRebuildAll_BeginAtString;
-                    break;
-
-                case BuildActions.BuildActionBuild:
-                    actionName = Resources.BuildActionBuild;
-                    beginAtString = Resources.BuildActionBuild_BeginAtString;
-                    break;
-
-                case BuildActions.BuildActionClean:
-                    actionName = Resources.BuildActionClean;
-                    beginAtString = Resources.BuildActionClean_BeginAtString;
-                    break;
-
-                case BuildActions.BuildActionDeploy:
-                    return Resources.UnknownBuildActionOrScope_BuildBeginText;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            string mainString;
-            switch (labelsSettings.MajorMessageFormat)
-            {
-                case BuildMajorMessageFormat.Entire:
-                    mainString = string.Format(Resources.BuildBeginStateLabelTemplate_Default, actionName, unitName, beginAtString, timeString);
-                    break;
-
-                case BuildMajorMessageFormat.Unnamed:
-                    mainString = string.Format(Resources.BuildBeginStateLabelTemplate_ShortForm, actionName, beginAtString, timeString);
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            string resultMainString = string.Format(labelsSettings.BuildBeginMajorMessageStringFormat, mainString);
-            return resultMainString;
+            return unitName;
         }
 
-        public static string GetBuildBeginExtraMessage(
-            IBuildInfo buildInfo,
-            BuildMessagesSettings labelsSettings)
+        public static string GetBuildBeginExtraMessage(IBuildInfo buildInfo, BuildMessagesSettings labelsSettings)
         {
-            if (buildInfo == null
-                || buildInfo.BuildStartTime == null
-                || !labelsSettings.ShowExtraMessage
-                || labelsSettings.ExtraMessageDelay < 0)
+            if (buildInfo == null || buildInfo.BuildStartTime == null || !labelsSettings.ShowExtraMessage || labelsSettings.ExtraMessageDelay < 0)
             {
                 return string.Empty;
             }
@@ -166,19 +185,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             return string.Empty;
         }
 
-        public static string GetBuildDoneMessage(
-            SolutionItem solutionItem,
-            IBuildInfo buildInfo,
-            BuildMessagesSettings labelsSettings)
+        public static string GetBuildDoneMessage(SolutionItem solutionItem, IBuildInfo buildInfo, BuildMessagesSettings labelsSettings)
         {
-            return GetBuildDoneMajorMessage(solutionItem, buildInfo, labelsSettings)
-                + GetBuildDoneExtraMessage(buildInfo, labelsSettings);
+            return GetBuildDoneMajorMessage(solutionItem, buildInfo, labelsSettings) + GetBuildDoneExtraMessage(buildInfo, labelsSettings);
         }
 
-        private static string GetBuildDoneMajorMessage(
-            SolutionItem solutionItem,
-            IBuildInfo buildInfo,
-            BuildMessagesSettings labelsSettings)
+        private static string GetBuildDoneMajorMessage(SolutionItem solutionItem, IBuildInfo buildInfo, BuildMessagesSettings labelsSettings)
         {
             if (buildInfo == null)
                 return Resources.BuildDoneText_BuildNotStarted;
@@ -232,9 +244,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                     throw new ArgumentOutOfRangeException();
             }
 
-            string actionName;
-            string resultName;
-            GetBuildDoneActionAndResultStrings(solutionItem, buildInfo, out actionName, out resultName);
+            var actionName = GetActionName(buildInfo);
+            var resultName = GetResultName(solutionItem, buildInfo);
 
             string mainString;
             switch (labelsSettings.MajorMessageFormat)
@@ -255,30 +266,21 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
             return resultMainString;
         }
 
-        private static void GetBuildDoneActionAndResultStrings(
-            SolutionItem solutionItem,
-            IBuildInfo buildInfo,
-            out string actionName,
-            out string resultName)
+        private static string GetActionName(IBuildInfo buildInfo)
         {
-            var buildAction = buildInfo.BuildAction;
-
-            if (buildAction == null)
+            if (buildInfo.BuildAction == null)
                 throw new InvalidOperationException();
 
-            switch (buildAction.Value)
+            switch (buildInfo.BuildAction.Value)
             {
                 case BuildActions.BuildActionBuild:
-                    actionName = Resources.BuildActionBuild;
-                    break;
+                    return Resources.BuildActionBuild;
 
                 case BuildActions.BuildActionRebuildAll:
-                    actionName = Resources.BuildActionRebuildAll;
-                    break;
+                    return Resources.BuildActionRebuildAll;
 
                 case BuildActions.BuildActionClean:
-                    actionName = Resources.BuildActionClean;
-                    break;
+                    return Resources.BuildActionClean;
 
                 case BuildActions.BuildActionDeploy:
                     throw new InvalidOperationException();
@@ -286,28 +288,26 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
 
-            bool buildWithoutErrors = buildInfo.BuildedProjects.BuildWithoutErrors;
+        private static string GetResultName(SolutionItem solutionItem, IBuildInfo buildInfo)
+        {
+            var buildAction = buildInfo.BuildAction;
             int errorStateProjectsCount = solutionItem.AllProjects.Count(item => item.State.IsErrorState());
 
             if (buildInfo.BuildIsCancelled)
-                resultName = buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionCancelled_Clean : Resources.BuildActionCancelled;
-            else if (!buildWithoutErrors)
-                resultName = buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionFailed_Clean : Resources.BuildActionFailed;
-            else if (/*buildWithoutErrors &&*/ errorStateProjectsCount == 0)
-                resultName = buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionFinishedSuccessfully_Clean : Resources.BuildActionFinishedSuccessfully;
+                return buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionCancelled_Clean : Resources.BuildActionCancelled;
+            else if (!buildInfo.BuildedProjects.BuildWithoutErrors)
+                return buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionFailed_Clean : Resources.BuildActionFailed;
+            else if (errorStateProjectsCount == 0)
+                return buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionFinishedSuccessfully_Clean : Resources.BuildActionFinishedSuccessfully;
             else
-                resultName = buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionFinished_Clean : Resources.BuildActionFinished;
+                return buildAction.Value == BuildActions.BuildActionClean ? Resources.BuildActionFinished_Clean : Resources.BuildActionFinished;
         }
 
-        private static string GetBuildDoneExtraMessage(
-            IBuildInfo buildInfo, 
-            BuildMessagesSettings labelsSettings)
+        private static string GetBuildDoneExtraMessage(IBuildInfo buildInfo, BuildMessagesSettings labelsSettings)
         {
-            if (buildInfo == null 
-                || buildInfo.BuildStartTime == null
-                || buildInfo.BuildFinishTime == null
-                || !labelsSettings.ShowExtraMessage)
+            if (buildInfo?.BuildStartTime == null || buildInfo?.BuildFinishTime == null || !labelsSettings.ShowExtraMessage)
                 return string.Empty;
 
             TimeSpan timeSpan = buildInfo.BuildFinishTime.Value.Subtract(buildInfo.BuildStartTime.Value);

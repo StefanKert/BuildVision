@@ -29,6 +29,7 @@ using EnvDTE80;
 using BuildVision.Common;
 using AlekseyNagovitsyn.BuildVision.Tool.Views.Settings;
 using BuildVision.UI;
+using AlekseyNagovitsyn.BuildVision.Tool.Views;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool
 {
@@ -47,11 +48,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         private string _origTextCurrentState;
         private IPackageContext _packageContext;
 
-        public Tool(
-            IPackageContext packageContext,
-            IBuildInfo buildContext, 
-            IBuildDistributor buildDistributor, 
-            ControlViewModel viewModel)
+        public Tool(IPackageContext packageContext, IBuildInfo buildContext, IBuildDistributor buildDistributor, ControlViewModel viewModel)
         {
             _packageContext = packageContext;
             _dte = packageContext.GetDTE();
@@ -108,8 +105,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         private void SolutionEvents_AfterClosing()
         {
             _viewModel.TextCurrentState = Resources.BuildDoneText_BuildNotStarted;
-            _viewModel.ImageCurrentState = BuildImages.GetBuildDoneImage(null, null, out ControlTemplate stateImage);
-            _viewModel.ImageCurrentStateResult = stateImage;
+            _viewModel.ImageCurrentState = VectorResources.TryGet(BuildImages.BuildActionResourcesUri, "StandBy");
+            _viewModel.ImageCurrentStateResult = null;
 
             UpdateSolutionItem();
             _viewModel.ProjectsList.Clear();
@@ -414,6 +411,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
         {
             try
             {
+                var settings = _viewModel.ControlSettings;
+
                 if (_buildContext.BuildScope == BuildScopes.BuildScopeSolution)
                 {
                     foreach (var projectItem in _viewModel.ProjectsList)
@@ -425,33 +424,24 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
 
                 _viewModel.UpdateIndicators(_buildContext);
 
-                string message = BuildMessages.GetBuildDoneMessage(
-                    _viewModel.SolutionItem, 
-                    _buildContext, 
-                    _viewModel.ControlSettings.BuildMessagesSettings);
-
-                ControlTemplate stateImage;
-                ControlTemplate buildDoneImage = BuildImages.GetBuildDoneImage(
-                    _buildContext, 
-                    _viewModel.ProjectsList, 
-                    out stateImage);
+                var message = BuildMessages.GetBuildDoneMessage(_viewModel.SolutionItem, _buildContext, settings.BuildMessagesSettings);
+                var buildDoneImage = BuildImages.GetBuildDoneImage(_buildContext, _viewModel.ProjectsList, out ControlTemplate stateImage);
 
                 OutputInStatusBar(message, false);
                 _viewModel.TextCurrentState = message;
                 _viewModel.ImageCurrentState = buildDoneImage;
                 _viewModel.ImageCurrentStateResult = stateImage;
                 _viewModel.CurrentProject = null;
-
                 _viewModel.OnBuildDone(_buildContext);
 
                 int errorProjectsCount = _viewModel.ProjectsList.Count(item => item.State.IsErrorState());
                 if (errorProjectsCount > 0 || _buildContext.BuildIsCancelled)
-                    ApplyToolWindowStateAction(_viewModel.ControlSettings.WindowSettings.WindowActionOnBuildError);
+                    ApplyToolWindowStateAction(settings.WindowSettings.WindowActionOnBuildError);
                 else
-                    ApplyToolWindowStateAction(_viewModel.ControlSettings.WindowSettings.WindowActionOnBuildSuccess);
+                    ApplyToolWindowStateAction(settings.WindowSettings.WindowActionOnBuildSuccess);
 
                 bool navigateToBuildFailureReason = (!_buildContext.BuildedProjects.BuildWithoutErrors
-                                                     && _viewModel.ControlSettings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone);
+                                                     && settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone);
                 if (navigateToBuildFailureReason)
                 {
                     if (_buildContext.BuildedProjects.Any(p => p.ErrorsBox.Errors.Any(NavigateToErrorItem)))

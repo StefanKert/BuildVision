@@ -58,7 +58,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
             try
             {
                 var attr = GetPropertyAttribute<GridColumnAttribute>(gridColumnSettings.PropertyNameId);
-                return (attr != null) ? attr.ExampleValue : null;
+                return attr?.ExampleValue;
             }
             catch (PropertyNotFoundException)
             {

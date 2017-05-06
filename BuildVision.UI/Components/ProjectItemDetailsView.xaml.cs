@@ -17,12 +17,12 @@ namespace BuildVision.UI
     {
 
         public static readonly DependencyProperty ProjectItemProperty = 
-            DependencyProperty.Register("ProjectItem", typeof(ProjectItem), typeof(ProjectItemDetailsView));
+            DependencyProperty.Register(nameof(ProjectItem), typeof(ProjectItem), typeof(ProjectItemDetailsView));
 
         public ProjectItem ProjectItem
         {
-            get { return (ProjectItem)GetValue(ProjectItemProperty); }
-            set { SetValue(ProjectItemProperty, value); }
+            get => (ProjectItem)GetValue(ProjectItemProperty);
+            set => SetValue(ProjectItemProperty, value);
         }
 
         public ProjectItemDetailsView()

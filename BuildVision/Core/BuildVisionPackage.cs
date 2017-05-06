@@ -25,7 +25,7 @@ namespace AlekseyNagovitsyn.BuildVision.Core
 
         public ControlSettings ControlSettings { get; set; }
 
-        public DTE2 GetDTE2() => (DTE2)GetService(typeof(DTE2));
+        public DTE2 GetDTE2() => (DTE2)GetService(typeof(DTE));
 
         public DTE GetDTE() => (DTE)GetService(typeof(DTE));
 

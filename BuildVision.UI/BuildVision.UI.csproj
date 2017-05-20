@@ -128,6 +128,7 @@
     <Compile Include="Contracts\BuildedProjectsCollection.cs" />
     <Compile Include="Contracts\BuildProjectContextEntry.cs" />
     <Compile Include="Contracts\IBuildDistributor.cs" />
+    <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Helpers\BuildImages.cs" />
     <Compile Include="Contracts\BuildInfo.cs" />
     <Compile Include="Helpers\BuildMessages.cs" />
@@ -353,6 +354,10 @@
     <Page Include="Settings\WindowSettingsControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\ControlViewStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\DataGridColumnHeaderStyle.xaml">
       <Generator>MSBuild:Compile</Generator>

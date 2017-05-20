@@ -1,5 +1,6 @@
 ﻿using AlekseyNagovitsyn.BuildVision.Tool.Models;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
+using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
 using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
 using AlekseyNagovitsyn.BuildVision.Tool.Views;
 using System;

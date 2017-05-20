@@ -128,9 +128,6 @@
     <Compile Include="Components\ErrorsGrid.xaml.cs">
       <DependentUpon>ErrorsGrid.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Components\VectorIconControl.xaml.cs">
-      <DependentUpon>VectorIconControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Contracts\BuildedProjectsCollection.cs" />
     <Compile Include="Contracts\BuildProjectContextEntry.cs" />
     <Compile Include="Contracts\IBuildDistributor.cs" />
@@ -294,10 +291,6 @@
     <Page Include="Components\UserControl_ForTesting.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Components\VectorIconControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>

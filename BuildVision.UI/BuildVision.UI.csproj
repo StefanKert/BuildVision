@@ -122,6 +122,9 @@
     </Compile>
     <Compile Include="Common\Logging\BindingErrorListener.cs" />
     <Compile Include="Common\Logging\TraceManager.cs" />
+    <Compile Include="Components\ControlHeader.xaml.cs">
+      <DependentUpon>ControlHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Components\ErrorsGrid.xaml.cs">
       <DependentUpon>ErrorsGrid.xaml</DependentUpon>
     </Compile>
@@ -135,9 +138,6 @@
     <Compile Include="Contracts\BuildProjectEventArgs.cs" />
     <Compile Include="Components\ControlView.xaml.cs">
       <DependentUpon>ControlView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Components\ProjectItemDetailsView.xaml.cs">
-      <DependentUpon>ProjectItemDetailsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\SpinnerControl.xaml.cs">
       <DependentUpon>SpinnerControl.xaml</DependentUpon>
@@ -272,6 +272,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Components\ControlHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Components\ControlView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -279,10 +283,6 @@
     <Page Include="Components\ErrorsGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Components\ProjectItemDetailsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="Components\SpinnerControl.xaml">
       <Generator>MSBuild:Compile</Generator>

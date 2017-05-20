@@ -7,7 +7,8 @@
              xmlns:contracts="clr-namespace:BuildVision.Contracts;assembly=BuildVision.Contracts" 
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase" 
              xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"
-             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="ErrorsGridLoaded">
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" Loaded="ErrorsGridLoaded"
+             Name="Control">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -16,14 +17,14 @@
                 <ResourceDictionary Source="../Styles/ScrollViewerStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <CollectionViewSource x:Key="ErrorsCollectionViewSource" Source="{Binding}">
+            <CollectionViewSource x:Key="ErrorsCollectionViewSource" Source="{Binding ErrorsBox}">
                 <CollectionViewSource.SortDescriptions>
                     <componentModel:SortDescription PropertyName="{x:Static contracts:ErrorItem.DefaultSortPropertyName}" Direction="Ascending" />
                 </CollectionViewSource.SortDescriptions>
             </CollectionViewSource>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
+    <Grid DataContext="{Binding ProjectItem}">
         <DataGrid 
             Margin="16,0,0,0" 
             AutoGenerateColumns="False" 

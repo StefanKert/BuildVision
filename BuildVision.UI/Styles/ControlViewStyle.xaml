@@ -33,65 +33,18 @@
         </Style.Triggers>
     </Style>
 
-    <Style
-        x:Key="IndicatorLabel">
+    <Style x:Key="IndicatorLabel">
 
-        <Setter
-            Property="Label.Foreground"
-            Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+        <Setter Property="Label.Foreground"
+                Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
 
         <Style.Triggers>
-            <DataTrigger
-                Binding="{Binding IsEnabled}"
-                Value="false">
-                <Setter
-                    Property="Label.Opacity"
-                    Value="0.4" />
+            <DataTrigger Binding="{Binding IsEnabled}"
+                         Value="false">
+                <Setter Property="Label.Opacity"
+                        Value="0.4" />
             </DataTrigger>
         </Style.Triggers>
-    </Style>
-
-    <Style TargetType="DataGridCell" x:Key="DataGridCell">
-        <Style.Triggers>
-
-            <Trigger Property="IsSelected"
-                     Value="True">
-                <Setter Property="Background"
-                        Value="Transparent" />
-                <Setter Property="Foreground"
-                        Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
-            </Trigger>
-
-            <!--
-                            <DataTrigger Binding="{Binding ErrorsCount, Converter={StaticResource NumberIsPositive}}" Value="True">
-                            <Setter Property="Background" Value="PaleVioletRed" />
-                            <Setter Property="Foreground" Value="Black" />
-                            </DataTrigger>
-                        -->
-
-        </Style.Triggers>
-
-
-        <Setter Property="FocusVisualStyle"
-                Value="{x:Null}" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="DataGridCell">
-                    <Border Background="{TemplateBinding Panel.Background}"
-                            BorderBrush="{TemplateBinding Border.BorderBrush}"
-                            BorderThickness="0"
-                            SnapsToDevicePixels="True">
-                        <!--  BorderThickness="{TemplateBinding Border.BorderThickness}"  -->
-                        <ContentPresenter Margin="1,0,0,0"
-                                          VerticalAlignment="Center"
-                                          Content="{TemplateBinding ContentControl.Content}"
-                                          ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
-                                          ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                                          SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
     </Style>
 
     <converters1:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />

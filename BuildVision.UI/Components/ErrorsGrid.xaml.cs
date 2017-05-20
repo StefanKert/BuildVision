@@ -1,4 +1,5 @@
 ﻿using AlekseyNagovitsyn.BuildVision.Core.Logging;
+using AlekseyNagovitsyn.BuildVision.Tool.Models;
 using AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions;
 using BuildVision.Contracts;
 using System;
@@ -31,6 +32,13 @@ namespace BuildVision.UI
             InitializeComponent();
         }
 
+        public static readonly DependencyProperty ProjectItemProperty = DependencyProperty.Register(nameof(ProjectItem), typeof(ProjectItem), typeof(ErrorsGrid));
+
+        public ProjectItem ProjectItem
+        {
+            get => (ProjectItem)GetValue(ProjectItemProperty);
+            set => SetValue(ProjectItemProperty, value);
+        }
 
         private void ErrorsGridRowOnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {

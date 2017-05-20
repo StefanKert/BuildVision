@@ -1,0 +1,371 @@
+﻿<UserControl x:Class="BuildVision.UI.Components.ControlHeader"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:BuildVision.UI.Components"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             xmlns:res="clr-namespace:BuildVision.UI"
+             xmlns:views="clr-namespace:BuildVision.UI"
+             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             xmlns:core="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core"
+             xmlns:viewModels="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.ViewModels"
+             xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions"
+             xmlns:extensions1="clr-namespace:BuildVision.UI.Extensions"
+             Name="OwnerUserControl"
+             Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Resources/CommonResources.xaml" />
+                <ResourceDictionary Source="../Resources/BuildAction.Resources.xaml" />
+                <ResourceDictionary Source="../Styles/ScrollViewerStyle.xaml" />
+                <ResourceDictionary Source="../Styles/DataGridColumnHeaderStyle.xaml" />
+                <ResourceDictionary Source="../Styles/ControlViewStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical">
+
+        <!-- Image and Label for current state -->
+        <Grid Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+                <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{Binding ImageCurrentState}" />
+                <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{Binding ImageCurrentStateResult}" />
+            </StackPanel>
+
+            <TextBlock Grid.Column="1"
+                       FontSize="18"
+                       Foreground="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"
+                       Text="{Binding TextCurrentState}"
+                       TextTrimming="WordEllipsis"
+                       extensions1:TextBlockUtils.AutoTooltip="True" />
+        </Grid>
+
+        <!-- Progress indicator -->
+        <Grid>
+            <Line Name="Line"
+                  Margin="0,3,3,3"
+                  Panel.ZIndex="1"
+                  Stretch="Fill"
+                  Stroke="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMenuSeparatorKey}}"
+                  StrokeThickness="2"
+                  X2="1" />
+
+            <Line Margin="3"
+                  Panel.ZIndex="2"
+                  Stretch="Fill"
+                  StrokeThickness="2"
+                  X2="1">
+                <Line.Stroke>
+                    <LinearGradientBrush StartPoint="0,0.5"
+                                         EndPoint="1,0.5">
+                        <GradientStop Offset="1.0"
+                                      Color="{Binding ElementName=Line, Path=Stroke.Color}" />
+                        <GradientStop Offset="1.1"
+                                      Color="CornflowerBlue" />
+                        <GradientStop Offset="1.2"
+                                      Color="{Binding ElementName=Line, Path=Stroke.Color}" />
+                    </LinearGradientBrush>
+                </Line.Stroke>
+
+                <Line.Style>
+                    <Style>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding BuildProgressViewModel.ActionProgressIsVisible}"
+                                         Value="True">
+
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard x:Name="LineProgressBeginStoryboard">
+                                        <Storyboard>
+                                            <DoubleAnimation AutoReverse="True"
+                                                             Duration="0:0:3"
+                                                             From="1.0"
+                                                             RepeatBehavior="Forever"
+                                                             Storyboard.TargetProperty="(Line.Stroke).(LinearGradientBrush.GradientStops)[0].(GradientStop.Offset)"
+                                                             To="-0.2" />
+                                            <DoubleAnimation AutoReverse="True"
+                                                             Duration="0:0:3"
+                                                             From="1.1"
+                                                             RepeatBehavior="Forever"
+                                                             Storyboard.TargetProperty="(Line.Stroke).(LinearGradientBrush.GradientStops)[1].(GradientStop.Offset)"
+                                                             To="-0.1" />
+                                            <DoubleAnimation AutoReverse="True"
+                                                             Duration="0:0:3"
+                                                             From="1.2"
+                                                             RepeatBehavior="Forever"
+                                                             Storyboard.TargetProperty="(Line.Stroke).(LinearGradientBrush.GradientStops)[2].(GradientStop.Offset)"
+                                                             To="0.0" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+
+                                <DataTrigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="LineProgressBeginStoryboard" />
+                                </DataTrigger.ExitActions>
+
+                                <!--
+                                        <DataTrigger.ExitActions>
+                                        <BeginStoryboard>
+                                        <Storyboard>
+                                        <DoubleAnimation
+                                        Storyboard.TargetProperty="(Line.Stroke).(LinearGradientBrush.GradientStops)[0].(GradientStop.Offset)"
+                                        To="1.0" Duration="0:0:1" />
+                                        <DoubleAnimation
+                                        Storyboard.TargetProperty="(Line.Stroke).(LinearGradientBrush.GradientStops)[1].(GradientStop.Offset)"
+                                        To="1.1" Duration="0:0:1" />
+                                        <DoubleAnimation
+                                        Storyboard.TargetProperty="(Line.Stroke).(LinearGradientBrush.GradientStops)[2].(GradientStop.Offset)"
+                                        To="1.2" Duration="0:0:1" />
+                                        </Storyboard>
+                                        </BeginStoryboard>
+                                        </DataTrigger.ExitActions>
+                                    -->
+
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Line.Style>
+            </Line>
+        </Grid>
+
+        <!-- Build buttons and ValueIndicators -->
+        <Grid Visibility="{Binding ControlSettings.GeneralSettings.IndicatorsPanelVisible,
+                                       Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <WrapPanel Grid.Column="0"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Margin="0,0,0,0"
+                       Orientation="Horizontal">
+
+                <Button Name="BuildSolutionButton"
+                        Command="{Binding BuildSolutionAction}"
+                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
+                        IsEnabled="{Binding SolutionItem.IsEmpty, Converter={StaticResource InverseBoolean}}"
+                        ToolTip="{x:Static res:Resources.BuildSolutionButtonTooltip}">
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Template="{StaticResource BuildSolutionButton}" />
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button"
+                               BasedOn="{StaticResource ToolBarButtonBaseStyle}" />
+                    </Button.Style>
+                </Button>
+
+                <Button Name="RebuildSolutionButton"
+                        Command="{Binding RebuildSolutionAction}"
+                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
+                        IsEnabled="{Binding SolutionItem.IsEmpty, Converter={StaticResource InverseBoolean}}"
+                        ToolTip="{x:Static res:Resources.RebuildSolutionButtonTooltip}">
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Template="{StaticResource RebuildSolutionButton}" />
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button"
+                               BasedOn="{StaticResource ToolBarButtonBaseStyle}" />
+                    </Button.Style>
+                </Button>
+
+                <Button Name="CleanSolutionButton"
+                        Command="{Binding CleanSolutionAction}"
+                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
+                        IsEnabled="{Binding SolutionItem.IsEmpty, Converter={StaticResource InverseBoolean}}"
+                        ToolTip="{x:Static res:Resources.CleanSolutionButtonTooltip}">
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Template="{StaticResource CleanSolutionButton}" />
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button"
+                               BasedOn="{StaticResource ToolBarButtonBaseStyle}" />
+                    </Button.Style>
+                </Button>
+
+                <Button Name="CancelBuildSolutionButton"
+                        Command="{Binding CancelBuildSolutionAction}"
+                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource BoolToVisibilityConverter}}"
+                        HorizontalAlignment="Stretch"
+                        MinWidth="66"
+                        ToolTip="{x:Static res:Resources.CancelBuildSolutionButtonTooltip}">
+                    <StackPanel Orientation="Horizontal">
+                        <ContentControl Template="{StaticResource CancelBuildSolutionButton}" />
+                        <TextBlock Margin="2,0,0,0"
+                                   Text="{x:Static res:Resources.CancelBuildSolutionButtonCaption}" />
+                    </StackPanel>
+                    <Button.Style>
+                        <Style TargetType="Button"
+                               BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                            <Setter Property="IsEnabled"
+                                    Value="True" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SolutionItem.IsEmpty}"
+                                             Value="True">
+                                    <Setter Property="IsEnabled"
+                                            Value="False" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding BuildProgressViewModel.ActionProgressIsPaused}"
+                                             Value="True">
+                                    <Setter Property="IsEnabled"
+                                            Value="False" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+            </WrapPanel>
+
+            <Border Grid.Column="1"
+                    Width="2"
+                    BorderThickness="2"
+                    BorderBrush="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarMenuSeparatorBrushKey}}"
+                    Margin="10,2,10,2" />
+
+            <ListBox Grid.Column="2"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     UseLayoutRounding="False">
+                <ListBox.Style>
+                    <Style TargetType="{x:Type ListBox}">
+                        <Style.Triggers>
+                            <Trigger Property="HasItems"
+                                     Value="True">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </Trigger>
+                            <Trigger Property="HasItems"
+                                     Value="False">
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </ListBox.Style>
+                <ListBox.ItemsSource>
+                    <Binding Path="ValueIndicators" />
+                </ListBox.ItemsSource>
+                <ListBox.Resources>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <!--
+                            commented out because IsEnabled=false
+                            <Style.Resources>
+                            SelectedItem with focus
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                            SelectedItem without focus
+                            <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                            SelectedItem text foreground
+                            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                            </Style.Resources>
+                        -->
+
+                        <Setter Property="IsEnabled"
+                                Value="false" />
+
+                        <!--
+                            commented out because IsEnabled=false
+                            <Setter Property="Focusable" Value="false"/>
+                            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                        -->
+
+                        <Setter Property="BorderBrush"
+                                Value="Transparent" />
+                        <Setter Property="BorderThickness"
+                                Value="0" />
+                        <Setter Property="Background"
+                                Value="Transparent" />
+                        <Setter Property="Padding"
+                                Value="0" />
+                        <Setter Property="Margin"
+                                Value="0,0,5,0" />
+
+                        <Setter Property="Border.BorderBrush"
+                                Value="Transparent" />
+                        <Setter Property="Border.BorderThickness"
+                                Value="0" />
+                        <Setter Property="Border.Background"
+                                Value="Transparent" />
+                        <Setter Property="Border.Padding"
+                                Value="0" />
+                    </Style>
+
+                </ListBox.Resources>
+
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel VerticalAlignment="Center"
+                                    Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="core:ValueIndicator">
+                        <StackPanel Orientation="Vertical">
+                            <Grid Width="{Binding Width}"
+                                  Visibility="{Binding Converter={StaticResource IsSeparatorIndicatorToVisibilityConverter}}" />
+
+                            <Grid ToolTip="{Binding ToolTip}"
+                                  ToolTipService.ShowOnDisabled="True"
+                                  Width="{Binding Width}"
+                                  Visibility="{Binding Converter={StaticResource IsSeparatorIndicatorToNotVisibilityConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0"
+                                        Grid.ColumnSpan="2"
+                                        BorderBrush="Red"
+                                        BorderThickness="{Binding IsUpdateError,
+                                                                  Converter={StaticResource IsErrorToBorderThicknessConverter}}" />
+
+                                <ContentControl Grid.Column="0"
+                                                Width="16"
+                                                Height="16"
+                                                Template="{Binding Converter={StaticResource IndicatorVectorIconConverter}}" />
+
+                                <Label Grid.Column="1"
+                                       Content="{Binding StringValue}"
+                                       Style="{StaticResource ResourceKey=IndicatorLabel}" />
+
+                            </Grid>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <Separator Height="4"
+                   Background="{x:Null}" />
+
+    </StackPanel>
+</UserControl>

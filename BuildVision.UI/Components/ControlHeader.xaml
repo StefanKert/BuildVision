@@ -4,8 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BuildVision.UI.Components"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             mc:Ignorable="d"
+             d:DesignWidth="697"
              xmlns:res="clr-namespace:BuildVision.UI"
              xmlns:views="clr-namespace:BuildVision.UI"
              xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
@@ -22,8 +22,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Resources/CommonResources.xaml" />
                 <ResourceDictionary Source="../Resources/BuildAction.Resources.xaml" />
-                <ResourceDictionary Source="../Styles/ScrollViewerStyle.xaml" />
-                <ResourceDictionary Source="../Styles/DataGridColumnHeaderStyle.xaml" />
                 <ResourceDictionary Source="../Styles/ControlViewStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -255,7 +253,8 @@
                      Background="Transparent"
                      BorderThickness="0"
                      ScrollViewer.HorizontalScrollBarVisibility="Auto"
-                     UseLayoutRounding="False">
+                     UseLayoutRounding="False"
+                     ItemsSource="{Binding ValueIndicators}">
                 <ListBox.Style>
                     <Style TargetType="{x:Type ListBox}">
                         <Style.Triggers>
@@ -272,9 +271,6 @@
                         </Style.Triggers>
                     </Style>
                 </ListBox.Style>
-                <ListBox.ItemsSource>
-                    <Binding Path="ValueIndicators" />
-                </ListBox.ItemsSource>
                 <ListBox.Resources>
                     <Style TargetType="{x:Type ListBoxItem}">
                         <!--
@@ -318,7 +314,6 @@
                         <Setter Property="Border.Padding"
                                 Value="0" />
                     </Style>
-
                 </ListBox.Resources>
 
                 <ListBox.ItemsPanel>

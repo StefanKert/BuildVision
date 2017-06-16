@@ -53,7 +53,9 @@
     <Compile Include="ClipboardHelper.cs" />
     <Compile Include="CustomStringFormatProvider.cs" />
     <Compile Include="FilePathHelper.cs" />
-    <Compile Include="ObjectContractExtensions.cs" />
+    <Compile Include="GenericXmlSerializer.cs" />
+    <Compile Include="SettingsBase.cs" />
+    <Compile Include="LegacyConfigurationSerializer.cs" />
     <Compile Include="ObservableCollectionExtensions.cs" />
     <Compile Include="ObservableRangeCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

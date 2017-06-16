@@ -1,26 +1,21 @@
-using System.Runtime.Serialization;
-
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.ToolWindow;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings
 {
-    [DataContract]
-    public class WindowSettings
+  public class WindowSettings : SettingsBase
+  {
+    public WindowStateAction WindowActionOnBuildBegin { get; set; }
+
+    public WindowStateAction WindowActionOnBuildSuccess { get; set; }
+
+    public WindowStateAction WindowActionOnBuildError { get; set; }
+
+    public WindowSettings()
     {
-        [DataMember]
-        public WindowStateAction WindowActionOnBuildBegin { get; set; }
-
-        [DataMember]
-        public WindowStateAction WindowActionOnBuildSuccess { get; set; }
-
-        [DataMember]
-        public WindowStateAction WindowActionOnBuildError { get; set; }
-
-        public WindowSettings()
-        {
-            WindowActionOnBuildBegin = new WindowStateAction(WindowState.Show);
-            WindowActionOnBuildSuccess = new WindowStateAction(WindowState.Nothing);
-            WindowActionOnBuildError = new WindowStateAction(WindowState.Show);
-        }
+      WindowActionOnBuildBegin = new WindowStateAction(WindowState.Show);
+      WindowActionOnBuildSuccess = new WindowStateAction(WindowState.Nothing);
+      WindowActionOnBuildError = new WindowStateAction(WindowState.Show);
     }
+  }
 }

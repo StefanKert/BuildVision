@@ -260,7 +260,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Building
                         throw new ArgumentOutOfRangeException("errorLevel");
                 }
                 errorItem.VerifyValues();
-                buildedProject.ErrorsBox.AddErrorItem(errorItem);
+                buildedProject.ErrorsBox.Add(errorItem);
                 OnErrorRaised(this, new BuildErrorRaisedEventArgs(errorLevel, buildedProject));
             }
             catch (Exception ex)

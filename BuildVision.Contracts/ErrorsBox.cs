@@ -21,7 +21,7 @@ namespace BuildVision.Contracts
         public bool IsEmpty => _errors.Count == 0 && _warnings.Count == 0 && _messages.Count == 0;
         public IList<ErrorItem> Errors => _errors;
 
-        public void AddErrorItem(ErrorItem errorItem)
+        public void Add(ErrorItem errorItem)
         {
             switch (errorItem.Level)
             {

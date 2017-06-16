@@ -1,12 +1,11 @@
 ﻿using BuildVision.Contracts;
 using System.Runtime.Serialization;
+using BuildVision.Common;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings
 {
-    [DataContract]
-    public class ProjectItemSettings
-    {
-        [DataMember]
+    public class ProjectItemSettings : SettingsBase
+  {
         public BuildOutputFileTypes CopyBuildOutputFileTypesToClipboard { get; set; }
 
         public ProjectItemSettings()

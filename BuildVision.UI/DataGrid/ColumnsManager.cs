@@ -124,7 +124,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
                     }
 
                     DataGridBoundColumn column = CreateColumn(property);
-                    InitColumn(column, columnConfiguration, columnSettings, gridSettings.SortDescription);
+                    InitColumn(column, columnConfiguration, columnSettings, gridSettings.Sort);
                     tmpColumnsList.Add(column);
                 }
 
@@ -275,8 +275,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
             if (columnSettings.ValueStringFormat != null)
                 column.Binding.StringFormat = columnSettings.ValueStringFormat;
 
-            if (column.GetBindedProperty() == sortDescription.SortPropertyName)
-                column.SortDirection = sortDescription.SortOrder.ToSystem();
+            if (column.GetBindedProperty() == sortDescription.Property)
+                column.SortDirection = sortDescription.Order.ToSystem();
 
             string columnName = columnSettings.Header;
             if (string.IsNullOrEmpty(columnName))

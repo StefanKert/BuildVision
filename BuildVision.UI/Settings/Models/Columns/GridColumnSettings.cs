@@ -4,7 +4,6 @@ using System.Runtime.Serialization;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns
 {
-    [DataContract]
     public class GridColumnSettings : BaseGridColumnSettings
     {
         public static GridColumnSettings Empty { get; } = new GridColumnSettings
@@ -12,8 +11,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns
             PropertyNameId = string.Empty,
             Header = Resources.NoneMenuItem
         };
-
-        [DataMember]
+    
         public string PropertyNameId { get; set; }
 
         private GridColumnSettings()

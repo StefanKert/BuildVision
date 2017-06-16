@@ -61,7 +61,7 @@
                       VerticalAlignment="Center"
                       DisplayMemberPath="Header"
                       ItemsSource="{Binding GroupableColumnsUIList}"
-                      SelectedValue="{Binding GroupPropertyName}"
+                      SelectedValue="{Binding GroupName}"
                       SelectedValuePath="PropertyNameId" />
 
             <Label Grid.Row="2"
@@ -119,13 +119,13 @@
                           VerticalAlignment="Center"
                           DisplayMemberPath="Header"
                           ItemsSource="{Binding SortableColumnsUIList}"
-                          SelectedValue="{Binding SortDescription.SortPropertyName}"
+                          SelectedValue="{Binding Sort.Property}"
                           SelectedValuePath="PropertyNameId" />
                 <ComboBox Grid.Column="1"
                           VerticalAlignment="Center"
                           DisplayMemberPath="Description"
                           ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type sorting:SortOrder}}}"
-                          SelectedValue="{Binding SortDescription.SortOrder}"
+                          SelectedValue="{Binding Sort.Order}"
                           SelectedValuePath="Value" />
             </Grid>
         </Grid>

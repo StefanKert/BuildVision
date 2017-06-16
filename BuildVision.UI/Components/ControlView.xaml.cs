@@ -46,9 +46,9 @@ namespace BuildVision.UI
 
         private void RefreshSortDirectionInGrid()
         {
-            DataGridColumn dataGridColumn = Grid.Columns.FirstOrDefault(col => col.GetBindedProperty() == _viewModel.GridSortDescription.SortPropertyName);
+            DataGridColumn dataGridColumn = Grid.Columns.FirstOrDefault(col => col.GetBindedProperty() == _viewModel.GridSortDescription.Property);
             if (dataGridColumn != null)
-                dataGridColumn.SortDirection = _viewModel.GridSortDescription.SortOrder.ToSystem();
+                dataGridColumn.SortDirection = _viewModel.GridSortDescription.Order.ToSystem();
         }
 
         private void GridOnSorting(object sender, DataGridSortingEventArgs e)
@@ -105,7 +105,7 @@ namespace BuildVision.UI
             if (Grid.ItemsSource == null)
                 return;
 
-            if (e.PropertyName == _viewModel.GridSortDescription.SortPropertyName 
+            if (e.PropertyName == _viewModel.GridSortDescription.Property 
                 || e.PropertyName == _viewModel.GridGroupPropertyName)
             {
                 // Refresh grouping and sorting.

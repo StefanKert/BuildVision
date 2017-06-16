@@ -2,21 +2,19 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
-
 using AlekseyNagovitsyn.BuildVision.Core;
 using AlekseyNagovitsyn.BuildVision.Core.Common;
-using AlekseyNagovitsyn.BuildVision.Helpers;
-
 using Microsoft.VisualStudio.Shell;
-using BuildVision.Common;
 using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
+using BuildVision.Common;
+using BuildVision.Contracts;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
 {
     public abstract class SettingsDialogPage<TControl, TSettings> : UIElementDialogPage
         where TControl : FrameworkElement, new() 
-        where TSettings : class, new()
-    {
+        where TSettings : SettingsBase, new()
+  {
         private static bool _notifySettingsChangedOnce;
 
         private TSettings _editSettings;
@@ -36,7 +34,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
         protected override void OnActivate(CancelEventArgs e)
         {
             if (_editSettings == null)
-                _editSettings = Settings.Clone();
+                _editSettings = Settings.Clone<TSettings>();
 
             if (_ctrl.DataContext == null)
                 _ctrl.DataContext = _editSettings;

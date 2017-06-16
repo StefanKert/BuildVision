@@ -72,12 +72,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         public string GridGroupPropertyName
         {
-            get { return ControlSettings.GridSettings.GroupPropertyName; }
+            get { return ControlSettings.GridSettings.GroupName; }
             set
             {
-                if (ControlSettings.GridSettings.GroupPropertyName != value)
+                if (ControlSettings.GridSettings.GroupName != value)
                 {
-                    ControlSettings.GridSettings.GroupPropertyName = value;
+                    ControlSettings.GridSettings.GroupName = value;
                     OnPropertyChanged(nameof(GridGroupPropertyName));
                     OnPropertyChanged(nameof(GroupedProjectsList));
                     OnPropertyChanged(nameof(GridColumnsGroupMenuItems));
@@ -139,12 +139,12 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
  
         public SortDescription GridSortDescription
         {
-            get { return ControlSettings.GridSettings.SortDescription; }
+            get { return ControlSettings.GridSettings.Sort; }
             set
             {
-                if (ControlSettings.GridSettings.SortDescription != value)
+                if (ControlSettings.GridSettings.Sort != value)
                 {
-                    ControlSettings.GridSettings.SortDescription = value;
+                    ControlSettings.GridSettings.Sort = value;
                     OnPropertyChanged(nameof(GridSortDescription));
                     OnPropertyChanged(nameof(GroupedProjectsList));
                 }
@@ -279,8 +279,8 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
 
         private static ProjectItemColumnSorter GetProjectItemSorter(SortDescription sortDescription)
         {
-            SortOrder sortOrder = sortDescription.SortOrder;
-            string sortPropertyName = sortDescription.SortPropertyName;
+            SortOrder sortOrder = sortDescription.Order;
+            string sortPropertyName = sortDescription.Property;
 
             if (sortOrder != SortOrder.None && !string.IsNullOrEmpty(sortPropertyName))
             {

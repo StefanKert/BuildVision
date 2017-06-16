@@ -3,35 +3,29 @@ using System.Runtime.Serialization;
 
 namespace BuildVision.Contracts
 {
-    [DataContract]
-    public abstract class BaseGridColumnSettings : Attribute
+  public abstract class BaseGridColumnSettings : Attribute
+  {
+    public string Header { get; set; }
+
+    public bool Visible { get; set; }
+
+    /// <remarks>
+    /// -1 for auto.
+    /// </remarks>
+    public int DisplayIndex { get; set; }
+
+    /// <remarks>
+    /// double.NaN for auto.
+    /// </remarks>
+    public double Width { get; set; }
+
+    public string ValueStringFormat { get; set; }
+
+    protected BaseGridColumnSettings()
     {
-        [DataMember]
-        public string Header { get; set; }
-
-        [DataMember]
-        public bool Visible { get; set; }
-
-        /// <remarks>
-        /// -1 for auto.
-        /// </remarks>
-        [DataMember]
-        public int DisplayIndex { get; set; }
-
-        /// <remarks>
-        /// double.NaN for auto.
-        /// </remarks>
-        [DataMember]
-        public double Width { get; set; }
-
-        [DataMember]
-        public string ValueStringFormat { get; set; }
-
-        protected BaseGridColumnSettings()
-        {
-            Width = double.NaN;
-            DisplayIndex = -1;
-            Visible = true;
-        }
+      Width = double.NaN;
+      DisplayIndex = -1;
+      Visible = true;
     }
+  }
 }

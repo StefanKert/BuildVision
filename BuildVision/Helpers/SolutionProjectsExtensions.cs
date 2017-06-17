@@ -6,7 +6,7 @@ using EnvDTE80;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using System.Runtime.InteropServices;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Helpers
 {
     public static class SolutionProjectsExtensions
     {

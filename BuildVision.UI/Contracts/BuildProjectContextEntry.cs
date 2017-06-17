@@ -1,8 +1,7 @@
+using BuildVision.UI.Models;
 using System.Collections.Generic;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
-
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.UI.Contracts
 {
     public class BuildProjectContextEntry
     {

@@ -1,12 +1,12 @@
-﻿<UserControl x:Class="AlekseyNagovitsyn.BuildVision.Tool.Views.WindowSettingsControl"
+﻿<UserControl x:Class="BuildVision.UI.Settings.WindowSettingsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:BuildVision.UI"
-             xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions" 
-             xmlns:settings="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings"
-             xmlns:toolWindow="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.ToolWindow"
+             xmlns:settings="clr-namespace:BuildVision.UI.Settings.Models"
+             xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"
+             xmlns:models="clr-namespace:BuildVision.UI.Models"
              mc:Ignorable="d"
              d:DesignWidth="400"
              d:DesignHeight="180"
@@ -36,7 +36,7 @@
                   Grid.Column="1"
                   VerticalAlignment="Center"
                   DisplayMemberPath="Description"
-                  ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type toolWindow:WindowState}}}"
+                  ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type models:WindowState}}}"
                   SelectedValue="{Binding WindowActionOnBuildBegin.State}"
                   SelectedValuePath="Value" />
 
@@ -48,7 +48,7 @@
                   Grid.Column="1"
                   VerticalAlignment="Center"
                   DisplayMemberPath="Description"
-                  ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type toolWindow:WindowState}}}"
+                  ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type models:WindowState}}}"
                   SelectedValue="{Binding WindowActionOnBuildSuccess.State}"
                   SelectedValuePath="Value" />
 
@@ -60,7 +60,7 @@
                   Grid.Column="1"
                   VerticalAlignment="Center"
                   DisplayMemberPath="Description"
-                  ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type toolWindow:WindowState}}}"
+                  ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type models:WindowState}}}"
                   SelectedValue="{Binding WindowActionOnBuildError.State}"
                   SelectedValuePath="Value" />
 

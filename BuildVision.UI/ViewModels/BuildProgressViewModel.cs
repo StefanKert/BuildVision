@@ -4,11 +4,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shell;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress;
 using BuildVision.Common;
+using BuildVision.UI.Settings.Models;
+using BuildVision.UI.Models;
+using BuildVision.UI.Settings.Models.BuildProgress;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
+namespace BuildVision.UI.ViewModels
 {
     public class BuildProgressViewModel : BindableBase
     {

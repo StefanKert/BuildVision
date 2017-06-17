@@ -1,4 +1,7 @@
-﻿namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting
+﻿
+using BuildVision.UI.Models;
+
+namespace BuildVision.UI.Settings.Models.Sorting
 {
   public class SortDescription
   {

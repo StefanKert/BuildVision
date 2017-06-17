@@ -3,16 +3,14 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Markup;
 
-using AlekseyNagovitsyn.BuildVision.Core.Common;
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
-using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
-using AlekseyNagovitsyn.BuildVision.Tool.Views;
-
 using Microsoft.VisualStudio.Shell;
-using AlekseyNagovitsyn.BuildVision.Tool.Building;
 using BuildVision.UI;
+using BuildVision.Core;
+using BuildVision.UI.ViewModels;
+using BuildVision.UI.Helpers;
+using BuildVision.UI.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool
+namespace BuildVision.Tool
 {
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.

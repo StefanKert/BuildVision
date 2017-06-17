@@ -2,7 +2,7 @@
 // MUST match guids.h
 using System;
 
-namespace AlekseyNagovitsyn.BuildVision.Core
+namespace BuildVision.Core
 {
     static class GuidList
     {

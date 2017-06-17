@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Controls;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
 using BuildVision.Common;
 using BuildVision.Contracts;
+using BuildVision.UI.Modelss;
+using BuildVision.UI.Extensions;
+using BuildVision.UI.Models.Indicators.Core;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models
+namespace BuildVision.UI.Models
 {
   public class ProjectItem : BindableBase
   {

@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages;
+using BuildVision.UI.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
+namespace BuildVision.UI.Converters
 {
     [ValueConversion(typeof(BuildExtraMessageFormat), typeof(Visibility))]
     public class ExtraLabelTemplateToTimeSpanFormatVisibility : IValueConverter

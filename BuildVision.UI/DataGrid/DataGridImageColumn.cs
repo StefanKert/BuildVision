@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
+namespace BuildVision.UI.DataGrid
 {
     public class DataGridImageColumn : DataGridBoundColumn
     {

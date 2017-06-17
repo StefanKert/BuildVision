@@ -1,7 +1,7 @@
 using System.Windows;
 using System.Windows.Data;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions
+namespace BuildVision.UI.Extensions
 {
     public static class BindingExtensions
     {

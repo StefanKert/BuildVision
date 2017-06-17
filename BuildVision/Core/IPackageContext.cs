@@ -1,14 +1,13 @@
 using System;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
-
 using EnvDTE;
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE80;
+using BuildVision.UI.Settings.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Core.Common
+namespace BuildVision.Core
 {
     public interface IPackageContext
     {

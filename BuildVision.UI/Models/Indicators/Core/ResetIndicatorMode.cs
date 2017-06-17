@@ -1,4 +1,4 @@
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
+namespace BuildVision.UI.Models.Indicators.Core
 {
     public enum ResetIndicatorMode
     {

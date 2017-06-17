@@ -5,9 +5,8 @@ using System.Text;
 using System.Windows;
 
 using Microsoft.VisualStudio.Shell;
-using BuildVision.UI;
 
-namespace AlekseyNagovitsyn.BuildVision.Core.Logging
+namespace BuildVision.UI.Common.Logging
 {
     public static class TraceManager
     {

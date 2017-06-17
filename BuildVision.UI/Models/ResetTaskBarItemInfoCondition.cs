@@ -1,7 +1,6 @@
-﻿using AlekseyNagovitsyn.BuildVision.Helpers;
-using BuildVision.UI;
+﻿using BuildVision.UI.Helpers;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress
+namespace BuildVision.UI.Models
 {
     public enum ResetTaskBarItemInfoCondition
     {

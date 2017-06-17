@@ -6,13 +6,10 @@
              xmlns:res="clr-namespace:BuildVision.UI"
              xmlns:views="clr-namespace:BuildVision.UI"
              xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:core="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core"
-             xmlns:viewModels="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.ViewModels"
-             xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions" 
-             xmlns:extensions1="clr-namespace:BuildVision.UI.Extensions" 
-             xmlns:local="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Building"
              xmlns:components="clr-namespace:BuildVision.UI.Components"
+             xmlns:viewModels="clr-namespace:BuildVision.UI.ViewModels"
+             xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"
+             xmlns:helpers="clr-namespace:BuildVision.UI.Helpers"
              mc:Ignorable="d"
              Name="OwnerUserControl"
              Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"
@@ -34,7 +31,7 @@
             </ResourceDictionary.MergedDictionaries>
             
             <viewModels:ControlViewModel x:Key="DesignViewModel"/>
-            <local:BindingProxy x:Key="proxy" Data="{Binding}" />
+            <helpers:BindingProxy x:Key="proxy" Data="{Binding}" />
 
             <CollectionViewSource x:Key="GridColumnsCollection" Source="{Binding ElementName=Grid, Path=Columns}" />
 

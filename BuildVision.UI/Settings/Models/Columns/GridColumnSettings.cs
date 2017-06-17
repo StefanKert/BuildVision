@@ -1,8 +1,6 @@
 using BuildVision.Contracts;
-using BuildVision.UI;
-using System.Runtime.Serialization;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns
+namespace BuildVision.UI.Settings.Models.Columns
 {
     public class GridColumnSettings : BaseGridColumnSettings
     {

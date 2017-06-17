@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
+namespace BuildVision.UI.Converters
 {
     [ValueConversion(typeof(string), typeof(bool))]
     public class StringIsNullOrEmptyConverter : IValueConverter

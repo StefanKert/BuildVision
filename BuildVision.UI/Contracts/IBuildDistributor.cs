@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.UI.Contracts
 {
     public interface IBuildDistributor
     {

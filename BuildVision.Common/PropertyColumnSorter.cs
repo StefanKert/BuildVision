@@ -4,7 +4,7 @@ using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting
+namespace BuildVision.Common
 {
     public class PropertyColumnSorter<T> : IComparer
         where T : class

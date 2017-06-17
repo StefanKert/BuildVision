@@ -3,12 +3,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:converters="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Converters"
+             xmlns:converters1="clr-namespace:BuildVision.UI.Converters"
              mc:Ignorable="d">
 
     <UserControl.Resources>
 
-        <converters:InvertSolidColorBrushConverter x:Key="InvertSolidColorBrushConverter" />
+        <converters1:InvertSolidColorBrushConverter x:Key="InvertSolidColorBrushConverter" />
 
         <ControlTemplate x:Key="ErrorsIndicator">
             <Viewbox Stretch="Uniform">

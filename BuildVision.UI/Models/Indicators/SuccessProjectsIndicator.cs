@@ -1,10 +1,11 @@
+using System.Linq;
+
+using BuildVision.UI;
+using BuildVision.UI.Models.Indicators.Core;
+using BuildVision.UI.Contracts;
 using System;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Building;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
-using BuildVision.UI;
-
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators
+namespace BuildVision.UI.Models.Indicators
 {
     public class SuccessProjectsIndicator : ValueIndicator
     {

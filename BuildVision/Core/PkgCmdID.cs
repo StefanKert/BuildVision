@@ -1,6 +1,6 @@
 ﻿// PkgCmdID.cs
 // MUST match PkgCmdID.h
-namespace AlekseyNagovitsyn.BuildVision.Core
+namespace BuildVision.Core
 {
     static class PkgCmdIDList
     {

@@ -1,11 +1,10 @@
+using BuildVision.UI.Models.Indicators;
+using BuildVision.UI.Models.Indicators.Core;
 using System;
 using System.Globalization;
 using System.Windows.Data;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
-
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
+namespace BuildVision.UI.Converters
 {
     [ValueConversion(typeof(ValueIndicator), typeof(bool))]
     public class IsSeparatorIndicatorConverter : IValueConverter

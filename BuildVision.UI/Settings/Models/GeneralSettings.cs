@@ -1,7 +1,8 @@
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress;
 using BuildVision.Common;
+using BuildVision.UI.Models;
+using BuildVision.UI.Settings.Models.BuildProgress;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings
+namespace BuildVision.UI.Settings.Models
 {
   public class GeneralSettings : SettingsBase
   {

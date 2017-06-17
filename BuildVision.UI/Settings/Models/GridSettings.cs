@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using AlekseyNagovitsyn.BuildVision.Tool.DataGrid;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting;
 using BuildVision.Common;
+using BuildVision.UI.DataGrid;
+using BuildVision.UI.Settings.Models.Columns;
+using BuildVision.UI.Models;
+using BuildVision.UI.Settings.Models.Sorting;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings
+namespace BuildVision.UI.Settings.Models
 {
   public class GridSettings : SettingsBase
   {

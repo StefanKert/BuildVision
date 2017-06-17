@@ -2,14 +2,12 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
-using AlekseyNagovitsyn.BuildVision.Core;
-using AlekseyNagovitsyn.BuildVision.Core.Common;
 using Microsoft.VisualStudio.Shell;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
 using BuildVision.Common;
-using BuildVision.Contracts;
+using BuildVision.Core;
+using BuildVision.UI.Settings.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
+namespace BuildVision.Views.Settings
 {
     public abstract class SettingsDialogPage<TControl, TSettings> : UIElementDialogPage
         where TControl : FrameworkElement, new() 

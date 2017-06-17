@@ -5,7 +5,7 @@ using System.Management.Instrumentation;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views
+namespace BuildVision.UI.Extensions
 {
     public static class VectorResources
     {

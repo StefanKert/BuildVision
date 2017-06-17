@@ -1,9 +1,8 @@
 using System.Runtime.Serialization;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages;
 using BuildVision.Common;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings
+namespace BuildVision.UI.Settings.Models
 {
   public class ControlSettings : SettingsBase
   {

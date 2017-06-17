@@ -1,7 +1,7 @@
 using BuildVision.UI;
 using System;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.UI.Helpers
 {
     /// <summary>
     /// Specifies description for a member of the enum type for display to the UI.

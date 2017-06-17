@@ -1,11 +1,7 @@
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
-using AlekseyNagovitsyn.BuildVision.Tool.Views;
 using BuildVision.Contracts;
-using System.Linq;
-using System.Reflection;
 using System.Windows.Controls;
 
-namespace BuildVision.Common
+namespace BuildVision.UI.Extensions
 {
     public static class ProjectStateExtensions
     {

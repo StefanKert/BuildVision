@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views
+namespace BuildVision.UI.Settings
 {
     public partial class WindowSettingsControl : UserControl
     {

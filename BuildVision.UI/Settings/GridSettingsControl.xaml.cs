@@ -5,12 +5,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
-using AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions;
-
 using Microsoft.VisualStudio.Shell;
+using BuildVision.UI.Settings.Models.Columns;
+using BuildVision.UI.Extensions;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views
+namespace BuildVision.UI.Settings
 {
     public partial class GridSettingsControl : UserControl
     {

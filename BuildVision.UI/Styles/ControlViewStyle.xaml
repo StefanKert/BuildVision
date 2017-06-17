@@ -1,9 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:BuildVision.UI.Styles"
                     xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
                     xmlns:converters1="http://schemas.microsoft.com/xps/2005/06"
-                    xmlns:converters="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Converters">
+                    xmlns:converters2="clr-namespace:BuildVision.UI.Converters">
 
     <Style TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground"
@@ -48,45 +47,45 @@
     </Style>
 
     <converters1:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-    <converters:VisibilityToBooleanConverter x:Key="VisibilityToBoolConverter" />
-    <converters:GridColumnHeadersVisibilityToBooleanConverter x:Key="ColumnHeadersVisibilityToBool" />
-    <converters:InverseBooleanConverter x:Key="InverseBoolean" />
-    <converters:IndicatorVectorIconConverter x:Key="IndicatorVectorIconConverter" />
-    <converters:ObjectsReferencesEqualsConverter x:Key="ObjectsReferencesEqualsConverter" />
-    <converters:IsErrorToBorderThicknessConverter x:Key="IsErrorToBorderThicknessConverter" />
-    <converters:StringIsNullOrEmptyConverter x:Key="StringIsNullOrEmptyConverter" />
-    <converters:SubtractConstantConverter x:Key="SubtractConstantConverter" />
-    <converters:ExpanderIsExpandedConverter x:Key="ExpanderIsExpandedConverter" />
+    <converters2:VisibilityToBooleanConverter x:Key="VisibilityToBoolConverter" />
+    <converters2:GridColumnHeadersVisibilityToBooleanConverter x:Key="ColumnHeadersVisibilityToBool" />
+    <converters2:InverseBooleanConverter x:Key="InverseBoolean" />
+    <converters2:IndicatorVectorIconConverter x:Key="IndicatorVectorIconConverter" />
+    <converters2:ObjectsReferencesEqualsConverter x:Key="ObjectsReferencesEqualsConverter" />
+    <converters2:IsErrorToBorderThicknessConverter x:Key="IsErrorToBorderThicknessConverter" />
+    <converters2:StringIsNullOrEmptyConverter x:Key="StringIsNullOrEmptyConverter" />
+    <converters2:SubtractConstantConverter x:Key="SubtractConstantConverter" />
+    <converters2:ExpanderIsExpandedConverter x:Key="ExpanderIsExpandedConverter" />
 
-    <converters:AlternatingRowBackgroundConverter x:Key="AlternatingRowBackgroundConverter" />
+    <converters2:AlternatingRowBackgroundConverter x:Key="AlternatingRowBackgroundConverter" />
 
-    <converters:MultiBindingStringFormatConverter x:Key="MultiBindingStringFormatConverter" />
-    
-    <converters:ValueConverterGroup x:Key="InvertedBoolToVisibilityConverter">
-        <converters:InverseBooleanConverter />
+    <converters2:MultiBindingStringFormatConverter x:Key="MultiBindingStringFormatConverter" />
+
+    <converters2:ValueConverterGroup x:Key="InvertedBoolToVisibilityConverter">
+        <converters2:InverseBooleanConverter />
         <converters1:BooleanToVisibilityConverter />
-    </converters:ValueConverterGroup>
+    </converters2:ValueConverterGroup>
 
-    <converters:ValueConverterGroup x:Key="NotNullToVisibilityConverter">
-        <converters:ObjectToIsNullConverter />
-        <converters:InverseBooleanConverter />
-        <converters1:BooleanToVisibilityConverter />
-    </converters:ValueConverterGroup>
-
-    <converters:ValueConverterGroup x:Key="IsSeparatorIndicatorToVisibilityConverter">
-        <converters:IsSeparatorIndicatorConverter />
-        <converters1:BooleanToVisibilityConverter />
-    </converters:ValueConverterGroup>
-
-    <converters:ValueConverterGroup x:Key="IsSeparatorIndicatorToNotVisibilityConverter">
-        <converters:IsSeparatorIndicatorConverter />
-        <converters:InverseBooleanConverter />
-        <converters1:BooleanToVisibilityConverter />
-    </converters:ValueConverterGroup>
-
-    <converters:ValueConverterGroup x:Key="PositiveNumberToVisibilityConverter">
-        <converters:NumberToIsPositiveConverter />
+    <converters2:ValueConverterGroup x:Key="NotNullToVisibilityConverter">
+        <converters2:ObjectToIsNullConverter />
+        <converters2:InverseBooleanConverter />
         <BooleanToVisibilityConverter />
-    </converters:ValueConverterGroup>
+    </converters2:ValueConverterGroup>
+
+    <converters2:ValueConverterGroup x:Key="IsSeparatorIndicatorToVisibilityConverter">
+        <converters2:IsSeparatorIndicatorConverter />
+        <converters1:BooleanToVisibilityConverter />
+    </converters2:ValueConverterGroup>
+
+    <converters2:ValueConverterGroup x:Key="IsSeparatorIndicatorToNotVisibilityConverter">
+        <converters2:IsSeparatorIndicatorConverter />
+        <converters2:InverseBooleanConverter />
+        <converters1:BooleanToVisibilityConverter />
+    </converters2:ValueConverterGroup>
+
+    <converters2:ValueConverterGroup x:Key="PositiveNumberToVisibilityConverter">
+        <converters2:NumberToIsPositiveConverter />
+        <BooleanToVisibilityConverter />
+    </converters2:ValueConverterGroup>
 
 </ResourceDictionary>

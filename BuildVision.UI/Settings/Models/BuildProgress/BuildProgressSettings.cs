@@ -1,6 +1,7 @@
-﻿using System.Runtime.Serialization;
+﻿using BuildVision.UI.Models;
+using System.Runtime.Serialization;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress
+namespace BuildVision.UI.Settings.Models.BuildProgress
 {
   public class BuildProgressSettings
   {

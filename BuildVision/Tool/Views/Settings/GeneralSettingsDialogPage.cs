@@ -1,8 +1,9 @@
+using BuildVision.UI.Settings;
+using BuildVision.UI.Settings.Models;
 using System.Runtime.InteropServices;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
+namespace BuildVision.Views.Settings
 {
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [Guid("F7BF1C16-A1D4-4E93-9A10-9AE106D656EE")]

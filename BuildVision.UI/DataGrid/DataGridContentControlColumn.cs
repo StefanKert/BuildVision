@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
+namespace BuildVision.UI.DataGrid
 {
     public class DataGridContentControlColumn : DataGridBoundColumn
     {

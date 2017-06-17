@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions
+namespace BuildVision.UI.Extensions
 {
     public static class DataGridColumnExtensions
     {

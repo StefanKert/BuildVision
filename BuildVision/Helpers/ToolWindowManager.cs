@@ -1,13 +1,12 @@
 using System;
 
-using AlekseyNagovitsyn.BuildVision.Core.Common;
-using AlekseyNagovitsyn.BuildVision.Tool;
-
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
+using BuildVision.Core;
+using BuildVision.Tool;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Helpers
 {
     public class ToolWindowManager
     {

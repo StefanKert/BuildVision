@@ -2,7 +2,7 @@
 
 using EnvDTE;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Helpers
 {
     public static class ProjectItemsExtensions
     {

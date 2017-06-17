@@ -2,14 +2,16 @@
 using System.IO;
 using System.Linq;
 
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
-using AlekseyNagovitsyn.BuildVision.Helpers;
-
 using EnvDTE;
 using System.Collections.Generic;
 using BuildVision.UI;
+using BuildVision.Helpers;
+using BuildVision.UI.Common.Logging;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models
+using ProjectItem = BuildVision.UI.Models.ProjectItem;
+using BuildVision.UI.Models;
+
+namespace BuildVision.Tool.Models
 {
     public static  class ViewModelHelper
     {

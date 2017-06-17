@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views
+namespace BuildVision.UI.Settings
 {
     public partial class GeneralSettingsControl : UserControl
     {

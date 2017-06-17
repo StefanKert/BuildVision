@@ -1,32 +1,28 @@
 using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-
-using AlekseyNagovitsyn.BuildVision.Helpers;
-using AlekseyNagovitsyn.BuildVision.Tool.DataGrid;
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting;
+using System.ComponentModel;
 
 using Process = System.Diagnostics.Process;
-using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
-using SortDescription = AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting.SortDescription;
 using Microsoft.VisualStudio;
 using BuildVision.Common;
 using BuildVision.Contracts;
-using BuildVision.UI;
-using AlekseyNagovitsyn.BuildVision.Tool.Building;
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
+using BuildVision.UI.Contracts;
+using BuildVision.UI.DataGrid;
+using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Helpers;
+using BuildVision.UI.Models;
+using BuildVision.UI.Models.Indicators.Core;
+using BuildVision.UI.Settings.Models.Columns;
+using SortDescription = BuildVision.UI.Settings.Models.Sorting.SortDescription;
+using BuildVision.UI.Settings.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
+namespace BuildVision.UI.ViewModels
 {
     public class ControlViewModel : BindableBase
     {
@@ -139,7 +135,7 @@ namespace AlekseyNagovitsyn.BuildVision.Tool.ViewModels
  
         public SortDescription GridSortDescription
         {
-            get { return ControlSettings.GridSettings.Sort; }
+            get => ControlSettings.GridSettings.Sort;
             set
             {
                 if (ControlSettings.GridSettings.Sort != value)

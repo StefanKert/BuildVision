@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 using BuildVision.Contracts;
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
+using BuildVision.UI.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.UI.Contracts
 {
     // TODO: thread-safety.
     public class BuildedProjectsCollection : List<BuildedProject>

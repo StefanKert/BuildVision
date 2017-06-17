@@ -1,6 +1,7 @@
+using BuildVision.UI.Models;
 using System.Runtime.Serialization;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.ToolWindow
+namespace BuildVision.UI.Settings.Models.ToolWindow
 {
   public class WindowStateAction
   {

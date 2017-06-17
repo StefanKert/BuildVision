@@ -8,19 +8,17 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
-using AlekseyNagovitsyn.BuildVision.Helpers;
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting;
-using AlekseyNagovitsyn.BuildVision.Tool.Views;
-using AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions;
 using BuildVision.Contracts;
-using BuildVision.UI;
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
+using BuildVision.UI.Modelss;
+using BuildVision.UI.Helpers;
+using BuildVision.UI.Extensions;
+using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Models;
+using BuildVision.UI.Settings.Models.Columns;
+using BuildVision.UI.Settings.Models.Sorting;
+using BuildVision.UI.Settings.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.DataGrid
+namespace BuildVision.UI.DataGrid
 {
     public static class ColumnsManager
     {

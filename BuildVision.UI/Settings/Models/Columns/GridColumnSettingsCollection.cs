@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns
+namespace BuildVision.UI.Settings.Models.Columns
 {
     public class GridColumnSettingsCollection : List<GridColumnSettings>
     {

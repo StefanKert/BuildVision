@@ -1,8 +1,10 @@
-using AlekseyNagovitsyn.BuildVision.Tool.Building;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
-using BuildVision.UI;
+using System.Linq;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators
+using BuildVision.UI;
+using BuildVision.UI.Models.Indicators.Core;
+using BuildVision.UI.Contracts;
+
+namespace BuildVision.UI.Models.Indicators
 {
     public class SeparatorIndicator : ValueIndicator
     {

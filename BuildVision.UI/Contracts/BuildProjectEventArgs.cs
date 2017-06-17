@@ -1,8 +1,8 @@
 using System;
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
 using BuildVision.Contracts;
+using BuildVision.UI.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.UI.Contracts
 {
     public class BuildProjectEventArgs : EventArgs
     {

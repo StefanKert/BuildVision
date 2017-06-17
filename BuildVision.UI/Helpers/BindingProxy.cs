@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.UI.Helpers
 {
     public class BindingProxy : Freezable
     {

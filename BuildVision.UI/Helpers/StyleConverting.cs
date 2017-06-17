@@ -1,12 +1,11 @@
+using BuildVision.UI.Models;
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting;
-
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.UI.Helpers
 {
     public static class StyleConverting
     {

@@ -1,8 +1,7 @@
 ﻿using BuildVision.Contracts;
-using System.Runtime.Serialization;
 using BuildVision.Common;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings
+namespace BuildVision.UI.Settings.Models
 {
     public class ProjectItemSettings : SettingsBase
   {

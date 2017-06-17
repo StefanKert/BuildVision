@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
+namespace BuildVision.UI.Converters
 {
     [ValueConversion(typeof(bool), typeof(Thickness))]
     public class IsErrorToBorderThicknessConverter : IValueConverter

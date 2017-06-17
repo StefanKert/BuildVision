@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.UI.Helpers
 {
     /// <summary>
     /// Extension methods for the enum data type

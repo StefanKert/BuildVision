@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
-
 using EnvDTE;
 using EnvDTE80;
 
@@ -14,10 +12,11 @@ using System.Globalization;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.IO;
 using System.Text;
-using BuildVision.Contracts;
 using BuildVision.UI;
+using BuildVision.UI.Common.Logging;
+using BuildVision.Contracts;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Helpers
 {
     public static class ProjectExtensions
     {
@@ -484,7 +483,7 @@ namespace AlekseyNagovitsyn.BuildVision.Helpers
         /// </summary>
         /// <param name="project">The project - owner of the Error Item.</param>
         /// <param name="errorItem">The Error Item.</param>
-        public static bool NavigateToErrorItem(this Project project, global::BuildVision.Contracts.ErrorItem errorItem)
+        public static bool NavigateToErrorItem(this Project project, BuildVision.Contracts.ErrorItem errorItem)
         {
             try
             {

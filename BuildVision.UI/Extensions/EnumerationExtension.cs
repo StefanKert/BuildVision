@@ -1,9 +1,9 @@
+using BuildVision.UI.Helpers;
 using System;
 using System.Linq;
 using System.Windows.Markup;
-using AlekseyNagovitsyn.BuildVision.Helpers;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions
+namespace BuildVision.UI.Extensions
 {
     public class EnumerationExtension : MarkupExtension
     {

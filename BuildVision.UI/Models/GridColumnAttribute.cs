@@ -2,7 +2,7 @@ using BuildVision.Contracts;
 using BuildVision.UI;
 using System;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns
+namespace BuildVision.UI.Modelss
 {
     [AttributeUsage(AttributeTargets.Property)]
     public class GridColumnAttribute : BaseGridColumnSettings

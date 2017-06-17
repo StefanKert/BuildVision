@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
+namespace BuildVision.UI.Converters
 {
     [ValueConversion(typeof(Visibility), typeof(bool))]
     public class VisibilityToBooleanConverter : IValueConverter

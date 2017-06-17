@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using BuildVision.UI.Converters;
+using BuildVision.UI.DataGrid;
+using BuildVision.UI.Helpers;
+using BuildVision.UI.Models;
+using BuildVision.UI.ViewModels;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -11,12 +16,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Media;
-
-using AlekseyNagovitsyn.BuildVision.Helpers;
-using AlekseyNagovitsyn.BuildVision.Tool.DataGrid;
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
-using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
-using AlekseyNagovitsyn.BuildVision.Tool.Views.Converters;
 
 namespace BuildVision.UI
 {

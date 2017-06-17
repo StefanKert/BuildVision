@@ -4,22 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 
-using AlekseyNagovitsyn.BuildVision.Core.Common;
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
-using AlekseyNagovitsyn.BuildVision.Helpers;
-using AlekseyNagovitsyn.BuildVision.Tool.Building;
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.ToolWindow;
-using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
-
 using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
 
-using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
-using WindowState = AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.ToolWindow.WindowState;
+using ProjectItem = BuildVision.UI.Models.ProjectItem;
 using ErrorItem = BuildVision.Contracts.ErrorItem;
+using WindowState = BuildVision.UI.Models.WindowState;
 using Microsoft.VisualStudio;
 using System.Windows;
 using System.ComponentModel;
@@ -27,12 +17,23 @@ using System.IO;
 using BuildVision.Contracts;
 using EnvDTE80;
 using BuildVision.Common;
-using AlekseyNagovitsyn.BuildVision.Tool.Views.Settings;
 using BuildVision.UI;
-using AlekseyNagovitsyn.BuildVision.Tool.Views;
-using System.Text;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool
+using System.Text;
+using BuildVision.Core;
+using BuildVision.Helpers;
+using BuildVision.Views.Settings;
+using BuildVision.Tool.Models;
+using BuildVision.UI.Contracts;
+using BuildVision.UI.ViewModels;
+using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Models.Indicators.Core;
+using BuildVision.UI.Extensions;
+using BuildVision.UI.Helpers;
+using BuildVision.UI.Models;
+using BuildVision.UI.Settings.Models.ToolWindow;
+
+namespace BuildVision.Tool
 {
     public class Tool
     {

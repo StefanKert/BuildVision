@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="AlekseyNagovitsyn.BuildVision.Tool.Views.Components.SpinnerControl"
+﻿<UserControl x:Class="BuildVision.UI.Components.SpinnerControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:components="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Components"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:BuildVision.UI.Components"
              d:DesignHeight="50"
              d:DesignWidth="100"
              mc:Ignorable="d">
@@ -63,7 +63,7 @@
             </Grid.RowDefinitions>
             <RepeatButton Grid.Row="0"
                           Height="11"
-                          Command="{x:Static components:SpinnerControl.IncreaseCommand}">
+                          Command="{x:Static local:SpinnerControl.IncreaseCommand}">
                 <RepeatButton.Content>
                     <Rectangle Width="8"
                                Height="5"
@@ -72,7 +72,7 @@
             </RepeatButton>
             <RepeatButton Grid.Row="1"
                           Height="11"
-                          Command="{x:Static components:SpinnerControl.DecreaseCommand}">
+                          Command="{x:Static local:SpinnerControl.DecreaseCommand}">
                 <RepeatButton.Content>
                     <Rectangle Width="8"
                                Height="5"

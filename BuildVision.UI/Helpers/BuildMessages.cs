@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
-
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages;
-
-using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
 using BuildVision.Contracts;
-using BuildVision.Common;
-using BuildVision.UI;
+using BuildVision.UI.Contracts;
+using BuildVision.UI.Models;
+using BuildVision.UI.Extensions;
+using BuildVision.UI.Settings.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.UI.Helpers
 {
     public static class BuildMessages
     {

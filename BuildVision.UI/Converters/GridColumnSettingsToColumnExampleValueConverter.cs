@@ -2,11 +2,11 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 
-using AlekseyNagovitsyn.BuildVision.Tool.DataGrid;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Columns;
 using BuildVision.UI;
+using BuildVision.UI.DataGrid;
+using BuildVision.UI.Settings.Models.Columns;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
+namespace BuildVision.UI.Converters
 {
     public class GridColumnSettingsToColumnExampleValueConverter : IMultiValueConverter
     {

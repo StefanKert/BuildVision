@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings;
-using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
-
 using Microsoft.VisualStudio.Shell;
+using BuildVision.UI.ViewModels;
+using BuildVision.Tool;
+using BuildVision.UI.Settings.Models;
+using BuildVision.UI.Settings;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Settings
+namespace BuildVision.Views.Settings
 {
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [Guid("F6A09B98-FBA9-4107-97C9-83ACFF01E4B2")]

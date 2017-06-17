@@ -5,21 +5,22 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-using AlekseyNagovitsyn.BuildVision.Core.Common;
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
-using AlekseyNagovitsyn.BuildVision.Helpers;
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
-
-using EnvDTE;
-
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio;
-using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
-using AlekseyNagovitsyn.BuildVision.Tool.ViewModels;
 using System.Linq;
 using BuildVision.Contracts;
+using BuildVision.UI.Contracts;
+using BuildVision.Core;
+using EnvDTE;
+using BuildVision.UI.ViewModels;
+using BuildVision.UI.Common.Logging;
+using BuildVision.Helpers;
+using BuildVision.Tool.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+
+using ProjectItem = BuildVision.UI.Models.ProjectItem;
+
+namespace BuildVision.Tool.Building
 {
     public class BuildContext : IBuildInfo, IBuildDistributor
     {

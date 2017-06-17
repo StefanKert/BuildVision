@@ -4,9 +4,10 @@ using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
+using BuildVision.UI.Models.Indicators.Core;
+using BuildVision.UI.Extensions;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
+namespace BuildVision.UI.Converters
 {
     [ValueConversion(typeof(ValueIndicator), typeof(ControlTemplate))]
     public class IndicatorVectorIconConverter : IValueConverter

@@ -1,7 +1,8 @@
 using System;
 using BuildVision.Common;
+using BuildVision.UI.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages
+namespace BuildVision.UI.Settings.Models
 {
   public class BuildMessagesSettings : SettingsBase
   {

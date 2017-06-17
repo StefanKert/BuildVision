@@ -3,9 +3,9 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using BuildVision.Common;
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
+using BuildVision.UI.Common.Logging;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Converters
+namespace BuildVision.UI.Converters
 {
     /// <summary>
     /// Returns value of string.Format(values[0], values[1..]).

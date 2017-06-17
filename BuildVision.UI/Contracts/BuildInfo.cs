@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using BuildVision.Contracts;
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
+using BuildVision.UI.Models;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.UI.Contracts
 {
     public interface IBuildInfo
     {

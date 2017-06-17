@@ -1,14 +1,14 @@
-﻿<UserControl x:Class="AlekseyNagovitsyn.BuildVision.Tool.Views.GeneralSettingsControl"
+﻿<UserControl x:Class="BuildVision.UI.Settings.GeneralSettingsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:components="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Components"
              xmlns:res="clr-namespace:BuildVision.UI"
-             xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions"
-             xmlns:settings="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings" 
-             xmlns:buildProgress="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress" 
-             xmlns:common="clr-namespace:BuildVision.Common;assembly=BuildVision.Common" 
+             xmlns:common="clr-namespace:BuildVision.Common;assembly=BuildVision.Common"
+             xmlns:settings="clr-namespace:BuildVision.UI.Settings.Models"
+             xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"
+             xmlns:models="clr-namespace:BuildVision.UI.Models"
+             xmlns:components="clr-namespace:BuildVision.UI.Components"
              mc:Ignorable="d"
              d:DesignWidth="500"
              d:DesignHeight="270"
@@ -61,7 +61,7 @@
                               Grid.Column="1"
                               VerticalAlignment="Center"
                               DisplayMemberPath="Description"
-                              ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type buildProgress:ResetTaskBarItemInfoCondition}}}"
+                              ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type models:ResetTaskBarItemInfoCondition}}}"
                               SelectedValue="{Binding BuildProgressSettings.ResetTaskBarProgressAfterBuildDone}"
                               SelectedValuePath="Value" />
 
@@ -75,7 +75,7 @@
                                 <Setter Property="Visibility" Value="Collapsed" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding SelectedValue, ElementName=ResetTaskBarProgressAfterBuildDoneComboBox}" 
-                                                 Value="{x:Static buildProgress:ResetTaskBarItemInfoCondition.AfterDelay}">
+                                                 Value="{x:Static models:ResetTaskBarItemInfoCondition.AfterDelay}">
                                         <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -96,7 +96,7 @@
                                 <Setter Property="Visibility" Value="Collapsed" />
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding SelectedValue, ElementName=ResetTaskBarProgressAfterBuildDoneComboBox}" 
-                                                 Value="{x:Static buildProgress:ResetTaskBarItemInfoCondition.AfterDelay}">
+                                                 Value="{x:Static models:ResetTaskBarItemInfoCondition.AfterDelay}">
                                         <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>
                                 </Style.Triggers>
@@ -140,7 +140,7 @@
                           Grid.Column="1"
                           VerticalAlignment="Center"
                           DisplayMemberPath="Description"
-                          ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type buildProgress:NavigateToBuildFailureReasonCondition}}}"
+                          ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type models:NavigateToBuildFailureReasonCondition}}}"
                           SelectedValue="{Binding NavigateToBuildFailureReason}"
                           SelectedValuePath="Value" />
             </Grid>

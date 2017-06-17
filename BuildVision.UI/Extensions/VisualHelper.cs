@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Media;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions
+namespace BuildVision.UI.Extensions
 {
     public static class VisualHelper
     {

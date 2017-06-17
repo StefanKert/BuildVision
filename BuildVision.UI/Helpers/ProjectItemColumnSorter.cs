@@ -1,6 +1,8 @@
+using BuildVision.Common;
+using BuildVision.UI.Models;
 using System.ComponentModel;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.Sorting
+namespace BuildVision.UI.Helpers
 {
     public class ProjectItemColumnSorter : PropertyColumnSorter<ProjectItem>
     {

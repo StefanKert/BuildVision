@@ -2,7 +2,7 @@ using EnvDTE;
 using System;
 using System.Collections;
 
-namespace AlekseyNagovitsyn.BuildVision.Helpers
+namespace BuildVision.Helpers
 {
     /// <summary>
     /// Extends functionality for UIHierarchy classes, e.g:

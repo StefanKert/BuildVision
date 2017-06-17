@@ -1,13 +1,14 @@
-﻿<UserControl x:Class="AlekseyNagovitsyn.BuildVision.Tool.Views.BuildMessagesSettingsControl"
+﻿<UserControl x:Class="BuildVision.UI.Settings.BuildMessagesSettingsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"     
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:components="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Components"
-             xmlns:converters="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Converters"
              xmlns:res="clr-namespace:BuildVision.UI"
-             xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions"
-             xmlns:buildMessages1="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildMessages"
+             xmlns:converters="clr-namespace:BuildVision.UI.Converters"
+             xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"
+             xmlns:models="clr-namespace:BuildVision.UI.Models"
+             xmlns:settingModels="clr-namespace:BuildVision.UI.Settings.Models"
+             xmlns:components="clr-namespace:BuildVision.UI.Components"
              mc:Ignorable="d"
              d:DesignWidth="500"
              d:DesignHeight="350"
@@ -15,7 +16,7 @@
 
     <UserControl.Resources>
 
-        <buildMessages1:BuildMessagesSettings x:Key="DesignViewModel"/>
+        <settingModels:BuildMessagesSettings x:Key="DesignViewModel"/>
         
         <converters:ExtraLabelTemplateToTimeSpanFormatVisibility x:Key="ExtraLabelTemplateToTimeSpanFormatVisibility" />
 
@@ -80,7 +81,7 @@
                   Grid.Column="1"
                   VerticalAlignment="Center"
                   DisplayMemberPath="Description"
-                  ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type buildMessages1:BuildMajorMessageFormat}}}"
+                  ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type models:BuildMajorMessageFormat}}}"
                   SelectedValue="{Binding MajorMessageFormat}"
                   SelectedValuePath="Value" />
 
@@ -154,7 +155,7 @@
                           Grid.Column="1"
                           VerticalAlignment="Center"
                           DisplayMemberPath="Description"
-                          ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type buildMessages1:BuildExtraMessageFormat}}}"
+                          ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type models:BuildExtraMessageFormat}}}"
                           SelectedValue="{Binding ExtraMessageFormat}"
                           SelectedValuePath="Value" />
 

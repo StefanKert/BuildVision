@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models
+namespace BuildVision.UI.Models
 {
     public class SolutionItem : BindableBase
     {

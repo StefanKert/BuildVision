@@ -1,13 +1,13 @@
-﻿using System;
+﻿using BuildVision.UI.Extensions;
+using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Views.Components
+namespace BuildVision.UI.Components
 {
     /// <summary>
     /// Interaction logic for SpinnerControl.xaml

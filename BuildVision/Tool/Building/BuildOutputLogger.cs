@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
-
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using BuildVision.Contracts;
+using BuildVision.UI.Contracts;
+using BuildVision.UI.Common.Logging;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
+namespace BuildVision.Tool.Building
 {
     public class BuildOutputLogger : Logger
     {

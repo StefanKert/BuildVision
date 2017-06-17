@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Models;
-using AlekseyNagovitsyn.BuildVision.Tool.Views;
-
-using ProjectItem = AlekseyNagovitsyn.BuildVision.Tool.Models.ProjectItem;
+using ProjectItem = BuildVision.UI.Models.ProjectItem;
 using BuildVision.Contracts;
-using BuildVision.Common;
+using BuildVision.UI.Contracts;
+using BuildVision.UI.Extensions;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Building
-{
+namespace BuildVision.UI.Helpers
+{ 
     public static class BuildImages
     {
         public const string BuildActionResourcesUri = @"Resources/BuildAction.Resources.xaml";

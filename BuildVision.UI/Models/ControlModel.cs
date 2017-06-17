@@ -1,12 +1,10 @@
+using BuildVision.UI.Extensions;
+using BuildVision.UI.Helpers;
+using BuildVision.UI.Models.Indicators.Core;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 
-using AlekseyNagovitsyn.BuildVision.Tool.Building;
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core;
-using BuildVision.UI;
-using AlekseyNagovitsyn.BuildVision.Tool.Views;
-
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models
+namespace BuildVision.UI.Models
 {
     public class ControlModel
     {

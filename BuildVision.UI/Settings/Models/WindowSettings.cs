@@ -1,7 +1,8 @@
-using AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.ToolWindow;
 using BuildVision.Common;
+using BuildVision.UI.Models;
+using BuildVision.UI.Settings.Models.ToolWindow;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Settings
+namespace BuildVision.UI.Settings.Models
 {
   public class WindowSettings : SettingsBase
   {

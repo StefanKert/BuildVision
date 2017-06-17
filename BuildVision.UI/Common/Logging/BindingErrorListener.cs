@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace AlekseyNagovitsyn.BuildVision.Core.Logging
+namespace BuildVision.UI.Common.Logging
 {
     public class BindingErrorListener : TraceListener
     {

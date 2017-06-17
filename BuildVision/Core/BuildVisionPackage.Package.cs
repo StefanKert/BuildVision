@@ -3,16 +3,15 @@ using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
-using AlekseyNagovitsyn.BuildVision.Tool;
-using AlekseyNagovitsyn.BuildVision.Tool.Views.Settings;
-
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using BuildVision.UI;
+using BuildVision.Views.Settings;
+using BuildVision.Tool;
+using BuildVision.UI.Common.Logging;
 
-namespace AlekseyNagovitsyn.BuildVision.Core
+namespace BuildVision.Core
 {
     /// <summary>
     /// This is the class that implements the package exposed by this assembly.

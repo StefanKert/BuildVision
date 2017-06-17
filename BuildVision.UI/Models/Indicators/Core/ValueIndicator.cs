@@ -1,10 +1,10 @@
 using System;
-using AlekseyNagovitsyn.BuildVision.Tool.Building;
 using BuildVision.Common;
 using BuildVision.UI;
-using AlekseyNagovitsyn.BuildVision.Core.Logging;
+using BuildVision.UI.Contracts;
+using BuildVision.UI.Common.Logging;
 
-namespace AlekseyNagovitsyn.BuildVision.Tool.Models.Indicators.Core
+namespace BuildVision.UI.Models.Indicators.Core
 {
     public abstract class ValueIndicator : BindableBase
     {

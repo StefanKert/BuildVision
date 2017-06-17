@@ -1,0 +1,174 @@
+﻿<UserControl x:Class="AlekseyNagovitsyn.BuildVision.Tool.Views.GeneralSettingsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:components="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Components"
+             xmlns:res="clr-namespace:BuildVision.UI"
+             xmlns:extensions="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Views.Extensions"
+             xmlns:settings="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings" 
+             xmlns:buildProgress="clr-namespace:AlekseyNagovitsyn.BuildVision.Tool.Models.Settings.BuildProgress" 
+             xmlns:common="clr-namespace:BuildVision.Common;assembly=BuildVision.Common" 
+             mc:Ignorable="d"
+             d:DesignWidth="500"
+             d:DesignHeight="270"
+             d:DataContext="{Binding Source={StaticResource DesignViewModel}}">
+
+    <UserControl.Resources>
+        <settings:GeneralSettings x:Key="DesignViewModel"/>
+        <common:AppVersionInfo x:Key="AppVersionInfo"/>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0"
+                    Orientation="Vertical"
+                    HorizontalAlignment="Left">
+            <GroupBox Padding="5">
+                <GroupBox.Header>
+                    <CheckBox Name="DisplayTaskBarProgressCheckBox" 
+                              IsChecked="{Binding BuildProgressSettings.TaskBarProgressEnabled}">
+                        <CheckBox.Content>
+                            <TextBlock>
+                                <Run Text="{x:Static res:Resources.GeneralSettings_DisplayTaskBarProgressCheckBox}" />
+                                <Run Foreground="Red" 
+                                     ToolTip="{x:Static res:Resources.GeneralSettings_DisplayTaskBarProgressAvailableWin7Tooltip}" 
+                                     Text="*" />
+                            </TextBlock>
+                        </CheckBox.Content>
+                    </CheckBox>
+                </GroupBox.Header>
+                <Grid IsEnabled="{Binding ElementName=DisplayTaskBarProgressCheckBox, Path=IsChecked}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="1"
+                           Grid.Column="0"
+                           Content="{x:Static res:Resources.GeneralSettings_ResetTaskBarProgressAfterBuildDoneLabel}" />
+                    <ComboBox Name="ResetTaskBarProgressAfterBuildDoneComboBox"
+                              Grid.Row="1"
+                              Grid.Column="1"
+                              VerticalAlignment="Center"
+                              DisplayMemberPath="Description"
+                              ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type buildProgress:ResetTaskBarItemInfoCondition}}}"
+                              SelectedValue="{Binding BuildProgressSettings.ResetTaskBarProgressAfterBuildDone}"
+                              SelectedValuePath="Value" />
+
+                    <Label Grid.Row="2"
+                           Grid.Column="0"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Content="{x:Static res:Resources.WindowSettings_DelayLabel}">
+                        <Label.Style>
+                            <Style TargetType="{x:Type Label}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ResetTaskBarProgressAfterBuildDoneComboBox}" 
+                                                 Value="{x:Static buildProgress:ResetTaskBarItemInfoCondition.AfterDelay}">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Label.Style>
+                    </Label>
+                    <components:SpinnerControl Grid.Row="2"
+                                               Grid.Column="1"
+                                               MinWidth="70"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Change="500"
+                                               Maximum="120000"
+                                               Minimum="0"
+                                               Value="{Binding BuildProgressSettings.ResetTaskBarProgressDelay}">
+                        <components:SpinnerControl.Style>
+                            <Style TargetType="{x:Type components:SpinnerControl}">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ResetTaskBarProgressAfterBuildDoneComboBox}" 
+                                                 Value="{x:Static buildProgress:ResetTaskBarItemInfoCondition.AfterDelay}">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </components:SpinnerControl.Style>
+                    </components:SpinnerControl>
+
+                </Grid>
+            </GroupBox>
+
+            <CheckBox Margin="8"
+                      Content="{x:Static res:Resources.GeneralSettings_IndicatorsPanelVisibleCheckBox}"
+                      IsChecked="{Binding IndicatorsPanelVisible}" />
+
+            <CheckBox Margin="8"
+                      Content="{x:Static res:Resources.GeneralSettings_FillProjectListOnBuildBeginCheckBox}"
+                      IsChecked="{Binding FillProjectListOnBuildBegin}" />
+
+            <CheckBox Margin="8"
+                      VerticalAlignment="Center"
+                      Content="{x:Static res:Resources.GeneralSettings_StopBuildAfterFirstErrorCheckBox}"
+                      IsChecked="{Binding StopBuildAfterFirstError}"
+                      ToolTip="{x:Static res:Resources.GeneralSettings_StopBuildAfterFirstErrorCheckBoxToolTip}" />
+
+            <CheckBox Margin="8"
+                      Content="{x:Static res:Resources.BuildMessagesSettings_StatusBarOutputCheckBox}"
+                      IsChecked="{Binding EnableStatusBarOutput}" />
+
+            <Grid Margin="4,0,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" 
+                       Grid.Column="0"     
+                       Content="{x:Static res:Resources.GeneralSettings_NavigateToBuildFailureReasonLabel}"
+                       ToolTip="{x:Static res:Resources.GeneralSettings_NavigateToBuildFailureReasonLabelToolTip}" />
+
+                <ComboBox Grid.Row="0"
+                          Grid.Column="1"
+                          VerticalAlignment="Center"
+                          DisplayMemberPath="Description"
+                          ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type buildProgress:NavigateToBuildFailureReasonCondition}}}"
+                          SelectedValue="{Binding NavigateToBuildFailureReason}"
+                          SelectedValuePath="Value" />
+            </Grid>
+
+        </StackPanel>
+
+        <TextBlock Grid.Row="1"
+                   Opacity="0.5"
+                   DataContext="{Binding Source={StaticResource AppVersionInfo}}">
+            <Run Text="{x:Static res:Resources.ProductName}"/>
+            <Run Text="{Binding AppVersion, StringFormat={}{0};}"/>
+            <Run Text="Build"/>
+            <Run Text="{Binding BuildVersion}"/>
+            <Run Text="on"/>
+            <Run Text="{Binding BuildDateTime, StringFormat=F}"/>
+            <LineBreak/>
+            <Run Text="Aleksey Nagovitsyn, 2013 - 2015."/>
+            <Hyperlink NavigateUri="mailto:aleksey.nagovitsyn@gmail.com" 
+                       ToolTip="mailto:aleksey.nagovitsyn@gmail.com"
+                       RequestNavigate="HyperlinkOnRequestNavigate">
+                       Send email...
+            </Hyperlink>
+            <Hyperlink NavigateUri="https://github.com/nagits/BuildVision" 
+                       ToolTip="https://github.com/nagits/BuildVision"
+                       RequestNavigate="HyperlinkOnRequestNavigate">
+                       Open GitHub repo...
+            </Hyperlink>
+        </TextBlock>
+    </Grid>
+
+</UserControl>

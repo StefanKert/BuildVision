@@ -6,12 +6,14 @@ skip_tags: true
 branches:
   only:
     - master
+    - dev
 
 before_build:
+  - nuget restore
   - ps: .\bump-version.ps1
 
 build:
   verbosity: minimal
 
 artifacts:
-  - path: Source\bin\Release\BuildVision.vsix
+  - path: BuildVision\bin\Release\BuildVision.vsix

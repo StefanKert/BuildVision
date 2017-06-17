@@ -30,6 +30,7 @@ using BuildVision.Common;
 using AlekseyNagovitsyn.BuildVision.Tool.Views.Settings;
 using BuildVision.UI;
 using AlekseyNagovitsyn.BuildVision.Tool.Views;
+using System.Text;
 
 namespace AlekseyNagovitsyn.BuildVision.Tool
 {
@@ -92,8 +93,26 @@ namespace AlekseyNagovitsyn.BuildVision.Tool
             _viewModel.ProjectCopyBuildOutputFilesToClipBoard += ProjectCopyBuildOutputFilesToClipBoard;
             _viewModel.ShowGeneralSettingsPage += () => _packageContext.ShowOptionPage(typeof(GeneralSettingsDialogPage));
             _viewModel.ShowGridColumnsSettingsPage += () => _packageContext.ShowOptionPage(typeof(GridSettingsDialogPage));
+            _viewModel.CopyErrorMessageToClipboard += CopyErrorMessageToClipboard;
 
             UpdateSolutionItem();
+        }
+
+        private void CopyErrorMessageToClipboard(ProjectItem projectItem)
+        {
+            try
+            {
+                var errors = new StringBuilder();
+                foreach(var errorItem in projectItem.ErrorsBox.Errors)
+                {
+                    errors.AppendLine(string.Format("{0}({1},{2},{3},{4}): error {5}: {6}", errorItem.File, errorItem.LineNumber, errorItem.ColumnNumber, errorItem.EndLineNumber, errorItem.EndColumnNumber, errorItem.Code, errorItem.Message));
+                }
+                Clipboard.SetText(errors.ToString());
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
         }
 
         private void SolutionEvents_Opened()

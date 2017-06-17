@@ -90,6 +90,8 @@
                 <MenuItem Command="{Binding SelectedProjectOpenContainingFolderAction}" Header="{x:Static res:Resources.SelectedProjectItem_OpenContainingFolder_MenuItem}" />
                 <MenuItem Header="{x:Static res:Resources.SelectedProjectItem_CopyBuildOutputFilesToClipboard_ParentMenuItem}" 
                           ItemsSource="{Binding Source={StaticResource CopyBuildOutputFilesToClipboardMenuItems}}"/>
+                <Separator />
+                <MenuItem Header="Copy Errors"  Command="{Binding SelectedProjectCopyErrorMessagesAction}"/>
             </CompositeCollection>
 
         </ResourceDictionary>

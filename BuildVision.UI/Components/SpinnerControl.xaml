@@ -1,0 +1,85 @@
+﻿<UserControl x:Class="BuildVision.UI.Components.SpinnerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:BuildVision.UI.Components"
+             d:DesignHeight="50"
+             d:DesignWidth="100"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+
+        <DrawingBrush x:Key="Brush.Scroll.Down" Stretch="Uniform">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="Black"
+                                         Geometry="F1 M 24,26.75L 14,16.75L 14,23.5L 24,34L 34,23.5L 34,16.75L 24,26.75 Z " />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+
+        <DrawingBrush x:Key="Brush.Scroll.Up" Stretch="Uniform">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Brush="Black"
+                                         Geometry="F1 M 24,21.25L 34,31.25L 34,24.5L 24,14L 14,24.5L 14,31.25L 24,21.25 Z " />
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="16" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBox Grid.Row="0"
+                 Grid.Column="0"
+                 Margin="0,0,0,0"
+                 VerticalAlignment="Center"
+                 LostFocus="TextBox_LostFocus"
+                 Text="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                                                               AncestorType={x:Type UserControl}},
+                                Path=FormattedValue,
+                                Mode=OneWay,
+                                UpdateSourceTrigger=PropertyChanged}"
+                 TextChanged="TextBox_TextChanged" />
+        <Grid Grid.Column="1"
+              HorizontalAlignment="Stretch"
+              VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <RepeatButton Grid.Row="0"
+                          Height="11"
+                          Command="{x:Static local:SpinnerControl.IncreaseCommand}">
+                <RepeatButton.Content>
+                    <Rectangle Width="8"
+                               Height="5"
+                               Fill="{StaticResource Brush.Scroll.Up}" />
+                </RepeatButton.Content>
+            </RepeatButton>
+            <RepeatButton Grid.Row="1"
+                          Height="11"
+                          Command="{x:Static local:SpinnerControl.DecreaseCommand}">
+                <RepeatButton.Content>
+                    <Rectangle Width="8"
+                               Height="5"
+                               Fill="{StaticResource Brush.Scroll.Down}" />
+                </RepeatButton.Content>
+            </RepeatButton>
+        </Grid>
+    </Grid>
+
+</UserControl>

@@ -1,0 +1,586 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="CanNotCreateWindow" xml:space="preserve">
+    <value>Can not create tool window.</value>
+  </data>
+  <data name="ToolWindowTitle" xml:space="preserve">
+    <value>BuildVision</value>
+  </data>
+  <data name="ProductName" xml:space="preserve">
+    <value>BuildVision</value>
+  </data>
+  <data name="BuildActionBuild" xml:space="preserve">
+    <value>Build</value>
+  </data>
+  <data name="BuildActionBuild_BeginAtString" xml:space="preserve">
+    <value>started at</value>
+  </data>
+  <data name="BuildActionCancelled" xml:space="preserve">
+    <value>canceled</value>
+  </data>
+  <data name="BuildActionCancelled_Clean" xml:space="preserve">
+    <value>canceled</value>
+  </data>
+  <data name="BuildActionClean" xml:space="preserve">
+    <value>Clean</value>
+  </data>
+  <data name="BuildActionClean_BeginAtString" xml:space="preserve">
+    <value>started at</value>
+  </data>
+  <data name="BuildActionFailed" xml:space="preserve">
+    <value>failed</value>
+  </data>
+  <data name="BuildActionFailed_Clean" xml:space="preserve">
+    <value>failed</value>
+  </data>
+  <data name="BuildActionFinished" xml:space="preserve">
+    <value>completed</value>
+  </data>
+  <data name="BuildActionFinishedSuccessfully" xml:space="preserve">
+    <value>completed successfully</value>
+  </data>
+  <data name="BuildActionFinishedSuccessfully_Clean" xml:space="preserve">
+    <value>completed successfully</value>
+  </data>
+  <data name="BuildActionFinished_Clean" xml:space="preserve">
+    <value>completed</value>
+  </data>
+  <data name="BuildActionRebuildAll" xml:space="preserve">
+    <value>Rebuild</value>
+  </data>
+  <data name="BuildActionRebuildAll_BeginAtString" xml:space="preserve">
+    <value>started at</value>
+  </data>
+  <data name="BuildBeginStateLabelTemplate_Default" xml:space="preserve">
+    <value>{0} {1} {2} {3}</value>
+    <comment>actionName, unitName, beginAtString, timeString</comment>
+  </data>
+  <data name="BuildBeginStateLabelTemplate_ShortForm" xml:space="preserve">
+    <value>{0} {1} {2}</value>
+    <comment>actionName, beginAtString, timeString</comment>
+  </data>
+  <data name="BuildDoneStateLabelTemplate_Default" xml:space="preserve">
+    <value>{0} {1} {2} at {3}</value>
+    <comment>actionName, unitName, resultName, timeString</comment>
+  </data>
+  <data name="BuildDoneStateLabelTemplate_ShortForm" xml:space="preserve">
+    <value>{0} {1} at {2}</value>
+    <comment>actionName, resultName, timeString</comment>
+  </data>
+  <data name="BuildDoneText_BuildNotStarted" xml:space="preserve">
+    <value>BuildVision</value>
+  </data>
+  <data name="BuildDoneText_NotSupported_BuildActionOrScopeIsNull_CompletedAtTemplate" xml:space="preserve">
+    <value>Completed at {0}</value>
+    <comment>timeString</comment>
+  </data>
+  <data name="BuildScopeBatch_UnitName" xml:space="preserve">
+    <value>projects</value>
+    <comment>genitive, plural</comment>
+  </data>
+  <data name="BuildScopeProject_UnitName" xml:space="preserve">
+    <value>the project</value>
+    <comment>genitive</comment>
+  </data>
+  <data name="BuildScopeSolution_UnitName" xml:space="preserve">
+    <value>solution</value>
+    <comment>genitive</comment>
+  </data>
+  <data name="BuildSolutionButtonTooltip" xml:space="preserve">
+    <value>Build solution</value>
+  </data>
+  <data name="CancelBuildSolutionButtonCaption" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="CancelBuildSolutionButtonTooltip" xml:space="preserve">
+    <value>Cancel build</value>
+  </data>
+  <data name="CleanSolutionButtonTooltip" xml:space="preserve">
+    <value>Clean solution</value>
+  </data>
+  <data name="EnumBuildStateExtraLabelTemplate_Advanced" xml:space="preserve">
+    <value>Own time format</value>
+  </data>
+  <data name="EnumBuildStateExtraLabelTemplate_TotalMinutes" xml:space="preserve">
+    <value>TotalMinutes</value>
+  </data>
+  <data name="EnumBuildStateExtraLabelTemplate_TotalMinutesWithSeconds" xml:space="preserve">
+    <value>TotalMinutes:Seconds</value>
+  </data>
+  <data name="EnumBuildStateExtraLabelTemplate_TotalSeconds" xml:space="preserve">
+    <value>TotalSeconds</value>
+  </data>
+  <data name="EnumBuildStateLabelTemplate_Default" xml:space="preserve">
+    <value>Default</value>
+  </data>
+  <data name="EnumBuildStateLabelTemplate_ShortForm" xml:space="preserve">
+    <value>Short form</value>
+  </data>
+  <data name="EnumSortOrder_Asc" xml:space="preserve">
+    <value>▲</value>
+  </data>
+  <data name="EnumSortOrder_Desc" xml:space="preserve">
+    <value>▼</value>
+  </data>
+  <data name="EnumSortOrder_None" xml:space="preserve">
+    <value>   </value>
+  </data>
+  <data name="EnumWindowState_Close" xml:space="preserve">
+    <value>Close window</value>
+  </data>
+  <data name="EnumWindowState_Hide" xml:space="preserve">
+    <value>Minimize window*</value>
+  </data>
+  <data name="EnumWindowState_Hide_Footnote" xml:space="preserve">
+    <value>* Minimization is supported only for the docked window. The floating window or window attached like document will be closed.</value>
+  </data>
+  <data name="EnumWindowState_Nothing" xml:space="preserve">
+    <value>Don't change window state</value>
+  </data>
+  <data name="EnumWindowState_Show" xml:space="preserve">
+    <value>Show window</value>
+  </data>
+  <data name="EnumWindowState_ShowNoActivate" xml:space="preserve">
+    <value>Show window (don't activate)</value>
+  </data>
+  <data name="ErrorProjectsIndicator_Description" xml:space="preserve">
+    <value>Number of failed projects</value>
+  </data>
+  <data name="ErrorProjectsIndicator_Header" xml:space="preserve">
+    <value>Failed projects</value>
+  </data>
+  <data name="ErrorsIndicator_Description" xml:space="preserve">
+    <value>Number of MSBuild errors</value>
+  </data>
+  <data name="ErrorsIndicator_Header" xml:space="preserve">
+    <value>Errors</value>
+  </data>
+  <data name="InvalidTimeStringFormat" xml:space="preserve">
+    <value>&lt;Invalid format&gt;</value>
+  </data>
+  <data name="GridCellNAText" xml:space="preserve">
+    <value>N\A</value>
+  </data>
+  <data name="GridCellNATextInBrackets" xml:space="preserve">
+    <value>&lt;N\A&gt;</value>
+  </data>
+  <data name="GridCellNoneText" xml:space="preserve">
+    <value>None</value>
+  </data>
+  <data name="GridCellNoneTextInBrackets" xml:space="preserve">
+    <value>&lt;none&gt;</value>
+  </data>
+  <data name="GridColumnsGroupMenuItems" xml:space="preserve">
+    <value>_Group</value>
+  </data>
+  <data name="GridColumnsMenuItems" xml:space="preserve">
+    <value>_Columns</value>
+  </data>
+  <data name="GridColumnsOpenSettingsMenuItem" xml:space="preserve">
+    <value>_Customize...</value>
+  </data>
+  <data name="GridColumnsSettingsWindow_ColExample" xml:space="preserve">
+    <value>Example</value>
+  </data>
+  <data name="GridColumnsSettingsWindow_ColFormat" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="GridColumnsSettingsWindow_ColHeader" xml:space="preserve">
+    <value>Header</value>
+  </data>
+  <data name="GridColumnsSettingsWindow_ColName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="GridColumnsSettingsWindow_ColWidth" xml:space="preserve">
+    <value>Width</value>
+  </data>
+  <data name="GridHeaderVisibleMenuItem" xml:space="preserve">
+    <value>_Show Header</value>
+  </data>
+  <data name="GridSettingsControl_ColumnsTip" xml:space="preserve">
+    <value>Format tip: you can use .NET format strings and {0} argument.</value>
+  </data>
+  <data name="BuildScopeProject_ProjectNameTemplate" xml:space="preserve">
+    <value> '{0}'</value>
+  </data>
+  <data name="BuildScopeSolution_SolutionNameTemplate" xml:space="preserve">
+    <value> '{0}'</value>
+  </data>
+  <data name="MessagesIndicator_Description" xml:space="preserve">
+    <value>Number of MSBuild messages</value>
+  </data>
+  <data name="MessagesIndicator_Header" xml:space="preserve">
+    <value>Messages</value>
+  </data>
+  <data name="NavigateToBuildFailureReasonCondition_Disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="NavigateToBuildFailureReasonCondition_OnBuildDone" xml:space="preserve">
+    <value>On Build Failed</value>
+  </data>
+  <data name="NavigateToBuildFailureReasonCondition_OnErrorRaised" xml:space="preserve">
+    <value>On Error Raised</value>
+  </data>
+  <data name="NoneMenuItem" xml:space="preserve">
+    <value>(none)</value>
+  </data>
+  <data name="ProjectItemHeader_BuildElapsedTime" xml:space="preserve">
+    <value>Elapsed time</value>
+  </data>
+  <data name="ProjectItemHeader_BuildFinishTime" xml:space="preserve">
+    <value>Build finish time </value>
+  </data>
+  <data name="ProjectItemHeader_BuildOrder" xml:space="preserve">
+    <value>BuildOrder</value>
+  </data>
+  <data name="ProjectItemHeader_BuildStartTime" xml:space="preserve">
+    <value>Build start time</value>
+  </data>
+  <data name="ProjectItemHeader_CommonType" xml:space="preserve">
+    <value>CommonType</value>
+  </data>
+  <data name="ProjectItemHeader_Configuration" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="ProjectItemHeader_ErrorsCount" xml:space="preserve">
+    <value>Errors</value>
+  </data>
+  <data name="ProjectItemHeader_ExtenderNames" xml:space="preserve">
+    <value>Extenders</value>
+  </data>
+  <data name="ProjectItemHeader_FlavourType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="ProjectItemHeader_Framework" xml:space="preserve">
+    <value>Framework</value>
+  </data>
+  <data name="ProjectItemHeader_FullName" xml:space="preserve">
+    <value>FullName</value>
+  </data>
+  <data name="ProjectItemHeader_FullPath" xml:space="preserve">
+    <value>FullPath</value>
+  </data>
+  <data name="ProjectItemHeader_Language" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="ProjectItemHeader_MainFlavourType" xml:space="preserve">
+    <value>MainType</value>
+  </data>
+  <data name="ProjectItemHeader_MessagesCount" xml:space="preserve">
+    <value>Messages</value>
+  </data>
+  <data name="ProjectItemHeader_Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="ProjectItemHeader_OutputType" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="ProjectItemHeader_Platform" xml:space="preserve">
+    <value>Platform</value>
+  </data>
+  <data name="ProjectItemHeader_RootNamespace" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="ProjectItemHeader_SolutionFolder" xml:space="preserve">
+    <value>SolutionFolder</value>
+  </data>
+  <data name="ProjectItemHeader_State" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="ProjectItemHeader_StateBitmap" xml:space="preserve">
+    <value>StateIcon</value>
+  </data>
+  <data name="ProjectItemHeader_UniqueName" xml:space="preserve">
+    <value>UniqueName</value>
+  </data>
+  <data name="ProjectItemHeader_WarningsCount" xml:space="preserve">
+    <value>Warnings</value>
+  </data>
+  <data name="RebuildSolutionButtonTooltip" xml:space="preserve">
+    <value>Rebuild solution</value>
+  </data>
+  <data name="ResetTaskBarItemInfoCondition_AfterDelay" xml:space="preserve">
+    <value>Reset after delay</value>
+  </data>
+  <data name="ResetTaskBarItemInfoCondition_ByMouseClick" xml:space="preserve">
+    <value>Reset after mouse click</value>
+  </data>
+  <data name="ResetTaskBarItemInfoCondition_Immediately" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="ResetTaskBarItemInfoCondition_Never" xml:space="preserve">
+    <value>Not reset</value>
+  </data>
+  <data name="SelectedProjectItemMenuItems" xml:space="preserve">
+    <value>_Selected Project</value>
+  </data>
+  <data name="SelectedProjectItem_CopyBuildOutputFilesToClipboard_ParentMenuItem" xml:space="preserve">
+    <value>Build Output Files</value>
+  </data>
+  <data name="SelectedProjectItem_OpenContainingFolder_MenuItem" xml:space="preserve">
+    <value>Open Containing Folder</value>
+  </data>
+  <data name="SeparatorIndicator_Header" xml:space="preserve">
+    <value>(Separator)</value>
+  </data>
+  <data name="SuccessProjectsIndicator_Description" xml:space="preserve">
+    <value>Number of succeeded projects</value>
+  </data>
+  <data name="SuccessProjectsIndicator_Header" xml:space="preserve">
+    <value>Succeeded projects</value>
+  </data>
+  <data name="GridSettings_GroupHeaderFormat" xml:space="preserve">
+    <value>Group header format</value>
+  </data>
+  <data name="GridSettings_GroupHeaderFormat_MenuArgsToolTip" xml:space="preserve">
+    <value>Format arguments</value>
+  </data>
+  <data name="GridSettings_Grouping" xml:space="preserve">
+    <value>Grouping</value>
+  </data>
+  <data name="ProjectItemSettings_CopyBuildOutputFilesToClipboard_ExpanderHeader" xml:space="preserve">
+    <value>Menu Item "Build Output Files"</value>
+  </data>
+  <data name="ProjectItemSettings_CopyBuildOutputFilesToClipboard_TypesLabel" xml:space="preserve">
+    <value>Copy to the Clipboard</value>
+  </data>
+  <data name="ProjectItemSettings_CopyBuildOutputFilesToClipboard_Type_BuiltAssemblies" xml:space="preserve">
+    <value>Built assemblies</value>
+  </data>
+  <data name="ProjectItemSettings_CopyBuildOutputFilesToClipboard_Type_ContentFiles" xml:space="preserve">
+    <value>Content files</value>
+  </data>
+  <data name="ProjectItemSettings_CopyBuildOutputFilesToClipboard_Type_Documentation" xml:space="preserve">
+    <value>Documentation</value>
+  </data>
+  <data name="ProjectItemSettings_CopyBuildOutputFilesToClipboard_Type_LocalizedRes" xml:space="preserve">
+    <value>Localized resources</value>
+  </data>
+  <data name="ProjectItemSettings_CopyBuildOutputFilesToClipboard_Type_Symbols" xml:space="preserve">
+    <value>Symbols</value>
+  </data>
+  <data name="ProjectItemSettings_CopyBuildOutputFilesToClipboard_Type_XmlSerAssemblies" xml:space="preserve">
+    <value>XML-serialization assemblies</value>
+  </data>
+  <data name="GridSettings_ShowHeader" xml:space="preserve">
+    <value>Show header</value>
+  </data>
+  <data name="GridSettings_Sorting" xml:space="preserve">
+    <value>Sorting</value>
+  </data>
+  <data name="BuildMessagesSettings_AgoTimeHeader" xml:space="preserve">
+    <value>Line of elapsed time</value>
+  </data>
+  <data name="BuildMessagesSettings_BuildBeginStringFormatLabel" xml:space="preserve">
+    <value>String format
+on build begin</value>
+  </data>
+  <data name="BuildMessagesSettings_BuildDoneStringFormatLabel" xml:space="preserve">
+    <value>String format
+on build done</value>
+  </data>
+  <data name="BuildMessagesSettings_DateTimeFormatLabel" xml:space="preserve">
+    <value>Time format</value>
+  </data>
+  <data name="BuildMessagesSettings_DateTimeTemplateLabel" xml:space="preserve">
+    <value>Time template</value>
+  </data>
+  <data name="BuildMessagesSettings_DelayLabel" xml:space="preserve">
+    <value>Delay, sec</value>
+  </data>
+  <data name="BuildMessagesSettings_DisplayLabel" xml:space="preserve">
+    <value>Display:</value>
+  </data>
+  <data name="BuildMessagesSettings_ShowAgoTimeCheckBox" xml:space="preserve">
+    <value>Elapsed time</value>
+  </data>
+  <data name="BuildMessagesSettings_ShowProjectNameCheckBox" xml:space="preserve">
+    <value>Project name (in the case of a building project)</value>
+  </data>
+  <data name="BuildMessagesSettings_ShowSolutionNameCheckBox" xml:space="preserve">
+    <value>Solution name (in the case of a building solution)</value>
+  </data>
+  <data name="BuildMessagesSettings_StatusBarOutputCheckBox" xml:space="preserve">
+    <value>Display messages in VisualStudio Status Bar</value>
+  </data>
+  <data name="BuildMessagesSettings_StringFormatLabel" xml:space="preserve">
+    <value>String format</value>
+  </data>
+  <data name="BuildMessagesSettings_StringTemplateLabel" xml:space="preserve">
+    <value>String template</value>
+  </data>
+  <data name="GeneralSettings_DisplayTaskBarProgressAvailableWin7Tooltip" xml:space="preserve">
+    <value>Available since Windows 7</value>
+  </data>
+  <data name="GeneralSettings_DisplayTaskBarProgressCheckBox" xml:space="preserve">
+    <value>Display build progress on Windows Taskbar</value>
+  </data>
+  <data name="GeneralSettings_FillProjectListOnBuildBeginCheckBox" xml:space="preserve">
+    <value>Fill projects list on build begin</value>
+  </data>
+  <data name="GeneralSettings_IndicatorsPanelVisibleCheckBox" xml:space="preserve">
+    <value>Show indicators panel</value>
+  </data>
+  <data name="GeneralSettings_NavigateToBuildFailureReasonLabel" xml:space="preserve">
+    <value>Navigate to build failure reason</value>
+  </data>
+  <data name="GeneralSettings_NavigateToBuildFailureReasonLabelToolTip" xml:space="preserve">
+    <value>Navigate to the first MSBuild error</value>
+  </data>
+  <data name="GeneralSettings_ResetTaskBarProgressAfterBuildDoneLabel" xml:space="preserve">
+    <value>Reset progress after build done</value>
+  </data>
+  <data name="GeneralSettings_StopBuildAfterFirstErrorCheckBox" xml:space="preserve">
+    <value>Stop building on the first error</value>
+  </data>
+  <data name="GeneralSettings_StopBuildAfterFirstErrorCheckBoxToolTip" xml:space="preserve">
+    <value>Stops the Build or Rebuild immediately, if an MSBuild error occurs or one project fails to build</value>
+  </data>
+  <data name="WindowSettings_DelayLabel" xml:space="preserve">
+    <value>Delay, ms</value>
+  </data>
+  <data name="WindowSettings_WindowActionOnBuildBegin" xml:space="preserve">
+    <value>State on build begin</value>
+  </data>
+  <data name="WindowSettings_WindowActionOnBuildError" xml:space="preserve">
+    <value>State on build error</value>
+  </data>
+  <data name="WindowSettings_WindowActionOnBuildSuccess" xml:space="preserve">
+    <value>State on build success</value>
+  </data>
+  <data name="UnknownBuildActionOrScope_BuildBeginText" xml:space="preserve">
+    <value>Operation is executed. Please wait...</value>
+  </data>
+  <data name="UnknownExceptionMsg" xml:space="preserve">
+    <value>Unknown exception</value>
+  </data>
+  <data name="WarningsIndicator_Description" xml:space="preserve">
+    <value>Number of MSBuild warnings</value>
+  </data>
+  <data name="WarningsIndicator_Header" xml:space="preserve">
+    <value>Warnings</value>
+  </data>
+  <data name="SelectedProjectItem_CopyBuildOutputFilesToClipboard_CopyMenuItem" xml:space="preserve">
+    <value>Copy to the Clipboard</value>
+  </data>
+  <data name="OpenGeneralSettingsMenuItem" xml:space="preserve">
+    <value>All Settings...</value>
+  </data>
+</root>

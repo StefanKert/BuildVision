@@ -1,4 +1,5 @@
-BuildVision [![Build status](https://ci.appveyor.com/api/projects/status/celssa4tvmu865qs?svg=true)](https://ci.appveyor.com/project/nagits/buildvision)
+BuildVision [![Build status](https://ci.appveyor.com/api/projects/status/t207k0rf3mi4b1ji/branch/master?svg=true)](https://ci.appveyor.com/project/StefanKert/buildvision/branch/master)
+
 ===========
 A Visual Studio extension to visualize the building process.
 <br/>You can grab the extension from [the Visual Studio Gallery](https://visualstudiogallery.msdn.microsoft.com/23d3c821-ca2d-4e1a-a005-4f70f12f77ba "BuildVision on the Visual Studio Gallery") (latest release).

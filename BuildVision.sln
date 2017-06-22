@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision", "BuildVision\BuildVision.csproj", "{9925A635-1827-4BB4-9C31-FE0FC87A6265}"
 EndProject
@@ -10,6 +10,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.Contracts", "BuildVision.Contracts\BuildVision.Contracts.csproj", "{13D64A57-5DB3-4CC7-AC2B-9034E767D754}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.UI", "BuildVision.UI\BuildVision.UI.csproj", "{84E8BA65-9A4B-4C50-A115-6EF3208E4058}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{A8C25F90-8847-4EBE-A66B-02E5D1B42EC0}"
+	ProjectSection(SolutionItems) = preProject
+		appveyor.yml = appveyor.yml
+		bump-version.ps1 = bump-version.ps1
+		CONTRIBUTING.md = CONTRIBUTING.md
+		LICENSE = LICENSE
+		README.md = README.md
+		Settings.StyleCop = Settings.StyleCop
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

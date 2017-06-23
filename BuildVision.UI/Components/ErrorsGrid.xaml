@@ -25,7 +25,8 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid DataContext="{Binding ProjectItem}">
-        <DataGrid 
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <DataGrid 
             Margin="16,0,0,0" 
             AutoGenerateColumns="False" 
             Background="Transparent" 
@@ -42,107 +43,108 @@
             SelectionUnit="FullRow" 
             PreviewMouseWheel="ErrorsGridOnPreviewMouseWheel" 
             HorizontalScrollBarVisibility="Disabled">
-            <DataGrid.Resources>
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" />
-                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                <!--<DataGridTextColumn Binding="{Binding Number}" CanUserResize="False" />-->
+                <DataGrid.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
+                </DataGrid.Resources>
+                <DataGrid.Columns>
+                    <!--<DataGridTextColumn Binding="{Binding Number}" CanUserResize="False" />-->
 
-                <DataGridTemplateColumn CanUserResize="False">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock x:Name="LevelTextBlock" Text="●" />
+                    <DataGridTemplateColumn CanUserResize="False">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock x:Name="LevelTextBlock" Text="●" />
 
-                            <DataTemplate.Triggers>
-                                <DataTrigger Binding="{Binding Level}" Value="{x:Static contracts:ErrorLevel.Error}">
-                                    <Setter TargetName="LevelTextBlock" Property="Foreground" Value="#E51400" />
-                                </DataTrigger>
+                                <DataTemplate.Triggers>
+                                    <DataTrigger Binding="{Binding Level}" Value="{x:Static contracts:ErrorLevel.Error}">
+                                        <Setter TargetName="LevelTextBlock" Property="Foreground" Value="#E51400" />
+                                    </DataTrigger>
 
-                                <DataTrigger Binding="{Binding Level}" Value="{x:Static contracts:ErrorLevel.Warning}">
-                                    <Setter TargetName="LevelTextBlock" Property="Foreground" Value="DarkOrange" />
-                                </DataTrigger>
+                                    <DataTrigger Binding="{Binding Level}" Value="{x:Static contracts:ErrorLevel.Warning}">
+                                        <Setter TargetName="LevelTextBlock" Property="Foreground" Value="DarkOrange" />
+                                    </DataTrigger>
 
-                                <DataTrigger Binding="{Binding Level}" Value="{x:Static contracts:ErrorLevel.Message}">
-                                    <Setter TargetName="LevelTextBlock" Property="Foreground" Value="DodgerBlue" />
-                                </DataTrigger>
-                            </DataTemplate.Triggers>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                                    <DataTrigger Binding="{Binding Level}" Value="{x:Static contracts:ErrorLevel.Message}">
+                                        <Setter TargetName="LevelTextBlock" Property="Foreground" Value="DodgerBlue" />
+                                    </DataTrigger>
+                                </DataTemplate.Triggers>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
 
-                <!--<DataGridTextColumn Binding="{Binding Code}" 
+                    <!--<DataGridTextColumn Binding="{Binding Code}" 
                                         Foreground="Gray" />-->
 
-                <DataGridTextColumn Binding="{Binding Message}" Width="*">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="TextWrapping" Value="NoWrap" />
-                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                            <Setter Property="extensions:TextBlockUtils.AutoTooltip" Value="True" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding Message}" Width="*">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="NoWrap" />
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                <Setter Property="extensions:TextBlockUtils.AutoTooltip" Value="True" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
-                <DataGridTextColumn Binding="{Binding FileName}">
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="TextTrimming" Value="CharacterEllipsis" />
-                            <Setter Property="ToolTip" Value="{Binding File}" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
+                    <DataGridTextColumn Binding="{Binding FileName}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+                                <Setter Property="ToolTip" Value="{Binding File}" />
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
 
-                <DataGridTextColumn Binding="{Binding LineNumber, StringFormat=Ln {0}}" />
+                    <DataGridTextColumn Binding="{Binding LineNumber, StringFormat=Ln {0}}" />
 
-                <DataGridTextColumn Binding="{Binding ColumnNumber, StringFormat=Col {0}}" />
+                    <DataGridTextColumn Binding="{Binding ColumnNumber, StringFormat=Col {0}}" />
 
-                <!--  <DataGridTextColumn Binding="{Binding ProjectFile}" />  -->
-            </DataGrid.Columns>
+                    <!--  <DataGridTextColumn Binding="{Binding ProjectFile}" />  -->
+                </DataGrid.Columns>
 
-            <DataGrid.CellStyle>
-                <Style TargetType="DataGridCell">
-                    <Setter Property="Template">
-                        <Setter.Value>
-                            <ControlTemplate TargetType="DataGridCell">
-                                <Border Background="{TemplateBinding Panel.Background}" BorderBrush="{TemplateBinding Border.BorderBrush}" BorderThickness="0" SnapsToDevicePixels="True">
-                                    <ContentPresenter Margin="1,0,0,0" VerticalAlignment="Center" Content="{TemplateBinding ContentControl.Content}" ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                                </Border>
-                            </ControlTemplate>
-                        </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="true">
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
-                        </Trigger>
-                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True">
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.TitleBarActiveTextKey}}" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.CellStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="DataGridCell">
+                                    <Border Background="{TemplateBinding Panel.Background}" BorderBrush="{TemplateBinding Border.BorderBrush}" BorderThickness="0" SnapsToDevicePixels="True">
+                                        <ContentPresenter Margin="1,0,0,0" VerticalAlignment="Center" Content="{TemplateBinding ContentControl.Content}" ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}" ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="true">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+                            </Trigger>
+                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.TitleBarActiveTextKey}}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.CellStyle>
 
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
-                    <Setter Property="Background" Value="Transparent" />
-                    <Setter Property="BorderThickness" Value="0,1,0,1" />
-                    <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource self}}" />
-                    <Setter Property="Cursor" Value="Hand" />
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderThickness" Value="0,1,0,1" />
+                        <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource self}}" />
+                        <Setter Property="Cursor" Value="Hand" />
 
-                    <EventSetter Event="PreviewMouseLeftButtonUp" Handler="ErrorsGridRowOnMouseLeftButtonUp" />
+                        <EventSetter Event="PreviewMouseLeftButtonUp" Handler="ErrorsGridRowOnMouseLeftButtonUp" />
 
-                    <Style.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMouseDownBackgroundGradientKey}}" />
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.TitleBarActiveTextKey}}" />
-                        </Trigger>
-                    </Style.Triggers>
-                </Style>
-            </DataGrid.RowStyle>
-        </DataGrid>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMouseDownBackgroundGradientKey}}" />
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.TitleBarActiveTextKey}}" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.RowStyle>
+            </DataGrid>
+        </ScrollViewer>
     </Grid>
 </UserControl>

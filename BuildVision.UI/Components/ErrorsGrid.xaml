@@ -30,7 +30,7 @@
             Margin="16,0,0,0" 
             AutoGenerateColumns="False" 
             Background="Transparent" 
-            BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.PanelBorderKey}}" 
+            BorderBrush="{DynamicResource PanelBorderKey}" 
             BorderThickness="0" 
             CanUserAddRows="False" 
             CanUserDeleteRows="False" 
@@ -46,8 +46,8 @@
                 <DataGrid.Resources>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" />
-                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"  Color="{Binding ElementName=ToolWindowTextKey, Path=Color}" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{Binding ElementName=ToolWindowTextKey, Path=Color}" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
                 </DataGrid.Resources>
                 <DataGrid.Columns>
@@ -117,10 +117,10 @@
                         </Setter>
                         <Style.Triggers>
                             <Trigger Property="IsSelected" Value="true">
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+                                <Setter Property="Foreground" Value="{DynamicResource ToolWindowTextKey}" />
                             </Trigger>
                             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=IsMouseOver}" Value="True">
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.TitleBarActiveTextKey}}" />
+                                <Setter Property="Foreground" Value="{DynamicResource TitleBarActiveTextKey}" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
@@ -128,7 +128,7 @@
 
                 <DataGrid.RowStyle>
                     <Style TargetType="DataGridRow">
-                        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+                        <Setter Property="Foreground" Value="{DynamicResource ToolWindowTextKey}" />
                         <Setter Property="Background" Value="Transparent" />
                         <Setter Property="BorderThickness" Value="0,1,0,1" />
                         <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource self}}" />
@@ -138,8 +138,8 @@
 
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMouseDownBackgroundGradientKey}}" />
-                                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsfx:VsBrushes.TitleBarActiveTextKey}}" />
+                                <Setter Property="Background" Value="{DynamicResource CommandBarMouseDownBackgroundGradientKey}" />
+                                <Setter Property="Foreground" Value="{DynamicResource TitleBarActiveTextKey}" />
                             </Trigger>
                         </Style.Triggers>
                     </Style>

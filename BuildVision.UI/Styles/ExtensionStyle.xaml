@@ -1,0 +1,26 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:environment="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0">
+
+    <SolidColorBrush x:Key="ToolWindowBackgroundKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.ToolWindowBackgroundColorKey}}"/>
+    <SolidColorBrush x:Key="ToolboxBackgroundKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.ToolboxBackgroundColorKey}}"/>
+    <SolidColorBrush x:Key="PanelBorderKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.PanelBorderColorKey}}"/>
+    <SolidColorBrush x:Key="ToolWindowTextKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.ToolWindowTextColorKey}}"/>
+    <SolidColorBrush x:Key="GrayTextKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.SystemGrayTextColorKey}}"/>
+    <SolidColorBrush x:Key="CommandBarMenuSeparatorKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.CommandBarMenuSeparatorColorKey}}"/>
+    <SolidColorBrush x:Key="CommandBarMenuSeparatorBrushKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.CommandBarMenuSeparatorColorKey}}"/>
+    <SolidColorBrush x:Key="TitleBarActiveTextKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.TitleBarActiveTextColorKey}}"/>
+    <SolidColorBrush x:Key="CommandBarMouseDownBackgroundGradientKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.CommandBarMouseDownBackgroundBeginColorKey}}"/>
+
+
+    <SolidColorBrush x:Key="TitleBarActiveGradientKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.TitleBarActiveGradientBrushKey}}"/>
+    <SolidColorBrush x:Key="DropDownMouseOverBackgroundGradientKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.DropDownMouseOverBackgroundBeginColorKey}}"/>
+    <SolidColorBrush x:Key="ToolboxDividerKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.ToolboxDividerColorKey}}"/>
+    <SolidColorBrush x:Key="GridHeadingTextKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.GridHeadingTextColorKey}}"/>
+
+    <SolidColorBrush x:Key="ComboBoxBackgroundKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.ComboBoxBackgroundColorKey}}"/>
+    <SolidColorBrush x:Key="ComboBoxMouseOverBackgroundGradientKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.ComboBoxMouseOverBackgroundBeginColorKey}}"/>
+    <SolidColorBrush x:Key="CommandBarTextHoverKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.CommandBarTextHoverColorKey}}"/>
+
+
+</ResourceDictionary>

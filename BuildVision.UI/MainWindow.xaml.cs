@@ -1,6 +1,9 @@
 ﻿using BuildVision.UI.Settings;
 using BuildVision.UI.ViewModels;
+using System;
+using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 
 namespace BuildVision.UI
 {

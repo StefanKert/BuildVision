@@ -9,6 +9,12 @@ using BuildVision.Core;
 using BuildVision.UI.ViewModels;
 using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
+using System;
+using System.Linq;
+using System.Windows.Media;
+using System.Text;
+using System.Collections;
+using System.IO;
 
 namespace BuildVision.Tool
 {
@@ -79,6 +85,10 @@ namespace BuildVision.Tool
                 viewModel.OnControlSettingsChanged(settings, buildInfo => BuildMessages.GetBuildDoneMessage(viewModel.SolutionItem, buildInfo, viewModel.ControlSettings.BuildMessagesSettings));
             };
             var view = new ControlView { DataContext = viewModel };
+            view.Resources.MergedDictionaries.Add(new ResourceDictionary
+            {
+                Source = new Uri("pack://application:,,,/BuildVision.UI;component/Styles/ExtensionStyle.xaml")
+            });
             return view;
         }
 

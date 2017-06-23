@@ -6,8 +6,12 @@
         xmlns:views="clr-namespace:BuildVision.UI" 
         mc:Ignorable="d"
         Title="MainWindow" Height="Auto" Width="Auto">
-    <StackPanel>
-        <Button Click="Button_Click">Open Settings</Button>
-        <views:ControlView x:Name="ControlView"></views:ControlView>
-    </StackPanel>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Button Grid.Row="0" Click="Button_Click">Open Settings</Button>
+        <views:ControlView Grid.Row="1" x:Name="ControlView" VerticalAlignment="Stretch"></views:ControlView>
+    </Grid>
 </Window>

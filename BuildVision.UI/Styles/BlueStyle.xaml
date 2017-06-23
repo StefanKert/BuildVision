@@ -1,0 +1,21 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="CommandBarMenuSeparatorKey" Color="#FF333337"/>
+    <SolidColorBrush x:Key="ComboBoxMouseOverBackgroundGradientKey" Color="#FF3F3F46"/>
+    <SolidColorBrush x:Key="ToolboxBackgroundKey" Color="#FF252526"/>
+    <SolidColorBrush x:Key="ToolboxDividerKey" Color="#FF333337"/>
+    <SolidColorBrush x:Key="ToolWindowBackgroundKey" Color="#FF252526"/>
+    <SolidColorBrush x:Key="DropDownMouseOverBackgroundGradientKey" Color="#FF3F3F46"/>
+    <SolidColorBrush x:Key="GridHeadingTextKey" Color="#FFF1F1F1"/>
+    <SolidColorBrush x:Key="ComboBoxBackgroundKey" Color="#FF333337"/>
+    <SolidColorBrush x:Key="GrayTextKey" Color="#FF999999"/>
+    <SolidColorBrush x:Key="CommandBarMouseDownBackgroundGradientKey" Color="#FF007ACC"/>
+    <SolidColorBrush x:Key="ToolWindowTextKey" Color="#FFF1F1F1"/>
+    <SolidColorBrush x:Key="TitleBarActiveGradientKey" Color="#FFFFFF"/> <!-- not yet applied -->
+    <SolidColorBrush x:Key="TitleBarActiveTextKey" Color="#FFFFFFFF"/>
+    <SolidColorBrush x:Key="CommandBarTextHoverKey" Color="#FFF1F1F1"/>
+    <SolidColorBrush x:Key="CommandBarMenuSeparatorBrushKey" Color="#FF333337"/>
+    <SolidColorBrush x:Key="PanelBorderKey" Color="#FF333337"/>
+
+</ResourceDictionary>

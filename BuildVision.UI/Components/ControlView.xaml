@@ -5,14 +5,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:BuildVision.UI"
              xmlns:views="clr-namespace:BuildVision.UI"
-             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:components="clr-namespace:BuildVision.UI.Components"
              xmlns:viewModels="clr-namespace:BuildVision.UI.ViewModels"
              xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"
              xmlns:helpers="clr-namespace:BuildVision.UI.Helpers"
              mc:Ignorable="d"
              Name="OwnerUserControl"
-             Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"
+             Background="{DynamicResource ToolWindowBackgroundKey}"
              DataContextChanged="OnDataContextChanged"
              SnapsToDevicePixels="True"
              UseLayoutRounding="True"
@@ -29,7 +28,8 @@
                 <ResourceDictionary Source="../Styles/DataGridColumnHeaderStyle.xaml" />
                 <ResourceDictionary Source="../Styles/ControlViewStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            
+
+
             <viewModels:ControlViewModel x:Key="DesignViewModel"/>
             <helpers:BindingProxy x:Key="proxy" Data="{Binding}" />
 
@@ -117,8 +117,8 @@
                   AlternationCount="2"
                   AreRowDetailsFrozen="True"
                   AutoGenerateColumns="False"
-                  Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolboxBackgroundKey}}"
-                  BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.PanelBorderKey}}"
+                  Background="{DynamicResource ToolboxBackgroundKey}"
+                  BorderBrush="{DynamicResource PanelBorderKey}"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
                   CanUserReorderColumns="True"
@@ -131,7 +131,7 @@
                   IsReadOnly="True"
                   ItemsSource="{Binding GroupedProjectsList, 
                                         NotifyOnTargetUpdated=True}"
-                  RowBackground="{DynamicResource {x:Static vsfx:VsBrushes.ToolboxBackgroundKey}}"
+                  RowBackground="{DynamicResource ToolboxBackgroundKey}"
                   ScrollViewer.CanContentScroll="{Binding GridGroupPropertyName, 
                                                           Converter={StaticResource StringIsNullOrEmptyConverter}}"
                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -153,7 +153,7 @@
                             <Setter Property="Background"
                                     Value="Transparent" />
                             <Setter Property="Foreground"
-                                    Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+                                    Value="{DynamicResource ToolWindowTextKey}" />
                         </Trigger>
 
                         <!--
@@ -193,7 +193,7 @@
                 <Style TargetType="DataGridRow">
 
                     <Setter Property="Foreground"
-                            Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}" />
+                            Value="{DynamicResource ToolWindowTextKey}" />
                     <Setter Property="BorderThickness"
                             Value="0,1,0,1" />
                     <Setter Property="BorderBrush"
@@ -290,7 +290,7 @@
                                             <Expander.Header>
                                                 <StackPanel VerticalAlignment="Center"
                                                             Orientation="Horizontal">
-                                                    <TextBlock Foreground="{DynamicResource {x:Static vsfx:VsBrushes.GrayTextKey}}">
+                                                    <TextBlock Foreground="{DynamicResource GrayTextKey}">
                                                         <TextBlock.Text>
                                                             <MultiBinding Converter="{StaticResource ResourceKey=MultiBindingStringFormatConverter}"
                                                                           Mode="OneWay">

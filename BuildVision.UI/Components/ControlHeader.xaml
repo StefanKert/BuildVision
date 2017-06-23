@@ -6,11 +6,9 @@
              mc:Ignorable="d"
              d:DesignWidth="697"
              xmlns:res="clr-namespace:BuildVision.UI"
-             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:vs="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
              xmlns:extensions1="clr-namespace:BuildVision.UI.Extensions"
              Name="OwnerUserControl"
-             Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}">
+             Background="{DynamicResource ToolWindowBackgroundKey}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -24,7 +22,7 @@
     <StackPanel Orientation="Vertical">
 
         <!-- Image and Label for current state -->
-        <Grid Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}">
+        <Grid Background="{DynamicResource ToolWindowBackgroundKey}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
@@ -54,7 +52,7 @@
 
             <TextBlock Grid.Column="1"
                        FontSize="18"
-                       Foreground="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTextKey}}"
+                       Foreground="{DynamicResource ToolWindowTextKey}"
                        Text="{Binding TextCurrentState}"
                        TextTrimming="WordEllipsis"
                        extensions1:TextBlockUtils.AutoTooltip="True" />
@@ -66,7 +64,7 @@
                   Margin="0,3,3,3"
                   Panel.ZIndex="1"
                   Stretch="Fill"
-                  Stroke="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMenuSeparatorKey}}"
+                  Stroke="{DynamicResource CommandBarMenuSeparatorKey}"
                   StrokeThickness="2"
                   X2="1" />
 
@@ -241,7 +239,7 @@
             <Border Grid.Column="1"
                     Width="2"
                     BorderThickness="2"
-                    BorderBrush="{DynamicResource {x:Static vs:EnvironmentColors.CommandBarMenuSeparatorBrushKey}}"
+                    BorderBrush="{DynamicResource CommandBarMenuSeparatorBrushKey}"
                     Margin="10,2,10,2" />
 
             <ListBox Grid.Column="2"

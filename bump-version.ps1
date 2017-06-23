@@ -27,7 +27,7 @@ Else
   Out-File -Encoding UTF8 $packageFile
 
 (Get-Content $manifestFile) `
-    -replace '(<Version>)[0-9.]*', "`${1}$version" |
+    -replace '(?<=Identity.)(Version)="[0-9.]*"', "`${1}=""$version""" |
   Out-File -Encoding UTF8 $manifestFile
 
 echo "Done."

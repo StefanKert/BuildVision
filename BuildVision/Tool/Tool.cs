@@ -48,7 +48,7 @@ namespace BuildVision.Tool
 
         private bool _buildErrorIsNavigated;
         private string _origTextCurrentState;
-        private IPackageContext _packageContext;
+        private readonly IPackageContext _packageContext;
 
         public Tool(IPackageContext packageContext, IBuildInfo buildContext, IBuildDistributor buildDistributor, ControlViewModel viewModel)
         {
@@ -153,7 +153,7 @@ namespace BuildVision.Tool
             var project = _dte.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName);
             var item = solutionExplorer.FindHierarchyItem(project);
             if (item == null)
-                throw new Exception($"Project '{projectItem.UniqueName}' not found in SolutionExplorer.");
+                throw new ProjectNotFoundException($"Project '{projectItem.UniqueName}' not found in SolutionExplorer.");
             solutionExplorer.Parent.Activate();
             item.Select(vsUISelectionType.vsUISelectionTypeSelect);
         }
@@ -344,7 +344,7 @@ namespace BuildVision.Tool
 
                 _viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
 
-                OnBuildBegin(_buildContext);
+                OnBuildBegin(_buildContext.BuildScope);
             }
             catch (Exception ex)
             {
@@ -352,10 +352,10 @@ namespace BuildVision.Tool
             }
         }
 
-        public void OnBuildBegin(IBuildInfo buildContext)
+        public void OnBuildBegin(BuildScopes? buildScope)
         {
             int projectsCount = -1;
-            switch (buildContext.BuildScope)
+            switch (buildScope)
             {
                 case BuildScopes.BuildScopeSolution:
                     if (_viewModel.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
@@ -382,7 +382,7 @@ namespace BuildVision.Tool
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(buildScope));
             }
 
             _viewModel.OnBuildBegin(projectsCount, _buildContext);
@@ -462,10 +462,9 @@ namespace BuildVision.Tool
 
                 bool navigateToBuildFailureReason = (!_buildContext.BuildedProjects.BuildWithoutErrors
                                                      && settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone);
-                if (navigateToBuildFailureReason)
+                if (navigateToBuildFailureReason && _buildContext.BuildedProjects.Any(p => p.ErrorsBox.Errors.Any(NavigateToErrorItem)))
                 {
-                    if (_buildContext.BuildedProjects.Any(p => p.ErrorsBox.Errors.Any(NavigateToErrorItem)))
-                        _buildErrorIsNavigated = true;
+                    _buildErrorIsNavigated = true;
                 }
             }
             catch (Exception ex)
@@ -488,10 +487,9 @@ namespace BuildVision.Tool
             bool navigateToBuildFailureReason = (!_buildErrorIsNavigated
                                                  && args.ErrorLevel == ErrorLevel.Error
                                                  && _viewModel.ControlSettings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnErrorRaised);
-            if (navigateToBuildFailureReason)
+            if (navigateToBuildFailureReason && args.ProjectInfo.ErrorsBox.Errors.Any(NavigateToErrorItem))
             {
-                if (args.ProjectInfo.ErrorsBox.Errors.Any(NavigateToErrorItem))
-                    _buildErrorIsNavigated = true;
+                _buildErrorIsNavigated = true;
             }
         }
 
@@ -539,7 +537,7 @@ namespace BuildVision.Tool
                     _toolWindowManager.Close();
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(windowStateAction));
             }
         }
     }

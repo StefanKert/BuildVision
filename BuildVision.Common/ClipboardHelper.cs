@@ -21,8 +21,7 @@ namespace BuildVision.Common
 
             RecodingFilePaths(filePaths);
 
-            int error;
-            bool success = CopyFilesToClipboard(filePaths, new POINT(), out error);
+            bool success = CopyFilesToClipboard(filePaths, new POINT(), out int error);
             if (!success)
                 throw new Win32Exception(error);
         }

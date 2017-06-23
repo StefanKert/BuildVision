@@ -48,7 +48,7 @@ namespace BuildVision.Core
     public sealed partial class BuildVisionPackage : Package
     {
         // Keep the value equal to Version in vsixmanifest.
-        internal const string PackageVersion = "1.4.0";
+        internal const string PackageVersion = "1.4.1";
 
         /// <summary>
         /// Default constructor of the package.

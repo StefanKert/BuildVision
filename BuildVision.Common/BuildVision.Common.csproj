@@ -52,6 +52,7 @@
     <Compile Include="AppVersionInfo.cs" />
     <Compile Include="ClipboardHelper.cs" />
     <Compile Include="CustomStringFormatProvider.cs" />
+    <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="FilePathHelper.cs" />
     <Compile Include="GenericXmlSerializer.cs" />
     <Compile Include="SettingsBase.cs" />

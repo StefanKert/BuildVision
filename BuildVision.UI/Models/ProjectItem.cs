@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Controls;
 using BuildVision.Common;
+using BuildVision.Common.Extensions;
 using BuildVision.Contracts;
 using BuildVision.UI.Modelss;
 using BuildVision.UI.Extensions;
@@ -151,7 +152,8 @@ namespace BuildVision.UI.Models
         if (_buildFinishTime == null)
           return DateTime.Now.Subtract(_buildStartTime.Value);
 
-        return _buildFinishTime.Value.Subtract(_buildStartTime.Value);
+        return _buildFinishTime.Value.Truncate(TimeSpan.FromSeconds(1))
+          .Subtract(_buildStartTime.Value.Truncate(TimeSpan.FromSeconds(1)));
       }
     }
 

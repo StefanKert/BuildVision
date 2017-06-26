@@ -56,7 +56,7 @@ namespace BuildVision.Core
         /// </summary>
         public BuildVisionPackage()
         {
-            string hello = string.Format("{0} {1}", Resources.ProductName, PackageVersion);
+            string hello = string.Format("{0} {1}", Resources.ProductName, BuildVisionVersion.PackageVersion);
             TraceManager.Trace(hello, EventLogEntryType.Information);    
         }
 

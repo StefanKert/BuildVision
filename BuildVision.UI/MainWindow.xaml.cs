@@ -22,7 +22,7 @@ namespace BuildVision.UI
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var settingsWindow = new SettingsWindow(new BuildMessagesSettingsControl());
+            var settingsWindow = new SettingsWindow(new GeneralSettingsControl());
             settingsWindow.ShowDialog();
         }
     }

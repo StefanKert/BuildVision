@@ -157,14 +157,14 @@
             <Run Text="on"/>
             <Run Text="{Binding BuildDateTime, StringFormat=F}"/>
             <LineBreak/>
-            <Run Text="Aleksey Nagovitsyn, 2013 - 2015."/>
-            <Hyperlink NavigateUri="mailto:aleksey.nagovitsyn@gmail.com" 
-                       ToolTip="mailto:aleksey.nagovitsyn@gmail.com"
+            <Run Text=" © 2017 by Stefan Kert, Tom Schmiedlechner and Aleksey Nagovitsyn"/>
+            <Hyperlink NavigateUri="https://twitter.com/StefanKert" 
+                       ToolTip="https://twitter.com/StefanKert"
                        RequestNavigate="HyperlinkOnRequestNavigate">
-                       Send email...
+                       Twitter
             </Hyperlink>
-            <Hyperlink NavigateUri="https://github.com/nagits/BuildVision" 
-                       ToolTip="https://github.com/nagits/BuildVision"
+            <Hyperlink NavigateUri="https://github.com/StefanKert/BuildVision" 
+                       ToolTip="https://github.com/StefanKert/BuildVision"
                        RequestNavigate="HyperlinkOnRequestNavigate">
                        Open GitHub repo...
             </Hyperlink>

@@ -4,6 +4,7 @@ using System.Resources;
 using System.Runtime.InteropServices;
 
 using BuildVision.Core;
+using BuildVision;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -13,11 +14,11 @@ using BuildVision.Core;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BuildVision")]
 [assembly: AssemblyProduct("BuildVision")]
-[assembly: AssemblyCopyright("© BuildVision 2013 - 2017")]
+[assembly: AssemblyCopyright("© 2017 BuildVision")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]   
 [assembly: ComVisible(false)]     
 [assembly: CLSCompliant(false)]
 [assembly: NeutralResourcesLanguage("en-US")]
-[assembly: AssemblyVersion(BuildVisionPackage.PackageVersion)]
-[assembly: AssemblyFileVersion(BuildVisionPackage.PackageVersion)]
+[assembly: AssemblyVersion(BuildVisionVersion.PackageVersion)]
+[assembly: AssemblyFileVersion(BuildVisionVersion.PackageVersion)]

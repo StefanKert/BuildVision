@@ -1,4 +1,4 @@
-﻿$packageFile = "BuildVision\Core\BuildVisionPackage.Package.cs"
+﻿$packageFile = "BuildVision.Common\BuildVisionVersion.cs"
 $manifestFile = "BuildVision\source.extension.vsixmanifest"
 $appveyorFile = "appveyor.yml"
 

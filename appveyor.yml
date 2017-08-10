@@ -14,7 +14,7 @@ artifacts:
 
 deploy:
   - provider: GitHub
-    release: v$(APPVEYOR_REPO_TAG_NAME)
+    release: $(APPVEYOR_REPO_TAG_NAME)
     auth_token:
       secure: nGrUXPrcAzk/9OZBIUt/T4VpJtLC/4H7CMy2sdwTowPdT/8DPYmZzRaL/IUU5e2u
     artifact: BuildVision\bin\Release\BuildVision.vsix

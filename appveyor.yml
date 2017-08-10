@@ -27,3 +27,6 @@ deploy:
     artifact: BuildVision\bin\Release\BuildVision.vsix
     draft: true
     prerelease: true
+    on:
+        branch: master             
+        appveyor_repo_tag: true        

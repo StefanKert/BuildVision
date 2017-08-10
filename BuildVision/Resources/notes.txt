@@ -2,10 +2,12 @@ v2.0.0    12.08.2017
 	+ Added Support for Visual Studio 2017
 	+ It´s possible to copy error messages by opening the context menu and clicking "Selected Project" -> "Copy Errors"
 	+ Major restructering of code base
-	% Fixed #13: Truncating long error messages 
-	% Fixed #4: Fix navigation to the errors for nested files in Solution Explorer
 	% Fixed #3: Make BuildElapsedTime animated, closes 
+	% Fixed #5: Sort doesn't update during build 
+	% Fixed #4: Fix navigation to the errors for nested files in Solution Explorer
+	% Fixed #13: Truncating long error messages 
 	% Fixed #18: Build finish time is not correct
+	
 
 v1.3.1    31.03.2015
 	+ Continous Integration for BuildVision repository: each commit to master branch initiates a build and creates pre-release, which is available for download from https://github.com/nagits/BuildVision/releases.

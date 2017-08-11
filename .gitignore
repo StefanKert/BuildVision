@@ -7,3 +7,5 @@ BuildVision/BuildVision.csproj.DotSettings
 packages/
 obj/
 bin/
+/devenv170811.vspx
+/devenv.psess

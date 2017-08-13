@@ -1,4 +1,8 @@
-v2.0.0    12.08.2017
+v2.0.1    13.08.2017
+	+ Fixes #34: CreateInstance failed for package [BuildVisionPackage]: Extension wasn´t working with Visual Studio 2013 and 2015 because of wrong dependencies on Microsoft.VisualStudio.Shell.*.dll
+	+ Title bar in Datagrid gets the right color now (TitleBarActiveGradientBeginColorKey) when pressed
+
+v2.0.0    9.08.2017
 	+ Added Support for Visual Studio 2017
 	+ It´s possible to copy error messages by opening the context menu and clicking "Selected Project" -> "Copy Errors"
 	+ Major restructering of code base

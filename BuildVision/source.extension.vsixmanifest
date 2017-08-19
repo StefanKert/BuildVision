@@ -6,6 +6,7 @@
         <Description xml:space="preserve">Building process visualization.</Description>
         <MoreInfo>https://marketplace.visualstudio.com/items?itemName=stefankert.BuildVision</MoreInfo>
         <License>LICENSE.txt</License>
+        <ReleaseNotes>https://github.com/StefanKert/BuildVision/releases</ReleaseNotes>
         <Icon>Resources\Package.ico</Icon>
         <PreviewImage>Resources\PreviewImage.png</PreviewImage>
     </Metadata>

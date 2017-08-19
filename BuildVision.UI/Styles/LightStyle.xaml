@@ -12,7 +12,7 @@
     <SolidColorBrush x:Key="GrayTextKey" Color="#FF999999"/>
     <SolidColorBrush x:Key="CommandBarMouseDownBackgroundGradientKey" Color="#FF007ACC"/>
     <SolidColorBrush x:Key="ToolWindowTextKey" Color="#FFF1F1F1"/>
-    <SolidColorBrush x:Key="TitleBarActiveGradientKey" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="TitleBarActiveGradientKey" Color="#FF007ACC"/>
     <SolidColorBrush x:Key="TitleBarActiveTextKey" Color="#FFFFFFFF"/>
     <SolidColorBrush x:Key="CommandBarTextHoverKey" Color="#FFF1F1F1"/>
     <SolidColorBrush x:Key="CommandBarMenuSeparatorBrushKey" Color="#FF333337"/>

@@ -16,7 +16,7 @@ namespace BuildVision.Common
             AssemblyName assemblyName = assembly.GetName();
             Version version = assemblyName.Version;
 
-            AppVersion = version.ToString(2);
+            AppVersion = version.ToString(3);
             BuildVersion = version.ToString(4);
             BuildDateTime = RetrieveLinkerTimestamp(assembly);
         }

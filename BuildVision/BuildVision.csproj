@@ -192,15 +192,6 @@
     <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Microsoft.VisualStudio.CommandBars">
-      <Guid>{1CBA492E-7263-47BB-87FE-639000619B15}</Guid>
-      <VersionMajor>8</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="stdole">
       <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>2</VersionMajor>

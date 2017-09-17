@@ -1251,7 +1251,7 @@ namespace BuildVision.UI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Report Issues....
+        ///   Looks up a localized string similar to Report Issues ....
         /// </summary>
         public static string ReportIssues {
             get {

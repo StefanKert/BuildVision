@@ -264,6 +264,9 @@
                               ItemsSource="{Binding GridColumnsGroupMenuItems}" />
                     <MenuItem Command="{Binding OpenGeneralSettingsAction}"
                               Header="{x:Static res:Resources.OpenGeneralSettingsMenuItem}" />
+                    <Separator/>
+                    <MenuItem Command="{Binding ReportIssues}"
+                              Header="{x:Static res:Resources.ReportIssues}" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
 

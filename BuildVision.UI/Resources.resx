@@ -583,4 +583,7 @@ on build done</value>
   <data name="OpenGeneralSettingsMenuItem" xml:space="preserve">
     <value>All Settings...</value>
   </data>
+  <data name="ReportIssues" xml:space="preserve">
+    <value>Report Issues...</value>
+  </data>
 </root>

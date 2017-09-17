@@ -21,6 +21,7 @@ using BuildVision.UI.Models.Indicators.Core;
 using BuildVision.UI.Settings.Models.Columns;
 using SortDescription = BuildVision.UI.Settings.Models.Sorting.SortDescription;
 using BuildVision.UI.Settings.Models;
+using BuildVision.Helpers;
 
 namespace BuildVision.UI.ViewModels
 {
@@ -379,6 +380,8 @@ namespace BuildVision.UI.ViewModels
         }
 
         #region Commands
+
+        public ICommand ReportIssues => new RelayCommand(obj => GithubHelper.OpenBrowserWithPrefilledIssue());
 
         public ICommand GridSorting => new RelayCommand(obj => ReorderGrid(obj));
 

@@ -1,4 +1,8 @@
-﻿using System.Diagnostics;
+﻿using BuildVision.Common;
+using BuildVision.Helpers;
+using Microsoft.VisualStudio.Shell;
+using System;
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
@@ -13,7 +17,7 @@ namespace BuildVision.UI.Settings
 
         private void HyperlinkOnRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            GithubHelper.OpenBrowserWithPrefilledIssue();
             e.Handled = true;
         }
     }

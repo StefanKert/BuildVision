@@ -11,7 +11,7 @@
              xmlns:components="clr-namespace:BuildVision.UI.Components"
              mc:Ignorable="d"
              d:DesignWidth="500"
-             d:DesignHeight="270"
+             d:DesignHeight="300"
              d:DataContext="{Binding Source={StaticResource DesignViewModel}}">
 
     <UserControl.Resources>

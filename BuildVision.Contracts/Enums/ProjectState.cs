@@ -11,6 +11,7 @@
         UpToDate,
         CleanDone,
         BuildError,
-        CleanError
+        CleanError,
+        BuildWarning
     }
 }

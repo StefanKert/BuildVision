@@ -31,6 +31,8 @@ namespace BuildVision.UI.Extensions
                 case ProjectState.BuildError:
                 case ProjectState.CleanError:
                     return VectorResources.TryGet(resourcesUri, "BuildError");
+                case ProjectState.BuildWarning:
+                    return VectorResources.TryGet(resourcesUri, "BuildWarning");
                 default:
                     return null;
             }

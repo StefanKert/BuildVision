@@ -469,17 +469,20 @@ namespace BuildVision.Tool.Building
             {
                 case BuildActions.BuildActionBuild:
                 case BuildActions.BuildActionRebuildAll:
-                    if (success)
-                    {
-                        bool upToDate = (_buildLogger != null && _buildLogger.Projects != null
-                                         && !_buildLogger.Projects.Exists(t => t.FileName == buildedProject.FileName));
-                        if (upToDate)
+                    if (success) { 
+                        if (_viewModel.ControlSettings.GeneralSettings.ShowWarningSignForBuilds && buildedProject.ErrorsBox.WarningsCount > 0)
+                            projectState = ProjectState.BuildWarning;
+                        else
                         {
-                            // Because ErrorBox will be empty if project is UpToDate.
-                            buildedProject.ErrorsBox = currentProject.ErrorsBox;
+                            bool upToDate = (_buildLogger != null && _buildLogger.Projects != null
+                                         && !_buildLogger.Projects.Exists(t => t.FileName == buildedProject.FileName));
+                            if (upToDate)
+                            {
+                                // Because ErrorBox will be empty if project is UpToDate.
+                                buildedProject.ErrorsBox = currentProject.ErrorsBox;
+                            }
+                            projectState = upToDate ? ProjectState.UpToDate : ProjectState.BuildDone;
                         }
-
-                        projectState = upToDate ? ProjectState.UpToDate : ProjectState.BuildDone;
                     }
                     else
                     {

@@ -18,47 +18,46 @@
         <settings:GeneralSettings x:Key="DesignViewModel"/>
         <common:AppVersionInfo x:Key="AppVersionInfo"/>
     </UserControl.Resources>
-
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="25.415"/>
-            <RowDefinition Height="0.585"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="0"
+    <ScrollViewer>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="25.415"/>
+                <RowDefinition Height="0.585"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0"
                     Orientation="Vertical"
                     HorizontalAlignment="Left" Margin="10,10,0,10">
-            <GroupBox Padding="5">
-                <GroupBox.Header>
-                    <CheckBox Name="DisplayTaskBarProgressCheckBox" 
+                <GroupBox Padding="5">
+                    <GroupBox.Header>
+                        <CheckBox Name="DisplayTaskBarProgressCheckBox" 
                               IsChecked="{Binding BuildProgressSettings.TaskBarProgressEnabled}">
-                        <CheckBox.Content>
-                            <TextBlock>
+                            <CheckBox.Content>
+                                <TextBlock>
                                 <Run Text="{x:Static res:Resources.GeneralSettings_DisplayTaskBarProgressCheckBox}" />
                                 <Run Foreground="Red" 
                                      ToolTip="{x:Static res:Resources.GeneralSettings_DisplayTaskBarProgressAvailableWin7Tooltip}" 
                                      Text="*" />
-                            </TextBlock>
-                        </CheckBox.Content>
-                    </CheckBox>
-                </GroupBox.Header>
-                <Grid IsEnabled="{Binding ElementName=DisplayTaskBarProgressCheckBox, Path=IsChecked}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
+                                </TextBlock>
+                            </CheckBox.Content>
+                        </CheckBox>
+                    </GroupBox.Header>
+                    <Grid IsEnabled="{Binding ElementName=DisplayTaskBarProgressCheckBox, Path=IsChecked}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
 
-                    <Label Grid.Row="1"
+                        <Label Grid.Row="1"
                            Grid.Column="0"
                            Content="{x:Static res:Resources.GeneralSettings_ResetTaskBarProgressAfterBuildDoneLabel}" />
-                    <ComboBox Name="ResetTaskBarProgressAfterBuildDoneComboBox"
+                        <ComboBox Name="ResetTaskBarProgressAfterBuildDoneComboBox"
                               Grid.Row="1"
                               Grid.Column="1"
                               VerticalAlignment="Center"
@@ -67,24 +66,24 @@
                               SelectedValue="{Binding BuildProgressSettings.ResetTaskBarProgressAfterBuildDone}"
                               SelectedValuePath="Value" />
 
-                    <Label Grid.Row="2"
+                        <Label Grid.Row="2"
                            Grid.Column="0"
                            HorizontalAlignment="Right"
                            VerticalAlignment="Center"
                            Content="{x:Static res:Resources.WindowSettings_DelayLabel}">
-                        <Label.Style>
-                            <Style TargetType="{x:Type Label}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ResetTaskBarProgressAfterBuildDoneComboBox}" 
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedValue, ElementName=ResetTaskBarProgressAfterBuildDoneComboBox}" 
                                                  Value="{x:Static models:ResetTaskBarItemInfoCondition.AfterDelay}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Label.Style>
-                    </Label>
-                    <components:SpinnerControl Grid.Row="2"
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <components:SpinnerControl Grid.Row="2"
                                                Grid.Column="1"
                                                MinWidth="70"
                                                HorizontalAlignment="Left"
@@ -93,76 +92,80 @@
                                                Maximum="120000"
                                                Minimum="0"
                                                Value="{Binding BuildProgressSettings.ResetTaskBarProgressDelay}">
-                        <components:SpinnerControl.Style>
-                            <Style TargetType="{x:Type components:SpinnerControl}">
-                                <Setter Property="Visibility" Value="Collapsed" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedValue, ElementName=ResetTaskBarProgressAfterBuildDoneComboBox}" 
+                            <components:SpinnerControl.Style>
+                                <Style TargetType="{x:Type components:SpinnerControl}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SelectedValue, ElementName=ResetTaskBarProgressAfterBuildDoneComboBox}" 
                                                  Value="{x:Static models:ResetTaskBarItemInfoCondition.AfterDelay}">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </components:SpinnerControl.Style>
-                    </components:SpinnerControl>
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </components:SpinnerControl.Style>
+                        </components:SpinnerControl>
 
-                </Grid>
-            </GroupBox>
+                    </Grid>
+                </GroupBox>
 
-            <CheckBox Margin="8"
+                <CheckBox Margin="8"
                       Content="{x:Static res:Resources.GeneralSettings_IndicatorsPanelVisibleCheckBox}"
                       IsChecked="{Binding IndicatorsPanelVisible}" />
 
-            <CheckBox Margin="8"
+                <CheckBox Margin="8"
                       Content="{x:Static res:Resources.GeneralSettings_FillProjectListOnBuildBeginCheckBox}"
                       IsChecked="{Binding FillProjectListOnBuildBegin}" />
 
-            <CheckBox Margin="8"
+                <CheckBox Margin="8"
                       VerticalAlignment="Center"
                       Content="{x:Static res:Resources.GeneralSettings_StopBuildAfterFirstErrorCheckBox}"
                       IsChecked="{Binding StopBuildAfterFirstError}"
                       ToolTip="{x:Static res:Resources.GeneralSettings_StopBuildAfterFirstErrorCheckBoxToolTip}" />
 
-            <CheckBox Margin="8"
+                <CheckBox Margin="8"
                       Content="{x:Static res:Resources.BuildMessagesSettings_StatusBarOutputCheckBox}"
                       IsChecked="{Binding EnableStatusBarOutput}" />
 
-            <CheckBox Margin="8"
+                <CheckBox Margin="8"
                       Content="{x:Static res:Resources.BuildMessagesSettings_DisplayWarningSignCheckBox}"
                       IsChecked="{Binding ShowWarningSignForBuilds}" />
 
-            <Grid Margin="4,0,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                <CheckBox Margin="8"
+                      Content="{x:Static res:Resources.BuildMessagesSettings_HideUpToDateTargets}"
+                      IsChecked="{Binding HideUpToDateTargets}" />
 
-                <Label Grid.Row="0" 
+                <Grid Margin="4,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Row="0" 
                        Grid.Column="0"     
                        Content="{x:Static res:Resources.GeneralSettings_NavigateToBuildFailureReasonLabel}"
                        ToolTip="{x:Static res:Resources.GeneralSettings_NavigateToBuildFailureReasonLabelToolTip}" />
 
-                <ComboBox Grid.Row="0"
+                    <ComboBox Grid.Row="0"
                           Grid.Column="1"
                           VerticalAlignment="Center"
                           DisplayMemberPath="Description"
                           ItemsSource="{Binding Source={extensions:EnumerationExtension {x:Type models:NavigateToBuildFailureReasonCondition}}}"
                           SelectedValue="{Binding NavigateToBuildFailureReason}"
                           SelectedValuePath="Value" />
-            </Grid>
+                </Grid>
 
-        </StackPanel>
+            </StackPanel>
 
-        <TextBlock Grid.Row="1" Margin="5,5,5,4.415">
+            <TextBlock Grid.Row="1" Margin="5,5,5,4.415">
               <Hyperlink 
                        NavigateUri="https://github.com/StefanKert/BuildVision" 
                        ToolTip="https://github.com/StefanKert/BuildVision"
                        RequestNavigate="HyperlinkOnRequestNavigate">
                        Report Issues
             </Hyperlink>
-        </TextBlock>
+            </TextBlock>
 
-        <TextBlock Grid.Row="3"
+            <TextBlock Grid.Row="3"
                    Opacity="0.5"
                    Margin="5"
                    DataContext="{Binding Source={StaticResource AppVersionInfo}}">
@@ -179,7 +182,7 @@
                        RequestNavigate="HyperlinkOnRequestNavigate">
                        Twitter
             </Hyperlink>
-        </TextBlock>
-    </Grid>
-
+            </TextBlock>
+        </Grid>
+    </ScrollViewer>
 </UserControl>

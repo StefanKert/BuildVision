@@ -9,6 +9,7 @@
              xmlns:viewModels="clr-namespace:BuildVision.UI.ViewModels"
              xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"
              xmlns:helpers="clr-namespace:BuildVision.UI.Helpers"
+             xmlns:contracts="clr-namespace:BuildVision.Contracts;assembly=BuildVision.Contracts"
              mc:Ignorable="d"
              Name="OwnerUserControl"
              Background="{DynamicResource ToolWindowBackgroundKey}"
@@ -206,6 +207,14 @@
 
                     <Style.Triggers>
 
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Value="{x:Static contracts:ProjectState.UpToDate}" Binding="{Binding Path=State}"/>
+                                <Condition Binding="{Binding Path=DataContext.HideUpToDateTargets, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" Value="True"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </MultiDataTrigger>
+                        
                         <DataTrigger Value="True">
                             <DataTrigger.Binding>
                                 <MultiBinding Converter="{StaticResource ObjectsReferencesEqualsConverter}">
@@ -245,6 +254,9 @@
                               IsCheckable="True"
                               IsChecked="{Binding GridHeadersVisibility,
                                                   Converter={StaticResource ResourceKey=ColumnHeadersVisibilityToBool}}" />
+                    <MenuItem Header="{x:Static res:Resources.HideUpToDateTargetsMenuItem}"
+                              IsCheckable="True"
+                              IsChecked="{Binding HideUpToDateTargets}" />
                     <MenuItem Header="{x:Static res:Resources.GridColumnsMenuItems}"
                               ItemsSource="{Binding Source={StaticResource GridColumnsMenuItems}}">
                         <MenuItem.ItemContainerStyle>

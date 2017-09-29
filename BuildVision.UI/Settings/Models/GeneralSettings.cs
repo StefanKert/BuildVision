@@ -16,6 +16,8 @@ namespace BuildVision.UI.Settings.Models
 
         public bool ShowWarningSignForBuilds { get; set; }
 
+        public bool HideUpToDateTargets { get; set; }
+
         public NavigateToBuildFailureReasonCondition NavigateToBuildFailureReason { get; set; }
 
         public bool FillProjectListOnBuildBegin { get; set; }

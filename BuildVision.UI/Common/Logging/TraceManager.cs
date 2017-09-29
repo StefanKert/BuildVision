@@ -40,7 +40,7 @@ namespace BuildVision.UI.Common.Logging
 
         public static void TraceUnknownException(this Exception ex)
         {
-            Trace(ex, Resources.UnknownExceptionMsg);
+            //Trace(ex, Resources.UnknownExceptionMsg);
         }
 
         public static void TraceError(string message)

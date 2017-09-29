@@ -315,6 +315,15 @@ namespace BuildVision.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide UpToDate targets.
+        /// </summary>
+        public static string BuildMessagesSettings_HideUpToDateTargets {
+            get {
+                return ResourceManager.GetString("BuildMessagesSettings_HideUpToDateTargets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Elapsed time.
         /// </summary>
         public static string BuildMessagesSettings_ShowAgoTimeCheckBox {
@@ -878,6 +887,15 @@ namespace BuildVision.UI {
         public static string GridSettingsControl_ColumnsTip {
             get {
                 return ResourceManager.GetString("GridSettingsControl_ColumnsTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide UpToDate targets.
+        /// </summary>
+        public static string HideUpToDateTargetsMenuItem {
+            get {
+                return ResourceManager.GetString("HideUpToDateTargetsMenuItem", resourceCulture);
             }
         }
         

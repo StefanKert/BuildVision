@@ -376,6 +376,13 @@ namespace BuildVision.Helpers
                     }
                 }
             }
+            catch(ArgumentException ex)
+            {
+                // We are catching this seperatly because in the current VS2017 Version
+                // there is a bug that makes it impossible for us to retrieve the extenders
+                // for specific projects (https://github.com/dotnet/project-system/issues/2686)
+                return Resources.GridCellNAText;
+            }
             catch (Exception ex)
             {
                 ex.TraceUnknownException();

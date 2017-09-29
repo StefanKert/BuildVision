@@ -31,6 +31,12 @@ namespace BuildVision.UI.ViewModels
         private IBuildInfo _buildInfo;
         private ObservableCollection<DataGridColumn> _gridColumnsRef;
 
+        public bool HideUpToDateTargets
+        {
+            get => ControlSettings.GeneralSettings.HideUpToDateTargets;
+            set => SetProperty(() => ControlSettings.GeneralSettings.HideUpToDateTargets, val => ControlSettings.GeneralSettings.HideUpToDateTargets = val, value);
+        }
+
         public ControlModel Model { get; }
 
         public BuildProgressViewModel BuildProgressViewModel { get; }

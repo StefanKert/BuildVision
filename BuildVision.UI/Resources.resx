@@ -589,4 +589,10 @@ on build done</value>
   <data name="BuildMessagesSettings_DisplayWarningSignCheckBox" xml:space="preserve">
     <value>Show warning icon for builds</value>
   </data>
+  <data name="BuildMessagesSettings_HideUpToDateTargets" xml:space="preserve">
+    <value>Hide UpToDate targets</value>
+  </data>
+  <data name="HideUpToDateTargetsMenuItem" xml:space="preserve">
+    <value>Hide UpToDate targets</value>
+  </data>
 </root>

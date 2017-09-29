@@ -20,8 +20,6 @@ namespace BuildVision.UI.Models
 
     public bool IsBatchBuildProject { get; set; }
 
-    #region Properties
-
     private string _uniqueName;
 
     [GridColumn("ProjectItemHeader_UniqueName", ColumnsOrder.UniqueName, false, ExampleValue = @"ConsoleApplication1\ConsoleApplication1.csproj")]
@@ -253,8 +251,6 @@ namespace BuildVision.UI.Models
       get => _solutionFolder;
       set => SetProperty(ref _solutionFolder, value);
     }
-
-    #endregion
 
     public ProjectItem GetBatchBuildCopy(string configuration, string platform)
     {

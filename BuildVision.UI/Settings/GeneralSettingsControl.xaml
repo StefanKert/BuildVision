@@ -22,13 +22,14 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="25.415"/>
+            <RowDefinition Height="0.585"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
+
         <StackPanel Grid.Row="0"
                     Orientation="Vertical"
-                    HorizontalAlignment="Left" Margin="10">
+                    HorizontalAlignment="Left" Margin="10,10,0,10">
             <GroupBox Padding="5">
                 <GroupBox.Header>
                     <CheckBox Name="DisplayTaskBarProgressCheckBox" 
@@ -126,6 +127,10 @@
                       Content="{x:Static res:Resources.BuildMessagesSettings_StatusBarOutputCheckBox}"
                       IsChecked="{Binding EnableStatusBarOutput}" />
 
+            <CheckBox Margin="8"
+                      Content="{x:Static res:Resources.BuildMessagesSettings_DisplayWarningSignCheckBox}"
+                      IsChecked="{Binding ShowWarningSignForBuilds}" />
+
             <Grid Margin="4,0,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -148,7 +153,7 @@
 
         </StackPanel>
 
-        <TextBlock Grid.Row="1" Margin="5">
+        <TextBlock Grid.Row="1" Margin="5,5,5,4.415">
               <Hyperlink 
                        NavigateUri="https://github.com/StefanKert/BuildVision" 
                        ToolTip="https://github.com/StefanKert/BuildVision"
@@ -157,7 +162,7 @@
             </Hyperlink>
         </TextBlock>
 
-        <TextBlock Grid.Row="2"
+        <TextBlock Grid.Row="3"
                    Opacity="0.5"
                    Margin="5"
                    DataContext="{Binding Source={StaticResource AppVersionInfo}}">

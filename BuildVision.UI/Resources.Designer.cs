@@ -306,6 +306,15 @@ namespace BuildVision.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show warning icon for builds.
+        /// </summary>
+        public static string BuildMessagesSettings_DisplayWarningSignCheckBox {
+            get {
+                return ResourceManager.GetString("BuildMessagesSettings_DisplayWarningSignCheckBox", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Elapsed time.
         /// </summary>
         public static string BuildMessagesSettings_ShowAgoTimeCheckBox {

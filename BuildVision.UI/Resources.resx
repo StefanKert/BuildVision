@@ -586,4 +586,7 @@ on build done</value>
   <data name="ReportIssues" xml:space="preserve">
     <value>Report Issues ...</value>
   </data>
+  <data name="BuildMessagesSettings_DisplayWarningSignCheckBox" xml:space="preserve">
+    <value>Show warning icon for builds</value>
+  </data>
 </root>

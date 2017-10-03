@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision", "BuildVision\BuildVision.csproj", "{9925A635-1827-4BB4-9C31-FE0FC87A6265}"
 EndProject
@@ -13,6 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.UI", "BuildVisi
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{A8C25F90-8847-4EBE-A66B-02E5D1B42EC0}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		appveyor.yml = appveyor.yml
 		bump-version.ps1 = bump-version.ps1
 		CONTRIBUTING.md = CONTRIBUTING.md
@@ -45,5 +46,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1485240E-4A28-4FA4-8D69-3D8151C3E1F6}
 	EndGlobalSection
 EndGlobal

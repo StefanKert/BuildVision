@@ -35,7 +35,7 @@ namespace BuildVision.Tool.Building
         private readonly WindowEvents _windowEvents;
         private readonly CommandEvents _commandEvents;
         private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
-        private BuildOutputLogger _buildLogger;    
+        private BuildOutputLogger _buildLogger;
         private CancellationTokenSource _buildProcessCancellationToken;
         private Window _activeProjectContext;
         private bool _buildCancelledInternally;
@@ -378,7 +378,7 @@ namespace BuildVision.Tool.Building
 
         private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)
         {
-            if (id == (int)VSConstants.VSStd97CmdID.CancelBuild 
+            if (id == (int)VSConstants.VSStd97CmdID.CancelBuild
                 && Guid.Parse(guid) == VSConstants.GUID_VSStandardCommandSet97)
             {
                 _buildCancelled = true;
@@ -469,7 +469,8 @@ namespace BuildVision.Tool.Building
             {
                 case BuildActions.BuildActionBuild:
                 case BuildActions.BuildActionRebuildAll:
-                    if (success) { 
+                    if (success)
+                    {
                         if (_viewModel.ControlSettings.GeneralSettings.ShowWarningSignForBuilds && buildedProject.ErrorsBox.WarningsCount > 0)
                             projectState = ProjectState.BuildWarning;
                         else
@@ -537,42 +538,12 @@ namespace BuildVision.Tool.Building
 
             if (scope == vsBuildScope.vsBuildScopeProject)
             {
-                var projContext = _activeProjectContext;
-                switch (projContext.Type)
+                var selectedProjects = _packageContext.GetDTE().ActiveSolutionProjects as object[];
+                if (selectedProjects?.Length == 1)
                 {
-                    case vsWindowType.vsWindowTypeSolutionExplorer:
-                        ////var solutionExplorer = (UIHierarchy)dte.Windows.Item(Constants.vsext_wk_SProjectWindow).Object;
-                        var solutionExplorer = (UIHierarchy)projContext.Object;
-                        var items = (Array)solutionExplorer.SelectedItems;
-                        switch (items.Length)
-                        {
-                            case 0:
-                                TraceManager.TraceError("Unable to get target projects in Solution Explorer (vsBuildScope.vsBuildScopeProject)");
-                                BuildScopeProject = null;
-                                break;
-
-                            case 1:
-                                var item = (UIHierarchyItem)items.GetValue(0);
-
-                                var hierachyProjectItem = new ProjectItem();
-                                ViewModelHelper.UpdateProperties((Project)item.Object, hierachyProjectItem);
-                                BuildScopeProject = hierachyProjectItem;
-                                break;
-
-                            default:
-                                BuildScopeProject = null;
-                                break;
-                        }
-                        break;
-
-                    case vsWindowType.vsWindowTypeDocument:
-                        var projectItem = new ProjectItem();
-                        ViewModelHelper.UpdateProperties(projContext.Project, projectItem);
-                        BuildScopeProject = projectItem;
-                        break;
-
-                    default:
-                        throw new InvalidOperationException("Unsupported type of active project context for vsBuildScope.vsBuildScopeProject.");
+                    var projectItem = new ProjectItem();
+                    ViewModelHelper.UpdateProperties((Project)selectedProjects[0], projectItem);
+                    BuildScopeProject = projectItem;
                 }
             }
 

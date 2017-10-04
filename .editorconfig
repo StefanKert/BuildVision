@@ -54,7 +54,7 @@ csharp_prefer_simple_default_expression = true:suggestion
 csharp_style_throw_expression = true:suggestion
 csharp_style_conditional_delegate_call = true:suggestion
 
-#Code Block Preferences
+# Code Block Preferences
 csharp_prefer_braces = false:suggestion
 
 # Organize Usings
@@ -64,7 +64,7 @@ dotnet_sort_system_directives_first = true
 csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
 csharp_new_line_before_catch = true
-csharp_new_line_before_finally = false
+csharp_new_line_before_finally = true
 csharp_new_line_before_members_in_object_initializers = true
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true
@@ -84,14 +84,19 @@ csharp_space_between_parentheses = false
 csharp_preserve_single_line_statements = false
 csharp_preserve_single_line_blocks = true
 
+#####
 # Naming Convention (Custom)
+#####
+
+## Name all private fields with camelCase
 dotnet_naming_symbols.private_field_symbol.applicable_kinds = field
 dotnet_naming_symbols.private_field_symbol.applicable_accessibilities = private
 dotnet_naming_style.private_field_style.capitalization = camel_case
-dotnet_naming_rule.private_fields_are_camel_case.severity = error
+dotnet_naming_rule.private_fields_are_camel_case.severity = warning
 dotnet_naming_rule.private_fields_are_camel_case.symbols = private_field_symbol
 dotnet_naming_rule.private_fields_are_camel_case.style = private_field_style
 
+## Name all non-private fields with PascalCase
 dotnet_naming_symbols.non_private_field_symbol.applicable_kinds = field
 dotnet_naming_symbols.non_private_field_symbol.applicable_accessibilities = public,internal,friend,protected,protected_internal,protected_friend
 dotnet_naming_style.non_private_field_style.capitalization = pascal_case
@@ -99,18 +104,21 @@ dotnet_naming_rule.non_private_fields_are_pascal_case.severity = error
 dotnet_naming_rule.non_private_fields_are_pascal_case.symbols = non_private_field_symbol
 dotnet_naming_rule.non_private_fields_are_pascal_case.style = non_private_field_style
 
+## Names of parameters must be CamelCase
 dotnet_naming_symbols.parameter_symbol.applicable_kinds = parameter
 dotnet_naming_style.parameter_style.capitalization = camel_case
 dotnet_naming_rule.parameters_are_camel_case.severity = error
 dotnet_naming_rule.parameters_are_camel_case.symbols = parameter_symbol
 dotnet_naming_rule.parameters_are_camel_case.style = parameter_style
 
+## Non-interface types must use PascalCase
 dotnet_naming_symbols.non_interface_type_symbol.applicable_kinds = class,struct,enum,delegate
 dotnet_naming_style.non_interface_type_style.capitalization = pascal_case
 dotnet_naming_rule.non_interface_types_are_pascal_case.severity = error
 dotnet_naming_rule.non_interface_types_are_pascal_case.symbols = non_interface_type_symbol
 dotnet_naming_rule.non_interface_types_are_pascal_case.style = non_interface_type_style
 
+## Interfaces must use PascalCase and start with a prefix of 'I'
 dotnet_naming_symbols.interface_type_symbol.applicable_kinds = interface
 dotnet_naming_style.interface_type_style.capitalization = pascal_case
 dotnet_naming_style.interface_type_style.required_prefix = I
@@ -118,6 +126,7 @@ dotnet_naming_rule.interface_types_must_be_prefixed_with_I.severity = error
 dotnet_naming_rule.interface_types_must_be_prefixed_with_I.symbols = interface_type_symbol
 dotnet_naming_rule.interface_types_must_be_prefixed_with_I.style = interface_type_style
 
+## Methods, Properties, and Events must use PascalCase
 dotnet_naming_symbols.member_symbol.applicable_kinds = method,property,event
 dotnet_naming_style.member_style.capitalization = pascal_case
 dotnet_naming_rule.members_are_pascal_case.severity = error

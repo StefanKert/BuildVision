@@ -2,22 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Microsoft.Build.Framework;
-using Microsoft.VisualStudio;
-using System.Linq;
 using BuildVision.Contracts;
-using BuildVision.UI.Contracts;
 using BuildVision.Core;
-using EnvDTE;
-using BuildVision.UI.ViewModels;
-using BuildVision.UI.Common.Logging;
 using BuildVision.Helpers;
 using BuildVision.Tool.Models;
-
-
+using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Contracts;
+using BuildVision.UI.ViewModels;
+using EnvDTE;
+using Microsoft.Build.Framework;
+using Microsoft.VisualStudio;
+using ErrorItem = BuildVision.Contracts.ErrorItem;
 using ProjectItem = BuildVision.UI.Models.ProjectItem;
 
 namespace BuildVision.Tool.Building
@@ -26,6 +24,7 @@ namespace BuildVision.Tool.Building
     {
         private const int BuildInProcessCountOfQuantumSleep = 5;
         private const int BuildInProcessQuantumSleep = 50;
+        private const string CancelBuildCommand = "Build.Cancel";
 
         private readonly object _buildingProjectsLockObject;
         private readonly object _buildProcessLockObject = new object();
@@ -103,7 +102,8 @@ namespace BuildVision.Tool.Building
 
             try
             {
-                _packageContext.GetDTE().ExecuteCommand("Build.Cancel");
+                var cancelBuildTask = Task.Run(() => _packageContext.GetDTE().ExecuteCommand(CancelBuildCommand));
+                cancelBuildTask.Wait(10000);
                 _buildCancelledInternally = true;
             }
             catch (Exception ex)

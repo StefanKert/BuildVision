@@ -102,8 +102,11 @@ namespace BuildVision.Tool.Building
 
             try
             {
+                // We need to create a separate task here because of some weird things that are going on
+                // when calling ExecuteCommand directly. Directly calling it leads to a freeze. No need 
+                // for that!
                 var cancelBuildTask = Task.Run(() => _packageContext.GetDTE().ExecuteCommand(CancelBuildCommand));
-                cancelBuildTask.Wait(10000);
+                cancelBuildTask.Wait(10000); 
                 _buildCancelledInternally = true;
             }
             catch (Exception ex)

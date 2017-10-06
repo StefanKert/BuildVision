@@ -8,6 +8,6 @@ namespace BuildVision
 {
     public class BuildVisionVersion
     {
-        public const string PackageVersion = "2.0.1";
+        public const string PackageVersion = "2.1.0";
     }
 }

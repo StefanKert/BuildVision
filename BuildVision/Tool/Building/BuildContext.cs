@@ -2,22 +2,20 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Microsoft.Build.Framework;
-using Microsoft.VisualStudio;
-using System.Linq;
 using BuildVision.Contracts;
-using BuildVision.UI.Contracts;
 using BuildVision.Core;
-using EnvDTE;
-using BuildVision.UI.ViewModels;
-using BuildVision.UI.Common.Logging;
 using BuildVision.Helpers;
 using BuildVision.Tool.Models;
-
-
+using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Contracts;
+using BuildVision.UI.ViewModels;
+using EnvDTE;
+using Microsoft.Build.Framework;
+using Microsoft.VisualStudio;
+using ErrorItem = BuildVision.Contracts.ErrorItem;
 using ProjectItem = BuildVision.UI.Models.ProjectItem;
 
 namespace BuildVision.Tool.Building
@@ -26,6 +24,7 @@ namespace BuildVision.Tool.Building
     {
         private const int BuildInProcessCountOfQuantumSleep = 5;
         private const int BuildInProcessQuantumSleep = 50;
+        private const string CancelBuildCommand = "Build.Cancel";
 
         private readonly object _buildingProjectsLockObject;
         private readonly object _buildProcessLockObject = new object();
@@ -35,7 +34,7 @@ namespace BuildVision.Tool.Building
         private readonly WindowEvents _windowEvents;
         private readonly CommandEvents _commandEvents;
         private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
-        private BuildOutputLogger _buildLogger;    
+        private BuildOutputLogger _buildLogger;
         private CancellationTokenSource _buildProcessCancellationToken;
         private Window _activeProjectContext;
         private bool _buildCancelledInternally;
@@ -103,7 +102,11 @@ namespace BuildVision.Tool.Building
 
             try
             {
-                _packageContext.GetDTE().ExecuteCommand("Build.Cancel");
+                // We need to create a separate task here because of some weird things that are going on
+                // when calling ExecuteCommand directly. Directly calling it leads to a freeze. No need 
+                // for that!
+                var cancelBuildTask = Task.Run(() => _packageContext.GetDTE().ExecuteCommand(CancelBuildCommand));
+                cancelBuildTask.Wait(10000); 
                 _buildCancelledInternally = true;
             }
             catch (Exception ex)
@@ -378,7 +381,7 @@ namespace BuildVision.Tool.Building
 
         private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)
         {
-            if (id == (int)VSConstants.VSStd97CmdID.CancelBuild 
+            if (id == (int)VSConstants.VSStd97CmdID.CancelBuild
                 && Guid.Parse(guid) == VSConstants.GUID_VSStandardCommandSet97)
             {
                 _buildCancelled = true;
@@ -469,7 +472,8 @@ namespace BuildVision.Tool.Building
             {
                 case BuildActions.BuildActionBuild:
                 case BuildActions.BuildActionRebuildAll:
-                    if (success) { 
+                    if (success)
+                    {
                         if (_viewModel.ControlSettings.GeneralSettings.ShowWarningSignForBuilds && buildedProject.ErrorsBox.WarningsCount > 0)
                             projectState = ProjectState.BuildWarning;
                         else
@@ -537,42 +541,12 @@ namespace BuildVision.Tool.Building
 
             if (scope == vsBuildScope.vsBuildScopeProject)
             {
-                var projContext = _activeProjectContext;
-                switch (projContext.Type)
+                var selectedProjects = _packageContext.GetDTE().ActiveSolutionProjects as object[];
+                if (selectedProjects?.Length == 1)
                 {
-                    case vsWindowType.vsWindowTypeSolutionExplorer:
-                        ////var solutionExplorer = (UIHierarchy)dte.Windows.Item(Constants.vsext_wk_SProjectWindow).Object;
-                        var solutionExplorer = (UIHierarchy)projContext.Object;
-                        var items = (Array)solutionExplorer.SelectedItems;
-                        switch (items.Length)
-                        {
-                            case 0:
-                                TraceManager.TraceError("Unable to get target projects in Solution Explorer (vsBuildScope.vsBuildScopeProject)");
-                                BuildScopeProject = null;
-                                break;
-
-                            case 1:
-                                var item = (UIHierarchyItem)items.GetValue(0);
-
-                                var hierachyProjectItem = new ProjectItem();
-                                ViewModelHelper.UpdateProperties((Project)item.Object, hierachyProjectItem);
-                                BuildScopeProject = hierachyProjectItem;
-                                break;
-
-                            default:
-                                BuildScopeProject = null;
-                                break;
-                        }
-                        break;
-
-                    case vsWindowType.vsWindowTypeDocument:
-                        var projectItem = new ProjectItem();
-                        ViewModelHelper.UpdateProperties(projContext.Project, projectItem);
-                        BuildScopeProject = projectItem;
-                        break;
-
-                    default:
-                        throw new InvalidOperationException("Unsupported type of active project context for vsBuildScope.vsBuildScopeProject.");
+                    var projectItem = new ProjectItem();
+                    ViewModelHelper.UpdateProperties((Project)selectedProjects[0], projectItem);
+                    BuildScopeProject = projectItem;
                 }
             }
 

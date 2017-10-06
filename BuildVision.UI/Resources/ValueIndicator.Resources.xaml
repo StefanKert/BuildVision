@@ -135,4 +135,29 @@
         </Viewbox>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="UpToDateProjectsIndicator">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256" 
+                    Background="Transparent">
+                <Border Canvas.Left="16"
+                        Canvas.Top="16"
+                        Width="224"
+                        Height="224"
+                        BorderBrush="Gray"
+                        BorderThickness="16,58,16,16"
+                        CornerRadius="0"
+                        Background="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowBackgroundKey}}"/>
+                <Polygon Points="10,50 50,10 128,88 206,10 246,50 166,128 246,206 206,246 128,166 50,246 10,206 88,128" 
+                         Fill="#BE1400">
+                    <Polygon.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="0.5" ScaleY="0.5"/>
+                            <TranslateTransform X="68" Y="88"/>
+                        </TransformGroup>
+                    </Polygon.RenderTransform>
+                </Polygon>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
 </ResourceDictionary>

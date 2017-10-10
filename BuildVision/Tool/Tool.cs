@@ -33,6 +33,8 @@ using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models.ToolWindow;
 
+using System.Threading.Tasks;
+
 namespace BuildVision.Tool
 {
     public class Tool
@@ -415,11 +417,8 @@ namespace BuildVision.Tool
                 //_dte.SuppressUI = false;
 
                 var buildingProjects = _buildContext.BuildingProjects;
-                lock (((ICollection)buildingProjects).SyncRoot)
-                {
-                    for (int i = 0; i < buildingProjects.Count; i++)
-                        buildingProjects[i].RaiseBuildElapsedTimeChanged();
-                }
+                for (int i = 0; i < buildingProjects.Count; i++)
+                    buildingProjects[i].RaiseBuildElapsedTimeChanged();
             }
             catch (Exception ex)
             {

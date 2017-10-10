@@ -400,6 +400,10 @@ namespace BuildVision.Helpers
 
                 return string.Join("; ", extenderNames);
             }
+            catch (ArgumentException ex)
+            {
+                return ""; // Leaving this in for now until visual studio team fixes the issue with extendernames
+            }
             catch (Exception ex)
             {
                 ex.TraceUnknownException();

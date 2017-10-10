@@ -60,37 +60,41 @@ namespace BuildVision.UI.Common.Logging
 
         private static void TraceAction(string message, EventLogEntryType type)
         {
-            // ActivityLog works if devenv.exe started with /log switch.
-            // Read more https://msdn.microsoft.com/en-us/library/ms241272.aspx.
-            switch (type)
+            System.Threading.Tasks.Task.Run(() =>
             {
-                case EventLogEntryType.Error:
-                    ActivityLog.LogError(Resources.ProductName, message);
-#if DEBUG
-                    System.Diagnostics.Trace.TraceError(message);
-                    MessageBox.Show(message, Resources.ProductName + " error", MessageBoxButton.OK, MessageBoxImage.Error);
-#endif
-                    break;
 
-                case EventLogEntryType.Warning:
-                case EventLogEntryType.FailureAudit:
-                    ActivityLog.LogWarning(Resources.ProductName, message);
+                // ActivityLog works if devenv.exe started with /log switch.
+                // Read more https://msdn.microsoft.com/en-us/library/ms241272.aspx.
+                switch (type)
+                {
+                    case EventLogEntryType.Error:
+                        ActivityLog.LogError(Resources.ProductName, message);
 #if DEBUG
-                    System.Diagnostics.Trace.TraceWarning(message);
+                        System.Diagnostics.Trace.TraceError(message);
+                        MessageBox.Show(message, Resources.ProductName + " error", MessageBoxButton.OK, MessageBoxImage.Error);
 #endif
-                    break;
+                        break;
 
-                case EventLogEntryType.Information:
-                case EventLogEntryType.SuccessAudit:
-                    ActivityLog.LogInformation(Resources.ProductName, message);
+                    case EventLogEntryType.Warning:
+                    case EventLogEntryType.FailureAudit:
+                        ActivityLog.LogWarning(Resources.ProductName, message);
 #if DEBUG
-                    System.Diagnostics.Trace.TraceInformation(message);
+                        System.Diagnostics.Trace.TraceWarning(message);
 #endif
-                    break;
+                        break;
 
-                default:
-                    throw new ArgumentOutOfRangeException("type");
-            }
+                    case EventLogEntryType.Information:
+                    case EventLogEntryType.SuccessAudit:
+                        ActivityLog.LogInformation(Resources.ProductName, message);
+#if DEBUG
+                        System.Diagnostics.Trace.TraceInformation(message);
+#endif
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException("type");
+                }
+            });
         }
 
         /// <summary>

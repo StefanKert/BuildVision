@@ -63,53 +63,6 @@ namespace BuildVision.UI
             _viewModel = (ControlViewModel)DataContext;
             _viewModel.GridColumnsRef = Grid.Columns;
             _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
-            _viewModel.Model.SolutionItem.Projects.CollectionChanged += ProjectsOnCollectionChanged;
-        }
-
-        private void ProjectsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    foreach (ProjectItem item in e.NewItems)
-                    {
-                        item.PropertyChanged += SolutionItemOnProjectPropertyChanged;
-                    }
-                    break;
-
-                case NotifyCollectionChangedAction.Reset:
-                    var collection = (ICollection<ProjectItem>)sender;
-                    if (collection.Count == 0)
-                        break;
-
-                    // Copy items for thread safety. Collection may be changed in other thread, while foreach works.
-                    var items = new List<ProjectItem>(collection);
-                    foreach (ProjectItem item in items)
-                    {
-                        item.PropertyChanged += SolutionItemOnProjectPropertyChanged;
-                    }
-                    break;
-
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (ProjectItem item in e.OldItems)
-                    {
-                        item.PropertyChanged -= SolutionItemOnProjectPropertyChanged;
-                    }
-                    break;
-            }
-        }
-
-        private void SolutionItemOnProjectPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (Grid.ItemsSource == null)
-                return;
-
-            if (e.PropertyName == _viewModel.GridSortDescription.Property 
-                || e.PropertyName == _viewModel.GridGroupPropertyName)
-            {
-                // Refresh grouping and sorting.
-                ((ListCollectionView)Grid.ItemsSource).Refresh();
-            }
         }
 
         private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)

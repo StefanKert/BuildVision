@@ -409,19 +409,16 @@ namespace BuildVision.Tool
         {
             try
             {
-                Task.Run(() =>
-                {
-                    var labelsSettings = _viewModel.ControlSettings.BuildMessagesSettings;
-                    string msg = _origTextCurrentState + BuildMessages.GetBuildBeginExtraMessage(_buildContext, labelsSettings);
+                var labelsSettings = _viewModel.ControlSettings.BuildMessagesSettings;
+                string msg = _origTextCurrentState + BuildMessages.GetBuildBeginExtraMessage(_buildContext, labelsSettings);
 
-                    _viewModel.TextCurrentState = msg;
-                    OutputInStatusBar(msg, true);
-                    //_dte.SuppressUI = false;
+                _viewModel.TextCurrentState = msg;
+                OutputInStatusBar(msg, true);
+                //_dte.SuppressUI = false;
 
-                    var buildingProjects = _buildContext.BuildingProjects;
-                    for (int i = 0; i < buildingProjects.Count; i++)
-                        buildingProjects[i].RaiseBuildElapsedTimeChanged();
-                });
+                var buildingProjects = _buildContext.BuildingProjects;
+                for (int i = 0; i < buildingProjects.Count; i++)
+                    buildingProjects[i].RaiseBuildElapsedTimeChanged();
             }
             catch (Exception ex)
             {

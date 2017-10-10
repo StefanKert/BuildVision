@@ -21,7 +21,7 @@ using ProjectItem = BuildVision.UI.Models.ProjectItem;
 namespace BuildVision.Tool.Building
 {
     public class BuildContext : IBuildInfo, IBuildDistributor
-    {
+    { 
         private const int BuildInProcessCountOfQuantumSleep = 5;
         private const int BuildInProcessQuantumSleep = 50;
         private const string CancelBuildCommand = "Build.Cancel";
@@ -416,6 +416,12 @@ namespace BuildVision.Tool.Building
                 BuildingProjects.Add(currentProject);
             }
 
+            var projectState = GetProjectState();
+            OnBuildProjectBegin(this, new BuildProjectEventArgs(currentProject, projectState, eventTime, null));
+        }
+
+        private ProjectState GetProjectState()
+        {
             ProjectState projectState;
             switch (BuildAction)
             {
@@ -435,7 +441,7 @@ namespace BuildVision.Tool.Building
                     throw new ArgumentOutOfRangeException();
             }
 
-            OnBuildProjectBegin(this, new BuildProjectEventArgs(currentProject, projectState, eventTime, null));
+            return projectState;
         }
 
         private void BuildEvents_OnBuildProjectDone(string project, string projectconfig, string platform, string solutionconfig, bool success)
@@ -444,20 +450,7 @@ namespace BuildVision.Tool.Building
                 return;
 
             var eventTime = DateTime.Now;
-
-            ProjectItem currentProject;
-            if (BuildScope == BuildScopes.BuildScopeBatch)
-            {
-                currentProject = FindProjectItemInProjectsByUniqueName(project, projectconfig, platform);
-                if (currentProject == null)
-                    throw new InvalidOperationException();
-            }
-            else
-            {
-                currentProject = FindProjectItemInProjectsByUniqueName(project);
-                if (currentProject == null)
-                    throw new InvalidOperationException();
-            }
+            var currentProject = GetCurrentProject(project, projectconfig, platform);
 
             lock (_buildingProjectsLockObject)
             {
@@ -507,6 +500,25 @@ namespace BuildVision.Tool.Building
             }
 
             OnBuildProjectDone(this, new BuildProjectEventArgs(currentProject, projectState, eventTime, buildedProject));
+        }
+
+        private ProjectItem GetCurrentProject(string project, string projectconfig, string platform)
+        {
+            ProjectItem currentProject;
+            if (BuildScope == BuildScopes.BuildScopeBatch)
+            {
+                currentProject = FindProjectItemInProjectsByUniqueName(project, projectconfig, platform);
+                if (currentProject == null)
+                    throw new InvalidOperationException();
+            }
+            else
+            {
+                currentProject = FindProjectItemInProjectsByUniqueName(project);
+                if (currentProject == null)
+                    throw new InvalidOperationException();
+            }
+
+            return currentProject;
         }
 
         private void BuildEvents_OnBuildBegin(vsBuildScope scope, vsBuildAction action)

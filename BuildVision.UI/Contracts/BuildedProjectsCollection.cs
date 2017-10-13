@@ -9,9 +9,13 @@ namespace BuildVision.UI.Contracts
     // TODO: thread-safety.
     public class BuildedProjectsCollection : List<BuildedProject>
     {
-        public int BuildSuccessCount =>  this.Count(p => p.Success == true);
+        public int BuildSuccessCount =>  this.Count(p => p.Success == true && p.ProjectState != ProjectState.BuildWarning && p.ProjectState != ProjectState.UpToDate);
         public int BuildErrorCount => this.Count(p => p.Success == false);
-        public bool BuildWithoutErrors => this.All(p => p.Success == null || p.Success == true); 
+        public int BuildWarningsCount => this.Count(p => p.ProjectState == ProjectState.BuildWarning);
+
+        public int BuildUpToDateCount => this.Count(p => p.ProjectState == ProjectState.UpToDate);
+
+        public bool BuildWithoutErrors => this.All(p => p.Success == null || p.Success == true);
 
         /// <summary>
         /// Get <see cref="BuildedProject"/> by <see cref="ProjectItem.UniqueName"/>. 

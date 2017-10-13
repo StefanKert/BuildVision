@@ -28,6 +28,12 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
+                            Template="{StaticResource BuildUpToDate}" />
+            <ContentControl Width="32"
+                            Height="32"
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
                             Template="{StaticResource BuildError}" />
             <ContentControl Width="32"
                             Height="32"

@@ -8,7 +8,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="ValueIndicator.Resources.xaml" />
+                <ResourceDictionary Source="BuildAction.Resources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -25,21 +25,25 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource ErrorsIndicator}" />
+                            Template="{StaticResource RebuildSolutionButton}" />
+            
+            <Separator Width="10"/>
 
             <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource WarningsIndicator}" />
+                            Template="{StaticResource BuildSolutionButton}" />
+            
+            <Separator Width="10"/>
 
             <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource MessagesIndicator}" />
+                            Template="{StaticResource CancelBuildSolutionButton}" />
 
             <Separator Width="10"/>
             
@@ -48,7 +52,15 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource SuccessProjectsIndicator}" />
+                            Template="{StaticResource CleanSolutionButton}" />
+            <Separator Width="10"/>
+
+            <ContentControl Width="32"
+                            Height="32"
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource StandBy}" />
             <Separator Width="10"/>
 
 
@@ -57,8 +69,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource UpToDateProjectsIndicator}" />
-            
+                            Template="{StaticResource Clean}" />
             <Separator Width="10"/>
 
 
@@ -67,8 +78,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource WarningProjectsIndicator}" />
-
+                            Template="{StaticResource Build}" />
             <Separator Width="10"/>
 
             <ContentControl Width="32"
@@ -76,7 +86,8 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource ErrorProjectsIndicator}" />
+                            Template="{StaticResource Rebuild}" />
+            <Separator Width="10"/>
         </StackPanel>
     </Grid>
 </UserControl>

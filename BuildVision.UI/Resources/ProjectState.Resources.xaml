@@ -18,6 +18,15 @@
         </Viewbox>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="BuildUpToDate">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="256" Height="256">
+                <Polygon Points="10,146 94,228 246,76 206,36 94,150 50,106"
+                         Fill="#FF2A7FFF" />
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
     <ControlTemplate x:Key="BuildDone">
         <Viewbox Stretch="Uniform">
             <Canvas Width="256" Height="256">

@@ -499,6 +499,7 @@ namespace BuildVision.Tool.Building
                     throw new ArgumentOutOfRangeException();
             }
 
+            buildedProject.ProjectState = projectState;
             OnBuildProjectDone(this, new BuildProjectEventArgs(currentProject, projectState, eventTime, buildedProject));
         }
 

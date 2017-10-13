@@ -14,6 +14,8 @@ namespace BuildVision.Contracts
 
         public ErrorsBox ErrorsBox { get; set; }
 
+        public ProjectState ProjectState { get; set; }
+
         public BuildedProject(string uniqueProjectName, string fileName, string configuration, string platform)
         {
             UniqueName = uniqueProjectName;

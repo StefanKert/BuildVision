@@ -24,8 +24,9 @@ namespace BuildVision.UI.Extensions
                 case ProjectState.Building:
                 case ProjectState.Cleaning:
                     return VectorResources.TryGet(resourcesUri, "Building");
-                case ProjectState.BuildDone:
                 case ProjectState.UpToDate:
+                    return VectorResources.TryGet(resourcesUri, "BuildUpToDate");
+                case ProjectState.BuildDone:
                 case ProjectState.CleanDone:
                     return VectorResources.TryGet(resourcesUri, "BuildDone");
                 case ProjectState.BuildError:

@@ -595,4 +595,16 @@ on build done</value>
   <data name="HideUpToDateTargetsMenuItem" xml:space="preserve">
     <value>Hide UpToDate targets</value>
   </data>
+  <data name="WarningProjectsIndicator_Description" xml:space="preserve">
+    <value>Number of projects with warnings</value>
+  </data>
+  <data name="WarningProjectsIndicator_Header" xml:space="preserve">
+    <value>Projects with warnings</value>
+  </data>
+  <data name="UpToDateProjectsIndicator_Description" xml:space="preserve">
+    <value>Number of projects which are up-to-date</value>
+  </data>
+  <data name="UpToDateProjectsIndicator_Header" xml:space="preserve">
+    <value>Up-to-date Projects</value>
+  </data>
 </root>

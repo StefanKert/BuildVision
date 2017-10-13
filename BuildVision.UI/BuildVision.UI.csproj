@@ -205,6 +205,8 @@
     <Compile Include="Models\Indicators\MessagesIndicator.cs" />
     <Compile Include="Models\Indicators\SeparatorIndicator.cs" />
     <Compile Include="Models\Indicators\SuccessProjectsIndicator.cs" />
+    <Compile Include="Models\Indicators\UpToDateProjectsIndicator.cs" />
+    <Compile Include="Models\Indicators\WarningProjectsIndicator.cs" />
     <Compile Include="Models\Indicators\WarningsIndicator.cs" />
     <Compile Include="Models\ProjectItem.cs" />
     <Compile Include="Extensions\ProjectStateExtensions.cs" />
@@ -340,6 +342,11 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
+    <Page Include="Resources\BuildAction.Resources.Test.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
     <Page Include="Resources\BuildState.Resources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -360,6 +367,11 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\ProjectState.Resources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\BuildState.Resources.Test.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

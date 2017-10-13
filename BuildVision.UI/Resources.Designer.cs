@@ -1413,6 +1413,42 @@ namespace BuildVision.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Number of projects which are up-to-date.
+        /// </summary>
+        public static string UpToDateProjectsIndicator_Description {
+            get {
+                return ResourceManager.GetString("UpToDateProjectsIndicator_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Up-to-date Projects.
+        /// </summary>
+        public static string UpToDateProjectsIndicator_Header {
+            get {
+                return ResourceManager.GetString("UpToDateProjectsIndicator_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of projects with warnings.
+        /// </summary>
+        public static string WarningProjectsIndicator_Description {
+            get {
+                return ResourceManager.GetString("WarningProjectsIndicator_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Projects with warnings.
+        /// </summary>
+        public static string WarningProjectsIndicator_Header {
+            get {
+                return ResourceManager.GetString("WarningProjectsIndicator_Header", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number of MSBuild warnings.
         /// </summary>
         public static string WarningsIndicator_Description {

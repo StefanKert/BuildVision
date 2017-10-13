@@ -15,6 +15,8 @@ namespace BuildVision.UI.Models.Indicators.Core
                 new SeparatorIndicator(),
 
                 new SuccessProjectsIndicator(),
+                new UpToDateProjectsIndicator(),
+                new WarningProjectsIndicator(),
                 new ErrorProjectsIndicator()
             };
         }

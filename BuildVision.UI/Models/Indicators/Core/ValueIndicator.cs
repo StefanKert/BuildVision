@@ -23,6 +23,7 @@ namespace BuildVision.UI.Models.Indicators.Core
 
         public int? Value => _value;
         public bool IsEnabled => _isEnabled;
+
         public virtual string StringValue
         {
             get

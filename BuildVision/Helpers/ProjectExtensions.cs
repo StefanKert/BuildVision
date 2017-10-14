@@ -376,7 +376,7 @@ namespace BuildVision.Helpers
                     }
                 }
             }
-            catch(ArgumentException ex)
+            catch(ArgumentException)
             {
                 // We are catching this seperatly because in the current VS2017 Version
                 // there is a bug that makes it impossible for us to retrieve the extenders
@@ -400,7 +400,7 @@ namespace BuildVision.Helpers
 
                 return string.Join("; ", extenderNames);
             }
-            catch (ArgumentException ex)
+            catch (ArgumentException)
             {
                 return ""; // Leaving this in for now until visual studio team fixes the issue with extendernames
             }

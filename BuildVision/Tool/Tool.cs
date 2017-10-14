@@ -32,8 +32,7 @@ using BuildVision.UI.Extensions;
 using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models.ToolWindow;
-
-using System.Threading.Tasks;
+using System.Collections.Specialized;
 
 namespace BuildVision.Tool
 {
@@ -187,7 +186,7 @@ namespace BuildVision.Tool
                     return;
                 }
 
-                ClipboardHelper.SetFileDropList(existFilePaths);
+                CopyFiles(existFilePaths);
 
                 if (existFilePaths.Length == filePaths.Length)
                 {
@@ -214,6 +213,15 @@ namespace BuildVision.Tool
                 ex.TraceUnknownException();
                 MessageBox.Show(ex.Message, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+
+        private void CopyFiles(string[] files)
+        {
+            var fileCollection = new StringCollection();
+            fileCollection.AddRange(files);
+            Clipboard.Clear();
+            Clipboard.SetFileDropList(fileCollection);
         }
 
         private string GetCopyBuildOutputFilesToClipboardActionMessage(string template, string[] filePaths)

@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0" 
              xmlns:contracts="clr-namespace:BuildVision.Contracts;assembly=BuildVision.Contracts" 
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase" 
              xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"

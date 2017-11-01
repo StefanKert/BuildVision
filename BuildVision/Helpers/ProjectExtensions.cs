@@ -568,7 +568,7 @@ namespace BuildVision.Helpers
                 while (true)
                 {
                     parent = TryGetParentProject(parent);
-                    if (parent == null)
+                    if (parent == null || parent == project)
                         break;
 
                     if (path.Length != 0)

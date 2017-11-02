@@ -30,15 +30,12 @@ namespace BuildVision.Tool.Building
         private readonly object _buildProcessLockObject = new object();
 
         private readonly IPackageContext _packageContext;
-        private readonly BuildEvents _buildEvents;
-        private readonly WindowEvents _windowEvents;
-        private readonly CommandEvents _commandEvents;
         private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
         private BuildOutputLogger _buildLogger;
         private CancellationTokenSource _buildProcessCancellationToken;
-        private Window _activeProjectContext;
         private bool _buildCancelledInternally;
-        private ControlViewModel _viewModel;
+        private Window _activeProjectContext;
+        private readonly ControlViewModel _viewModel;
         private bool _buildCancelled;
 
         public bool BuildIsCancelled => _buildCancelled && !_buildCancelledInternally;
@@ -73,18 +70,18 @@ namespace BuildVision.Tool.Building
             _packageContext = packageContext;
 
             Events dteEvents = packageContext.GetDTE().Events;
-            _buildEvents = dteEvents.BuildEvents;
-            _windowEvents = dteEvents.WindowEvents;
-            _commandEvents = dteEvents.CommandEvents;
+            var buildEvents = dteEvents.BuildEvents;
+            var windowEvents = dteEvents.WindowEvents;
+            var commandEvents = dteEvents.CommandEvents;
 
-            _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
-            _buildEvents.OnBuildDone += (s, e) => BuildEvents_OnBuildDone();
-            _buildEvents.OnBuildProjConfigBegin += BuildEvents_OnBuildProjectBegin;
-            _buildEvents.OnBuildProjConfigDone += BuildEvents_OnBuildProjectDone;
+            buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
+            buildEvents.OnBuildDone += (s, e) => BuildEvents_OnBuildDone();
+            buildEvents.OnBuildProjConfigBegin += BuildEvents_OnBuildProjectBegin;
+            buildEvents.OnBuildProjConfigDone += BuildEvents_OnBuildProjectDone;
 
-            _windowEvents.WindowActivated += WindowEvents_WindowActivated;
+            windowEvents.WindowActivated += WindowEvents_WindowActivated;
 
-            _commandEvents.AfterExecute += CommandEvents_AfterExecute;
+            commandEvents.AfterExecute += CommandEvents_AfterExecute;
         }
 
         public void OverrideBuildProperties(BuildActions? buildAction = null, BuildScopes? buildScope = null)
@@ -185,8 +182,7 @@ namespace BuildVision.Tool.Building
             }
             else if (result == RegisterLoggerResult.AlreadyExists)
             {
-                if (_buildLogger.Projects != null)
-                    _buildLogger.Projects.Clear();
+                _buildLogger.Projects?.Clear();
             }
         }
 
@@ -438,7 +434,7 @@ namespace BuildVision.Tool.Building
                     throw new InvalidOperationException("vsBuildActionDeploy not supported");
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(BuildAction));
             }
 
             return projectState;
@@ -496,7 +492,7 @@ namespace BuildVision.Tool.Building
                     throw new InvalidOperationException("vsBuildActionDeploy not supported");
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(BuildAction));
             }
 
             buildedProject.ProjectState = projectState;

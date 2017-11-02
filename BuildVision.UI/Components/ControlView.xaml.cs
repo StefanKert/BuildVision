@@ -61,7 +61,7 @@ namespace BuildVision.UI
             Debug.Assert(DataContext != null);
 
             _viewModel = (ControlViewModel)DataContext;
-            _viewModel.GridColumnsRef = Grid.Columns;
+            _viewModel.SetGridColumnsRef(Grid.Columns);
             _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         }
 

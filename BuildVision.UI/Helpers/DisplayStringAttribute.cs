@@ -29,26 +29,20 @@ namespace BuildVision.UI.Helpers
         /// The default value for the attribute <see cref="DisplayStringAttribute"/>, which is an empty string.
         /// </summary>
         public static readonly DisplayStringAttribute Default = new DisplayStringAttribute();
-
-        private string _displayString;
-
         private string _resourceName;
 
-        /// <summary>
-        /// The value of this attribute.
-        /// </summary>
-        public string DisplayString
-        {
-            get { return _displayString; }
-        }
+		/// <summary>
+		/// The value of this attribute.
+		/// </summary>
+		public string DisplayString { get; private set; }
 
-        public string ResourceName
+		public string ResourceName
         {
             get { return _resourceName; }
             set 
             {
                 _resourceName = value;
-                _displayString = Resources.ResourceManager.GetString(value, Resources.Culture);
+                DisplayString = Resources.ResourceManager.GetString(value, Resources.Culture);
             }
         }
 
@@ -66,7 +60,7 @@ namespace BuildVision.UI.Helpers
         /// <param name="displayString">The value of this attribute.</param>
         public DisplayStringAttribute(string displayString)
         {
-            _displayString = displayString;
+            DisplayString = displayString;
         }
 
         public override bool Equals(object obj)
@@ -75,12 +69,12 @@ namespace BuildVision.UI.Helpers
             if (dsaObj == null)
                 return false;
 
-            return _displayString.Equals(dsaObj._displayString);
+            return DisplayString.Equals(dsaObj.DisplayString);
         }
 
         public override int GetHashCode()
         {
-            return _displayString.GetHashCode();
+            return DisplayString.GetHashCode();
         }
 
         public override bool IsDefaultAttribute()

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace BuildVision.Helpers
 {
-    public static class VSVersion
+    public static class VsVersion
     {
         static readonly object mLock = new object();
         static Version mVsVersion;

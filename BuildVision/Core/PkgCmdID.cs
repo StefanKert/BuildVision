@@ -2,9 +2,9 @@
 // MUST match PkgCmdID.h
 namespace BuildVision.Core
 {
-    static class PkgCmdIDList
+    static class PkgCmdIdList
     {
-        public const uint cmdidBuildVisionCommand = 0x100;
-        public const uint cmdidBuildVisionToolWindow = 0x101;
+        public const uint CmdidBuildVisionCommand = 0x100;
+        public const uint CmdidBuildVisionToolWindow = 0x101;
     };
 }

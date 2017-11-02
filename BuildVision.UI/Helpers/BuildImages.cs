@@ -39,16 +39,18 @@ namespace BuildVision.UI.Helpers
             bool buildedProjectsSuccess = buildInfo.BuildedProjects.BuildWithoutErrors;
 
             string stateKey;
-            if (buildInfo.BuildIsCancelled)
+
+            if (buildedProjectsSuccess)
+            {
+                if (errorProjectsCount == 0)
+                    stateKey = "BuildDone";
+                else
+                    stateKey = "BuildErrorDone";
+            }
+            else if (buildInfo.BuildIsCancelled)
                 stateKey = "BuildCancelled";
-            else if (!buildedProjectsSuccess)
-                stateKey = "BuildError";
-            else if (buildedProjectsSuccess && errorProjectsCount == 0)
-                stateKey = "BuildDone";
-            else if (buildedProjectsSuccess && errorProjectsCount != 0)
-                stateKey = "BuildErrorDone";
             else
-                throw new InvalidOperationException();
+                stateKey = "BuildError";
 
             stateImage = VectorResources.TryGet(BuildStateResourcesUri, stateKey);
 
@@ -73,7 +75,7 @@ namespace BuildVision.UI.Helpers
                     throw new InvalidOperationException();
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(buildAction));
             }
         }
     }

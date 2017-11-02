@@ -63,7 +63,7 @@ namespace BuildVision.Contracts
     // regardless of BuildErrorEventArgs.LineNumber and BuildErrorEventArgs.ColumnNumber.
     public void VerifyValues()
     {
-      if (_invalidFileNames.Contains(File) && LineNumber == 0 & ColumnNumber == 0)
+      if (_invalidFileNames.Contains(File) && LineNumber == 0 && ColumnNumber == 0)
       {
         CanNavigateTo = false;
         return;

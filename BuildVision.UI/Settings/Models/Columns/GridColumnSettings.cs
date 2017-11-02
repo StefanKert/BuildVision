@@ -2,7 +2,7 @@ using BuildVision.Contracts;
 
 namespace BuildVision.UI.Settings.Models.Columns
 {
-    public class GridColumnSettings : BaseGridColumnSettings
+    public class GridColumnSettings : BaseGridColumnSettingsAttribute
     {
         public static GridColumnSettings Empty { get; } = new GridColumnSettings
         {

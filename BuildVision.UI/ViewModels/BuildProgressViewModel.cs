@@ -208,7 +208,7 @@ namespace BuildVision.UI.ViewModels
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(buildProgressSettings.ResetTaskBarProgressAfterBuildDone));
             }
         }
 

@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace BuildVision.Contracts
 {
-  public abstract class BaseGridColumnSettings : Attribute
+  public abstract class BaseGridColumnSettingsAttribute : Attribute
   {
     public string Header { get; set; }
 
@@ -21,7 +21,7 @@ namespace BuildVision.Contracts
 
     public string ValueStringFormat { get; set; }
 
-    protected BaseGridColumnSettings()
+    protected BaseGridColumnSettingsAttribute()
     {
       Width = double.NaN;
       DisplayIndex = -1;

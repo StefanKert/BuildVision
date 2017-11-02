@@ -41,7 +41,7 @@ namespace BuildVision.UI.Helpers
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(labelsSettings.MajorMessageFormat));
             }
 
             return mainString;
@@ -75,7 +75,7 @@ namespace BuildVision.UI.Helpers
                 case BuildActions.BuildActionClean:
                     return Resources.BuildActionClean_BeginAtString;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(buildAction));
             }
         }
 
@@ -92,7 +92,7 @@ namespace BuildVision.UI.Helpers
                 case BuildActions.BuildActionClean:
                     return Resources.BuildActionClean;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(buildAction));
             }
         }
 
@@ -129,7 +129,7 @@ namespace BuildVision.UI.Helpers
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(buildInfo.BuildScope));
             }
 
             return unitName;
@@ -145,38 +145,7 @@ namespace BuildVision.UI.Helpers
             TimeSpan timeSpan = DateTime.Now.Subtract(buildInfo.BuildStartTime.Value);
             if (timeSpan.TotalSeconds > labelsSettings.ExtraMessageDelay)
             {
-                string extraTimePartString;
-                switch (labelsSettings.ExtraMessageFormat)
-                {
-                    case BuildExtraMessageFormat.Custom:
-                        try
-                        {
-                            extraTimePartString = timeSpan.ToString(labelsSettings.TimeSpanFormat);
-                        }
-                        catch (FormatException)
-                        {
-                            extraTimePartString = Resources.InvalidTimeStringFormat;
-                        }
-                        break;
-
-                    case BuildExtraMessageFormat.TotalSeconds:
-                        extraTimePartString = string.Format("{0}", Math.Truncate(timeSpan.TotalSeconds));
-                        break;
-
-                    case BuildExtraMessageFormat.TotalMinutes:
-                        extraTimePartString = string.Format("{0}", Math.Truncate(timeSpan.TotalMinutes));
-                        break;
-
-                    case BuildExtraMessageFormat.TotalMinutesWithSeconds:
-                        extraTimePartString = string.Format("{0:00}:{1:00}", Math.Truncate(timeSpan.TotalMinutes), timeSpan.Seconds);
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-
-                string extraString = string.Format(labelsSettings.ExtraMessageStringFormat, extraTimePartString);
-                return extraString;
+                return GetExtraTimePartString(labelsSettings, timeSpan);
             }
 
             return string.Empty;
@@ -238,7 +207,7 @@ namespace BuildVision.UI.Helpers
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(buildScope));
             }
 
             var actionName = GetActionName(buildInfo);
@@ -256,7 +225,7 @@ namespace BuildVision.UI.Helpers
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(labelsSettings.MajorMessageFormat));
             }
 
             string resultMainString = string.Format(labelsSettings.BuildDoneMajorMessageStringFormat, mainString);
@@ -283,7 +252,7 @@ namespace BuildVision.UI.Helpers
                     throw new InvalidOperationException();
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(buildInfo.BuildAction));
             }
         }
 
@@ -308,7 +277,12 @@ namespace BuildVision.UI.Helpers
                 return string.Empty;
 
             TimeSpan timeSpan = buildInfo.BuildFinishTime.Value.Subtract(buildInfo.BuildStartTime.Value);
+            string extraTimePartString = GetExtraTimePartString(labelsSettings, timeSpan);
+            return string.Format(labelsSettings.ExtraMessageStringFormat, extraTimePartString);
+        }
 
+        private static string GetExtraTimePartString(BuildMessagesSettings labelsSettings, TimeSpan timeSpan)
+        {
             string extraTimePartString;
             switch (labelsSettings.ExtraMessageFormat)
             {
@@ -336,11 +310,10 @@ namespace BuildVision.UI.Helpers
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(labelsSettings.ExtraMessageFormat));
             }
 
-            string extraString = string.Format(labelsSettings.ExtraMessageStringFormat, extraTimePartString);
-            return extraString;
+            return string.Format(labelsSettings.ExtraMessageStringFormat, extraTimePartString);
         }
     }
 }

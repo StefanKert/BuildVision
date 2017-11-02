@@ -59,13 +59,11 @@
     <Compile Include="ErrorItem.cs" />
     <Compile Include="Enums\ErrorLevel.cs" />
     <Compile Include="ErrorsBox.cs" />
-    <Compile Include="FullNameProjectDefinition.cs" />
     <Compile Include="Enums\ProjectState.cs" />
     <Compile Include="ProjectNotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyNotFoundException.cs" />
     <Compile Include="Enums\RegisterLoggerResult.cs" />
-    <Compile Include="UniqueNameProjectDefinition.cs" />
     <Compile Include="VisualStudioProject.cs" />
   </ItemGroup>
   <ItemGroup>

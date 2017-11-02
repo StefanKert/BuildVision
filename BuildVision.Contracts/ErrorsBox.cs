@@ -6,8 +6,6 @@ namespace BuildVision.Contracts
 {
     public class ErrorsBox : IEnumerable<ErrorItem>
     {
-        const bool KeepErrorsOnly = true;
-
         private readonly List<ErrorItem> _errors = new List<ErrorItem>();
 
         private readonly List<ErrorItem> _warnings = new List<ErrorItem>();
@@ -38,7 +36,7 @@ namespace BuildVision.Contracts
                     throw new ArgumentOutOfRangeException("errorLevel");
             }
 
-            if (KeepErrorsOnly && errorItem.Level != ErrorLevel.Error)
+            if (errorItem.Level != ErrorLevel.Error)
                 return;
 
             int errorNumber = _errors.Count + _warnings.Count + _messages.Count + 1;

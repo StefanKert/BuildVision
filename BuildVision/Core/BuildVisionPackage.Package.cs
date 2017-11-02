@@ -73,7 +73,7 @@ namespace BuildVision.Core
             if (mcs != null)
             {
                 // Create the command for the tool window
-                var toolwndCommandId = new CommandID(GuidList.guidBuildVisionCmdSet, (int)PkgCmdIDList.cmdidBuildVisionToolWindow);
+                var toolwndCommandId = new CommandID(GuidList.guidBuildVisionCmdSet, (int)PkgCmdIdList.CmdidBuildVisionToolWindow);
                 var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
                 mcs.AddCommand(menuToolWin);
             }

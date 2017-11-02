@@ -5,32 +5,26 @@ using System;
 namespace BuildVision.UI.Modelss
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class GridColumnAttribute : BaseGridColumnSettings
+    public class GridColumnAttribute : BaseGridColumnSettingsAttribute
     {
-        private object _exampleValue;
-
         public const string EmptyHeaderImageKey = "[empty]";
 
         public string ImageKey { get; set; }
 
         public string ImageDictionaryUri { get; set; }
 
-        public object ExampleValue
-        {
-            get { return _exampleValue; }
-            set { _exampleValue = value; }
-        }
+		public object ExampleValue { get; set; }
 
-        public string TimeSpanExampleValue
+		public string TimeSpanExampleValue
         {
-            get { throw new InvalidOperationException(); }
-            set { _exampleValue = TimeSpan.Parse(value); }
+            get { return ""; }
+            set { ExampleValue = TimeSpan.Parse(value); }
         }
 
         public string DateTimeExampleValue
         {
-            get { throw new InvalidOperationException(); }
-            set { _exampleValue = DateTime.Parse(value); }
+            get { return ""; }
+            set { ExampleValue = DateTime.Parse(value); }
         }
 
         public GridColumnAttribute(

@@ -264,7 +264,7 @@ namespace BuildVision.Helpers
             if (result == 0)
             {
                 var aggregatableProject = hierarchy as IVsAggregatableProject;
-                result = aggregatableProject?.GetAggregateProjectTypeGuids(out projectTypeGuids) ?? -1;
+                aggregatableProject?.GetAggregateProjectTypeGuids(out projectTypeGuids);
             }
 
             return projectTypeGuids;

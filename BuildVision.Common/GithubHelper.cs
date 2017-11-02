@@ -28,7 +28,7 @@ Steps to Reproduce:
         {
             var appVersion = new AppVersionInfo();
             
-            var url = GetUrlForNewBug(string.Format(template, VSVersion.FullVersion, appVersion.BuildVersion, Environment.OSVersion));
+            var url = GetUrlForNewBug(string.Format(template, VsVersion.FullVersion, appVersion.BuildVersion, Environment.OSVersion));
             Process.Start(new ProcessStartInfo(url));
         }
 

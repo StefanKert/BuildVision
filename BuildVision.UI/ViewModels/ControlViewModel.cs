@@ -69,9 +69,9 @@ namespace BuildVision.UI.ViewModels
 
         public ObservableCollection<ValueIndicator> ValueIndicators => Model.ValueIndicators;
 
-        public SolutionItem SolutionItem => Model.SolutionItem; 
+        public SolutionItem SolutionItem => Model.SolutionItem;
 
-        public ObservableCollection<ProjectItem> ProjectsList => Model.SolutionItem.Projects; 
+        public ObservableCollection<ProjectItem> ProjectsList => Model.SolutionItem.Projects;
 
         public string GridGroupPropertyName
         {
@@ -100,7 +100,7 @@ namespace BuildVision.UI.ViewModels
             }
         }
 
-        public CompositeCollection GridColumnsGroupMenuItems =>  CreateContextMenu();
+        public CompositeCollection GridColumnsGroupMenuItems => CreateContextMenu();
 
         private CompositeCollection CreateContextMenu()
         {
@@ -132,14 +132,14 @@ namespace BuildVision.UI.ViewModels
             {
                 menuItem.IsCheckable = false;
                 menuItem.StaysOpenOnClick = false;
-                menuItem.IsChecked = (GridGroupPropertyName == (string)menuItem.Tag);
+                menuItem.IsChecked = (GridGroupPropertyName == (string) menuItem.Tag);
                 menuItem.Command = GridGroupPropertyMenuItemClicked;
                 menuItem.CommandParameter = menuItem.Tag;
             }
 
             return collection;
         }
- 
+
         public SortDescription GridSortDescription
         {
             get => ControlSettings.GridSettings.Sort;
@@ -155,15 +155,12 @@ namespace BuildVision.UI.ViewModels
         }
 
         // Should be initialized by View.
-        public ObservableCollection<DataGridColumn> GridColumnsRef
+        public void SetGridColumnsRef(ObservableCollection<DataGridColumn> gridColumnsRef)
         {
-            set
+            if (_gridColumnsRef != gridColumnsRef)
             {
-                if (_gridColumnsRef != value)
-                {
-                    _gridColumnsRef = value;
-                    GenerateColumns();
-                }
+                _gridColumnsRef = gridColumnsRef;
+                GenerateColumns();
             }
         }
 
@@ -271,7 +268,7 @@ namespace BuildVision.UI.ViewModels
                     newSortDirection = null;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(obj));
             }
 
             e.Handled = true;

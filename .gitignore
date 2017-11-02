@@ -4,8 +4,10 @@ BuildVision/BuildVision.csproj.user
 BuildVision/StyleCop.Cache
 BuildVision/BuildVision.csproj.DotSettings
 .vs/
+.sonarqube/
 packages/
 obj/
 bin/
 /devenv170811.vspx
 /devenv.psess
+/sonarAnalyze.bat

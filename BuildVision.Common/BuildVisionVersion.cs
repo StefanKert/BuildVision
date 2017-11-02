@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BuildVision
 {
-    public class BuildVisionVersion
+    public static class BuildVisionVersion
     {
         public const string PackageVersion = "2.1.0";
     }

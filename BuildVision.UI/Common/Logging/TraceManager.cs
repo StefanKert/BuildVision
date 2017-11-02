@@ -14,11 +14,11 @@ namespace BuildVision.UI.Common.Logging
         static TraceManager()
         {
             string logDirectoryPath = Path.Combine(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), 
-                Resources.ProductName, 
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                Resources.ProductName,
                 "log");
             string logFilePath = Path.Combine(
-                logDirectoryPath, 
+                logDirectoryPath,
                 string.Format("log_{0}.svclog", Guid.NewGuid()));
 
             if (!Directory.Exists(logDirectoryPath))
@@ -40,7 +40,7 @@ namespace BuildVision.UI.Common.Logging
 
         public static void TraceUnknownException(this Exception ex)
         {
-            //Trace(ex, Resources.UnknownExceptionMsg);
+            Trace(ex, Resources.UnknownExceptionMsg);
         }
 
         public static void TraceError(string message)
@@ -92,85 +92,83 @@ namespace BuildVision.UI.Common.Logging
                         break;
 
                     default:
-                        throw new ArgumentOutOfRangeException("type");
+                        throw new ArgumentOutOfRangeException(nameof(type));
                 }
             });
         }
 
-        /// <summary>
-        /// <para>Creates a log-string from the Exception.</para>
-        /// <para>The result includes the stacktrace, innerexception et cetera, separated by <seealso cref="Environment.NewLine"/>.</para>
-        /// </summary>
-        /// <param name="ex">The exception to create the string from.</param>
-        /// <param name="additionalMessage">Additional message to place at the top of the string, maybe be empty or null.</param>
-        /// <returns></returns>
         public static string ToLogString(this Exception ex, string additionalMessage)
         {
             var msg = new StringBuilder();
-
             if (!string.IsNullOrEmpty(additionalMessage))
+                msg.AppendLine(additionalMessage);
+    
+            if (ex == null)
+                return msg.ToString();
+
+            Exception orgEx = ex;
+            msg.AppendLine("Exception:");
+            while (orgEx != null)
             {
-                msg.Append(additionalMessage);
-                msg.Append(Environment.NewLine);
+                msg.AppendLine(orgEx.Message);
+                orgEx = orgEx.InnerException;
             }
 
-            if (ex != null)
-            {
-                Exception orgEx = ex;
-
-                msg.Append("Exception:");
-                msg.Append(Environment.NewLine);
-                while (orgEx != null)
-                {
-                    msg.Append(orgEx.Message);
-                    msg.Append(Environment.NewLine);
-                    orgEx = orgEx.InnerException;
-                }
-
-                if (ex.Data != null && ex.Data.Count > 0)
-                {
-                    msg.AppendLine("Data:");
-                    foreach (System.Collections.DictionaryEntry dataEntry in ex.Data)
-                    {
-                        msg.AppendFormat("Key='{0}';Value='{1}'", dataEntry.Key, dataEntry.Value);
-                        msg.Append(Environment.NewLine);
-                    }
-                }
-
-                if (ex.StackTrace != null)
-                {
-                    msg.Append("StackTrace:");
-                    msg.Append(Environment.NewLine);
-                    msg.Append(ex.StackTrace.ToString());
-                    msg.Append(Environment.NewLine);
-                }
-
-                if (ex.Source != null)
-                {
-                    msg.Append("Source:");
-                    msg.Append(Environment.NewLine);
-                    msg.Append(ex.Source);
-                    msg.Append(Environment.NewLine);
-                }
-
-                if (ex.TargetSite != null)
-                {
-                    msg.Append("TargetSite:");
-                    msg.Append(Environment.NewLine);
-                    msg.Append(ex.TargetSite.ToString());
-                    msg.Append(Environment.NewLine);
-                }
-
-                Exception baseException = ex.GetBaseException();
-                if (baseException != null)
-                {
-                    msg.Append("BaseException:");
-                    msg.Append(Environment.NewLine);
-                    msg.Append(ex.GetBaseException());
-                }
-            }
-
+            AddDataEntries(ex, msg);
+            AddStackTrace(ex, msg);
+            AddSource(ex, msg);
+            AddTargetSite(ex, msg);
+            AddBaseExcception(ex, msg);
             return msg.ToString();
+        }
+
+        private static void AddBaseExcception(Exception ex, StringBuilder msg)
+        {
+            Exception baseException = ex.GetBaseException();
+            if (baseException != null)
+            {
+                msg.AppendLine("BaseException:");
+                msg.Append(ex.GetBaseException());
+            }
+        }
+
+        private static void AddTargetSite(Exception ex, StringBuilder msg)
+        {
+            if (ex.TargetSite != null)
+            {
+                msg.AppendLine("TargetSite:");
+                msg.AppendLine(ex.TargetSite.ToString());
+            }
+        }
+
+        private static void AddSource(Exception ex, StringBuilder msg)
+        {
+            if (ex.Source != null)
+            {
+                msg.AppendLine("Source:");
+                msg.AppendLine(ex.Source.ToString());
+            }
+        }
+
+        private static void AddStackTrace(Exception ex, StringBuilder msg)
+        {
+            if (ex.StackTrace != null)
+            {
+                msg.AppendLine("StackTrace:");
+                msg.AppendLine(ex.StackTrace);
+            }
+        }
+
+        private static void AddDataEntries(Exception ex, StringBuilder msg)
+        {
+            if (ex.Data != null && ex.Data.Count > 0)
+            {
+                msg.AppendLine("Data:");
+                foreach (System.Collections.DictionaryEntry dataEntry in ex.Data)
+                {
+                    msg.AppendLine(string.Format("Key='{0}';Value='{1}'", dataEntry.Key, dataEntry.Value));
+                }
+            }
         }
     }
 }

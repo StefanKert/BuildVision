@@ -422,7 +422,6 @@ namespace BuildVision.Tool
 
                 _viewModel.TextCurrentState = msg;
                 OutputInStatusBar(msg, true);
-                //_dte.SuppressUI = false;
 
                 var buildingProjects = _buildContext.BuildingProjects;
                 for (int i = 0; i < buildingProjects.Count; i++)

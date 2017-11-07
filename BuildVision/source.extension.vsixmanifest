@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Version="2.1.0" Id="837c3c3b-8382-4839-9c9a-807b758a929f"  Language="en-US" Publisher="Stefan Kert" />
+        <Identity Version="2.1.1" Id="837c3c3b-8382-4839-9c9a-807b758a929f"  Language="en-US" Publisher="Stefan Kert" />
         <DisplayName>BuildVision</DisplayName>
         <Description xml:space="preserve">Building process visualization.</Description>
         <MoreInfo>https://marketplace.visualstudio.com/items?itemName=stefankert.BuildVision</MoreInfo>

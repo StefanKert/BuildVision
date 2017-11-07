@@ -102,6 +102,9 @@ namespace BuildVision.Tool.Models
                 projectItem.Name = project.Name;
                 projectItem.FullName = project.FullName;
 
+                if (IsIntegrationServicesProject(project, projectItem))
+                    AdjustUniqueNameForExtensionProjects(project, projectItem);
+
                 try
                 {
                     projectItem.FullPath = string.IsNullOrWhiteSpace(projectItem.FullName) ? null : Path.GetDirectoryName(projectItem.FullName);
@@ -120,6 +123,24 @@ namespace BuildVision.Tool.Models
             {
                 ex.TraceUnknownException();
             }
+        }
+
+        private const string _GUID_SQL_INTEGRATIONG_SERVICES_PROJECT_KIND = "{159641d6-6404-4a2a-ae62-294de0fe8301}";
+
+        private static bool IsIntegrationServicesProject(Project project, ProjectItem projectItem)
+        {
+            if (project.Kind == _GUID_SQL_INTEGRATIONG_SERVICES_PROJECT_KIND)
+                return projectItem.UniqueName == projectItem.FullName;
+            else
+                return false;
+        }
+
+        private static void AdjustUniqueNameForExtensionProjects(Project project, ProjectItem projectItem)
+        {
+            var directory = Path.GetDirectoryName(project.UniqueName);
+            var directoryName = Path.GetFileName(directory);
+            var csprojName = Path.GetFileName(project.UniqueName);
+            projectItem.UniqueName = Path.Combine(directoryName, csprojName);
         }
 
         public static void UpdateSolution(Solution solution, SolutionItem solutionItem)

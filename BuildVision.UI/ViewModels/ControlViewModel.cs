@@ -179,7 +179,8 @@ namespace BuildVision.UI.ViewModels
                 }
 
                 groupedList.CustomSort = GetProjectItemSorter(GridSortDescription);
-
+                groupedList.IsLiveGrouping  = true;
+                groupedList.IsLiveSorting = true;
                 return groupedList;
             }
         }

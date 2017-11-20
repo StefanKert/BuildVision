@@ -77,8 +77,6 @@ namespace BuildVision.Tool.Building
             _windowEvents = dteEvents.WindowEvents;
             _commandEvents = dteEvents.CommandEvents;
 
-            _commandEvents.BeforeExecute += CommandEvents_BeforeExecute;
-
             _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
             _buildEvents.OnBuildDone += (s, e) => BuildEvents_OnBuildDone();
             _buildEvents.OnBuildProjConfigBegin += BuildEvents_OnBuildProjectBegin;

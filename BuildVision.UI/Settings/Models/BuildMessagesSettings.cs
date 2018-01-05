@@ -44,7 +44,7 @@ namespace BuildVision.UI.Settings.Models
                 if (_dateTimeFormat != value)
                 {
                     _dateTimeFormat = value;
-                    OnPropertyChanged("DateTimeFormat");
+                    OnPropertyChanged(nameof(DateTimeFormat));
 
                     var tmp = DateTime.Now.ToString(value);
                 }
@@ -59,7 +59,7 @@ namespace BuildVision.UI.Settings.Models
                 if (_buildBeginMajorMessageStringFormat != value)
                 {
                     _buildBeginMajorMessageStringFormat = value;
-                    OnPropertyChanged("BuildBeginMajorMessageStringFormat");
+                    OnPropertyChanged(nameof(BuildBeginMajorMessageStringFormat));
 
                     if (!value.Contains("{0}"))
                         throw new FormatException("Format must contain '{0}' argument.");
@@ -77,7 +77,7 @@ namespace BuildVision.UI.Settings.Models
                 if (_buildDoneMajorMessageStringFormat != value)
                 {
                     _buildDoneMajorMessageStringFormat = value;
-                    OnPropertyChanged("BuildDoneMajorMessageStringFormat");
+                    OnPropertyChanged(nameof(BuildDoneMajorMessageStringFormat));
 
                     if (!value.Contains("{0}"))
                         throw new FormatException("Format must contain '{0}' argument.");
@@ -113,7 +113,7 @@ namespace BuildVision.UI.Settings.Models
                 if (_timeSpanFormat != value)
                 {
                     _timeSpanFormat = value;
-                    OnPropertyChanged("TimeSpanFormat");
+                    OnPropertyChanged(nameof(TimeSpanFormat));
 
                     var tmp = TimeSpan.MaxValue.ToString(value);
                 }
@@ -128,7 +128,7 @@ namespace BuildVision.UI.Settings.Models
                 if (_extraMessageStringFormat != value)
                 {
                     _extraMessageStringFormat = value;
-                    OnPropertyChanged("ExtraMessageStringFormat");
+                    OnPropertyChanged(nameof(ExtraMessageStringFormat));
 
                     if (!value.Contains("{0}"))
                         throw new FormatException("Format must contain '{0}' argument.");

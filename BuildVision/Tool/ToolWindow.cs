@@ -62,7 +62,7 @@ namespace BuildVision.Tool
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on 
             // the object returned by the Content property.
-            Content = CreateBuildVisionControl();
+            Content = CreateControlView();
             _controlCreatedSuccessfully = true;
 
             base.Initialize();
@@ -76,7 +76,7 @@ namespace BuildVision.Tool
             base.OnClose();
         }
 
-        private ControlView CreateBuildVisionControl()
+        private ControlView CreateControlView()
         {
             var packageContext = (IPackageContext)Package;
             var viewModel = new ControlViewModel(new ControlModel(), packageContext.ControlSettings);
@@ -103,8 +103,8 @@ namespace BuildVision.Tool
 
         public static ControlViewModel GetViewModel(ToolWindowPane toolWindow)
         {
-            var myControlView = (ControlView)toolWindow.Content;
-            return (ControlViewModel)myControlView.DataContext;
+            var controlView = (ControlView)toolWindow.Content;
+            return (ControlViewModel)controlView.DataContext;
         }
     }
 }

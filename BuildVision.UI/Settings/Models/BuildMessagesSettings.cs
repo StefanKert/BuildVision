@@ -24,6 +24,12 @@ namespace BuildVision.UI.Settings.Models
             set => SetProperty(ref _majorMessageFormat, value);
         }
 
+        public BuildExtraMessageFormat ExtraMessageFormat
+        {
+            get => _extraMessageFormat;
+            set => SetProperty(ref _extraMessageFormat, value);
+        }
+
         public bool ShowSolutionName
         {
             get => _showSolutionName;
@@ -36,19 +42,16 @@ namespace BuildVision.UI.Settings.Models
             set => SetProperty(ref _showProjectName, value);
         }
 
-        public string DateTimeFormat
+        public bool ShowExtraMessage
         {
-            get => _dateTimeFormat;
-            set
-            {
-                if (_dateTimeFormat != value)
-                {
-                    _dateTimeFormat = value;
-                    OnPropertyChanged(nameof(DateTimeFormat));
+            get => _showExtraMessage;
+            set => SetProperty(ref _showExtraMessage, value);
+        }
 
-                    var tmp = DateTime.Now.ToString(value);
-                }
-            }
+        public int ExtraMessageDelay
+        {
+            get => _extraMessageDelay;
+            set => SetProperty(ref _extraMessageDelay, value);
         }
 
         public string BuildBeginMajorMessageStringFormat
@@ -87,22 +90,19 @@ namespace BuildVision.UI.Settings.Models
             }
         }
 
-        public bool ShowExtraMessage
+        public string DateTimeFormat
         {
-            get => _showExtraMessage;
-            set => SetProperty(ref _showExtraMessage, value);
-        }
+            get => _dateTimeFormat;
+            set
+            {
+                if (_dateTimeFormat != value)
+                {
+                    _dateTimeFormat = value;
+                    OnPropertyChanged(nameof(DateTimeFormat));
 
-        public int ExtraMessageDelay
-        {
-            get => _extraMessageDelay;
-            set => SetProperty(ref _extraMessageDelay, value);
-        }
-
-        public BuildExtraMessageFormat ExtraMessageFormat
-        {
-            get => _extraMessageFormat;
-            set => SetProperty(ref _extraMessageFormat, value);
+                    var tmp = DateTime.Now.ToString(value);
+                }
+            }
         }
 
         public string TimeSpanFormat

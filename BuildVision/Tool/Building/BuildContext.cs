@@ -37,6 +37,9 @@ namespace BuildVision.Tool.Building
         private Window _activeProjectContext;
         private readonly ControlViewModel _viewModel;
         private bool _buildCancelled;
+        private readonly BuildEvents _buildEvents;
+        private readonly WindowEvents _windowEvents;
+        private readonly CommandEvents _commandEvents;
 
         public bool BuildIsCancelled => _buildCancelled && !_buildCancelledInternally;
 
@@ -69,19 +72,19 @@ namespace BuildVision.Tool.Building
 
             _packageContext = packageContext;
 
-            Events dteEvents = packageContext.GetDTE().Events;
-            var buildEvents = dteEvents.BuildEvents;
-            var windowEvents = dteEvents.WindowEvents;
-            var commandEvents = dteEvents.CommandEvents;
+            var dteEvents = packageContext.GetDTE().Events;
+            _buildEvents = dteEvents.BuildEvents;
+            _windowEvents = dteEvents.WindowEvents;
+            _commandEvents = dteEvents.CommandEvents;
 
-            buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
-            buildEvents.OnBuildDone += (s, e) => BuildEvents_OnBuildDone();
-            buildEvents.OnBuildProjConfigBegin += BuildEvents_OnBuildProjectBegin;
-            buildEvents.OnBuildProjConfigDone += BuildEvents_OnBuildProjectDone;
+            _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
+            _buildEvents.OnBuildDone += (s, e) => BuildEvents_OnBuildDone();
+            _buildEvents.OnBuildProjConfigBegin += BuildEvents_OnBuildProjectBegin;
+            _buildEvents.OnBuildProjConfigDone += BuildEvents_OnBuildProjectDone;
 
-            windowEvents.WindowActivated += WindowEvents_WindowActivated;
+            _windowEvents.WindowActivated += WindowEvents_WindowActivated;
 
-            commandEvents.AfterExecute += CommandEvents_AfterExecute;
+            _commandEvents.AfterExecute += CommandEvents_AfterExecute;
         }
 
         public void OverrideBuildProperties(BuildActions? buildAction = null, BuildScopes? buildScope = null)

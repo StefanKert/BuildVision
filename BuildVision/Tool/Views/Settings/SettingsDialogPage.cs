@@ -55,7 +55,8 @@ namespace BuildVision.Views.Settings
         protected override void OnClosed(EventArgs e)
         {
             _editSettings = null;
-            _ctrl.DataContext = null;
+            if(_ctrl != null)
+                _ctrl.DataContext = null;
 
             if (_notifySettingsChangedOnce)
             {

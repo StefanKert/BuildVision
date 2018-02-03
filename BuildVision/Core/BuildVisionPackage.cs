@@ -12,6 +12,7 @@ using BuildVision.UI.Settings.Models;
 using BuildVision.UI.ViewModels;
 using BuildVision.Tool;
 using BuildVision.UI.Common.Logging;
+using System.Windows;
 
 namespace BuildVision.Core
 {
@@ -69,12 +70,20 @@ namespace BuildVision.Core
 
         private static ControlSettings LoadSettings(IServiceProvider serviceProvider)
         {
-            var store = GetWritableSettingsStore(serviceProvider);
-            if (store.PropertyExists(SettingsCategoryName, SettingsPropertyName))
+            try
             {
-                var legacySerialized = new LegacyConfigurationSerializer<ControlSettings>();
-                string value = store.GetString(SettingsCategoryName, SettingsPropertyName);
-                return legacySerialized.Deserialize(value);
+                var store = GetWritableSettingsStore(serviceProvider);
+                if (store.PropertyExists(SettingsCategoryName, SettingsPropertyName))
+                {
+                    var legacySerialized = new LegacyConfigurationSerializer<ControlSettings>();
+                    string value = store.GetString(SettingsCategoryName, SettingsPropertyName);
+                    return legacySerialized.Deserialize(value);
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.Trace("Error when trying to load settings: " + ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                MessageBox.Show("An error occurred when trying to load current settings. To make sure everything is still working the settings are set to default.");
             }
 
             return new ControlSettings();

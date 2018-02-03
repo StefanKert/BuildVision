@@ -283,7 +283,8 @@ namespace BuildVision.Tool
 
                 if (!_viewModel.ProjectsList.Contains(currentProject))
                     _viewModel.ProjectsList.Add(currentProject);
-
+                else if (_viewModel.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
+                    _viewModel.OnPropertyChanged(nameof(ControlViewModel.GroupedProjectsList));
                 _viewModel.CurrentProject = currentProject;
             }
             catch (Exception ex)

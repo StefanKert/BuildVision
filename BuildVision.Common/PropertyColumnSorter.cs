@@ -23,7 +23,7 @@ namespace BuildVision.Common
 
         int IComparer.Compare(object x, object y)
         {
-            return Compare((T)x, (T)y);
+            return Compare((T) x, (T) y);
         }
 
         protected int Compare(T x, T y)

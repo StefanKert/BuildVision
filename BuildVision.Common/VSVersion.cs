@@ -18,15 +18,15 @@ namespace BuildVision.Helpers
                 {
                     if (mVsVersion == null)
                     {
-                        string path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "msenv.dll");
+                        var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "msenv.dll");
 
                         if (File.Exists(path))
                         {
-                            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(path);
+                            var fvi = FileVersionInfo.GetVersionInfo(path);
 
-                            string verName = fvi.ProductVersion;
+                            var verName = fvi.ProductVersion;
 
-                            for (int i = 0; i < verName.Length; i++)
+                            for (var i = 0; i < verName.Length; i++)
                             {
                                 if (!char.IsDigit(verName, i) && verName[i] != '.')
                                 {
@@ -45,44 +45,20 @@ namespace BuildVision.Helpers
             }
         }
 
-        public static Version OSVersion
-        {
-            get { return mOsVersion ?? (mOsVersion = Environment.OSVersion.Version); }
-        }
+        public static Version OSVersion => mOsVersion ?? (mOsVersion = Environment.OSVersion.Version);
 
-        public static bool VS2012OrLater
-        {
-            get { return FullVersion >= new Version(11, 0); }
-        }
+        public static bool VS2012OrLater => FullVersion >= new Version(11, 0);
 
-        public static bool VS2010OrLater
-        {
-            get { return FullVersion >= new Version(10, 0); }
-        }
+        public static bool VS2010OrLater => FullVersion >= new Version(10, 0);
 
-        public static bool VS2008OrOlder
-        {
-            get { return FullVersion < new Version(9, 0); }
-        }
+        public static bool VS2008OrOlder => FullVersion < new Version(9, 0);
 
-        public static bool VS2005
-        {
-            get { return FullVersion.Major == 8; }
-        }
+        public static bool VS2005 => FullVersion.Major == 8;
 
-        public static bool VS2008
-        {
-            get { return FullVersion.Major == 9; }
-        }
+        public static bool VS2008 => FullVersion.Major == 9;
 
-        public static bool VS2010
-        {
-            get { return FullVersion.Major == 10; }
-        }
+        public static bool VS2010 => FullVersion.Major == 10;
 
-        public static bool VS2012
-        {
-            get { return FullVersion.Major == 11; }
-        }
+        public static bool VS2012 => FullVersion.Major == 11;
     }
 }

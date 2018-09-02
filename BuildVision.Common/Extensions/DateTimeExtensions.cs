@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace BuildVision.Common.Extensions
 {
-  public static class DateTimeExtensions
-  {
-    public static DateTime Truncate(this DateTime dateTime, TimeSpan timeSpan)
+    public static class DateTimeExtensions
     {
-      if (timeSpan == TimeSpan.Zero) return dateTime;
-      return dateTime.AddTicks(-(dateTime.Ticks % timeSpan.Ticks));
+        public static DateTime Truncate(this DateTime dateTime, TimeSpan timeSpan)
+        {
+            if (timeSpan == TimeSpan.Zero)
+                return dateTime;
+            return dateTime.AddTicks(-(dateTime.Ticks % timeSpan.Ticks));
+        }
     }
-  }
 }

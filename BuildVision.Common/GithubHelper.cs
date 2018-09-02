@@ -27,7 +27,7 @@ Steps to Reproduce:
         public static void OpenBrowserWithPrefilledIssue()
         {
             var appVersion = new AppVersionInfo();
-            
+
             var url = GetUrlForNewBug(string.Format(template, VsVersion.FullVersion, appVersion.BuildVersion, Environment.OSVersion));
             Process.Start(new ProcessStartInfo(url));
         }

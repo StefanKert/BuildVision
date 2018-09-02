@@ -4,21 +4,21 @@ using System.Xml.Serialization;
 
 namespace BuildVision.Common
 {
-  public class LegacyConfigurationSerializer<T> : GenericXmlSerializer<T> where T : SettingsBase, new()
-  {
-    public override T Deserialize(string xml)
+    public class LegacyConfigurationSerializer<T> : GenericXmlSerializer<T> where T : SettingsBase, new()
     {
-      using (var ms = new MemoryStream())
-      {
-        byte[] data = System.Text.Encoding.UTF8.GetBytes(xml);
-        ms.Write(data, 0, data.Length);
-        ms.Position = 0;
-        using (var xmlTextReader = new XmlTextReader(ms) {Namespaces = false})
+        public override T Deserialize(string xml)
         {
-          var serializer = new XmlSerializer(typeof(T));
-          return serializer.Deserialize(xmlTextReader) as T;
+            using (var ms = new MemoryStream())
+            {
+                byte[] data = System.Text.Encoding.UTF8.GetBytes(xml);
+                ms.Write(data, 0, data.Length);
+                ms.Position = 0;
+                using (var xmlTextReader = new XmlTextReader(ms) { Namespaces = false })
+                {
+                    var serializer = new XmlSerializer(typeof(T));
+                    return serializer.Deserialize(xmlTextReader) as T;
+                }
+            }
         }
-      }
     }
-  }
 }

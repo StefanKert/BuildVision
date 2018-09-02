@@ -36,7 +36,7 @@ namespace BuildVision.Common
                 throw new ArgumentNullException("execute");
 
             _execute = execute;
-            _canExecute = canExecute;           
+            _canExecute = canExecute;
         }
 
         [DebuggerStepThrough]

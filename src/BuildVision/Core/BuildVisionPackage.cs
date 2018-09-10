@@ -18,9 +18,8 @@ namespace BuildVision.Core
 {
     public partial class BuildVisionPackage : IPackageContext
     {
-        private const string SettingsCategoryName = "BuildVision";
-
-        private const string SettingsPropertyName = "Settings";
+        private const string settingsCategoryName = "BuildVision";
+        private const string settingsPropertyName = "Settings";
 
         public ControlSettings ControlSettings { get; set; }
 
@@ -41,9 +40,9 @@ namespace BuildVision.Core
             try
             {
                 ControlSettings = LoadSettings(this);
-                ToolWindowPane toolWindow = GetToolWindow();
+                var toolWindow = GetToolWindow();
                 IPackageContext packageContext = this;
-                ControlViewModel viewModel = ToolWindow.GetViewModel(toolWindow);
+                var viewModel = ToolWindow.GetViewModel(toolWindow);
                 var buildContext = new BuildContext(packageContext, viewModel);
                 var tool = new Tool.Tool(packageContext, buildContext, buildContext, viewModel);
             }
@@ -73,10 +72,10 @@ namespace BuildVision.Core
             try
             {
                 var store = GetWritableSettingsStore(serviceProvider);
-                if (store.PropertyExists(SettingsCategoryName, SettingsPropertyName))
+                if (store.PropertyExists(settingsCategoryName, settingsPropertyName))
                 {
                     var legacySerialized = new LegacyConfigurationSerializer<ControlSettings>();
-                    string value = store.GetString(SettingsCategoryName, SettingsPropertyName);
+                    var value = store.GetString(settingsCategoryName, settingsPropertyName);
                     return legacySerialized.Deserialize(value);
                 }
             }
@@ -94,19 +93,19 @@ namespace BuildVision.Core
         /// </remarks>
         private static void SaveSettings(ControlSettings settings, IServiceProvider serviceProvider)
         {
-            WritableSettingsStore store = GetWritableSettingsStore(serviceProvider);
-            if (!store.CollectionExists(SettingsCategoryName))
-                store.CreateCollection(SettingsCategoryName);
+            var store = GetWritableSettingsStore(serviceProvider);
+            if (!store.CollectionExists(settingsCategoryName))
+                store.CreateCollection(settingsCategoryName);
 
             var legacySerializer = new LegacyConfigurationSerializer<ControlSettings>();
-            string value = legacySerializer.Serialize(settings);
-            store.SetString(SettingsCategoryName, SettingsPropertyName, value);
+            var value = legacySerializer.Serialize(settings);
+            store.SetString(settingsCategoryName, settingsPropertyName, value);
         }
 
         private static WritableSettingsStore GetWritableSettingsStore(IServiceProvider serviceProvider)
         {
             var shellSettingsManager = new ShellSettingsManager(serviceProvider);
-            WritableSettingsStore writableSettingsStore = shellSettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
+            var writableSettingsStore = shellSettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
             return writableSettingsStore;
         }
 

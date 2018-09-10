@@ -13,16 +13,6 @@ using BuildVision.UI.Common.Logging;
 
 namespace BuildVision.Core
 {
-    /// <summary>
-    /// This is the class that implements the package exposed by this assembly.
-    /// <para/>
-    /// The minimum requirement for a class to be considered a valid package for Visual Studio
-    /// is to implement the IVsPackage interface and register itself with the shell.
-    /// This package uses the helper classes defined inside the Managed Package Framework (MPF)
-    /// to do it: it derives from the Package class that provides the implementation of the 
-    /// IVsPackage interface and uses the registration attributes defined in the framework to 
-    /// register itself and its components with the shell.
-    /// </summary>
     // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
     // a package.
     [PackageRegistration(UseManagedResourcesOnly = true)]
@@ -40,11 +30,11 @@ namespace BuildVision.Core
     // TODO: Add ProvideProfileAttribute for each DialogPage and implement IVsUserSettings, IVsUserSettingsQuery.
     //// [ProvideProfile(typeof(GeneralSettingsDialogPage), SettingsCategoryName, "General Options", 0, 0, true)]
     // TODO: ProvideOptionPage keywords.
-    [ProvideOptionPage(typeof(GeneralSettingsDialogPage), SettingsCategoryName, "General", 0, 0, true)]
-    [ProvideOptionPage(typeof(WindowSettingsDialogPage), SettingsCategoryName, "Tool Window", 0, 0, true)]
-    [ProvideOptionPage(typeof(GridSettingsDialogPage), SettingsCategoryName, "Projects Grid", 0, 0, true)]
-    [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), SettingsCategoryName, "Build Messages", 0, 0, true)]
-    [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), SettingsCategoryName, "Project Item", 0, 0, true)]
+    [ProvideOptionPage(typeof(GeneralSettingsDialogPage), settingsCategoryName, "General", 0, 0, true)]
+    [ProvideOptionPage(typeof(WindowSettingsDialogPage), settingsCategoryName, "Tool Window", 0, 0, true)]
+    [ProvideOptionPage(typeof(GridSettingsDialogPage), settingsCategoryName, "Projects Grid", 0, 0, true)]
+    [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), settingsCategoryName, "Build Messages", 0, 0, true)]
+    [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), settingsCategoryName, "Project Item", 0, 0, true)]
     public sealed partial class BuildVisionPackage : Package
     {
         /// <summary>
@@ -69,11 +59,10 @@ namespace BuildVision.Core
             base.Initialize();
 
             // Add our command handlers for menu (commands must exist in the .vsct file)
-            var mcs = GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-            if (mcs != null)
+            if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
             {
                 // Create the command for the tool window
-                var toolwndCommandId = new CommandID(GuidList.guidBuildVisionCmdSet, (int)PkgCmdIdList.CmdidBuildVisionToolWindow);
+                var toolwndCommandId = new CommandID(GuidList.guidBuildVisionCmdSet, (int) PkgCmdIdList.CmdidBuildVisionToolWindow);
                 var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
                 mcs.AddCommand(menuToolWin);
             }
@@ -93,7 +82,7 @@ namespace BuildVision.Core
                 // Get the instance number 0 of this tool window. This window is single instance so this instance
                 // is actually the only one.
                 // The last flag is set to true so that if the tool window does not exists it will be created.
-                ToolWindowPane window = FindToolWindow(typeof(ToolWindow), 0, true);
+                var window = FindToolWindow(typeof(ToolWindow), 0, true);
                 if (window == null || window.Frame == null)
                     throw new InvalidOperationException(Resources.CanNotCreateWindow);
 

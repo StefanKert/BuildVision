@@ -94,7 +94,7 @@ namespace BuildVision.Tool
 
         private void SaveControlSettings()
         {
-            ControlViewModel viewModel = GetViewModel(this);
+            var viewModel = GetViewModel(this);
             viewModel.SyncColumnSettings();
 
             var packageContext = (IPackageContext)Package;

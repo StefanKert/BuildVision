@@ -27,14 +27,11 @@ namespace BuildVision.Tool
     /// This class derives from the <see cref="ToolWindowPane"/> class provided from the MPF 
     /// in order to use its implementation of the <c>IVsUIElementPane</c> interface.
     /// </summary>
-    [Guid("e1d4b2b5-934e-4b0e-96cc-1c0449764501")]
+    [Guid(PackageGuids.GuidBuildVisionToolWindowString)]
     public sealed class ToolWindow : ToolWindowPane
     {
         private bool _controlCreatedSuccessfully;
-        
-        /// <summary>
-        /// Standard constructor for the tool window.
-        /// </summary>
+
         public ToolWindow()
             :base(null)
         {

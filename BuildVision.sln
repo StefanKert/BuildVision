@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1DE272AA-D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.IntegrationTests", "test\BuildVision.IntegrationTests\BuildVision.IntegrationTests.csproj", "{FBB4F3ED-B1B8-4401-8667-5180194BAA54}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.UnitTests", "test\BuildVision.UnitTests\BuildVision.UnitTests.csproj", "{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +69,7 @@ Global
 		{13D64A57-5DB3-4CC7-AC2B-9034E767D754} = {AE904AFF-1B2B-4D8F-9826-57BC13DC4AC5}
 		{84E8BA65-9A4B-4C50-A115-6EF3208E4058} = {AE904AFF-1B2B-4D8F-9826-57BC13DC4AC5}
 		{FBB4F3ED-B1B8-4401-8667-5180194BAA54} = {1DE272AA-D641-45F2-AEB9-934B3BAA6FBD}
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F} = {1DE272AA-D641-45F2-AEB9-934B3BAA6FBD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1485240E-4A28-4FA4-8D69-3D8151C3E1F6}

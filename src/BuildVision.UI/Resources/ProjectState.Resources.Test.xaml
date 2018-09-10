@@ -11,11 +11,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="0" Background="Black">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.RowSpan="2" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+        <StackPanel Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
 
             <ContentControl Width="32"
                             Height="32"

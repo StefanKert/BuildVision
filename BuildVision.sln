@@ -3,14 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision", "BuildVision\BuildVision.csproj", "{9925A635-1827-4BB4-9C31-FE0FC87A6265}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.Common", "BuildVision.Common\BuildVision.Common.csproj", "{848412D1-95BF-4E56-A9EF-2926AF5C6D67}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.Contracts", "BuildVision.Contracts\BuildVision.Contracts.csproj", "{13D64A57-5DB3-4CC7-AC2B-9034E767D754}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.UI", "BuildVision.UI\BuildVision.UI.csproj", "{84E8BA65-9A4B-4C50-A115-6EF3208E4058}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{A8C25F90-8847-4EBE-A66B-02E5D1B42EC0}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -20,6 +12,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{A8C25F90-8
 		LICENSE.txt = LICENSE.txt
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AE904AFF-1B2B-4D8F-9826-57BC13DC4AC5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision", "src\BuildVision\BuildVision.csproj", "{9925A635-1827-4BB4-9C31-FE0FC87A6265}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.Common", "src\BuildVision.Common\BuildVision.Common.csproj", "{848412D1-95BF-4E56-A9EF-2926AF5C6D67}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.Contracts", "src\BuildVision.Contracts\BuildVision.Contracts.csproj", "{13D64A57-5DB3-4CC7-AC2B-9034E767D754}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.UI", "src\BuildVision.UI\BuildVision.UI.csproj", "{84E8BA65-9A4B-4C50-A115-6EF3208E4058}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1DE272AA-D641-45F2-AEB9-934B3BAA6FBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.IntegrationTests", "test\BuildVision.IntegrationTests\BuildVision.IntegrationTests.csproj", "{FBB4F3ED-B1B8-4401-8667-5180194BAA54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.UnitTests", "test\BuildVision.UnitTests\BuildVision.UnitTests.csproj", "{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,9 +51,25 @@ Global
 		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9925A635-1827-4BB4-9C31-FE0FC87A6265} = {AE904AFF-1B2B-4D8F-9826-57BC13DC4AC5}
+		{848412D1-95BF-4E56-A9EF-2926AF5C6D67} = {AE904AFF-1B2B-4D8F-9826-57BC13DC4AC5}
+		{13D64A57-5DB3-4CC7-AC2B-9034E767D754} = {AE904AFF-1B2B-4D8F-9826-57BC13DC4AC5}
+		{84E8BA65-9A4B-4C50-A115-6EF3208E4058} = {AE904AFF-1B2B-4D8F-9826-57BC13DC4AC5}
+		{FBB4F3ED-B1B8-4401-8667-5180194BAA54} = {1DE272AA-D641-45F2-AEB9-934B3BAA6FBD}
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F} = {1DE272AA-D641-45F2-AEB9-934B3BAA6FBD}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1485240E-4A28-4FA4-8D69-3D8151C3E1F6}

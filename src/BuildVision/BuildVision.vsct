@@ -23,12 +23,9 @@
   <!--Definition of some VSCT specific constants. In this sample we use it for the IDs inside the guidOfficeIcon group. -->
   <!--<Extern href="msobtnid.h" xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" />-->
 
-
-
-
   <!--The Commands section is where we the commands, menus and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidBuildVisionPkg">
+  <Commands package="GuidBuildVisionPackage">
     <!-- Inside this section we have different sub-sections: one for the menus, another  
     for the menu groups, one for the buttons (the actual commands), one for the combos 
     and the last one for the bitmaps used. Each element is identified by a command id that  
@@ -43,13 +40,9 @@
          group as the part of a menu contained between two lines. The parent of a group 
          must be a menu. -->
     <Groups>
-
-      <Group guid="guidBuildVisionCmdSet" id="MyMenuGroup" priority="0x0600">
+      <Group guid="GuidBuildVisionCmdSet" id="BuildVisionMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
       </Group>
-      
-
-
     </Groups>
     
     <!--Buttons section. -->
@@ -74,11 +67,11 @@
       </Button>-->
 
 
-      <Button guid="guidBuildVisionCmdSet" id="cmdidBuildVisionToolWindow" priority="0x0100" type="Button">
+      <Button guid="GuidBuildVisionCmdSet" id="CmdIdBuildVisionToolWindow" priority="0x0100" type="Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWS1" />
-        <Icon guid="guidImages" id="bmpPic2" />
+        <Icon guid="GuidImages" id="bmpPic2" />
         <Strings>
-          <CommandName>cmdidBuildVisionToolWindow</CommandName>
+          <CommandName>CmdIdBuildVisionToolWindow</CommandName>
           <ButtonText>BuildVision</ButtonText>
         </Strings>
       </Button>
@@ -93,31 +86,21 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used 
             inside a button definition. An important aspect of this declaration is that the element id 
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\Images_32bit.bmp" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows" />
-
+      <Bitmap guid="GuidImages" href="Resources\Images_32bit.bmp" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows" />
     </Bitmaps>
- 
   </Commands>
-
-
-
-
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidBuildVisionPkg" value="{837c3c3b-8382-4839-9c9a-807b758a929f}" />
+    <GuidSymbol name="GuidBuildVisionPackage" value="{837c3c3b-8382-4839-9c9a-807b758a929f}" />
     
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidBuildVisionCmdSet" value="{caca30de-6571-483c-b8a1-b6a067964af1}">
-
-      <IDSymbol name="MyMenuGroup" value="0x1020" />
-      <!--<IDSymbol name="cmdidBuildVisionCommand" value="0x0100" />-->
-      <IDSymbol name="cmdidBuildVisionToolWindow" value="0x0101" />
+    <GuidSymbol name="GuidBuildVisionCmdSet" value="{caca30de-6571-483c-b8a1-b6a067964af1}">
+      <IDSymbol name="BuildVisionMenuGroup" value="0x1020" />
+      <IDSymbol name="CmdIdBuildVisionToolWindow" value="0x0101" />
     </GuidSymbol>
     
-    
-    
-    <GuidSymbol name="guidImages" value="{97c2c155-f31f-471d-84aa-517257e3f132}">
+    <GuidSymbol name="GuidImages" value="{97c2c155-f31f-471d-84aa-517257e3f132}">
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPicSearch" value="3" />
@@ -125,5 +108,4 @@
       <IDSymbol name="bmpPicArrows" value="5" />
     </GuidSymbol>
   </Symbols>
-
 </CommandTable>

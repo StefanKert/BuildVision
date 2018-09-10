@@ -23,7 +23,7 @@ namespace BuildVision.Core
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(ToolWindow))]
-    [Guid(GuidList.guidBuildVisionPkgString)]
+    [Guid(PackageGuids.GuidBuildVisionPackageString)]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideBindingPath]
     [ProvideBindingPath(SubPath = "Lib")]
@@ -62,7 +62,7 @@ namespace BuildVision.Core
             if (GetService(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
             {
                 // Create the command for the tool window
-                var toolwndCommandId = new CommandID(GuidList.guidBuildVisionCmdSet, (int) PkgCmdIdList.CmdidBuildVisionToolWindow);
+                var toolwndCommandId = new CommandID(PackageGuids.GuidBuildVisionCmdSet, (int) PackageIds.CmdIdBuildVisionToolWindow);
                 var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
                 mcs.AddCommand(menuToolWin);
             }

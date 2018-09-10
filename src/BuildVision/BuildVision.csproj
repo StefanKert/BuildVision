@@ -203,10 +203,10 @@
     </Compile>
     <Compile Include="Tool\Tool.cs" />
     <Compile Include="Tool\ToolWindow.cs" />
-    <Compile Include="Core\Guids.cs" />
+    <Compile Include="Core\PackageGuids.cs" />
     <Compile Include="Core\BuildVisionPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\PkgCmdID.cs" />
+    <Compile Include="Core\PackageIds.cs" />
     <Compile Include="Helpers\ToolWindowManager.cs" />
     <Compile Include="Helpers\ViewModelHelper.cs" />
   </ItemGroup>
@@ -229,6 +229,7 @@
   <ItemGroup>
     <VSCTCompile Include="BuildVision.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>

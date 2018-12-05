@@ -1,5 +1,5 @@
-﻿$packageFile = "BuildVision.Common\BuildVisionVersion.cs"
-$manifestFile = "BuildVision\source.extension.vsixmanifest"
+﻿$packageFile = "src\BuildVision.Common\BuildVisionVersion.cs"
+$manifestFile = "src\BuildVision\source.extension.vsixmanifest"
 $appveyorFile = "appveyor.yml"
 
 If ($env:APPVEYOR)

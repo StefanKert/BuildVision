@@ -15,6 +15,7 @@ namespace BuildVision.IntegrationTests
         private static IVsShell ShellService => VsIdeTestHostContext.ServiceProvider.GetService(typeof(SVsShell)) as IVsShell;
         private static IVsUIShell UiShellService => VsIdeTestHostContext.ServiceProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
 
+        [Ignore]
         [TestMethod]
         [HostType("VS IDE")]
         public void PackageLoad_Should_Succeed()
@@ -27,6 +28,7 @@ namespace BuildVision.IntegrationTests
             }));
         }
 
+        [Ignore]
         [TestMethod]
         [HostType("VS IDE")]
         public void ClickOnBuildVisionMenuItem_Should_ShowBuildVision()

@@ -1,11 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28315.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{A8C25F90-8847-4EBE-A66B-02E5D1B42EC0}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitignore = .gitignore
 		appveyor.yml = appveyor.yml
 		bump-version.ps1 = bump-version.ps1
 		CONTRIBUTING.md = CONTRIBUTING.md
@@ -27,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1DE272AA-D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.IntegrationTests", "test\BuildVision.IntegrationTests\BuildVision.IntegrationTests.csproj", "{FBB4F3ED-B1B8-4401-8667-5180194BAA54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.UnitTests", "test\BuildVision.UnitTests\BuildVision.UnitTests.csproj", "{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildVision.UnitTests", "test\BuildVision.UnitTests\BuildVision.UnitTests.csproj", "{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

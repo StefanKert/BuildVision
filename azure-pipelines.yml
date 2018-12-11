@@ -32,7 +32,7 @@ steps:
 
 - task: NuGetCommand@2
   inputs:
-    restoreSolution: '$(Solution)'
+    solution: '$(Solution)'
 
 - task: MSBuild@1
   displayName: Build BuildVision.sln
@@ -43,12 +43,12 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    contents: **\bin\$(BuildConfiguration)\*.vsix
-    targetFolder: $(Build.ArtifactStagingDirectory)\artifacts
+    contents: '**/bin/$(BuildConfiguration)/*.vsix'
+    targetFolder: $(Build.ArtifactStagingDirectory)/artifacts
     flattenFolders: true
 
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: $(Build.ArtifactStagingDirectory)\artifacts
+    PathtoPublish: $(Build.ArtifactStagingDirectory)/artifacts
     ArtifactName: artifacts
     publishLocation: Container

@@ -47,6 +47,13 @@ steps:
     targetFolder: $(Build.ArtifactStagingDirectory)/artifacts
     flattenFolders: true
 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: test
+    projects: 'test/**/*.csproj'
+    arguments: -c $(BuildConfiguration) --no-build --no-restore
+  displayName: Run Tests
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: $(Build.ArtifactStagingDirectory)/artifacts

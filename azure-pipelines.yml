@@ -1,0 +1,54 @@
+trigger:
+  branches:
+    include:
+      - master
+      - develop
+
+pr:
+  branches:
+    include:
+    - master
+    - develop
+
+pool:
+  vmImage: 'VS2017-Win2016'
+
+variables:
+  BuildPlatform: 'Any CPU'
+  BuildConfiguration: 'Release'
+
+steps:
+- task: DotNetCoreCLI@2  
+  inputs:
+    command: custom
+    custom: tool
+    arguments: install --tool-path . nbgv
+  displayName: Install NBGV tool
+
+- script: nbgv cloud -a
+  displayName: Set Version
+
+- task: NuGetToolInstaller@0
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(Solution)'
+
+- task: MSBuild@1
+  displayName: Build BuildVision.sln
+  inputs:
+    solution: BuildVision.sln
+    platform: $(BuildPlatform)
+    configuration: $(BuildConfiguration)
+
+- task: CopyFiles@2
+  inputs:
+    contents: **\bin\$(BuildConfiguration)\*.vsix
+    targetFolder: $(Build.ArtifactStagingDirectory)\artifacts
+    flattenFolders: true
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: $(Build.ArtifactStagingDirectory)\artifacts
+    ArtifactName: artifacts
+    publishLocation: Container

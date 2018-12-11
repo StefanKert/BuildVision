@@ -18,7 +18,7 @@ namespace BuildVision.Core
     [PackageRegistration(UseManagedResourcesOnly = true)]
     // This attribute is used to register the informations needed to show the this package
     // in the Help/About dialog of Visual Studio. Resources are defined in VSPackage.resx.
-    [InstalledProductRegistration("#110", "#112", BuildVisionVersion.PackageVersion, IconResourceID = 400)]
+    //[InstalledProductRegistration("#110", "#112", BuildVisionVersion.PackageVersion, IconResourceID = 400)]
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
@@ -46,7 +46,7 @@ namespace BuildVision.Core
         /// </summary>
         public BuildVisionPackage()
         {
-            string hello = string.Format("{0} {1}", Resources.ProductName, BuildVisionVersion.PackageVersion);
+            string hello = string.Format("{0} {1}", Resources.ProductName, "BuildVisionVersion.PackageVersion");
             TraceManager.Trace(hello, EventLogEntryType.Information);    
         }
 

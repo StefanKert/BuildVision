@@ -51,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppVersionInfo.cs" />
-    <Compile Include="BuildVisionVersion.cs" />
     <Compile Include="CustomStringFormatProvider.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="FilePathHelper.cs" />

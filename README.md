@@ -1,4 +1,4 @@
-BuildVision [![Build status](https://ci.appveyor.com/api/projects/status/t207k0rf3mi4b1ji/branch/master?svg=true)](https://ci.appveyor.com/project/StefanKert/buildvision/branch/master)
+BuildVision [![Build Status](https://stefankert.visualstudio.com/BuildVision/_apis/build/status/StefanKert.BuildVision)](https://stefankert.visualstudio.com/BuildVision/_build/latest?definitionId=3)
 
 ===========
 A Visual Studio extension to visualize the building process.

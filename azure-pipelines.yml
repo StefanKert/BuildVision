@@ -32,7 +32,7 @@ steps:
 
 - task: NuGetCommand@2
   inputs:
-    restoreSolution: '$(Solution)'
+    restoreSolution: BuildVision.sln
 
 - task: MSBuild@1
   displayName: Build BuildVision.sln

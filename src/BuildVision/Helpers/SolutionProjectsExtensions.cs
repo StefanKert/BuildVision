@@ -1,13 +1,17 @@
 using System;
 using System.Collections.Generic;
-
 using EnvDTE;
-using EnvDTE80;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using System.Runtime.InteropServices;
+using EnvDTE80;
 
 namespace BuildVision.Helpers
 {
+    public class EnvDTEProjectKinds
+    {
+        public const string ProjectKindSolutionFolder = "{66A26720-8FB5-11D2-AA7E-00C04F688DDE}";
+    }
+
     public static class SolutionProjectsExtensions
     {
         public static IList<Project> GetProjects(this Solution solution)
@@ -19,7 +23,7 @@ namespace BuildVision.Helpers
                 if (project == null)
                     continue;
 
-                if (project.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+                if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
                     list.AddRange(project.GetSubProjects());
                 else if (!project.IsHidden())
                     list.Add(project);
@@ -37,7 +41,7 @@ namespace BuildVision.Helpers
                 if (project == null)
                     continue;
 
-                if (project.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+                if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
                 {
                     Project sub = project.GetSubProject(cond);
                     if (sub != null)

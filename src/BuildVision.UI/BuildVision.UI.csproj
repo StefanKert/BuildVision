@@ -362,11 +362,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="VSSDK.GraphModel">
-      <Version>12.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.Shell.12">
-      <Version>12.0.4</Version>
+    <PackageReference Include="Microsoft.VisualStudio.Shell.14.0">
+      <Version>14.3.25407</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

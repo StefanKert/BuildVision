@@ -18,6 +18,11 @@ using BuildVision.Contracts;
 
 namespace BuildVision.Helpers
 {
+    public class EnvDTECodeModelLanguageConstants2
+    {
+        public const string CMLanguageJSharp = "{E6FDF8BF-F3D1-11D4-8576-0002A516ECE8}";
+    }
+
     public static class ProjectExtensions
     {
         private static readonly HashSet<string> _hiddenProjectsUniqueNames = new HashSet<string>
@@ -84,7 +89,7 @@ namespace BuildVision.Helpers
                 { CodeModelLanguageConstants.vsCMLanguageMC, "MC++" }, // Managed C++
                 { CodeModelLanguageConstants.vsCMLanguageVB, "VB.NET" },
                 { CodeModelLanguageConstants.vsCMLanguageVC, "VC++" }, // Visual C++
-                { CodeModelLanguageConstants2.vsCMLanguageJSharp, "J#" },
+                { EnvDTECodeModelLanguageConstants2.CMLanguageJSharp, "J#" },
                 { "{F2A71F9B-5D33-465A-A702-920D77279786}", "F#" },
             };
 
@@ -608,7 +613,7 @@ namespace BuildVision.Helpers
                     continue;
 
                 // If this is another solution folder, do a recursive call, otherwise add
-                if (subProject.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+                if (subProject.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
                 {
                     Project sub = GetSubProject(subProject, cond);
                     if (sub != null)
@@ -634,7 +639,7 @@ namespace BuildVision.Helpers
                     continue;
 
                 // If this is another solution folder, do a recursive call, otherwise add
-                if (subProject.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+                if (subProject.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
                     list.AddRange(GetSubProjects(subProject));
                 else if (!subProject.IsHidden())
                     list.Add(subProject);

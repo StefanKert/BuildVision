@@ -21,9 +21,10 @@ namespace BuildVision.Views.Settings
 
         protected override void OnActivate(CancelEventArgs e)
         {
-            ToolWindowPane toolWindow = Package.GetToolWindow();
-            ControlViewModel viewModel = ToolWindow.GetViewModel(toolWindow);
-            viewModel.SyncColumnSettings();
+            //TODO FIx
+            //ToolWindowPane toolWindow = Package.GetToolWindow();
+            //ControlViewModel viewModel = ToolWindow.GetViewModel(toolWindow);
+            //viewModel.SyncColumnSettings();
 
             base.OnActivate(e);
         }

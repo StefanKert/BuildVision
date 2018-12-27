@@ -14,17 +14,16 @@ namespace BuildVision.Helpers
         private readonly IVsWindowFrame _windowFrame;
         private readonly Window _window;
 
-        public ToolWindowManager(IPackageContext packageContext)
+        public ToolWindowManager(DTE dte, IVsWindowFrame windowFrame)
         {
-            _dte = packageContext.GetDTE();
             if (_dte == null)
                 throw new InvalidOperationException("Unable to get DTE instance.");
 
-            _windowFrame = (IVsWindowFrame)packageContext.GetToolWindow().Frame;
+            _windowFrame = windowFrame;
             if (_windowFrame == null)
                 throw new InvalidOperationException("Unable to get IVsWindowFrame instance.");
 
-            _window = GetWindowInstance(packageContext.GetDTE(), typeof(ToolWindow).GUID);
+            _window = GetWindowInstance(_dte, typeof(ToolWindow).GUID);
             if (_window == null)
                 throw new InvalidOperationException("Unable to get Window instance.");
         }

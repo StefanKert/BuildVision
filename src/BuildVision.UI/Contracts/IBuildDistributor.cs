@@ -1,5 +1,6 @@
 ﻿using BuildVision.Contracts;
 using System;
+using System.Threading.Tasks;
 
 namespace BuildVision.UI.Contracts
 {
@@ -13,6 +14,6 @@ namespace BuildVision.UI.Contracts
         event EventHandler<BuildProjectEventArgs> OnBuildProjectDone;
         event EventHandler<BuildErrorRaisedEventArgs> OnErrorRaised;
 
-        void CancelBuild();
+        Task CancelBuildAsync();
     }
 }

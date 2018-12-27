@@ -1,50 +1,97 @@
 ﻿using System;
-
+using System.ComponentModel.Design;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows;
+using BuildVision.Common;
+using BuildVision.Tool;
+using BuildVision.Tool.Building;
+using BuildVision.UI;
+using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Settings.Models;
+using BuildVision.Views.Settings;
 using EnvDTE;
-using EnvDTE80;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell.Settings;
-using BuildVision.Common;
-using BuildVision.Tool.Building;
-using BuildVision.UI.Settings.Models;
-using BuildVision.UI.ViewModels;
-using BuildVision.Tool;
-using BuildVision.UI.Common.Logging;
-using System.Windows;
+using Task = System.Threading.Tasks.Task;
 
 namespace BuildVision.Core
 {
-    public partial class BuildVisionPackage : IPackageContext
+    // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
+    // a package.
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    // This attribute is used to register the informations needed to show the this package
+    // in the Help/About dialog of Visual Studio. Resources are defined in VSPackage.resx.
+    //[InstalledProductRegistration("#110", "#112", BuildVisionVersion.PackageVersion, IconResourceID = 400)]
+    // This attribute is needed to let the shell know that this package exposes some menus.
+    [ProvideMenuResource("Menus.ctmenu", 1)]
+    // This attribute registers a tool window exposed by this package.
+    [ProvideToolWindow(typeof(ToolWindow))]
+    [Guid(PackageGuids.GuidBuildVisionPackageString)]
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionOpening_string, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideBindingPath]
+    [ProvideBindingPath(SubPath = "Lib")]
+    // TODO: Add ProvideProfileAttribute for each DialogPage and implement IVsUserSettings, IVsUserSettingsQuery.
+    //// [ProvideProfile(typeof(GeneralSettingsDialogPage), SettingsCategoryName, "General Options", 0, 0, true)]
+    // TODO: ProvideOptionPage keywords.
+    [ProvideOptionPage(typeof(GeneralSettingsDialogPage), settingsCategoryName, "General", 0, 0, true)]
+    [ProvideOptionPage(typeof(WindowSettingsDialogPage), settingsCategoryName, "Tool Window", 0, 0, true)]
+    [ProvideOptionPage(typeof(GridSettingsDialogPage), settingsCategoryName, "Projects Grid", 0, 0, true)]
+    [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), settingsCategoryName, "Build Messages", 0, 0, true)]
+    [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), settingsCategoryName, "Project Item", 0, 0, true)]
+    public sealed partial class BuildVisionPackage : AsyncPackage, IPackageContext
     {
         private const string settingsCategoryName = "BuildVision";
         private const string settingsPropertyName = "Settings";
+        private DTE _dte;
 
         public ControlSettings ControlSettings { get; set; }
 
-        public DTE2 GetDTE2() => (DTE2)GetService(typeof(DTE));
+        public BuildVisionPackage()
+        {
+            string hello = string.Format("{0} {1}", Resources.ProductName, "BuildVisionVersion.PackageVersion");
+            TraceManager.Trace(hello, EventLogEntryType.Information);    
+        }
 
-        public DTE GetDTE() => (DTE)GetService(typeof(DTE));
+        public event Action<ControlSettings> ControlSettingsChanged = delegate { };
 
-        public IVsUIShell GetUIShell() => (IVsUIShell)GetService(typeof(IVsUIShell));
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
 
-        public IVsSolution GetSolution() => (IVsSolution)GetService(typeof(IVsSolution));
+            _dte = await GetServiceAsync(typeof(DTE)) as DTE;
+            if (await GetServiceAsync(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
+            {
+                var toolwndCommandId = new CommandID(PackageGuids.GuidBuildVisionCmdSet, (int) PackageIds.CmdIdBuildVisionToolWindow);
+                var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
+                mcs.AddCommand(menuToolWin);
+            }
 
-        public IVsStatusbar GetStatusBar() => (IVsStatusbar)GetService(typeof(SVsStatusbar));
+            ControlSettings = LoadSettings(this);
+            var toolWindow = GetWindowPane(typeof(ToolWindow));
+            IPackageContext packageContext = this;
+            var viewModel = ToolWindow.GetViewModel(toolWindow);
+            var buildContext = new BuildContext(packageContext, _dte, _dte.Events.BuildEvents, _dte.Events.WindowEvents, _dte.Events.CommandEvents, viewModel);
+            var tool = new Tool.Tool(packageContext, _dte, (IVsWindowFrame) toolWindow.Frame, buildContext, buildContext, viewModel);
+        }
 
-        public ToolWindowPane GetToolWindow() => GetWindowPane(typeof(ToolWindow));
-
-        private void ToolInitialize()
+        private void ShowToolWindow(object sender, EventArgs e)
         {
             try
             {
-                ControlSettings = LoadSettings(this);
-                var toolWindow = GetToolWindow();
-                IPackageContext packageContext = this;
-                var viewModel = ToolWindow.GetViewModel(toolWindow);
-                var buildContext = new BuildContext(packageContext, viewModel);
-                var tool = new Tool.Tool(packageContext, buildContext, buildContext, viewModel);
+                // Get the instance number 0 of this tool window. This window is single instance so this instance
+                // is actually the only one.
+                // The last flag is set to true so that if the tool window does not exists it will be created.
+                var window = FindToolWindow(typeof(ToolWindow), 0, true);
+                if (window == null || window.Frame == null)
+                    throw new InvalidOperationException(Resources.CanNotCreateWindow);
+
+                var windowFrame = (IVsWindowFrame)window.Frame;
+                ErrorHandler.ThrowOnFailure(windowFrame.Show());
             }
             catch (Exception ex)
             {
@@ -81,16 +128,13 @@ namespace BuildVision.Core
             }
             catch (Exception ex)
             {
-                ex.Trace("Error when trying to load settings: " + ex.Message, System.Diagnostics.EventLogEntryType.Error);
+                ex.Trace("Error when trying to load settings: " + ex.Message, EventLogEntryType.Error);
                 MessageBox.Show("An error occurred when trying to load current settings. To make sure everything is still working the settings are set to default.");
             }
 
             return new ControlSettings();
         }
 
-        /// <remarks>
-        /// Settings are stored under "HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\[12.0Exp]\BuildVision\".
-        /// </remarks>
         private static void SaveSettings(ControlSettings settings, IServiceProvider serviceProvider)
         {
             var store = GetWritableSettingsStore(serviceProvider);
@@ -102,13 +146,17 @@ namespace BuildVision.Core
             store.SetString(settingsCategoryName, settingsPropertyName, value);
         }
 
+        public async Task ExecuteCommandAsync(string commandName)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
+            _dte.ExecuteCommand(commandName);
+        }
+
         private static WritableSettingsStore GetWritableSettingsStore(IServiceProvider serviceProvider)
         {
             var shellSettingsManager = new ShellSettingsManager(serviceProvider);
             var writableSettingsStore = shellSettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
             return writableSettingsStore;
         }
-
-        public event Action<ControlSettings> ControlSettingsChanged = delegate { };
     }
 }

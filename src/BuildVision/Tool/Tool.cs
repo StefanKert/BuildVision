@@ -7,9 +7,7 @@ using System.Windows.Controls;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
 
-using ProjectItem = BuildVision.UI.Models.ProjectItem;
-using ErrorItem = BuildVision.Contracts.ErrorItem;
-using WindowState = BuildVision.UI.Models.WindowState;
+
 using Microsoft.VisualStudio;
 using System.Windows;
 using System.ComponentModel;
@@ -33,49 +31,53 @@ using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models.ToolWindow;
 using System.Collections.Specialized;
+using Microsoft.VisualStudio.Shell;
+using System.Threading;
+
+using ProjectItem = BuildVision.UI.Models.ProjectItem;
+using ErrorItem = BuildVision.Contracts.ErrorItem;
+using WindowState = BuildVision.UI.Models.WindowState;
+using Task = System.Threading.Tasks.Task;
 
 namespace BuildVision.Tool
 {
     public class Tool
     {
-        private readonly DTE _dte;
-        private readonly DTE2 _dte2;
-        private readonly IVsStatusbar _dteStatusBar;
+        private DTE _dte;
+        private DTE2 _dte2;
+        private IVsStatusbar _dteStatusBar;
+        private SolutionEvents _solutionEvents;
+
         private readonly ToolWindowManager _toolWindowManager;
+        private readonly IPackageContext _packageContext;
         private readonly IBuildInfo _buildContext;
         private readonly IBuildDistributor _buildDistributor;
         private readonly ControlViewModel _viewModel;
-        private readonly SolutionEvents _solutionEvents;
 
         private bool _buildErrorIsNavigated;
         private string _origTextCurrentState;
-        private readonly IPackageContext _packageContext;
 
-        public Tool(IPackageContext packageContext, IBuildInfo buildContext, IBuildDistributor buildDistributor, ControlViewModel viewModel)
+        public Tool(IPackageContext packageContext, DTE _dte, IVsWindowFrame frame, IBuildInfo buildContext, IBuildDistributor buildDistributor, ControlViewModel viewModel)
         {
+            _toolWindowManager = new ToolWindowManager(_dte, frame);
             _packageContext = packageContext;
-            _dte = packageContext.GetDTE();
-            _dte2 = packageContext.GetDTE2();
+            _buildContext = buildContext;
+            _buildDistributor = buildDistributor;
+            _viewModel = viewModel;
+        }
+
+        public async Task InitializeAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider provider, CancellationToken cancellationToken)
+        {
+            _dte = await provider.GetServiceAsync(typeof(DTE)) as DTE;
             if (_dte == null)
                 throw new InvalidOperationException("Unable to get DTE instance.");
-
-            _dteStatusBar = packageContext.GetStatusBar();
+            _dte2 = await provider.GetServiceAsync(typeof(DTE2)) as DTE2;
+            _dteStatusBar = await provider.GetServiceAsync(typeof(IVsStatusbar)) as IVsStatusbar;
             if (_dteStatusBar == null)
                 TraceManager.TraceError("Unable to get IVsStatusbar instance.");
 
-            _toolWindowManager = new ToolWindowManager(packageContext);
-
-            _buildContext = buildContext;
-            _buildDistributor = buildDistributor;
-
-            _viewModel = viewModel;
             _solutionEvents = _dte.Events.SolutionEvents;
 
-            Initialize();
-        }
-
-        private void Initialize()
-        {
             _buildDistributor.OnBuildBegin += (s, e) => BuildEvents_OnBuildBegin();
             _buildDistributor.OnBuildDone += (s, e) => BuildEvents_OnBuildDone();
             _buildDistributor.OnBuildProcess += (s, e) => BuildEvents_OnBuildProcess();
@@ -87,9 +89,9 @@ namespace BuildVision.Tool
             _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
             _solutionEvents.Opened += SolutionEvents_Opened;
 
-            _viewModel.CancelBuildSolution += () => RaiseCommand(VSConstants.VSStd97CmdID.CancelBuild); 
+            _viewModel.CancelBuildSolution += () => RaiseCommand(VSConstants.VSStd97CmdID.CancelBuild);
             _viewModel.CleanSolution += () => RaiseCommand(VSConstants.VSStd97CmdID.CleanSln);
-            _viewModel.RebuildSolution += () => RaiseCommand(VSConstants.VSStd97CmdID.RebuildSln); 
+            _viewModel.RebuildSolution += () => RaiseCommand(VSConstants.VSStd97CmdID.RebuildSln);
             _viewModel.BuildSolution += () => RaiseCommand(VSConstants.VSStd97CmdID.BuildSln);
             _viewModel.RaiseCommandForSelectedProject += RaiseCommandForSelectedProject;
             _viewModel.ProjectCopyBuildOutputFilesToClipBoard += ProjectCopyBuildOutputFilesToClipBoard;
@@ -296,7 +298,7 @@ namespace BuildVision.Tool
         private void BuildEvents_OnBuildProjectDone(object sender, BuildProjectEventArgs e)
         {
             if (e.ProjectState == ProjectState.BuildError && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError)
-                _buildDistributor.CancelBuild();
+                _buildDistributor.CancelBuildAsync();
 
             try
             {
@@ -489,7 +491,7 @@ namespace BuildVision.Tool
         {
             bool buildNeedToCancel = (args.ErrorLevel == ErrorLevel.Error && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError);
             if (buildNeedToCancel)
-                _buildDistributor.CancelBuild();
+                _buildDistributor.CancelBuildAsync();
 
             bool navigateToBuildFailureReason = (!_buildErrorIsNavigated
                                                  && args.ErrorLevel == ErrorLevel.Error

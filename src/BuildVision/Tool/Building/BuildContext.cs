@@ -30,6 +30,8 @@ namespace BuildVision.Tool.Building
         private readonly object _buildProcessLockObject = new object();
 
         private readonly IPackageContext _packageContext;
+        private readonly DTE _dte;
+        private readonly Solution _solution;
         private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
         private BuildOutputLogger _buildLogger;
         private CancellationTokenSource _buildProcessCancellationToken;
@@ -63,19 +65,17 @@ namespace BuildVision.Tool.Building
 
         public ProjectItem BuildScopeProject { get; private set; }
 
-        public BuildContext(IPackageContext packageContext, ControlViewModel viewModel)
+        public BuildContext(IPackageContext packageContext, DTE dte, BuildEvents buildEvents, WindowEvents windowEvents, CommandEvents commandEvents, ControlViewModel viewModel)
         {
             _viewModel = viewModel;
             BuildedProjects = new BuildedProjectsCollection();
             BuildingProjects = new List<ProjectItem>();
             _buildingProjectsLockObject = ((ICollection)BuildingProjects).SyncRoot;
-
             _packageContext = packageContext;
-
-            var dteEvents = packageContext.GetDTE().Events;
-            _buildEvents = dteEvents.BuildEvents;
-            _windowEvents = dteEvents.WindowEvents;
-            _commandEvents = dteEvents.CommandEvents;
+            _dte = dte;
+            _buildEvents = buildEvents;
+            _windowEvents = windowEvents;
+            _commandEvents = commandEvents;
 
             _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
             _buildEvents.OnBuildDone += (s, e) => BuildEvents_OnBuildDone();
@@ -93,7 +93,7 @@ namespace BuildVision.Tool.Building
             BuildScope = buildScope ?? BuildScope;
         }
 
-        public void CancelBuild()
+        public async Task CancelBuildAsync()
         {
             if(BuildAction == BuildActions.BuildActionClean)
                 return;
@@ -105,8 +105,7 @@ namespace BuildVision.Tool.Building
                 // We need to create a separate task here because of some weird things that are going on
                 // when calling ExecuteCommand directly. Directly calling it leads to a freeze. No need 
                 // for that!
-                var cancelBuildTask = Task.Run(() => _packageContext.GetDTE().ExecuteCommand(CancelBuildCommand));
-                cancelBuildTask.Wait(10000); 
+                await _packageContext.ExecuteCommandAsync(CancelBuildCommand);
                 _buildCancelledInternally = true;
             }
             catch (Exception ex)
@@ -242,7 +241,7 @@ namespace BuildVision.Tool.Building
                 BuildedProject buildedProject = BuildedProjects[projectItem];
                 var errorItem = new ErrorItem(errorLevel, (eI) =>
                 {
-                    _packageContext.GetDTE().Solution.GetProject(x => x.UniqueName == projectItem.UniqueName).NavigateToErrorItem(eI);
+                    _dte.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName).NavigateToErrorItem(eI);
                 });
 
                 switch (errorLevel)
@@ -553,7 +552,7 @@ namespace BuildVision.Tool.Building
 
             if (scope == vsBuildScope.vsBuildScopeProject)
             {
-                var selectedProjects = _packageContext.GetDTE().ActiveSolutionProjects as object[];
+                var selectedProjects = _dte.ActiveSolutionProjects as object[];
                 if (selectedProjects?.Length == 1)
                 {
                     var projectItem = new ProjectItem();
@@ -572,7 +571,7 @@ namespace BuildVision.Tool.Building
             }
 
             BuildedSolution = null;
-            var solution = _packageContext.GetDTE().Solution;
+            var solution = _dte.Solution;
             BuildingSolution = new BuildedSolution(solution.FullName, solution.FileName);
 
             OnBuildBegin(this, EventArgs.Empty);

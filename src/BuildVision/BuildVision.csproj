@@ -90,7 +90,7 @@
     <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\BuildVisionPackage.Package.cs" />
+    <Compile Include="Core\BuildVisionPackage.cs" />
     <Compile Include="Helpers\ProjectItemExtensions.cs" />
     <Compile Include="Helpers\SolutionProjectsExtensions.cs" />
     <Compile Include="Helpers\ProjectExtensions.cs" />
@@ -121,7 +121,6 @@
     <Compile Include="Tool\Tool.cs" />
     <Compile Include="Tool\ToolWindow.cs" />
     <Compile Include="Core\PackageGuids.cs" />
-    <Compile Include="Core\BuildVisionPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\PackageIds.cs" />
     <Compile Include="Helpers\ToolWindowManager.cs" />
@@ -222,6 +221,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.12.0">
       <Version>12.0.30111</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime">
+      <Version>14.3.26929</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
       <Version>15.9.3032</Version>

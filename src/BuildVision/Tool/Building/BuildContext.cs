@@ -3,20 +3,31 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using BuildVision.Common;
 using BuildVision.Contracts;
 using BuildVision.Core;
 using BuildVision.Helpers;
 using BuildVision.Tool.Models;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Contracts;
+using BuildVision.UI.Extensions;
+using BuildVision.UI.Helpers;
+using BuildVision.UI.Models;
+using BuildVision.UI.Models.Indicators.Core;
+using BuildVision.UI.Settings.Models.ToolWindow;
 using BuildVision.UI.ViewModels;
 using EnvDTE;
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell.Interop;
 using ErrorItem = BuildVision.Contracts.ErrorItem;
 using ProjectItem = BuildVision.UI.Models.ProjectItem;
+using WindowState = BuildVision.UI.Models.WindowState;
 
 namespace BuildVision.Tool.Building
 {
@@ -26,9 +37,12 @@ namespace BuildVision.Tool.Building
         private const int BuildInProcessQuantumSleep = 50;
         private const string CancelBuildCommand = "Build.Cancel";
 
+        private IVsStatusbar _dteStatusBar;
         private readonly object _buildingProjectsLockObject;
         private readonly object _buildProcessLockObject = new object();
-
+        private readonly IVsItemLocatorService _locatorService;
+        private readonly IStatusBarNotificationService _statusBarNotificationService;
+        private readonly IStatusBarNotificationService statusBarNotificationService;
         private readonly IPackageContext _packageContext;
         private readonly DTE _dte;
         private readonly Solution _solution;
@@ -36,12 +50,13 @@ namespace BuildVision.Tool.Building
         private BuildOutputLogger _buildLogger;
         private CancellationTokenSource _buildProcessCancellationToken;
         private bool _buildCancelledInternally;
-        private Window _activeProjectContext;
-        private readonly ControlViewModel _viewModel;
+        private readonly BuildVisionPaneViewModel _viewModel;
         private bool _buildCancelled;
         private readonly BuildEvents _buildEvents;
-        private readonly WindowEvents _windowEvents;
         private readonly CommandEvents _commandEvents;
+        private readonly ToolWindowManager _toolWindowManager;
+        private bool _buildErrorIsNavigated;
+        private string _origTextCurrentState;
 
         public bool BuildIsCancelled => _buildCancelled && !_buildCancelledInternally;
 
@@ -65,26 +80,32 @@ namespace BuildVision.Tool.Building
 
         public ProjectItem BuildScopeProject { get; private set; }
 
-        public BuildContext(IPackageContext packageContext, DTE dte, BuildEvents buildEvents, WindowEvents windowEvents, CommandEvents commandEvents, ControlViewModel viewModel)
+        public BuildContext(IVsItemLocatorService locatorService, IStatusBarNotificationService statusBarNotificationService, IPackageContext packageContext, DTE dte, BuildVisionPaneViewModel viewModel)
         {
             _viewModel = viewModel;
             BuildedProjects = new BuildedProjectsCollection();
             BuildingProjects = new List<ProjectItem>();
             _buildingProjectsLockObject = ((ICollection)BuildingProjects).SyncRoot;
+            _locatorService = locatorService;
+            _statusBarNotificationService = statusBarNotificationService;
             _packageContext = packageContext;
             _dte = dte;
-            _buildEvents = buildEvents;
-            _windowEvents = windowEvents;
-            _commandEvents = commandEvents;
+            _buildEvents = dte.Events.BuildEvents;
+            _commandEvents = dte.Events.CommandEvents;
 
             _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
             _buildEvents.OnBuildDone += (s, e) => BuildEvents_OnBuildDone();
             _buildEvents.OnBuildProjConfigBegin += BuildEvents_OnBuildProjectBegin;
             _buildEvents.OnBuildProjConfigDone += BuildEvents_OnBuildProjectDone;
 
-            _windowEvents.WindowActivated += WindowEvents_WindowActivated;
-
             _commandEvents.AfterExecute += CommandEvents_AfterExecute;
+        }
+
+        public async Task InitializeAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider provider, CancellationToken cancellationToken)
+        {
+            _dteStatusBar = await provider.GetServiceAsync(typeof(IVsStatusbar)) as IVsStatusbar;
+            if (_dteStatusBar == null)
+                TraceManager.TraceError("Unable to get IVsStatusbar instance.");
         }
 
         public void OverrideBuildProperties(BuildActions? buildAction = null, BuildScopes? buildScope = null)
@@ -112,59 +133,6 @@ namespace BuildVision.Tool.Building
             {
                 ex.Trace("Cancel build failed.");
             }
-        }
-
-        public ProjectItem FindProjectItemInProjectsByUniqueName(string uniqueName, string configuration, string platform)
-        {
-            return _viewModel.ProjectsList.FirstOrDefault(item => item.UniqueName == uniqueName && item.Configuration == configuration && PlatformsIsEquals(item.Platform, platform));
-        }
-
-        public ProjectItem FindProjectItemInProjectsByUniqueName(string uniqueName)
-        {
-            return _viewModel.ProjectsList.FirstOrDefault(item => item.UniqueName == uniqueName);
-        }
-
-        public ProjectItem AddProjectToVisibleProjectsByUniqueName(string uniqueName)
-        {
-            var proj = _viewModel.SolutionItem.AllProjects.FirstOrDefault(x => x.UniqueName == uniqueName);
-            if (proj == null)
-                throw new InvalidOperationException();
-            _viewModel.ProjectsList.Add(proj);
-            return proj;
-        }
-
-        public ProjectItem AddProjectToVisibleProjectsByUniqueName(string uniqueName, string configuration, string platform)
-        {
-            ProjectItem currentProject = _viewModel.SolutionItem.AllProjects.FirstOrDefault(item => item.UniqueName == uniqueName
-                                                            && item.Configuration == configuration
-                                                          && PlatformsIsEquals(item.Platform, platform));
-            if (currentProject == null)
-            {
-                currentProject = _viewModel.SolutionItem.AllProjects.FirstOrDefault(x => x.UniqueName == uniqueName);
-                if (currentProject == null)
-                    throw new InvalidOperationException();
-                currentProject = currentProject.GetBatchBuildCopy(configuration, platform);
-                _viewModel.SolutionItem.AllProjects.Add(currentProject);
-            }
-
-            _viewModel.ProjectsList.Add(currentProject);
-            return currentProject;
-        }
-
-        private bool PlatformsIsEquals(string platformName1, string platformName2)
-        {
-            if (string.Compare(platformName1, platformName2, StringComparison.InvariantCultureIgnoreCase) == 0)
-                return true;
-
-            // The ambiguity between Project.ActiveConfiguration.PlatformName and
-            // ProjectStartedEventArgs.ProjectPlatform in Microsoft.Build.Utilities.Logger
-            // (see BuildOutputLogger).
-            bool isAnyCpu1 = (platformName1 == "Any CPU" || platformName1 == "AnyCPU");
-            bool isAnyCpu2 = (platformName2 == "Any CPU" || platformName2 == "AnyCPU");
-            if (isAnyCpu1 && isAnyCpu2)
-                return true;
-
-            return false;
         }
 
         private void RegisterLogger()
@@ -232,7 +200,7 @@ namespace BuildVision.Tool.Building
                 if (projectEntry.IsInvalid)
                     return;
 
-                if (!GetProjectItem(projectEntry, out var projectItem))
+                if (!_locatorService.GetProjectItem(_viewModel, BuildScope, projectEntry, out var projectItem))
                 {
                     projectEntry.IsInvalid = true;
                     return;
@@ -310,73 +278,6 @@ namespace BuildVision.Tool.Building
             item.Message = e.Message;
         }
 
-        private bool GetProjectItem(BuildProjectContextEntry projectEntry, out ProjectItem projectItem)
-        {
-            projectItem = projectEntry.ProjectItem;
-            if (projectItem != null)
-                return true;
-
-            string projectFile = projectEntry.FileName;
-            if (ProjectExtensions.IsProjectHidden(projectFile))
-                return false;
-
-            IDictionary<string, string> projectProperties = projectEntry.Properties;
-            var project = _viewModel.ProjectsList.FirstOrDefault(x => x.FullName == projectFile);
-
-
-            if (BuildScope == BuildScopes.BuildScopeBatch && projectProperties.ContainsKey("Configuration") && projectProperties.ContainsKey("Platform"))
-            {
-                string projectConfiguration = projectProperties["Configuration"];
-                string projectPlatform = projectProperties["Platform"];
-                projectItem = FindProjectItemInProjectsByUniqueName(project.UniqueName, projectConfiguration, projectPlatform);
-                if (projectItem == null)
-                {
-                    TraceManager.Trace(
-                        string.Format("Project Item not found by: UniqueName='{0}', Configuration='{1}, Platform='{2}'.",
-                            project.UniqueName,
-                            projectConfiguration,
-                            projectPlatform),
-                        EventLogEntryType.Warning);
-                    return false;
-                }
-            }
-            else
-            {
-                projectItem = FindProjectItemInProjectsByUniqueName(project.UniqueName);
-                if (projectItem == null)
-                {
-                    TraceManager.Trace(string.Format("Project Item not found by FullName='{0}'.", projectFile), EventLogEntryType.Warning);
-                    return false;
-                }
-            }
-
-            projectEntry.ProjectItem = projectItem;
-            return true;
-        }
-
-        private void WindowEvents_WindowActivated(Window gotFocus, Window lostFocus)
-        {
-            if (gotFocus == null)
-                return;
-
-            switch (gotFocus.Type)
-            {
-                case vsWindowType.vsWindowTypeSolutionExplorer:
-                    _activeProjectContext = gotFocus;
-                    break;
-
-                case vsWindowType.vsWindowTypeDocument:
-                case vsWindowType.vsWindowTypeDesigner:
-                case vsWindowType.vsWindowTypeCodeWindow:
-                    if (gotFocus.Project != null && !gotFocus.Project.IsHidden())
-                        _activeProjectContext = gotFocus;
-                    break;
-
-                default:
-                    return;
-            }
-        }
-
         private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)
         {
             if (id == (int)VSConstants.VSStd97CmdID.CancelBuild
@@ -384,38 +285,8 @@ namespace BuildVision.Tool.Building
             {
                 _buildCancelled = true;
                 if (!_buildCancelledInternally)
-                    OnBuildCancelled(this, EventArgs.Empty);
+                    OnBuildCancelled();
             }
-        }
-
-        private void BuildEvents_OnBuildProjectBegin(string project, string projectconfig, string platform, string solutionconfig)
-        {
-            if (BuildAction == BuildActions.BuildActionDeploy)
-                return;
-
-            var eventTime = DateTime.Now;
-
-            ProjectItem currentProject;
-            if (BuildScope == BuildScopes.BuildScopeBatch)
-            {
-                currentProject = FindProjectItemInProjectsByUniqueName(project, projectconfig, platform);
-                if (currentProject == null)
-                    currentProject = AddProjectToVisibleProjectsByUniqueName(project, projectconfig, platform);
-            }
-            else
-            {
-                currentProject = FindProjectItemInProjectsByUniqueName(project);
-                if (currentProject == null)
-                    currentProject = AddProjectToVisibleProjectsByUniqueName(project);
-            }
-
-            lock (_buildingProjectsLockObject)
-            {
-                BuildingProjects.Add(currentProject);
-            }
-
-            var projectState = GetProjectState();
-            OnBuildProjectBegin(this, new BuildProjectEventArgs(currentProject, projectState, eventTime, null));
         }
 
         private ProjectState GetProjectState()
@@ -442,13 +313,126 @@ namespace BuildVision.Tool.Building
             return projectState;
         }
 
+        private void BuildEvents_OnBuildBegin(vsBuildScope scope, vsBuildAction action)
+        {
+            if (action == vsBuildAction.vsBuildActionDeploy)
+                return;
+
+            RegisterLogger();
+
+            CurrentBuildState = BuildState.InProgress;
+
+            BuildStartTime = DateTime.Now;
+            BuildFinishTime = null;
+            BuildAction = (BuildActions) action;
+
+            switch (scope)
+            {
+                case vsBuildScope.vsBuildScopeSolution:
+                case vsBuildScope.vsBuildScopeBatch:
+                case vsBuildScope.vsBuildScopeProject:
+                    BuildScope = (BuildScopes) scope;
+                    break;
+
+                case 0:
+                    // Scope may be 0 in case of Clean solution, then Start (F5).
+                    BuildScope = (BuildScopes) vsBuildScope.vsBuildScopeSolution;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException("scope");
+            }
+
+            if (scope == vsBuildScope.vsBuildScopeProject)
+            {
+                var selectedProjects = _dte.ActiveSolutionProjects as object[];
+                if (selectedProjects?.Length == 1)
+                {
+                    var projectItem = new ProjectItem();
+                    ViewModelHelper.UpdateProperties((Project) selectedProjects[0], projectItem);
+                    BuildScopeProject = projectItem;
+                }
+            }
+
+            _buildCancelled = false;
+            _buildCancelledInternally = false;
+
+            BuildedProjects.Clear();
+            lock (_buildingProjectsLockObject)
+            {
+                BuildingProjects.Clear();
+            }
+
+            BuildedSolution = null;
+            var solution = _dte.Solution;
+            BuildingSolution = new BuildedSolution(solution.FullName, solution.FileName);
+
+            OnBuildBegin();
+
+            _buildProcessCancellationToken = new CancellationTokenSource();
+            Task.Factory.StartNew(BuildEvents_BuildInProcess, _buildProcessCancellationToken.Token, _buildProcessCancellationToken.Token);
+        }
+
+        private void BuildEvents_OnBuildProjectBegin(string project, string projectconfig, string platform, string solutionconfig)
+        {
+            if (BuildAction == BuildActions.BuildActionDeploy)
+                return;
+
+            var eventTime = DateTime.Now;
+
+            ProjectItem currentProject;
+            if (BuildScope == BuildScopes.BuildScopeBatch)
+            {
+                currentProject = _locatorService.FindProjectItemInProjectsByUniqueName(_viewModel, project, projectconfig, platform);
+                if (currentProject == null)
+                    currentProject = _locatorService.AddProjectToVisibleProjectsByUniqueName(_viewModel, project, projectconfig, platform);
+            }
+            else
+            {
+                currentProject = _locatorService.FindProjectItemInProjectsByUniqueName(_viewModel, project);
+                if (currentProject == null)
+                    currentProject = _locatorService.AddProjectToVisibleProjectsByUniqueName(_viewModel, project);
+            }
+
+            lock (_buildingProjectsLockObject)
+            {
+                BuildingProjects.Add(currentProject);
+            }
+
+            var projectState = GetProjectState();
+            OnBuildProjectBegin(new BuildProjectEventArgs(currentProject, projectState, eventTime, null));
+        }
+
+        private void BuildEvents_BuildInProcess(object state)
+        {
+            lock (_buildProcessLockObject)
+            {
+                if (BuildAction == BuildActions.BuildActionDeploy)
+                    return;
+
+                var token = (CancellationToken) state;
+                while (!token.IsCancellationRequested)
+                {
+                    OnBuildProcess();
+
+                    for (int i = 0; i < BuildInProcessQuantumSleep * BuildInProcessCountOfQuantumSleep; i += BuildInProcessQuantumSleep)
+                    {
+                        if (token.IsCancellationRequested)
+                            break;
+
+                        System.Threading.Thread.Sleep(BuildInProcessQuantumSleep);
+                    }
+                }
+            }
+        }
+
         private void BuildEvents_OnBuildProjectDone(string project, string projectconfig, string platform, string solutionconfig, bool success)
         {
             if (BuildAction == BuildActions.BuildActionDeploy)
                 return;
 
             var eventTime = DateTime.Now;
-            var currentProject = GetCurrentProject(project, projectconfig, platform);
+            var currentProject = _locatorService.GetCurrentProject(_viewModel, BuildScope, project, projectconfig, platform);
 
             lock (_buildingProjectsLockObject)
             {
@@ -498,109 +482,7 @@ namespace BuildVision.Tool.Building
             }
 
             buildedProject.ProjectState = projectState;
-            OnBuildProjectDone(this, new BuildProjectEventArgs(currentProject, projectState, eventTime, buildedProject));
-        }
-
-        private ProjectItem GetCurrentProject(string project, string projectconfig, string platform)
-        {
-            ProjectItem currentProject;
-            if (BuildScope == BuildScopes.BuildScopeBatch)
-            {
-                currentProject = FindProjectItemInProjectsByUniqueName(project, projectconfig, platform);
-                if (currentProject == null)
-                    throw new InvalidOperationException();
-            }
-            else
-            {
-                currentProject = FindProjectItemInProjectsByUniqueName(project);
-                if (currentProject == null)
-                    throw new InvalidOperationException();
-            }
-
-            return currentProject;
-        }
-
-        private void BuildEvents_OnBuildBegin(vsBuildScope scope, vsBuildAction action)
-        {
-            if (action == vsBuildAction.vsBuildActionDeploy)
-                return;
-
-            RegisterLogger();
-
-            CurrentBuildState = BuildState.InProgress;
-
-            BuildStartTime = DateTime.Now;
-            BuildFinishTime = null;
-            BuildAction = (BuildActions) action;
-
-            switch (scope)
-            {
-                case vsBuildScope.vsBuildScopeSolution:
-                case vsBuildScope.vsBuildScopeBatch:
-                case vsBuildScope.vsBuildScopeProject:
-                    BuildScope = (BuildScopes) scope;
-                    break;
-
-                case 0:
-                    // Scope may be 0 in case of Clean solution, then Start (F5).
-                    BuildScope = (BuildScopes)vsBuildScope.vsBuildScopeSolution;
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException("scope");
-            }
-
-            if (scope == vsBuildScope.vsBuildScopeProject)
-            {
-                var selectedProjects = _dte.ActiveSolutionProjects as object[];
-                if (selectedProjects?.Length == 1)
-                {
-                    var projectItem = new ProjectItem();
-                    ViewModelHelper.UpdateProperties((Project)selectedProjects[0], projectItem);
-                    BuildScopeProject = projectItem;
-                }
-            }
-
-            _buildCancelled = false;
-            _buildCancelledInternally = false;
-
-            BuildedProjects.Clear();
-            lock (_buildingProjectsLockObject)
-            {
-                BuildingProjects.Clear();
-            }
-
-            BuildedSolution = null;
-            var solution = _dte.Solution;
-            BuildingSolution = new BuildedSolution(solution.FullName, solution.FileName);
-
-            OnBuildBegin(this, EventArgs.Empty);
-
-            _buildProcessCancellationToken = new CancellationTokenSource();
-            Task.Factory.StartNew(BuildEvents_BuildInProcess, _buildProcessCancellationToken.Token, _buildProcessCancellationToken.Token);
-        }
-
-        private void BuildEvents_BuildInProcess(object state)
-        {
-            lock (_buildProcessLockObject)
-            {
-                if (BuildAction == BuildActions.BuildActionDeploy)
-                    return;
-
-                var token = (CancellationToken)state;
-                while (!token.IsCancellationRequested)
-                {
-                    OnBuildProcess(this, EventArgs.Empty);
-
-                    for (int i = 0; i < BuildInProcessQuantumSleep * BuildInProcessCountOfQuantumSleep; i += BuildInProcessQuantumSleep)
-                    {
-                        if (token.IsCancellationRequested)
-                            break;
-
-                        System.Threading.Thread.Sleep(BuildInProcessQuantumSleep);
-                    }
-                }
-            }
+            OnBuildProjectDone(new BuildProjectEventArgs(currentProject, projectState, eventTime, buildedProject));
         }
 
         private void BuildEvents_OnBuildDone()
@@ -627,15 +509,270 @@ namespace BuildVision.Tool.Building
             BuildFinishTime = DateTime.Now;
             CurrentBuildState = BuildState.Done;
 
-            OnBuildDone(this, EventArgs.Empty);
+            OnBuildDone();
         }
 
-        public event EventHandler OnBuildBegin = delegate { };
-        public event EventHandler OnBuildProcess = delegate { };
-        public event EventHandler OnBuildDone = delegate { };
-        public event EventHandler OnBuildCancelled = delegate { };
-        public event EventHandler<BuildProjectEventArgs> OnBuildProjectBegin = delegate { };
-        public event EventHandler<BuildProjectEventArgs> OnBuildProjectDone = delegate { };
-        public event EventHandler<BuildErrorRaisedEventArgs> OnErrorRaised = delegate { };
+        private void OnBuildProjectBegin(BuildProjectEventArgs e)
+        {
+            try
+            {
+                ProjectItem currentProject = e.ProjectItem;
+                currentProject.State = e.ProjectState;
+                currentProject.BuildFinishTime = null;
+                currentProject.BuildStartTime = e.EventTime;
+
+                _viewModel.OnBuildProjectBegin();
+                if (BuildScope == BuildScopes.BuildScopeSolution &&
+                    (BuildAction == BuildActions.BuildActionBuild ||
+                     BuildAction == BuildActions.BuildActionRebuildAll))
+                {
+                    currentProject.BuildOrder = _viewModel.BuildProgressViewModel.CurrentQueuePosOfBuildingProject;
+                }
+
+                if (!_viewModel.ProjectsList.Contains(currentProject))
+                    _viewModel.ProjectsList.Add(currentProject);
+                else if (_viewModel.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
+                    _viewModel.OnPropertyChanged(nameof(BuildVisionPaneViewModel.GroupedProjectsList));
+                _viewModel.CurrentProject = currentProject;
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
+        private void OnBuildProjectDone(BuildProjectEventArgs e)
+        {
+            if (e.ProjectState == ProjectState.BuildError && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError)
+                CancelBuildAsync();
+
+            try
+            {
+                ProjectItem currentProject = e.ProjectItem;
+                currentProject.State = e.ProjectState;
+                currentProject.BuildFinishTime = DateTime.Now;
+                currentProject.UpdatePostBuildProperties(e.BuildedProjectInfo);
+
+                if (!_viewModel.ProjectsList.Contains(currentProject))
+                    _viewModel.ProjectsList.Add(currentProject);
+
+                if (ReferenceEquals(_viewModel.CurrentProject, e.ProjectItem) && BuildingProjects.Any())
+                    _viewModel.CurrentProject = BuildingProjects.Last();
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+
+            _viewModel.UpdateIndicators(this);
+
+            try
+            {
+                _viewModel.OnBuildProjectDone(e.BuildedProjectInfo);
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
+        private void OnBuildBegin()
+        {
+            try
+            {
+                _buildErrorIsNavigated = false;
+
+                ApplyToolWindowStateAction(_viewModel.ControlSettings.WindowSettings.WindowActionOnBuildBegin);
+
+                ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
+
+                string message = BuildMessages.GetBuildBeginMajorMessage(_viewModel.SolutionItem, this, _viewModel.ControlSettings.BuildMessagesSettings);
+
+                _statusBarNotificationService.ShowTextWithFreeze(message);
+                _viewModel.TextCurrentState = message;
+                _origTextCurrentState = message;
+                _viewModel.ImageCurrentState = BuildImages.GetBuildBeginImage(this);
+                _viewModel.ImageCurrentStateResult = null;
+
+                ViewModelHelper.UpdateProjects(_viewModel.SolutionItem, Services.Dte.Solution);
+                _viewModel.ProjectsList.Clear();
+
+                if (_viewModel.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
+                    _viewModel.ProjectsList.AddRange(_viewModel.SolutionItem.AllProjects);
+
+                _viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
+
+                int projectsCount = -1;
+                switch (BuildScope)
+                {
+                    case BuildScopes.BuildScopeSolution:
+                        if (_viewModel.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
+                        {
+                            projectsCount = _viewModel.ProjectsList.Count;
+                        }
+                        else
+                        {
+                            try
+                            {
+                                Solution solution = _dte.Solution;
+                                if (solution != null)
+                                    projectsCount = solution.GetProjects().Count;
+                            }
+                            catch (Exception ex)
+                            {
+                                ex.Trace("Unable to count projects in solution.");
+                            }
+                        }
+                        break;
+
+                    case BuildScopes.BuildScopeBatch:
+                    case BuildScopes.BuildScopeProject:
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(BuildScope));
+                }
+
+                _viewModel.OnBuildBegin(projectsCount, this);
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
+        private void OnBuildProcess()
+        {
+            try
+            {
+                var labelsSettings = _viewModel.ControlSettings.BuildMessagesSettings;
+                string msg = _origTextCurrentState + BuildMessages.GetBuildBeginExtraMessage(this, labelsSettings);
+
+                _viewModel.TextCurrentState = msg;
+                _statusBarNotificationService.ShowTextWithFreeze(msg);
+
+                var buildingProjects = BuildingProjects;
+                for (int i = 0; i < buildingProjects.Count; i++)
+                    buildingProjects[i].RaiseBuildElapsedTimeChanged();
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
+        private void OnBuildDone()
+        {
+            try
+            {
+                var settings = _viewModel.ControlSettings;
+
+                if (BuildScope == BuildScopes.BuildScopeSolution)
+                {
+                    foreach (var projectItem in _viewModel.ProjectsList)
+                    {
+                        if (projectItem.State == ProjectState.Pending)
+                            projectItem.State = ProjectState.Skipped;
+                    }
+                }
+
+                _viewModel.UpdateIndicators(this);
+
+                var message = BuildMessages.GetBuildDoneMessage(_viewModel.SolutionItem, this, settings.BuildMessagesSettings);
+                var buildDoneImage = BuildImages.GetBuildDoneImage(this, _viewModel.ProjectsList, out ControlTemplate stateImage);
+
+                _statusBarNotificationService.ShowText(message);
+                _viewModel.TextCurrentState = message;
+                _viewModel.ImageCurrentState = buildDoneImage;
+                _viewModel.ImageCurrentStateResult = stateImage;
+                _viewModel.CurrentProject = null;
+                _viewModel.OnBuildDone(this);
+
+                int errorProjectsCount = _viewModel.ProjectsList.Count(item => item.State.IsErrorState());
+                if (errorProjectsCount > 0 || BuildIsCancelled)
+                    ApplyToolWindowStateAction(settings.WindowSettings.WindowActionOnBuildError);
+                else
+                    ApplyToolWindowStateAction(settings.WindowSettings.WindowActionOnBuildSuccess);
+
+                bool navigateToBuildFailureReason = (!BuildedProjects.BuildWithoutErrors
+                                                     && settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone);
+                if (navigateToBuildFailureReason && BuildedProjects.Any(p => p.ErrorsBox.Errors.Any(NavigateToErrorItem)))
+                {
+                    _buildErrorIsNavigated = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
+        private void OnBuildCancelled()
+        {
+            _viewModel.OnBuildCancelled(this);
+        }
+
+        private async void OnErrorRaised(object sender, BuildErrorRaisedEventArgs args)
+        {
+            bool buildNeedToCancel = (args.ErrorLevel == ErrorLevel.Error && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError);
+            if (buildNeedToCancel)
+                await CancelBuildAsync();
+
+            bool navigateToBuildFailureReason = (!_buildErrorIsNavigated
+                                                 && args.ErrorLevel == ErrorLevel.Error
+                                                 && _viewModel.ControlSettings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnErrorRaised);
+            if (navigateToBuildFailureReason && args.ProjectInfo.ErrorsBox.Errors.Any(NavigateToErrorItem))
+            {
+                _buildErrorIsNavigated = true;
+            }
+        }
+
+        private bool NavigateToErrorItem(ErrorItem errorItem)
+        {
+            if (string.IsNullOrEmpty(errorItem?.File) || string.IsNullOrEmpty(errorItem?.ProjectFile))
+                return false;
+
+            try
+            {
+                var projectItem = _viewModel.ProjectsList.FirstOrDefault(x => x.FullName == errorItem.ProjectFile);
+                if (projectItem == null)
+                    return false;
+
+
+                var project = _dte.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName);
+                if (project == null)
+                    return false;
+
+                return project.NavigateToErrorItem(errorItem);
+            }
+            catch (Exception ex)
+            {
+                ex.Trace("Navigate to error item exception");
+                return true;
+            }
+        }
+
+        private void ApplyToolWindowStateAction(WindowStateAction windowStateAction)
+        {
+            switch (windowStateAction.State)
+            {
+                case WindowState.Nothing:
+                    break;
+                case WindowState.Show:
+                    _toolWindowManager.Show();
+                    break;
+                case WindowState.ShowNoActivate:
+                    _toolWindowManager.ShowNoActivate();
+                    break;
+                case WindowState.Hide:
+                    _toolWindowManager.Hide();
+                    break;
+                case WindowState.Close:
+                    _toolWindowManager.Close();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(windowStateAction));
+            }
+        }
     }
 }

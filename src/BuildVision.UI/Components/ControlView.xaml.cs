@@ -24,7 +24,7 @@ namespace BuildVision.UI
     /// </summary>
     public partial class ControlView : UserControl
     {
-        private ControlViewModel _viewModel;
+        private BuildVisionPaneViewModel _viewModel;
 
         public ControlView()
         {
@@ -60,7 +60,7 @@ namespace BuildVision.UI
         {
             Debug.Assert(DataContext != null);
 
-            _viewModel = (ControlViewModel)DataContext;
+            _viewModel = (BuildVisionPaneViewModel)DataContext;
             _viewModel.SetGridColumnsRef(Grid.Columns);
             _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         }

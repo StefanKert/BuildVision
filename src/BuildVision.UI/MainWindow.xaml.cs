@@ -16,7 +16,7 @@ namespace BuildVision.UI
         {
             InitializeComponent();
 
-            var controlViewModel = new ControlViewModel();
+            var controlViewModel = new BuildVisionPaneViewModel();
             ControlView.DataContext = controlViewModel;
         }
 

@@ -10,14 +10,15 @@ using BuildVision.UI.Settings.Models;
 namespace BuildVision.Views.Settings
 {
     public abstract class SettingsDialogPage<TControl, TSettings> : UIElementDialogPage
-        where TControl : FrameworkElement, new() 
+        where TControl : FrameworkElement, new()
         where TSettings : SettingsBase, new()
-  {
+    {
         private static bool _notifySettingsChangedOnce;
 
         private TSettings _editSettings;
 
         private FrameworkElement _ctrl;
+        private IPackageSettingsProvider _packageSettingsProvider;
 
         protected abstract TSettings Settings { get; set; }
 
@@ -37,6 +38,7 @@ namespace BuildVision.Views.Settings
             if (_ctrl.DataContext == null)
                 _ctrl.DataContext = _editSettings;
 
+            _packageSettingsProvider = Services.DefaultExportProvider.GetExportedValue<IPackageSettingsProvider>();
             base.OnActivate(e);
         }
 
@@ -46,7 +48,7 @@ namespace BuildVision.Views.Settings
             {
                 _notifySettingsChangedOnce = true;
                 Settings = _editSettings;
-                Package.SaveSettings();
+                _packageSettingsProvider.Save();
             }
 
             base.OnApply(args);
@@ -55,13 +57,13 @@ namespace BuildVision.Views.Settings
         protected override void OnClosed(EventArgs e)
         {
             _editSettings = null;
-            if(_ctrl != null)
+            if (_ctrl != null)
                 _ctrl.DataContext = null;
 
             if (_notifySettingsChangedOnce)
             {
                 _notifySettingsChangedOnce = false;
-                Package.NotifyControlSettingsChanged();
+                //Package.NotifyControlSettingsChanged();
             }
 
             base.OnClosed(e);
@@ -70,22 +72,11 @@ namespace BuildVision.Views.Settings
         public override void ResetSettings()
         {
             Settings = new TSettings();
-            Package.SaveSettings();
-            Package.NotifyControlSettingsChanged();
+            _packageSettingsProvider.Save();
 
             base.ResetSettings();
         }
 
-        protected ControlSettings ControlSettings => Package.ControlSettings;
-
-        protected IPackageContext Package
-        {
-            get
-            {
-                var package = (IPackageContext)GetService(typeof(BuildVisionPackage));
-                Debug.Assert(package != null);
-                return package;
-            }
-        }
+        protected ControlSettings ControlSettings => _packageSettingsProvider.Settings;
     }
 }

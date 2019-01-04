@@ -10,6 +10,8 @@ namespace BuildVision.Core
         public const string GuidBuildVisionCmdSetString = "caca30de-6571-483c-b8a1-b6a067964af1";
         public const string GuidBuildVisionToolWindowString = "e1d4b2b5-934e-4b0e-96cc-1c0449764501";
 
+        public const string GuidBuildVisionServiceProvider = "6671760c-72c3-49c4-a5c2-c97221bf88fc";
+
         public static readonly Guid GuidBuildVisionPackage = new Guid(GuidBuildVisionPackageString);
         public static readonly Guid GuidBuildVisionCmdSet = new Guid(GuidBuildVisionCmdSetString);
         public static readonly Guid GuidBuildVisionToolWindow = new Guid(GuidBuildVisionToolWindowString);

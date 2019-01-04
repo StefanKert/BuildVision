@@ -68,6 +68,7 @@
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
@@ -91,6 +92,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\BuildVisionPackage.cs" />
+    <Compile Include="Core\IStatusBarNotificationService.cs" />
+    <Compile Include="Core\ServiceProviderExports.cs" />
+    <Compile Include="Core\ServiceProviderPackage.cs" />
+    <Compile Include="Core\Services.cs" />
+    <Compile Include="Core\StatusBarNotificationService.cs" />
     <Compile Include="Helpers\ProjectItemExtensions.cs" />
     <Compile Include="Helpers\SolutionProjectsExtensions.cs" />
     <Compile Include="Helpers\ProjectExtensions.cs" />
@@ -98,8 +104,11 @@
     <Compile Include="Helpers\PropertiesExtensions.cs" />
     <Compile Include="Helpers\UIHierarchyExtensions.cs" />
     <Compile Include="Tool\Building\BuildContext.cs" />
+    <Compile Include="Tool\Building\BuildManager.cs" />
     <Compile Include="Tool\Building\BuildOutputLogger.cs" />
     <Compile Include="Core\IPackageContext.cs" />
+    <Compile Include="Tool\Building\IVsItemLocatorService.cs" />
+    <Compile Include="Tool\Building\VsItemLocatorService.cs" />
     <Compile Include="Tool\Views\Settings\BuildMessagesSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -109,6 +118,8 @@
     <Compile Include="Tool\Views\Settings\GridSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Tool\Views\Settings\IPackageSettingsProvider.cs" />
+    <Compile Include="Tool\Views\Settings\PackageSettingsProvider.cs" />
     <Compile Include="Tool\Views\Settings\ProjectItemSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -118,8 +129,7 @@
     <Compile Include="Tool\Views\Settings\WindowSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Tool.cs" />
-    <Compile Include="Tool\ToolWindow.cs" />
+    <Compile Include="Tool\BuildVisionPane.cs" />
     <Compile Include="Core\PackageGuids.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\PackageIds.cs" />
@@ -215,6 +225,12 @@
     </PackageReference>
     <PackageReference Include="EnvDTE90a">
       <Version>9.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.ComponentModelHost">
+      <Version>15.8.525</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK.Analyzers">
+      <Version>15.8.36</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Shell.14.0">
       <Version>14.3.25407</Version>

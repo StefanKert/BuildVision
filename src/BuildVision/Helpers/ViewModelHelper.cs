@@ -10,6 +10,7 @@ using BuildVision.UI.Common.Logging;
 
 using ProjectItem = BuildVision.UI.Models.ProjectItem;
 using BuildVision.UI.Models;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace BuildVision.Tool.Models
 {

@@ -7,9 +7,14 @@ using System.Windows;
 using BuildVision.Common;
 using BuildVision.Tool;
 using BuildVision.Tool.Building;
+using BuildVision.Tool.Models;
 using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Extensions;
+using BuildVision.UI.Helpers;
+using BuildVision.UI.Models.Indicators.Core;
 using BuildVision.UI.Settings.Models;
+using BuildVision.UI.ViewModels;
 using BuildVision.Views.Settings;
 using EnvDTE;
 using Microsoft.VisualStudio;
@@ -21,6 +26,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace BuildVision.Core
 {
+
     // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
     // a package.
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
@@ -30,7 +36,7 @@ namespace BuildVision.Core
     // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
     // This attribute registers a tool window exposed by this package.
-    [ProvideToolWindow(typeof(ToolWindow))]
+    [ProvideToolWindow(typeof(BuildVisionPane))]
     [Guid(PackageGuids.GuidBuildVisionPackageString)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionOpening_string, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideBindingPath]
@@ -38,16 +44,16 @@ namespace BuildVision.Core
     // TODO: Add ProvideProfileAttribute for each DialogPage and implement IVsUserSettings, IVsUserSettingsQuery.
     //// [ProvideProfile(typeof(GeneralSettingsDialogPage), SettingsCategoryName, "General Options", 0, 0, true)]
     // TODO: ProvideOptionPage keywords.
-    [ProvideOptionPage(typeof(GeneralSettingsDialogPage), settingsCategoryName, "General", 0, 0, true)]
-    [ProvideOptionPage(typeof(WindowSettingsDialogPage), settingsCategoryName, "Tool Window", 0, 0, true)]
-    [ProvideOptionPage(typeof(GridSettingsDialogPage), settingsCategoryName, "Projects Grid", 0, 0, true)]
-    [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), settingsCategoryName, "Build Messages", 0, 0, true)]
-    [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), settingsCategoryName, "Project Item", 0, 0, true)]
+    [ProvideOptionPage(typeof(GeneralSettingsDialogPage), "BuildVision", "General", 0, 0, true)]
+    [ProvideOptionPage(typeof(WindowSettingsDialogPage), "BuildVision", "Tool Window", 0, 0, true)]
+    [ProvideOptionPage(typeof(GridSettingsDialogPage), "BuildVision", "Projects Grid", 0, 0, true)]
+    [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), "BuildVision", "Build Messages", 0, 0, true)]
+    [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
     public sealed partial class BuildVisionPackage : AsyncPackage, IPackageContext
     {
-        private const string settingsCategoryName = "BuildVision";
-        private const string settingsPropertyName = "Settings";
         private DTE _dte;
+        private SolutionEvents _solutionEvents;
+        private BuildVisionPaneViewModel _viewModel;
 
         public ControlSettings ControlSettings { get; set; }
 
@@ -62,34 +68,55 @@ namespace BuildVision.Core
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
-
             _dte = await GetServiceAsync(typeof(DTE)) as DTE;
             if (await GetServiceAsync(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
             {
                 var toolwndCommandId = new CommandID(PackageGuids.GuidBuildVisionCmdSet, (int) PackageIds.CmdIdBuildVisionToolWindow);
-                var menuToolWin = new MenuCommand(ShowToolWindow, toolwndCommandId);
+                var menuToolWin = new OleMenuCommand(ShowToolWindowAsync, toolwndCommandId);
                 mcs.AddCommand(menuToolWin);
             }
 
-            ControlSettings = LoadSettings(this);
-            var toolWindow = GetWindowPane(typeof(ToolWindow));
+            _solutionEvents = _dte.Events.SolutionEvents;
+            _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
+            _solutionEvents.Opened += SolutionEvents_Opened;
+
+            var toolWindow = GetWindowPane(typeof(BuildVisionPane));
             IPackageContext packageContext = this;
-            var viewModel = ToolWindow.GetViewModel(toolWindow);
-            var buildContext = new BuildContext(packageContext, _dte, _dte.Events.BuildEvents, _dte.Events.WindowEvents, _dte.Events.CommandEvents, viewModel);
-            var tool = new Tool.Tool(packageContext, _dte, (IVsWindowFrame) toolWindow.Frame, buildContext, buildContext, viewModel);
+            _viewModel = BuildVisionPane.GetViewModel(toolWindow);
+            ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
+            //var buildContext = new BuildContext(packageContext, _dte, _dte.Events.BuildEvents, _dte.Events.WindowEvents, _dte.Events.CommandEvents, viewModel);
         }
 
-        private void ShowToolWindow(object sender, EventArgs e)
+        private void SolutionEvents_Opened()
+        {
+            ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
+            _viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
+        }
+
+        private void SolutionEvents_AfterClosing()
+        {
+            _viewModel.TextCurrentState = Resources.BuildDoneText_BuildNotStarted;
+            _viewModel.ImageCurrentState = VectorResources.TryGet(BuildImages.BuildActionResourcesUri, "StandBy");
+            _viewModel.ImageCurrentStateResult = null;
+
+            ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
+            _viewModel.ProjectsList.Clear();
+            _viewModel.ResetIndicators(ResetIndicatorMode.Disable);
+            _viewModel.BuildProgressViewModel.ResetTaskBarInfo();
+        }
+
+        private async void ShowToolWindowAsync(object sender, EventArgs e)
         {
             try
             {
                 // Get the instance number 0 of this tool window. This window is single instance so this instance
                 // is actually the only one.
                 // The last flag is set to true so that if the tool window does not exists it will be created.
-                var window = FindToolWindow(typeof(ToolWindow), 0, true);
+                var window = FindToolWindow(typeof(BuildVisionPane), 0, true);
                 if (window == null || window.Frame == null)
                     throw new InvalidOperationException(Resources.CanNotCreateWindow);
 
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var windowFrame = (IVsWindowFrame)window.Frame;
                 ErrorHandler.ThrowOnFailure(windowFrame.Show());
             }
@@ -97,11 +124,6 @@ namespace BuildVision.Core
             {
                 ex.TraceUnknownException();
             }
-        }
-
-        public void SaveSettings()
-        {
-            SaveSettings(ControlSettings, this);
         }
 
         public void NotifyControlSettingsChanged()
@@ -114,49 +136,10 @@ namespace BuildVision.Core
             return FindToolWindow(windowType, 0, false) ?? FindToolWindow(windowType, 0, true);
         }
 
-        private static ControlSettings LoadSettings(IServiceProvider serviceProvider)
-        {
-            try
-            {
-                var store = GetWritableSettingsStore(serviceProvider);
-                if (store.PropertyExists(settingsCategoryName, settingsPropertyName))
-                {
-                    var legacySerialized = new LegacyConfigurationSerializer<ControlSettings>();
-                    var value = store.GetString(settingsCategoryName, settingsPropertyName);
-                    return legacySerialized.Deserialize(value);
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.Trace("Error when trying to load settings: " + ex.Message, EventLogEntryType.Error);
-                MessageBox.Show("An error occurred when trying to load current settings. To make sure everything is still working the settings are set to default.");
-            }
-
-            return new ControlSettings();
-        }
-
-        private static void SaveSettings(ControlSettings settings, IServiceProvider serviceProvider)
-        {
-            var store = GetWritableSettingsStore(serviceProvider);
-            if (!store.CollectionExists(settingsCategoryName))
-                store.CreateCollection(settingsCategoryName);
-
-            var legacySerializer = new LegacyConfigurationSerializer<ControlSettings>();
-            var value = legacySerializer.Serialize(settings);
-            store.SetString(settingsCategoryName, settingsPropertyName, value);
-        }
-
         public async Task ExecuteCommandAsync(string commandName)
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
             _dte.ExecuteCommand(commandName);
-        }
-
-        private static WritableSettingsStore GetWritableSettingsStore(IServiceProvider serviceProvider)
-        {
-            var shellSettingsManager = new ShellSettingsManager(serviceProvider);
-            var writableSettingsStore = shellSettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
-            return writableSettingsStore;
         }
     }
 }

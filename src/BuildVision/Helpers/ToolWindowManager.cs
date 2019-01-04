@@ -23,7 +23,7 @@ namespace BuildVision.Helpers
             if (_windowFrame == null)
                 throw new InvalidOperationException("Unable to get IVsWindowFrame instance.");
 
-            _window = GetWindowInstance(_dte, typeof(ToolWindow).GUID);
+            _window = GetWindowInstance(_dte, typeof(BuildVisionPane).GUID);
             if (_window == null)
                 throw new InvalidOperationException("Unable to get Window instance.");
         }

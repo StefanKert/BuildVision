@@ -22,10 +22,13 @@ using BuildVision.UI.Settings.Models.Columns;
 using SortDescription = BuildVision.UI.Settings.Models.Sorting.SortDescription;
 using BuildVision.UI.Settings.Models;
 using BuildVision.Helpers;
+using System.ComponentModel.Composition;
+using System.Text;
 
 namespace BuildVision.UI.ViewModels
 {
-    public class ControlViewModel : BindableBase
+    [Export(typeof(IBuildVisionPaneViewModel))]
+    public class BuildVisionPaneViewModel : BindableBase, IBuildVisionPaneViewModel
     {
         private BuildState _buildState;
         private IBuildInfo _buildInfo;
@@ -211,7 +214,7 @@ namespace BuildVision.UI.ViewModels
             set => SetProperty(ref _selectedProjectItem, value);
         }
 
-        public ControlViewModel(ControlModel model, ControlSettings controlSettings)
+        public BuildVisionPaneViewModel(ControlModel model, ControlSettings controlSettings)
         {
             Model = model;
             ControlSettings = controlSettings;
@@ -221,7 +224,7 @@ namespace BuildVision.UI.ViewModels
         /// <summary>
         /// Uses as design-time ViewModel. 
         /// </summary>
-        internal ControlViewModel()
+        internal BuildVisionPaneViewModel()
         {
             Model = new ControlModel();
             ControlSettings = new ControlSettings();
@@ -383,6 +386,23 @@ namespace BuildVision.UI.ViewModels
             return (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !SelectedProjectItem.IsBatchBuildProject);
         }
 
+        private void CopyErrorMessageToClipboard(ProjectItem projectItem)
+        {
+            try
+            {
+                var errors = new StringBuilder();
+                foreach (var errorItem in projectItem.ErrorsBox.Errors)
+                {
+                    errors.AppendLine(string.Format("{0}({1},{2},{3},{4}): error {5}: {6}", errorItem.File, errorItem.LineNumber, errorItem.ColumnNumber, errorItem.EndLineNumber, errorItem.EndColumnNumber, errorItem.Code, errorItem.Message));
+                }
+                Clipboard.SetText(errors.ToString());
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
         #region Commands
 
         public ICommand ReportIssues => new RelayCommand(obj => GithubHelper.OpenBrowserWithPrefilledIssue());
@@ -436,6 +456,5 @@ namespace BuildVision.UI.ViewModels
         public event Action CancelBuildSolution;
         public event Action<ProjectItem> ProjectCopyBuildOutputFilesToClipBoard;
         public event Action<ProjectItem, int> RaiseCommandForSelectedProject;
-        public event Action<ProjectItem> CopyErrorMessageToClipboard;
     }
 }

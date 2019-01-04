@@ -28,11 +28,11 @@ namespace BuildVision.Tool
     /// in order to use its implementation of the <c>IVsUIElementPane</c> interface.
     /// </summary>
     [Guid(PackageGuids.GuidBuildVisionToolWindowString)]
-    public sealed class ToolWindow : ToolWindowPane
+    public sealed class BuildVisionPane : ToolWindowPane
     {
         private bool _controlCreatedSuccessfully;
 
-        public ToolWindow()
+        public BuildVisionPane()
             :base(null)
         {
             Caption = Resources.ToolWindowTitle;
@@ -50,8 +50,6 @@ namespace BuildVision.Tool
             FrameworkElement.LanguageProperty.OverrideMetadata(
                 typeof(FrameworkElement), 
                 new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
-
-            // Content has been set in Initialize(), because Package == null now.
         }
 
         protected override void Initialize()
@@ -76,7 +74,7 @@ namespace BuildVision.Tool
         private ControlView CreateControlView()
         {
             var packageContext = (IPackageContext)Package;
-            var viewModel = new ControlViewModel(new ControlModel(), packageContext.ControlSettings);
+            var viewModel = new BuildVisionPaneViewModel(new ControlModel(), null);//packageContext.ControlSettings);
             packageContext.ControlSettingsChanged += (settings) =>
             {
                 viewModel.OnControlSettingsChanged(settings, buildInfo => BuildMessages.GetBuildDoneMessage(viewModel.SolutionItem, buildInfo, viewModel.ControlSettings.BuildMessagesSettings));
@@ -95,13 +93,13 @@ namespace BuildVision.Tool
             viewModel.SyncColumnSettings();
 
             var packageContext = (IPackageContext)Package;
-            packageContext.SaveSettings();
+            //packageContext.SaveSettings();
         }
 
-        public static ControlViewModel GetViewModel(ToolWindowPane toolWindow)
+        public static BuildVisionPaneViewModel GetViewModel(ToolWindowPane toolWindow)
         {
             var controlView = (ControlView)toolWindow.Content;
-            return (ControlViewModel)controlView.DataContext;
+            return (BuildVisionPaneViewModel)controlView.DataContext;
         }
     }
 }

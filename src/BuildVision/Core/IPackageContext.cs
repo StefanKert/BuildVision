@@ -8,8 +8,6 @@ namespace BuildVision.Core
 {
     public interface IPackageContext
     {
-        ControlSettings ControlSettings { get; }
-        void SaveSettings();
         event Action<ControlSettings> ControlSettingsChanged;
         void NotifyControlSettingsChanged();
         void ShowOptionPage(Type optionsPageType);

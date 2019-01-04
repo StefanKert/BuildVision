@@ -31,7 +31,7 @@
             </ResourceDictionary.MergedDictionaries>
 
 
-            <viewModels:ControlViewModel x:Key="DesignViewModel"/>
+            <viewModels:BuildVisionPaneViewModel x:Key="DesignViewModel"/>
             <helpers:BindingProxy x:Key="proxy" Data="{Binding}" />
 
             <CollectionViewSource x:Key="GridColumnsCollection" Source="{Binding ElementName=Grid, Path=Columns}" />

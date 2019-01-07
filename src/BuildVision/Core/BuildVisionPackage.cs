@@ -22,6 +22,7 @@ using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Shell.Settings;
+using VSLangProj;
 using Task = System.Threading.Tasks.Task;
 
 namespace BuildVision.Core
@@ -38,22 +39,26 @@ namespace BuildVision.Core
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(BuildVisionPane))]
     [Guid(PackageGuids.GuidBuildVisionPackageString)]
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionOpening_string, PackageAutoLoadFlags.BackgroundLoad)]
+    //[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionOpening_string, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideBindingPath]
     [ProvideBindingPath(SubPath = "Lib")]
     // TODO: Add ProvideProfileAttribute for each DialogPage and implement IVsUserSettings, IVsUserSettingsQuery.
-    //// [ProvideProfile(typeof(GeneralSettingsDialogPage), SettingsCategoryName, "General Options", 0, 0, true)]
+    [ProvideProfile(typeof(GeneralSettingsDialogPage), SettingsCategoryName, "General Options", 0, 0, true)]
     // TODO: ProvideOptionPage keywords.
     [ProvideOptionPage(typeof(GeneralSettingsDialogPage), "BuildVision", "General", 0, 0, true)]
     [ProvideOptionPage(typeof(WindowSettingsDialogPage), "BuildVision", "Tool Window", 0, 0, true)]
     [ProvideOptionPage(typeof(GridSettingsDialogPage), "BuildVision", "Projects Grid", 0, 0, true)]
     [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), "BuildVision", "Build Messages", 0, 0, true)]
     [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
-    public sealed partial class BuildVisionPackage : AsyncPackage, IPackageContext
+    public sealed partial class BuildVisionPackage : AsyncPackage, IPackageContext, IVsUpdateSolutionEvents2
     {
         private DTE _dte;
         private SolutionEvents _solutionEvents;
         private BuildVisionPaneViewModel _viewModel;
+        private IVsSolutionBuildManager2 _solutionBuildManager;
+        private uint _updateSolutionEventsCookie;
+
+        private IVsSolution2 _vsSolution;
 
         public ControlSettings ControlSettings { get; set; }
 
@@ -76,21 +81,42 @@ namespace BuildVision.Core
                 mcs.AddCommand(menuToolWin);
             }
 
+            _solutionBuildManager = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
+            if (_solutionBuildManager != null)
+            {
+                _solutionBuildManager.AdviseUpdateSolutionEvents(this, out _updateSolutionEventsCookie);
+            }
+
             _solutionEvents = _dte.Events.SolutionEvents;
             _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
             _solutionEvents.Opened += SolutionEvents_Opened;
 
-            var toolWindow = GetWindowPane(typeof(BuildVisionPane));
+            //var toolWindow = GetWindowPane(typeof(BuildVisionPane));
             IPackageContext packageContext = this;
-            _viewModel = BuildVisionPane.GetViewModel(toolWindow);
-            ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
+            //_viewModel = BuildVisionPane.GetViewModel(toolWindow);
+            //ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
             //var buildContext = new BuildContext(packageContext, _dte, _dte.Events.BuildEvents, _dte.Events.WindowEvents, _dte.Events.CommandEvents, viewModel);
         }
 
         private void SolutionEvents_Opened()
         {
+            SetVsSolution();
+
             ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
             _viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
+        }
+
+        private void SetVsSolution()
+        {
+            if (_vsSolution == null)
+                _vsSolution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
+        }
+
+        private Project GetProject(IVsHierarchy pHierProj)
+        {
+            object objProj;
+            pHierProj.GetProperty(VSConstants.VSITEMID_ROOT, (int) __VSHPROPID.VSHPROPID_ExtObject, out objProj);
+            return objProj as Project;
         }
 
         private void SolutionEvents_AfterClosing()
@@ -140,6 +166,51 @@ namespace BuildVision.Core
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
             _dte.ExecuteCommand(commandName);
+        }
+
+        public int UpdateSolution_Begin(ref int pfCancelUpdate)
+        {
+            Console.WriteLine($"UpdateSolution_Begin");
+            return 0;
+        }
+
+        public int UpdateSolution_Done(int fSucceeded, int fModified, int fCancelCommand)
+        {
+            Console.WriteLine($"UpdateSolution_Done: fSucceeded {fSucceeded}, fModified {fModified}, fCancelCommand {fCancelCommand}");
+            return 0;
+        }
+
+        public int UpdateSolution_StartUpdate(ref int pfCancelUpdate)
+        {
+            Console.WriteLine($"UpdateSolution_StartUpdate");
+            return 0;
+        }
+
+        public int UpdateSolution_Cancel()
+        {
+            Console.WriteLine($"UpdateSolution_Cancel");
+            return 0;
+        }
+
+        public int OnActiveProjectCfgChange(IVsHierarchy pIVsHierarchy)
+        {
+            var proj = GetProject(pIVsHierarchy);
+            Console.WriteLine($"OnActiveProjectCfgChange {proj.UniqueName}");
+            return 0;
+        }
+
+        public int UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)
+        {
+            var proj = GetProject(pHierProj);
+            Console.WriteLine($"UpdateProjectCfg_Begin {proj.UniqueName}");
+            return 0;
+        }
+
+        public int UpdateProjectCfg_Done(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, int fSuccess, int fCancel)
+        {
+            var proj = GetProject(pHierProj);
+            Console.WriteLine($"UpdateProjectCfg_Done {proj.UniqueName}: dwAction {dwAction}, fSuccess {fSuccess}, fCancel {fCancel}");
+            return 0;
         }
     }
 }

@@ -97,6 +97,8 @@
     <Compile Include="Core\ServiceProviderPackage.cs" />
     <Compile Include="Core\Services.cs" />
     <Compile Include="Core\StatusBarNotificationService.cs" />
+    <Compile Include="Helpers\BuildEventContextExtensions.cs" />
+    <Compile Include="Helpers\BuildMessageEventArgsExtensions.cs" />
     <Compile Include="Helpers\ProjectItemExtensions.cs" />
     <Compile Include="Helpers\SolutionProjectsExtensions.cs" />
     <Compile Include="Helpers\ProjectExtensions.cs" />

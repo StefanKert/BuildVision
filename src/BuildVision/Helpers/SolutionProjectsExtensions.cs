@@ -4,6 +4,7 @@ using EnvDTE;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using System.Runtime.InteropServices;
 using EnvDTE80;
+using BuildVision.UI.Helpers;
 
 namespace BuildVision.Helpers
 {

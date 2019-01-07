@@ -56,7 +56,7 @@ namespace BuildVision.Tool.Building
                                                             | BindingFlags.Public
                                                             | BindingFlags.Instance;
 
-                BuildManager buildManager = BuildManager.DefaultBuildManager;
+                var buildManager = Microsoft.Build.Execution.BuildManager.DefaultBuildManager;
                 Type buildHostType = buildManager.GetType().Assembly.GetType("Microsoft.Build.BackEnd.IBuildComponentHost");
                 PropertyInfo loggingSeviceProperty = buildHostType.GetProperty("LoggingService", InterfacePropertyFlags);
 

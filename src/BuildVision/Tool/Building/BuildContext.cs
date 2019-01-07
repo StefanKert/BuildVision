@@ -37,7 +37,6 @@ namespace BuildVision.Tool.Building
         private const int BuildInProcessQuantumSleep = 50;
         private const string CancelBuildCommand = "Build.Cancel";
 
-        private IVsStatusbar _dteStatusBar;
         private readonly object _buildingProjectsLockObject;
         private readonly object _buildProcessLockObject = new object();
         private readonly IVsItemLocatorService _locatorService;
@@ -101,13 +100,6 @@ namespace BuildVision.Tool.Building
             _commandEvents.AfterExecute += CommandEvents_AfterExecute;
         }
 
-        public async Task InitializeAsync(Microsoft.VisualStudio.Shell.IAsyncServiceProvider provider, CancellationToken cancellationToken)
-        {
-            _dteStatusBar = await provider.GetServiceAsync(typeof(IVsStatusbar)) as IVsStatusbar;
-            if (_dteStatusBar == null)
-                TraceManager.TraceError("Unable to get IVsStatusbar instance.");
-        }
-
         public void OverrideBuildProperties(BuildActions? buildAction = null, BuildScopes? buildScope = null)
         {
             BuildAction = buildAction ?? BuildAction;
@@ -158,22 +150,13 @@ namespace BuildVision.Tool.Building
 
         private bool VerifyLoggerBuildEvent(BuildOutputLogger loggerSender, BuildEventArgs eventArgs, ErrorLevel errorLevel)
         {
-            var bec = eventArgs.BuildEventContext;
-            bool becIsInvalid = (bec == null
-                                 || bec == BuildEventContext.Invalid
-                                 || bec.ProjectContextId == BuildEventContext.InvalidProjectContextId
-                                 || bec.ProjectInstanceId == BuildEventContext.InvalidProjectInstanceId);
-            if (becIsInvalid)
+            if (eventArgs.BuildEventContext.IsBuildEventContextInvalid())
                 return false;
 
             if (errorLevel == ErrorLevel.Message)
             {
                 var messageEventArgs = (BuildMessageEventArgs)eventArgs;
-                bool isUserMessage = (messageEventArgs.Importance == MessageImportance.High && loggerSender.IsVerbosityAtLeast(LoggerVerbosity.Minimal))
-                                    || (messageEventArgs.Importance == MessageImportance.Normal && loggerSender.IsVerbosityAtLeast(LoggerVerbosity.Normal))
-                                    || (messageEventArgs.Importance == MessageImportance.Low && loggerSender.IsVerbosityAtLeast(LoggerVerbosity.Detailed));
-
-                if (!isUserMessage)
+                if (!messageEventArgs.IsUserMessage(loggerSender))
                     return false;
             }
 

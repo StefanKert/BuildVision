@@ -74,7 +74,7 @@ namespace BuildVision.Tool
         private ControlView CreateControlView()
         {
             var packageContext = (IPackageContext)Package;
-            var viewModel = new BuildVisionPaneViewModel(new ControlModel(), null);//packageContext.ControlSettings);
+            var viewModel = new BuildVisionPaneViewModel(new ControlModel(), new UI.Settings.Models.ControlSettings());//packageContext.ControlSettings);
             packageContext.ControlSettingsChanged += (settings) =>
             {
                 viewModel.OnControlSettingsChanged(settings, buildInfo => BuildMessages.GetBuildDoneMessage(viewModel.SolutionItem, buildInfo, viewModel.ControlSettings.BuildMessagesSettings));

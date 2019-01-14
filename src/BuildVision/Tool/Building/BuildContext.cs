@@ -41,7 +41,6 @@ namespace BuildVision.Tool.Building
         private readonly object _buildProcessLockObject = new object();
         private readonly IVsItemLocatorService _locatorService;
         private readonly IStatusBarNotificationService _statusBarNotificationService;
-        private readonly IStatusBarNotificationService statusBarNotificationService;
         private readonly IPackageContext _packageContext;
         private readonly DTE _dte;
         private readonly Solution _solution;
@@ -135,130 +134,10 @@ namespace BuildVision.Tool.Building
             const LoggerVerbosity LoggerVerbosity = LoggerVerbosity.Quiet;
             RegisterLoggerResult result = BuildOutputLogger.Register(_parsingErrorsLoggerId, LoggerVerbosity, out _buildLogger);
 
-            if (result == RegisterLoggerResult.RegisterSuccess)
-            {
-                var eventSource = _buildLogger.EventSource;
-                eventSource.MessageRaised += (s, e) => EventSource_ErrorRaised(_buildLogger, e, ErrorLevel.Message);
-                eventSource.WarningRaised += (s, e) => EventSource_ErrorRaised(_buildLogger, e, ErrorLevel.Warning);
-                eventSource.ErrorRaised += (s, e) => EventSource_ErrorRaised(_buildLogger, e, ErrorLevel.Error);
-            }
-            else if (result == RegisterLoggerResult.AlreadyExists)
+            if (result == RegisterLoggerResult.AlreadyExists)
             {
                 _buildLogger.Projects?.Clear();
             }
-        }
-
-        private bool VerifyLoggerBuildEvent(BuildOutputLogger loggerSender, BuildEventArgs eventArgs, ErrorLevel errorLevel)
-        {
-            if (eventArgs.BuildEventContext.IsBuildEventContextInvalid())
-                return false;
-
-            if (errorLevel == ErrorLevel.Message)
-            {
-                var messageEventArgs = (BuildMessageEventArgs)eventArgs;
-                if (!messageEventArgs.IsUserMessage(loggerSender))
-                    return false;
-            }
-
-            return true;
-        }
-
-        private void EventSource_ErrorRaised(BuildOutputLogger loggerSender, LazyFormattedBuildEventArgs e, ErrorLevel errorLevel)
-        {
-            try
-            {
-                bool verified = VerifyLoggerBuildEvent(loggerSender, e, errorLevel);
-                if (!verified)
-                    return;
-
-                int projectInstanceId = e.BuildEventContext.ProjectInstanceId;
-                int projectContextId = e.BuildEventContext.ProjectContextId;
-
-                var projectEntry = loggerSender.Projects.Find(t => t.InstanceId == projectInstanceId && t.ContextId == projectContextId);
-                if (projectEntry == null)
-                {
-                    TraceManager.Trace(string.Format("Project entry not found by ProjectInstanceId='{0}' and ProjectContextId='{1}'.", projectInstanceId, projectContextId), EventLogEntryType.Warning);
-                    return;
-                }
-                if (projectEntry.IsInvalid)
-                    return;
-
-                if (!_locatorService.GetProjectItem(_viewModel, BuildScope, projectEntry, out var projectItem))
-                {
-                    projectEntry.IsInvalid = true;
-                    return;
-                }
-
-                BuildedProject buildedProject = BuildedProjects[projectItem];
-                var errorItem = new ErrorItem(errorLevel, (eI) =>
-                {
-                    _dte.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName).NavigateToErrorItem(eI);
-                });
-
-                switch (errorLevel)
-                {
-                    case ErrorLevel.Message:
-                        Init(errorItem, (BuildMessageEventArgs)e);
-                        break;
-
-                    case ErrorLevel.Warning:
-                        Init(errorItem, (BuildWarningEventArgs)e);
-                        break;
-
-                    case ErrorLevel.Error:
-                        Init(errorItem, (BuildErrorEventArgs)e);
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException("errorLevel");
-                }
-                errorItem.VerifyValues();
-                buildedProject.ErrorsBox.Add(errorItem);
-                OnErrorRaised(this, new BuildErrorRaisedEventArgs(errorLevel, buildedProject));
-            }
-            catch (Exception ex)
-            {
-                ex.TraceUnknownException();
-            }
-        }
-
-        private void Init(ErrorItem item, BuildErrorEventArgs e)
-        {
-            item.Code = e.Code;
-            item.File = e.File;
-            item.ProjectFile = e.ProjectFile;
-            item.LineNumber = e.LineNumber;
-            item.ColumnNumber = e.ColumnNumber;
-            item.EndLineNumber = e.EndLineNumber;
-            item.EndColumnNumber = e.EndColumnNumber;
-            item.Subcategory = e.Subcategory;
-            item.Message = e.Message;
-        }
-
-        private void Init(ErrorItem item, BuildWarningEventArgs e)
-        {
-            item.Code = e.Code;
-            item.File = e.File;
-            item.ProjectFile = e.ProjectFile;
-            item.LineNumber = e.LineNumber;
-            item.ColumnNumber = e.ColumnNumber;
-            item.EndLineNumber = e.EndLineNumber;
-            item.EndColumnNumber = e.EndColumnNumber;
-            item.Subcategory = e.Subcategory;
-            item.Message = e.Message;
-        }
-
-        private void Init(ErrorItem item, BuildMessageEventArgs e)
-        {
-            item.Code = e.Code;
-            item.File = e.File;
-            item.ProjectFile = e.ProjectFile;
-            item.LineNumber = e.LineNumber;
-            item.ColumnNumber = e.ColumnNumber;
-            item.EndLineNumber = e.EndLineNumber;
-            item.EndColumnNumber = e.EndColumnNumber;
-            item.Subcategory = e.Subcategory;
-            item.Message = e.Message;
         }
 
         private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)

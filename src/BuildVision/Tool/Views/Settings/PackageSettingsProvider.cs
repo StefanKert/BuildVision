@@ -13,8 +13,8 @@ namespace BuildVision.Views.Settings
 {
     public class PackageSettingsProvider : BindableBase, IPackageSettingsProvider
     {
-        private const string settingsCategoryName = "BuildVision";
-        private const string settingsPropertyName = "Settings";
+        public const string settingsCategoryName = "BuildVision";
+        public const string settingsPropertyName = "Settings";
 
         readonly WritableSettingsStore _settingsStore;
 

@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using BuildVision.Common;
+using BuildVision.Contracts;
 using BuildVision.Tool;
 using BuildVision.Tool.Building;
 using BuildVision.Tool.Models;
@@ -43,21 +44,22 @@ namespace BuildVision.Core
     [ProvideBindingPath]
     [ProvideBindingPath(SubPath = "Lib")]
     // TODO: Add ProvideProfileAttribute for each DialogPage and implement IVsUserSettings, IVsUserSettingsQuery.
-    [ProvideProfile(typeof(GeneralSettingsDialogPage), SettingsCategoryName, "General Options", 0, 0, true)]
+    [ProvideProfile(typeof(GeneralSettingsDialogPage), PackageSettingsProvider.settingsCategoryName, "General Options", 0, 0, true)]
     // TODO: ProvideOptionPage keywords.
     [ProvideOptionPage(typeof(GeneralSettingsDialogPage), "BuildVision", "General", 0, 0, true)]
     [ProvideOptionPage(typeof(WindowSettingsDialogPage), "BuildVision", "Tool Window", 0, 0, true)]
     [ProvideOptionPage(typeof(GridSettingsDialogPage), "BuildVision", "Projects Grid", 0, 0, true)]
     [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), "BuildVision", "Build Messages", 0, 0, true)]
     [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
-    public sealed partial class BuildVisionPackage : AsyncPackage, IPackageContext, IVsUpdateSolutionEvents2
+    public sealed partial class BuildVisionPackage : AsyncPackage, IPackageContext
     {
         private DTE _dte;
         private SolutionEvents _solutionEvents;
         private BuildVisionPaneViewModel _viewModel;
         private IVsSolutionBuildManager2 _solutionBuildManager;
         private uint _updateSolutionEventsCookie;
-
+        private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
+        private BuildOutputLogger _buildLogger;
         private IVsSolution2 _vsSolution;
 
         public ControlSettings ControlSettings { get; set; }
@@ -84,7 +86,7 @@ namespace BuildVision.Core
             _solutionBuildManager = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
             if (_solutionBuildManager != null)
             {
-                _solutionBuildManager.AdviseUpdateSolutionEvents(this, out _updateSolutionEventsCookie);
+                _solutionBuildManager.AdviseUpdateSolutionEvents(new SolutionBuildEvents(), out _updateSolutionEventsCookie);
             }
 
             _solutionEvents = _dte.Events.SolutionEvents;
@@ -96,10 +98,22 @@ namespace BuildVision.Core
             //_viewModel = BuildVisionPane.GetViewModel(toolWindow);
             //ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
             //var buildContext = new BuildContext(packageContext, _dte, _dte.Events.BuildEvents, _dte.Events.WindowEvents, _dte.Events.CommandEvents, viewModel);
+
+            _dte.Events.BuildEvents.OnBuildBegin += (scope, args) => { RegisterLogger(); };
+        }
+
+        private void RegisterLogger()
+        {
+            var result = BuildOutputLogger.Register(_parsingErrorsLoggerId, Microsoft.Build.Framework.LoggerVerbosity.Quiet, out _buildLogger);
+            if (result == RegisterLoggerResult.AlreadyExists)
+            {
+                _buildLogger.Projects?.Clear();
+            }
         }
 
         private void SolutionEvents_Opened()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             SetVsSolution();
 
             ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
@@ -108,19 +122,16 @@ namespace BuildVision.Core
 
         private void SetVsSolution()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (_vsSolution == null)
                 _vsSolution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
         }
 
-        private Project GetProject(IVsHierarchy pHierProj)
-        {
-            object objProj;
-            pHierProj.GetProperty(VSConstants.VSITEMID_ROOT, (int) __VSHPROPID.VSHPROPID_ExtObject, out objProj);
-            return objProj as Project;
-        }
-
         private void SolutionEvents_AfterClosing()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            SetVsSolution();
+
             _viewModel.TextCurrentState = Resources.BuildDoneText_BuildNotStarted;
             _viewModel.ImageCurrentState = VectorResources.TryGet(BuildImages.BuildActionResourcesUri, "StandBy");
             _viewModel.ImageCurrentStateResult = null;
@@ -166,51 +177,6 @@ namespace BuildVision.Core
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
             _dte.ExecuteCommand(commandName);
-        }
-
-        public int UpdateSolution_Begin(ref int pfCancelUpdate)
-        {
-            Console.WriteLine($"UpdateSolution_Begin");
-            return 0;
-        }
-
-        public int UpdateSolution_Done(int fSucceeded, int fModified, int fCancelCommand)
-        {
-            Console.WriteLine($"UpdateSolution_Done: fSucceeded {fSucceeded}, fModified {fModified}, fCancelCommand {fCancelCommand}");
-            return 0;
-        }
-
-        public int UpdateSolution_StartUpdate(ref int pfCancelUpdate)
-        {
-            Console.WriteLine($"UpdateSolution_StartUpdate");
-            return 0;
-        }
-
-        public int UpdateSolution_Cancel()
-        {
-            Console.WriteLine($"UpdateSolution_Cancel");
-            return 0;
-        }
-
-        public int OnActiveProjectCfgChange(IVsHierarchy pIVsHierarchy)
-        {
-            var proj = GetProject(pIVsHierarchy);
-            Console.WriteLine($"OnActiveProjectCfgChange {proj.UniqueName}");
-            return 0;
-        }
-
-        public int UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)
-        {
-            var proj = GetProject(pHierProj);
-            Console.WriteLine($"UpdateProjectCfg_Begin {proj.UniqueName}");
-            return 0;
-        }
-
-        public int UpdateProjectCfg_Done(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, int fSuccess, int fCancel)
-        {
-            var proj = GetProject(pHierProj);
-            Console.WriteLine($"UpdateProjectCfg_Done {proj.UniqueName}: dwAction {dwAction}, fSuccess {fSuccess}, fCancel {fCancel}");
-            return 0;
         }
     }
 }

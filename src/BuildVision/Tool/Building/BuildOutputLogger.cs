@@ -9,34 +9,36 @@ using Microsoft.Build.Utilities;
 using BuildVision.Contracts;
 using BuildVision.UI.Contracts;
 using BuildVision.UI.Common.Logging;
+using BuildVision.Helpers;
+using BuildVision.UI.ViewModels;
+using BuildVision.Core;
 
 namespace BuildVision.Tool.Building
 {
     public class BuildOutputLogger : Logger
     {
-        private IEventSource _eventSource;
+  
         private List<BuildProjectContextEntry> _projects;
         private readonly Guid _id;
+        private readonly IVsItemLocatorService _locatorService;
+        private readonly BuildVisionPaneViewModel _viewModel;
 
-        private BuildOutputLogger(Guid id)
+        private BuildOutputLogger(Guid id, IVsItemLocatorService locatorService = null, BuildVisionPaneViewModel  viewModel = null)
         {
             _id = id;
+            _locatorService = locatorService;
+            _viewModel = viewModel;
         }
 
-        public IEventSource EventSource => _eventSource;
         public List<BuildProjectContextEntry> Projects => _projects;
 
         public override void Initialize(IEventSource eventSource)
         {
-            _eventSource = eventSource;
-            if (_eventSource == null)
-            {
-                TraceManager.TraceError("Unexpected value of BuildOutputLogger.EventSource: null");
-                return;
-            }
-
             _projects = new List<BuildProjectContextEntry>();
-            _eventSource.ProjectStarted += OnProjectStarted;
+            eventSource.ProjectStarted += OnProjectStarted;
+            eventSource.MessageRaised += (s, e) => EventSource_ErrorRaised(s, e, ErrorLevel.Message);
+            eventSource.WarningRaised += (s, e) => EventSource_ErrorRaised(s, e, ErrorLevel.Warning);
+            eventSource.ErrorRaised += (s, e) => EventSource_ErrorRaised(s, e, ErrorLevel.Error);
         }
 
         private void OnProjectStarted(object sender, ProjectStartedEventArgs e)
@@ -59,6 +61,8 @@ namespace BuildVision.Tool.Building
                 var buildManager = Microsoft.Build.Execution.BuildManager.DefaultBuildManager;
                 Type buildHostType = buildManager.GetType().Assembly.GetType("Microsoft.Build.BackEnd.IBuildComponentHost");
                 PropertyInfo loggingSeviceProperty = buildHostType.GetProperty("LoggingService", InterfacePropertyFlags);
+
+                
 
                 object loggingServiceObj;
                 try
@@ -96,6 +100,80 @@ namespace BuildVision.Tool.Building
                 buildLogger = null;
                 return RegisterLoggerResult.FatalError;
             }
+        }
+
+        private void EventSource_ErrorRaised(object sender, BuildEventArgs e, ErrorLevel errorLevel)
+        {
+            try
+            {
+                bool verified = VerifyLoggerBuildEvent(e, errorLevel);
+                if (!verified)
+                    return;
+
+                int projectInstanceId = e.BuildEventContext.ProjectInstanceId;
+                int projectContextId = e.BuildEventContext.ProjectContextId;
+
+                var projectEntry = Projects.Find(t => t.InstanceId == projectInstanceId && t.ContextId == projectContextId);
+                if (projectEntry == null)
+                {
+                    //TraceManager.Trace(string.Format("Project entry not found by ProjectInstanceId='{0}' and ProjectContextId='{1}'.", projectInstanceId, projectContextId), EventLogEntryType.Warning);
+                    return;
+                }
+                if (projectEntry.IsInvalid)
+                    return;
+
+                //if (!_locatorService.GetProjectItem(_viewModel, BuildScope, projectEntry, out var projectItem))
+                //{
+                //    projectEntry.IsInvalid = true;
+                //    return;
+                //}
+
+                //BuildedProject buildedProject = BuildedProjects[projectItem];
+                //var errorItem = new ErrorItem(errorLevel, (eI) =>
+                //{
+                //    Services.Dte.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName).NavigateToErrorItem(eI);
+                //});
+
+                //switch (errorLevel)
+                //{
+                //    case ErrorLevel.Message:
+                //        errorItem.Init((BuildMessageEventArgs) e);
+                //        break;
+
+                //    case ErrorLevel.Warning:
+                //        errorItem.Init((BuildWarningEventArgs) e);
+                //        break;
+
+                //    case ErrorLevel.Error:
+                //        errorItem.Init((BuildErrorEventArgs) e);
+                //        break;
+
+                //    default:
+                //        throw new ArgumentOutOfRangeException("errorLevel");
+                //}
+                //errorItem.VerifyValues();
+                //buildedProject.ErrorsBox.Add(errorItem);
+                //OnErrorRaised(this, new BuildErrorRaisedEventArgs(errorLevel, buildedProject));
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
+        }
+
+        private bool VerifyLoggerBuildEvent(BuildEventArgs eventArgs, ErrorLevel errorLevel)
+        {
+            if (eventArgs.BuildEventContext.IsBuildEventContextInvalid())
+                return false;
+
+            if (errorLevel == ErrorLevel.Message)
+            {
+                var messageEventArgs = (BuildMessageEventArgs) eventArgs;
+                if (!messageEventArgs.IsUserMessage(this))
+                    return false;
+            }
+
+            return true;
         }
     }
 }

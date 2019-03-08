@@ -142,6 +142,9 @@ namespace BuildVision.Tool.Building
 
                 //    case ErrorLevel.Warning:
                 //        errorItem.Init((BuildWarningEventArgs) e);
+                //        throw new ArgumentOutOfRangeException("errorLevel");
+                //}
+                //errorItem.VerifyValues();
                 //        break;
 
                 //    case ErrorLevel.Error:
@@ -149,9 +152,6 @@ namespace BuildVision.Tool.Building
                 //        break;
 
                 //    default:
-                //        throw new ArgumentOutOfRangeException("errorLevel");
-                //}
-                //errorItem.VerifyValues();
                 //buildedProject.ErrorsBox.Add(errorItem);
                 //OnErrorRaised(this, new BuildErrorRaisedEventArgs(errorLevel, buildedProject));
             }

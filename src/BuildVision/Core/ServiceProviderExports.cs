@@ -18,6 +18,5 @@ namespace BuildVision.Core
 
         [Export]
         public IPackageSettingsProvider PackageSettingsProvider => (IPackageSettingsProvider) _serviceProvider.GetService(typeof(IPackageSettingsProvider));
-
     }
 }

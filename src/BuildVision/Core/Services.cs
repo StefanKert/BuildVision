@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace BuildVision.Core
 {
-
     public static class Services
     {
         static TResult GetGlobalService<T, TResult>(IServiceProvider provider = null) where T : class where TResult : class

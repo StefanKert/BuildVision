@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<TestSettings name="default" id="FBA3FF0E-57FA-403D-BD46-7A1DC123D369" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Description>Local test runs with Visual Studio 2017</Description>
+  <Execution>
+    <Timeouts runTimeout="7200000" testTimeout="300000" />
+    <TestTypeSpecific>
+      <UnitTestRunConfig testTypeId="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b">
+        <AssemblyResolution>
+          <TestDirectory useLoadContext="true" />
+          <RuntimeResolution>
+            <Directory path="$VSPath\MSBuild\$VSVersion\Bin" includeSubDirectories="false" />
+            <Directory path="$VSPath\Common7\IDE\PublicAssemblies" includeSubDirectories="false" />
+            <Directory path="$VSPath\Common7\IDE\PrivateAssemblies" includeSubDirectories="false" />
+            <Directory path="$VSPath\Common7\IDE\CommonExtensions\Microsoft\Editor" includeSubDirectories="false" />
+            <Directory path="$VSPath\Common7\IDE\CommonExtensions\Microsoft\TestWindow" includeSubDirectories="false" />
+            <Directory path="$VSPath\Common7\IDE\Extensions\Microsoft\Web Tools\Editors" includeSubDirectories="false" />
+          </RuntimeResolution>
+          <DiscoveryResolution>
+            <Directory path="$VSPath\MSBuild\$VSVersion\Bin" includeSubDirectories="false" />
+            <Directory path="$VSPath\Common7\IDE\PublicAssemblies" includeSubDirectories="false" />
+            <Directory path="$VSPath\Common7\IDE\PrivateAssemblies" includeSubDirectories="false" />
+            <Directory path="$VSPath\Common7\IDE\CommonExtensions\Microsoft\Editor" includeSubDirectories="false" />
+            <Directory path="$VSPath\Common7\IDE\CommonExtensions\Microsoft\TestWindow" includeSubDirectories="false" />
+            <Directory path="$VSPath\Common7\IDE\Extensions\Microsoft\Web Tools\Editors" includeSubDirectories="false" />
+          </DiscoveryResolution>
+        </AssemblyResolution>
+      </UnitTestRunConfig>
+    </TestTypeSpecific>
+    <AgentRule name="LocalMachineDefaultRole">
+      <DataCollectors>
+        <DataCollector uri="datacollector://microsoft/EventLog/1.0" assemblyQualifiedName="Microsoft.VisualStudio.TestTools.DataCollection.EventLog.EventLogDataCollector, Microsoft.VisualStudio.TestTools.DataCollection.EventLog, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" friendlyName="Event Log">
+          <Configuration>
+            <Setting name="EventLogs" value="Application, System" xmlns="" />
+            <Setting name="EntryTypes" value="Error, Warning" xmlns="" />
+            <Setting name="MaxEventLogEntriesToCollect" value="5000" xmlns="" />
+            <Setting name="CollectForInnerTests" value="False" xmlns="" />
+          </Configuration>
+        </DataCollector>
+        <!--<DataCollector uri="datacollector://microsoft/VideoRecorder/1.0" assemblyQualifiedName="Microsoft.VisualStudio.TestTools.DataCollection.VideoRecorder.VideoRecorderDataCollector, Microsoft.VisualStudio.TestTools.DataCollection.VideoRecorder, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" friendlyName="Screen and Voice Recorder">
+          <Configuration>
+            <MediaRecorder sendRecordedMediaForPassedTestCase="false" xmlns="" />
+          </Configuration>
+        </DataCollector>-->
+      </DataCollectors>
+    </AgentRule>
+  </Execution>
+  <Properties>
+    <Property name="VSApplication" value="VisualStudio"/>
+    <Property name="VSExecutable" value="$VSPath\Common7\IDE\devenv.exe"/>
+    <Property name="VSVersion" value="$VSVersion"/>
+    <Property name="VSHive" value=""/>
+    <Property name="VSDebugMixedMode" value="false"/>
+    <Property name="VSLaunchTimeoutInSeconds" value="120"/>
+  </Properties>
+</TestSettings>

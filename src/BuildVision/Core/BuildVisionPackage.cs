@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using BuildVision.Common;
 using BuildVision.Contracts;
+using BuildVision.Helpers;
 using BuildVision.Tool;
 using BuildVision.Tool.Building;
 using BuildVision.Tool.Models;
@@ -13,11 +14,11 @@ using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Extensions;
 using BuildVision.UI.Helpers;
-using BuildVision.UI.Models.Indicators.Core;
 using BuildVision.UI.Settings.Models;
 using BuildVision.UI.ViewModels;
 using BuildVision.Views.Settings;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
@@ -54,13 +55,17 @@ namespace BuildVision.Core
     public sealed partial class BuildVisionPackage : AsyncPackage, IPackageContext
     {
         private DTE _dte;
+        private DTE2 _dte2;
         private SolutionEvents _solutionEvents;
         private BuildVisionPaneViewModel _viewModel;
         private IVsSolutionBuildManager2 _solutionBuildManager;
-        private uint _updateSolutionEventsCookie;
+        private uint _updateSolutionEvents4Cookie;
         private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
         private BuildOutputLogger _buildLogger;
-        private IVsSolution2 _vsSolution;
+        private Solution _vsSolution;
+        private IVsSolutionBuildManager5 _solutionBuildManager4;
+        private SolutionModel _solutionState;
+        private SolutionBuildEvents _solutionBuildEvents;
 
         public ControlSettings ControlSettings { get; set; }
 
@@ -76,69 +81,57 @@ namespace BuildVision.Core
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
             _dte = await GetServiceAsync(typeof(DTE)) as DTE;
+            _dte2 = await GetServiceAsync(typeof(DTE)) as DTE2;
             if (await GetServiceAsync(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
             {
                 var toolwndCommandId = new CommandID(PackageGuids.GuidBuildVisionCmdSet, (int) PackageIds.CmdIdBuildVisionToolWindow);
                 var menuToolWin = new OleMenuCommand(ShowToolWindowAsync, toolwndCommandId);
                 mcs.AddCommand(menuToolWin);
             }
-
             _solutionBuildManager = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
-            if (_solutionBuildManager != null)
-            {
-                _solutionBuildManager.AdviseUpdateSolutionEvents(new SolutionBuildEvents(), out _updateSolutionEventsCookie);
-            }
+            _solutionBuildManager4 = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager5;
+
+            IPackageContext packageContext = this;
 
             _solutionEvents = _dte.Events.SolutionEvents;
+            _solutionEvents.BeforeClosing += SolutionEvents_BeforeClosing;
             _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
             _solutionEvents.Opened += SolutionEvents_Opened;
 
-            //var toolWindow = GetWindowPane(typeof(BuildVisionPane));
-            IPackageContext packageContext = this;
-            //_viewModel = BuildVisionPane.GetViewModel(toolWindow);
-            //ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
-            //var buildContext = new BuildContext(packageContext, _dte, _dte.Events.BuildEvents, _dte.Events.WindowEvents, _dte.Events.CommandEvents, viewModel);
+            if (_dte2.Solution?.IsOpen == true)
+            {
+                SolutionEvents_Opened();
+            }
 
-            _dte.Events.BuildEvents.OnBuildBegin += (scope, args) => { RegisterLogger(); };
+            var toolWindow = GetWindowPane(typeof(BuildVisionPane));
+            _viewModel = BuildVisionPane.GetViewModel(toolWindow);
         }
 
-        private void RegisterLogger()
+        private void SolutionEvents_BeforeClosing()
         {
-            var result = BuildOutputLogger.Register(_parsingErrorsLoggerId, Microsoft.Build.Framework.LoggerVerbosity.Quiet, out _buildLogger);
-            if (result == RegisterLoggerResult.AlreadyExists)
-            {
-                _buildLogger.Projects?.Clear();
-            }
+            ThreadHelper.ThrowIfNotOnUIThread();
+            _solutionBuildManager.UnadviseUpdateSolutionEvents(_updateSolutionEvents4Cookie);
+            _solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
         }
 
         private void SolutionEvents_Opened()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            SetVsSolution();
-
-            ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
-            _viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
-        }
-
-        private void SetVsSolution()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            if (_vsSolution == null)
-                _vsSolution = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolution)) as IVsSolution2;
+            _vsSolution = Services.Dte2.Solution;
+            _solutionState = _vsSolution.ToSolutionBuildState();
+            //_solutionBuildEvents = new SolutionBuildEvents(_solutionState);
+            _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
+            _solutionBuildManager4.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
+            //_viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
         }
 
         private void SolutionEvents_AfterClosing()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            SetVsSolution();
-
-            _viewModel.TextCurrentState = Resources.BuildDoneText_BuildNotStarted;
-            _viewModel.ImageCurrentState = VectorResources.TryGet(BuildImages.BuildActionResourcesUri, "StandBy");
-            _viewModel.ImageCurrentStateResult = null;
-
-            ViewModelHelper.UpdateSolution(_dte.Solution, _viewModel.SolutionItem);
-            _viewModel.ProjectsList.Clear();
-            _viewModel.ResetIndicators(ResetIndicatorMode.Disable);
+            //_viewModel.TextCurrentState = Resources.BuildDoneText_BuildNotStarted;
+            ////_viewModel.ImageCurrentState = "TODO SET IMAGE"//VectorResources.TryGet(BuildImages.BuildActionResourcesUri, "StandBy");
+            //_viewModel.ProjectsList.Clear();
+            //_viewModel.ResetIndicators(ResetIndicatorMode.Disable);
             _viewModel.BuildProgressViewModel.ResetTaskBarInfo();
         }
 

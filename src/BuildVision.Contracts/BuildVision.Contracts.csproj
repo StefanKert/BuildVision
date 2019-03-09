@@ -49,10 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseGridColumnSettings.cs" />
+    <Compile Include="Enums\BuildResultState.cs" />
     <Compile Include="Enums\BuildActions.cs" />
     <Compile Include="BuildedProject.cs" />
-    <Compile Include="BuildedSolution.cs" />
     <Compile Include="BuildErrorRaisedEventArgs.cs" />
     <Compile Include="BuildOutputFileTypes.cs" />
     <Compile Include="Enums\BuildScopes.cs" />

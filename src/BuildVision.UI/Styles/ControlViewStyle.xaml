@@ -49,9 +49,7 @@
     <converters2:VisibilityToBooleanConverter x:Key="VisibilityToBoolConverter" />
     <converters2:GridColumnHeadersVisibilityToBooleanConverter x:Key="ColumnHeadersVisibilityToBool" />
     <converters2:InverseBooleanConverter x:Key="InverseBoolean" />
-    <converters2:IndicatorVectorIconConverter x:Key="IndicatorVectorIconConverter" />
     <converters2:ObjectsReferencesEqualsConverter x:Key="ObjectsReferencesEqualsConverter" />
-    <converters2:IsErrorToBorderThicknessConverter x:Key="IsErrorToBorderThicknessConverter" />
     <converters2:StringIsNullOrEmptyConverter x:Key="StringIsNullOrEmptyConverter" />
     <converters2:SubtractConstantConverter x:Key="SubtractConstantConverter" />
     <converters2:ExpanderIsExpandedConverter x:Key="ExpanderIsExpandedConverter" />
@@ -69,17 +67,6 @@
         <converters2:ObjectToIsNullConverter />
         <converters2:InverseBooleanConverter />
         <BooleanToVisibilityConverter />
-    </converters2:ValueConverterGroup>
-
-    <converters2:ValueConverterGroup x:Key="IsSeparatorIndicatorToVisibilityConverter">
-        <converters2:IsSeparatorIndicatorConverter />
-        <converters1:BooleanToVisibilityConverter />
-    </converters2:ValueConverterGroup>
-
-    <converters2:ValueConverterGroup x:Key="IsSeparatorIndicatorToNotVisibilityConverter">
-        <converters2:IsSeparatorIndicatorConverter />
-        <converters2:InverseBooleanConverter />
-        <converters1:BooleanToVisibilityConverter />
     </converters2:ValueConverterGroup>
 
     <converters2:ValueConverterGroup x:Key="PositiveNumberToVisibilityConverter">

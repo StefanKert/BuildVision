@@ -1,6 +1,5 @@
-﻿using BuildVision.Contracts;
-using BuildVision.Common;
-
+﻿using BuildVision.Common;
+using BuildVision.Contracts;
 namespace BuildVision.UI.Settings.Models
 {
     public class ProjectItemSettings : SettingsBase

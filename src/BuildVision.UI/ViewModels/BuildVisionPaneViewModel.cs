@@ -17,21 +17,23 @@ using BuildVision.UI.DataGrid;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
-using BuildVision.UI.Models.Indicators.Core;
 using BuildVision.UI.Settings.Models.Columns;
 using SortDescription = BuildVision.UI.Settings.Models.Sorting.SortDescription;
 using BuildVision.UI.Settings.Models;
 using BuildVision.Helpers;
 using System.ComponentModel.Composition;
 using System.Text;
+using System.Collections.Generic;
+using BuildVision.Core;
+using BuildVision.Views.Settings;
+using BuildVision.Exports.Services;
+using BuildVision.Exports.ViewModels;
 
 namespace BuildVision.UI.ViewModels
 {
     [Export(typeof(IBuildVisionPaneViewModel))]
     public class BuildVisionPaneViewModel : BindableBase, IBuildVisionPaneViewModel
     {
-        private BuildState _buildState;
-        private IBuildInfo _buildInfo;
         private ObservableCollection<DataGridColumn> _gridColumnsRef;
 
         public bool HideUpToDateTargets
@@ -40,41 +42,9 @@ namespace BuildVision.UI.ViewModels
             set => SetProperty(() => ControlSettings.GeneralSettings.HideUpToDateTargets, val => ControlSettings.GeneralSettings.HideUpToDateTargets = val, value);
         }
 
-        public ControlModel Model { get; }
-
         public BuildProgressViewModel BuildProgressViewModel { get; }
 
         public ControlSettings ControlSettings { get; }
-
-        public ControlTemplate ImageCurrentState
-        {
-            get => Model.ImageCurrentState;
-            set => SetProperty(() => Model.ImageCurrentState, val => Model.ImageCurrentState = val, value);
-        }
-
-        public ControlTemplate ImageCurrentStateResult
-        {
-            get => Model.ImageCurrentStateResult;
-            set => SetProperty(() => Model.ImageCurrentStateResult, val => Model.ImageCurrentStateResult = val, value);
-        }
-
-        public string TextCurrentState
-        {
-            get => Model.TextCurrentState;
-            set => SetProperty(() => Model.TextCurrentState, val => Model.TextCurrentState = val, value);
-        }
-
-        public ProjectItem CurrentProject
-        {
-            get => Model.CurrentProject;
-            set => SetProperty(() => Model.CurrentProject, val => Model.CurrentProject = val, value);
-        }
-
-        public ObservableCollection<ValueIndicator> ValueIndicators => Model.ValueIndicators;
-
-        public SolutionItem SolutionItem => Model.SolutionItem;
-
-        public ObservableCollection<ProjectItem> ProjectsList => Model.SolutionItem.Projects;
 
         public string GridGroupPropertyName
         {
@@ -173,7 +143,7 @@ namespace BuildVision.UI.ViewModels
         {
             get
             {
-                var groupedList = new ListCollectionView(ProjectsList);
+                var groupedList = new ListCollectionView(new List<object>()); // todo use projects here ProjectsList);
 
                 if (!string.IsNullOrWhiteSpace(GridGroupPropertyName))
                 {
@@ -208,16 +178,19 @@ namespace BuildVision.UI.ViewModels
         }
 
         private ProjectItem _selectedProjectItem;
+        private readonly IBuildService _buildManager;
+
         public ProjectItem SelectedProjectItem
         {
             get => _selectedProjectItem; 
             set => SetProperty(ref _selectedProjectItem, value);
         }
 
-        public BuildVisionPaneViewModel(ControlModel model, ControlSettings controlSettings)
+        [ImportingConstructor]
+        public BuildVisionPaneViewModel(IBuildService buildManager, VisualStudioSolution solution, IPackageSettingsProvider settingsProvider)
         {
-            Model = model;
-            ControlSettings = controlSettings;
+            _buildManager = buildManager;
+            ControlSettings = settingsProvider.Settings;
             BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
         }
 
@@ -226,7 +199,6 @@ namespace BuildVision.UI.ViewModels
         /// </summary>
         internal BuildVisionPaneViewModel()
         {
-            Model = new ControlModel();
             ControlSettings = new ControlSettings();
             BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
         }
@@ -305,22 +277,6 @@ namespace BuildVision.UI.ViewModels
             return null;
         }
 
-        public void ResetIndicators(ResetIndicatorMode resetMode)
-        {
-            foreach (ValueIndicator indicator in ValueIndicators)
-                indicator.ResetValue(resetMode);
-
-            OnPropertyChanged(nameof(ValueIndicators));
-        }
-
-        public void UpdateIndicators(IBuildInfo buildContext)
-        {
-            foreach (ValueIndicator indicator in ValueIndicators)
-                indicator.UpdateValue(buildContext);
-
-            OnPropertyChanged(nameof(ValueIndicators));
-        }
-
         public void GenerateColumns()
         {
             Debug.Assert(_gridColumnsRef != null);
@@ -333,16 +289,17 @@ namespace BuildVision.UI.ViewModels
             ColumnsManager.SyncColumnSettings(_gridColumnsRef, ControlSettings.GridSettings);
         }
 
-        public void OnControlSettingsChanged(ControlSettings settings, Func<IBuildInfo, string> getBuildMessage)
+        public void OnControlSettingsChanged(ControlSettings settings)
         {
-            ControlSettings.InitFrom(settings);
+            //ControlSettings.InitFrom(settings);
 
             GenerateColumns();
 
-            if (_buildState == BuildState.Done)
-            {
-                Model.TextCurrentState = getBuildMessage(_buildInfo);
-            }
+            // Refresh build message
+            //if (_buildState == BuildState.Done)
+            //{
+            //    Model.TextCurrentState = getBuildMessage(_buildInfo);
+            //}
 
             // Raise all properties have changed.
             OnPropertyChanged(null);
@@ -361,23 +318,18 @@ namespace BuildVision.UI.ViewModels
             BuildProgressViewModel.OnBuildProjectDone(success);
         }
 
-        public void OnBuildBegin(int projectsCount, IBuildInfo buildContext)
+        public void OnBuildBegin(int projectsCount)
         {
-            _buildState = BuildState.InProgress;
-            _buildInfo = buildContext;
             BuildProgressViewModel.OnBuildBegin(projectsCount);
         }
 
-        public void OnBuildDone(IBuildInfo buildInfo)
+        public void OnBuildDone()
         {
-            _buildInfo = buildInfo;
-            _buildState = BuildState.Done;
             BuildProgressViewModel.OnBuildDone();
         }
 
-        public void OnBuildCancelled(IBuildInfo buildInfo)
+        public void OnBuildCancelled()
         {
-            _buildInfo = buildInfo;
             BuildProgressViewModel.OnBuildCancelled();
         }
 
@@ -414,47 +366,38 @@ namespace BuildVision.UI.ViewModels
         public ICommand SelectedProjectOpenContainingFolderAction => new RelayCommand(obj => OpenContainingFolder(),
                 canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.FullName)));
     
-        public ICommand SelectedProjectCopyBuildOutputFilesToClipboardAction => new RelayCommand(
-            obj => ProjectCopyBuildOutputFilesToClipBoard(SelectedProjectItem),
-            canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard.IsEmpty));
+        //public ICommand SelectedProjectCopyBuildOutputFilesToClipboardAction => new RelayCommand(
+        //    obj => _buildManager.ProjectCopyBuildOutputFilesToClipBoard(SelectedProjectItem),
+        //    canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard.IsEmpty));
 
-        public ICommand SelectedProjectBuildAction => new RelayCommand(
-            obj => RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.BuildCtx),
-            canExecute: obj => IsProjectItemEnabledForActions());
+        //public ICommand SelectedProjectBuildAction => new RelayCommand(
+        //    obj => _buildManager.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.BuildCtx),
+        //    canExecute: obj => IsProjectItemEnabledForActions());
 
 
-        public ICommand SelectedProjectRebuildAction => new RelayCommand(
-            obj => RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.RebuildCtx),
-            canExecute: obj => IsProjectItemEnabledForActions());
+        //public ICommand SelectedProjectRebuildAction => new RelayCommand(
+        //    obj => _buildManager.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.RebuildCtx),
+        //    canExecute: obj => IsProjectItemEnabledForActions());
 
-        public ICommand SelectedProjectCleanAction => new RelayCommand(
-            obj => RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx),
-            canExecute: obj => IsProjectItemEnabledForActions());
+        //public ICommand SelectedProjectCleanAction => new RelayCommand(
+        //    obj => _buildManager.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx),
+        //    canExecute: obj => IsProjectItemEnabledForActions());
 
         public ICommand SelectedProjectCopyErrorMessagesAction => new RelayCommand(obj => CopyErrorMessageToClipboard(SelectedProjectItem),
         canExecute: obj => SelectedProjectItem?.ErrorsCount > 0);
 
-        public ICommand BuildSolutionAction => new RelayCommand(obj => BuildSolution());
+        public ICommand BuildSolutionAction => new RelayCommand(obj => _buildManager.BuildSolution());
 
-        public ICommand RebuildSolutionAction => new RelayCommand(obj => RebuildSolution());
+        public ICommand RebuildSolutionAction => new RelayCommand(obj => _buildManager.RebuildSolution());
 
-        public ICommand CleanSolutionAction => new RelayCommand(obj => CleanSolution());
+        public ICommand CleanSolutionAction => new RelayCommand(obj => _buildManager.CleanSolution());
 
-        public ICommand CancelBuildSolutionAction => new RelayCommand(obj => CancelBuildSolution());
+        public ICommand CancelBuildSolutionAction => new RelayCommand(obj => _buildManager.CancelBuildSolution());
 
-        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => ShowGridColumnsSettingsPage()); 
+        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => _buildManager.ShowGridColumnsSettingsPage()); 
 
-        public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => ShowGeneralSettingsPage()); 
+        public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => _buildManager.ShowGeneralSettingsPage()); 
 
         #endregion
-
-        public event Action ShowGridColumnsSettingsPage;
-        public event Action ShowGeneralSettingsPage;
-        public event Action BuildSolution;
-        public event Action CleanSolution;
-        public event Action RebuildSolution;
-        public event Action CancelBuildSolution;
-        public event Action<ProjectItem> ProjectCopyBuildOutputFilesToClipBoard;
-        public event Action<ProjectItem, int> RaiseCommandForSelectedProject;
     }
 }

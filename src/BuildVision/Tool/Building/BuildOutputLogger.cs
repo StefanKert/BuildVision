@@ -2,35 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-
-using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using BuildVision.Contracts;
 using BuildVision.UI.Contracts;
 using BuildVision.UI.Common.Logging;
 using BuildVision.Helpers;
-using BuildVision.UI.ViewModels;
-using BuildVision.Core;
+using System.Diagnostics;
 
 namespace BuildVision.Tool.Building
 {
     public class BuildOutputLogger : Logger
     {
-  
         private List<BuildProjectContextEntry> _projects;
         private readonly Guid _id;
-        private readonly IVsItemLocatorService _locatorService;
-        private readonly BuildVisionPaneViewModel _viewModel;
-
-        private BuildOutputLogger(Guid id, IVsItemLocatorService locatorService = null, BuildVisionPaneViewModel  viewModel = null)
-        {
-            _id = id;
-            _locatorService = locatorService;
-            _viewModel = viewModel;
-        }
 
         public List<BuildProjectContextEntry> Projects => _projects;
+
+        private BuildOutputLogger(Guid id)
+        {
+            _id = id;
+        }
 
         public override void Initialize(IEventSource eventSource)
         {
@@ -61,8 +53,6 @@ namespace BuildVision.Tool.Building
                 var buildManager = Microsoft.Build.Execution.BuildManager.DefaultBuildManager;
                 Type buildHostType = buildManager.GetType().Assembly.GetType("Microsoft.Build.BackEnd.IBuildComponentHost");
                 PropertyInfo loggingSeviceProperty = buildHostType.GetProperty("LoggingService", InterfacePropertyFlags);
-
-                
 
                 object loggingServiceObj;
                 try
@@ -116,7 +106,7 @@ namespace BuildVision.Tool.Building
                 var projectEntry = Projects.Find(t => t.InstanceId == projectInstanceId && t.ContextId == projectContextId);
                 if (projectEntry == null)
                 {
-                    //TraceManager.Trace(string.Format("Project entry not found by ProjectInstanceId='{0}' and ProjectContextId='{1}'.", projectInstanceId, projectContextId), EventLogEntryType.Warning);
+                    TraceManager.Trace(string.Format("Project entry not found by ProjectInstanceId='{0}' and ProjectContextId='{1}'.", projectInstanceId, projectContextId), EventLogEntryType.Warning);
                     return;
                 }
                 if (projectEntry.IsInvalid)

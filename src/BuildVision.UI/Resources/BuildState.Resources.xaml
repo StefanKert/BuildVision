@@ -2,7 +2,7 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0">
 
-    <ControlTemplate x:Key="BuildError">
+    <ControlTemplate x:Key="Failed">
         <Viewbox Stretch="Uniform">
             <Canvas Width="256" Height="256">
                 <Polygon Points="10,50 50,10 128,88 206,10 246,50 166,128 246,206 206,246 128,166 50,246 10,206 88,128"
@@ -13,7 +13,7 @@
         </Viewbox>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="BuildDone">
+    <ControlTemplate x:Key="Done">
         <Viewbox Stretch="Uniform">
             <Canvas Width="256" Height="256">
                 <Polygon Points="10,146 94,228 246,76 206,36 94,150 50,106"
@@ -24,7 +24,7 @@
         </Viewbox>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="BuildCancelled">
+    <ControlTemplate x:Key="Cancelled">
         <Viewbox Stretch="Uniform">
             <Canvas Width="256" Height="256">
                 <Path Fill="#BE1400"
@@ -52,7 +52,7 @@
         </Viewbox>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="BuildErrorDone">
+    <ControlTemplate x:Key="FailedWithErrors">
         <Viewbox Stretch="Uniform">
             <Canvas Width="256" Height="256">
                 <Polygon Points="10,146 94,228 246,76 206,36 94,150 50,106"

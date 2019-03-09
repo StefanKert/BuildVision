@@ -31,8 +31,9 @@ namespace BuildVision.Tool
     public sealed class BuildVisionPane : ToolWindowPane
     {
         private bool _controlCreatedSuccessfully;
+        private readonly BuildVisionPaneViewModel _viewModel;
 
-        public BuildVisionPane()
+        public BuildVisionPane(BuildVisionPaneViewModel viewModel)
             :base(null)
         {
             Caption = Resources.ToolWindowTitle;
@@ -50,6 +51,7 @@ namespace BuildVision.Tool
             FrameworkElement.LanguageProperty.OverrideMetadata(
                 typeof(FrameworkElement), 
                 new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+            _viewModel = viewModel;
         }
 
         protected override void Initialize()
@@ -74,12 +76,11 @@ namespace BuildVision.Tool
         private ControlView CreateControlView()
         {
             var packageContext = (IPackageContext)Package;
-            var viewModel = new BuildVisionPaneViewModel(new ControlModel(), new UI.Settings.Models.ControlSettings());//packageContext.ControlSettings);
             packageContext.ControlSettingsChanged += (settings) =>
             {
-                viewModel.OnControlSettingsChanged(settings, buildInfo => BuildMessages.GetBuildDoneMessage(viewModel.SolutionItem, buildInfo, viewModel.ControlSettings.BuildMessagesSettings));
+                _viewModel.OnControlSettingsChanged(settings); //, buildInfo => BuildMessages.GetBuildDoneMessage(viewModel.SolutionItem, buildInfo, viewModel.ControlSettings.BuildMessagesSettings));
             };
-            var view = new ControlView { DataContext = viewModel };
+            var view = new ControlView { DataContext = _viewModel };
             view.Resources.MergedDictionaries.Add(new ResourceDictionary
             {
                 Source = new Uri("pack://application:,,,/BuildVision.UI;component/Styles/ExtensionStyle.xaml")

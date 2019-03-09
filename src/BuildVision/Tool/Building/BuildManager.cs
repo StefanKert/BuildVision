@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using System.Windows;
 using BuildVision.Common;
 using BuildVision.Contracts;
 using BuildVision.Core;
+using BuildVision.Exports.Services;
 using BuildVision.Helpers;
 using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
@@ -18,17 +20,10 @@ using Microsoft.VisualStudio;
 
 namespace BuildVision.Tool.Building
 {
-    public class BuildManager
+    [Export(typeof(IBuildService))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public class BuildManager : IBuildService
     {
-        public BuildActions? BuildAction { get; private set; }
-
-        public BuildScopes? BuildScope { get; private set; }
-
-        public BuildState CurrentBuildState { get; private set; }
-
-        private bool _buildCancelled;
-        private bool _buildCancelledInternally;
-
         public BuildManager()
         {
             //_viewModel.RaiseCommandForSelectedProject += RaiseCommandForSelectedProject;
@@ -60,23 +55,23 @@ namespace BuildVision.Tool.Building
 
         public async Task CancelBuildAsync()
         {
-            if (BuildAction == BuildActions.BuildActionClean)
-                return;
-            if (CurrentBuildState != BuildState.InProgress || _buildCancelled || _buildCancelledInternally)
-                return;
+            //if (BuildAction == BuildActions.BuildActionClean)
+            //    return;
+            //if (CurrentBuildState != BuildState.InProgress || _buildCancelled || _buildCancelledInternally)
+            //    return;
 
-            try
-            {
-                // We need to create a separate task here because of some weird things that are going on
-                // when calling ExecuteCommand directly. Directly calling it leads to a freeze. No need 
-                // for that!
-                //await _packageContext.ExecuteCommandAsync(CancelBuildCommand);
-                _buildCancelledInternally = true;
-            }
-            catch (Exception ex)
-            {
-                ex.Trace("Cancel build failed.");
-            }
+            //try
+            //{
+            //    // We need to create a separate task here because of some weird things that are going on
+            //    // when calling ExecuteCommand directly. Directly calling it leads to a freeze. No need 
+            //    // for that!
+            //    //await _packageContext.ExecuteCommandAsync(CancelBuildCommand);
+            //    _buildCancelledInternally = true;
+            //}
+            //catch (Exception ex)
+            //{
+            //    ex.Trace("Cancel build failed.");
+            //}
         }
 
         public void RaiseCommandForSelectedProject(UI.Models.ProjectItem selectedProjectItem, int commandId)
@@ -201,6 +196,26 @@ namespace BuildVision.Tool.Building
             {
                 ex.TraceUnknownException();
             }
-        }  
+        }
+
+        public void ShowGridColumnsSettingsPage()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowGeneralSettingsPage()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ProjectCopyBuildOutputFilesToClipBoard()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RaiseCommandForSelectedProject()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

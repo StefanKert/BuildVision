@@ -6,7 +6,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="BuildAction.Resources.xaml" />
+                <ResourceDictionary Source="BuildState.Resources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -23,7 +23,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource RebuildSolutionButton}" />
+                            Template="{StaticResource Failed}" />
             
             <Separator Width="10"/>
 
@@ -32,7 +32,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource BuildSolutionButton}" />
+                            Template="{StaticResource Done}" />
             
             <Separator Width="10"/>
 
@@ -41,7 +41,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource CancelBuildSolutionButton}" />
+                            Template="{StaticResource Cancelled}" />
 
             <Separator Width="10"/>
             
@@ -50,41 +50,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource CleanSolutionButton}" />
-            <Separator Width="10"/>
-
-            <ContentControl Width="32"
-                            Height="32"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource StandBy}" />
-            <Separator Width="10"/>
-
-
-            <ContentControl Width="32"
-                            Height="32"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource Clean}" />
-            <Separator Width="10"/>
-
-
-            <ContentControl Width="32"
-                            Height="32"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource Build}" />
-            <Separator Width="10"/>
-
-            <ContentControl Width="32"
-                            Height="32"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource Rebuild}" />
+                            Template="{StaticResource FailedWithErrors}" />
             <Separator Width="10"/>
         </StackPanel>
     </Grid>

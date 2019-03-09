@@ -1,4 +1,4 @@
-﻿namespace BuildVision.Core
+﻿namespace BuildVision.Exports.Services
 {
     public interface IStatusBarNotificationService
     {

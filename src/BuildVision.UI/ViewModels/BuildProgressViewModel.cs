@@ -10,7 +10,7 @@ using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models.BuildProgress;
 
 namespace BuildVision.UI.ViewModels
-{
+{ 
     public class BuildProgressViewModel : BindableBase
     {
         private readonly ControlSettings _settings;

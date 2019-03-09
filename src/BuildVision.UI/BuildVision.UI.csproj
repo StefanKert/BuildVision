@@ -73,6 +73,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Helpers\ResetTaskBarItemInfoCondition.cs" />
+    <Compile Include="Helpers\SortDescription.cs" />
+    <Compile Include="Helpers\SortOrder.cs" />
+    <Compile Include="Helpers\WindowState.cs" />
+    <Compile Include="Helpers\WindowStateAction.cs" />
+    <Compile Include="IPackageSettingsProvider.cs" />
+    <Compile Include="Models\BaseGridColumnSettings.cs" />
+    <Compile Include="Models\BuildMessagesSettings.cs" />
+    <Compile Include="Models\BuildProgressSettings.cs" />
     <Compile Include="Common\Logging\BindingErrorListener.cs" />
     <Compile Include="Common\Logging\TraceManager.cs" />
     <Compile Include="Components\ControlHeader.xaml.cs">
@@ -83,10 +92,12 @@
     </Compile>
     <Compile Include="Contracts\BuildedProjectsCollection.cs" />
     <Compile Include="Contracts\BuildProjectContextEntry.cs" />
-    <Compile Include="Contracts\IBuildDistributor.cs" />
+    <Compile Include="Models\ControlSettings.cs" />
+    <Compile Include="Models\GeneralSettings.cs" />
+    <Compile Include="Models\GridColumnSettings.cs" />
+    <Compile Include="Models\GridColumnSettingsCollection.cs" />
+    <Compile Include="Models\GridSettings.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />
-    <Compile Include="Helpers\BuildImages.cs" />
-    <Compile Include="Contracts\BuildInfo.cs" />
     <Compile Include="Helpers\BuildMessages.cs" />
     <Compile Include="Contracts\BuildProjectEventArgs.cs" />
     <Compile Include="Components\ControlView.xaml.cs">
@@ -107,44 +118,18 @@
     <Compile Include="Helpers\DisplayStringAttribute.cs" />
     <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Helpers\StyleConverting.cs" />
-    <Compile Include="IBuildVisionPaneViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\ControlModel.cs" />
-    <Compile Include="Models\Indicators\Core\ResetIndicatorMode.cs" />
-    <Compile Include="Models\Indicators\Core\ValueIndicator.cs" />
-    <Compile Include="Models\Indicators\Core\ValueIndicatorsFactory.cs" />
-    <Compile Include="Models\Indicators\ErrorProjectsIndicator.cs" />
-    <Compile Include="Models\Indicators\ErrorsIndicator.cs" />
-    <Compile Include="Models\Indicators\MessagesIndicator.cs" />
-    <Compile Include="Models\Indicators\SeparatorIndicator.cs" />
-    <Compile Include="Models\Indicators\SuccessProjectsIndicator.cs" />
-    <Compile Include="Models\Indicators\UpToDateProjectsIndicator.cs" />
-    <Compile Include="Models\Indicators\WarningProjectsIndicator.cs" />
-    <Compile Include="Models\Indicators\WarningsIndicator.cs" />
     <Compile Include="Models\ProjectItem.cs" />
     <Compile Include="Extensions\ProjectStateExtensions.cs" />
     <Compile Include="Models\BuildExtraMessageFormat.cs" />
     <Compile Include="Models\BuildMajorMessageFormat.cs" />
-    <Compile Include="Settings\Models\BuildMessagesSettings.cs" />
-    <Compile Include="Settings\Models\BuildProgress\BuildProgressSettings.cs" />
     <Compile Include="Models\NavigateToBuildFailureReasonCondition.cs" />
-    <Compile Include="Models\ResetTaskBarItemInfoCondition.cs" />
     <Compile Include="Models\GridColumnAttribute.cs" />
-    <Compile Include="Settings\Models\Columns\GridColumnSettings.cs" />
-    <Compile Include="Settings\Models\Columns\GridColumnSettingsCollection.cs" />
-    <Compile Include="Settings\Models\ControlSettings.cs" />
-    <Compile Include="Settings\Models\GeneralSettings.cs" />
-    <Compile Include="Settings\Models\GridSettings.cs" />
-    <Compile Include="Settings\Models\ProjectItemSettings.cs" />
     <Compile Include="Helpers\ProjectItemColumnSorter.cs" />
-    <Compile Include="Settings\Models\Sorting\SortDescription.cs" />
-    <Compile Include="Models\SortOrder.cs" />
-    <Compile Include="Models\WindowState.cs" />
-    <Compile Include="Settings\Models\ToolWindow\WindowStateAction.cs" />
-    <Compile Include="Settings\Models\WindowSettings.cs" />
     <Compile Include="Models\SolutionItem.cs" />
+    <Compile Include="Models\ProjectItemSettings.cs" />
     <Compile Include="Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -168,8 +153,11 @@
     <Compile Include="Settings\WindowSettingsControl.xaml.cs">
       <DependentUpon>WindowSettingsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ViewModels\SolutionModel.cs" />
     <Compile Include="ViewModels\BuildProgressViewModel.cs" />
     <Compile Include="ViewModels\BuildVisionPaneViewModel.cs" />
+    <Compile Include="ViewModels\VisualStudioSolution.cs" />
+    <Compile Include="Models\WindowSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\AlternatingRowBackgroundConverter.cs" />
@@ -180,11 +168,8 @@
     <Compile Include="Converters\GridColumnHeadersVisibilityToBooleanConverter.cs" />
     <Compile Include="Converters\GridColumnSettingsToColumnExampleValueConverter.cs" />
     <Compile Include="Converters\GridColumnSettingsToInitialColumnHeaderConverter.cs" />
-    <Compile Include="Converters\IndicatorVectorIconConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\InvertSolidColorBrushConverter.cs" />
-    <Compile Include="Converters\IsErrorToBorderThicknessConverter.cs" />
-    <Compile Include="Converters\IsSeparatorIndicatorConverter.cs" />
     <Compile Include="Converters\LogEntryTypeToImageSourceConverter.cs" />
     <Compile Include="Converters\MultiBindingStringFormatConverter.cs" />
     <Compile Include="Converters\NumberToIsPositiveConverter.cs" />
@@ -251,12 +236,22 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\BuildResult.Resources.Test.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\BuildResult.Resources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
     <Page Include="Resources\BuildAction.Resources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
-    <Page Include="Resources\BuildAction.Resources.Test.xaml">
+    <Page Include="Resources\BuildState.Resources.Test.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -285,7 +280,7 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
-    <Page Include="Resources\BuildState.Resources.Test.xaml">
+    <Page Include="Resources\BuildAction.Resources.Test.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -361,6 +356,10 @@
     <ProjectReference Include="..\BuildVision.Contracts\BuildVision.Contracts.csproj">
       <Project>{13d64a57-5db3-4cc7-ac2b-9034e767d754}</Project>
       <Name>BuildVision.Contracts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BuildVision.Exports\BuildVision.Exports.csproj">
+      <Project>{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}</Project>
+      <Name>BuildVision.Exports</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -67,14 +67,15 @@ namespace BuildVision.UI
 
         private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (_viewModel.CurrentProject != null && e.PropertyName == "CurrentProject")
-            {
-                // TODO: Remove SelectedIndex = -1 and implement Unselect row feature by clicking on selected row.
-                Grid.SelectedIndex = -1;
+            //TODO implement logic for scrolling tu currentproject
+            //if (_viewModel.CurrentProject != null && e.PropertyName == "CurrentProject")
+            //{
+            //    // TODO: Remove SelectedIndex = -1 and implement Unselect row feature by clicking on selected row.
+            //    Grid.SelectedIndex = -1;
 
-                if (Grid.SelectedIndex == -1)
-                    Grid.ScrollIntoView(_viewModel.CurrentProject);
-            }
+            //    if (Grid.SelectedIndex == -1)
+            //        Grid.ScrollIntoView(_viewModel.CurrentProject);
+            //}
         }
 
         private void DataGridExpanderOnExpanded(object sender, RoutedEventArgs e)

@@ -9,7 +9,7 @@ namespace BuildVision.UI.Settings.Models.Columns
             PropertyNameId = string.Empty,
             Header = Resources.NoneMenuItem
         };
-    
+
         public string PropertyNameId { get; set; }
 
         private GridColumnSettings()
@@ -17,11 +17,11 @@ namespace BuildVision.UI.Settings.Models.Columns
         }
 
         public GridColumnSettings(
-            string propertyNameId, 
-            string header, 
-            bool visible, 
-            int displayIndex, 
-            double width, 
+            string propertyNameId,
+            string header,
+            bool visible,
+            int displayIndex,
+            double width,
             string valueStringFormat)
         {
             PropertyNameId = propertyNameId;

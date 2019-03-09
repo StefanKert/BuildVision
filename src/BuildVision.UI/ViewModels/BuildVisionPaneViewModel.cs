@@ -28,6 +28,8 @@ using BuildVision.Core;
 using BuildVision.Views.Settings;
 using BuildVision.Exports.Services;
 using BuildVision.Exports.ViewModels;
+using BuildVision.Exports.Providers;
+using BuildVision.Contracts.Models;
 
 namespace BuildVision.UI.ViewModels
 {
@@ -45,6 +47,8 @@ namespace BuildVision.UI.ViewModels
         public BuildProgressViewModel BuildProgressViewModel { get; }
 
         public ControlSettings ControlSettings { get; }
+
+        public IBuildInformationModel BuildInformationModel { get; set; }
 
         public string GridGroupPropertyName
         {
@@ -179,6 +183,7 @@ namespace BuildVision.UI.ViewModels
 
         private ProjectItem _selectedProjectItem;
         private readonly IBuildService _buildManager;
+        private readonly IBuildInformationProvider _buildInformationProvider;
 
         public ProjectItem SelectedProjectItem
         {
@@ -187,9 +192,11 @@ namespace BuildVision.UI.ViewModels
         }
 
         [ImportingConstructor]
-        public BuildVisionPaneViewModel(IBuildService buildManager, VisualStudioSolution solution, IPackageSettingsProvider settingsProvider)
+        public BuildVisionPaneViewModel(IBuildService buildManager, IBuildInformationProvider buildInformationProvider, IPackageSettingsProvider settingsProvider)
         {
             _buildManager = buildManager;
+            _buildInformationProvider = buildInformationProvider;
+            BuildInformationModel = _buildInformationProvider.GetBuildInformationModel();
             ControlSettings = settingsProvider.Settings;
             BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
         }

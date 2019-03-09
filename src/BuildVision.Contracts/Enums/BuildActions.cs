@@ -11,6 +11,7 @@ namespace BuildVision.Contracts
         BuildActionBuild = 1,
         BuildActionRebuildAll = 2,
         BuildActionClean = 3,
-        BuildActionDeploy = 4
+        BuildActionDeploy = 4,
+        Unknown = 5
     }
 }

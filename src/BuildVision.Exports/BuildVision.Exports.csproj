@@ -6,4 +6,8 @@
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BuildVision.Contracts\BuildVision.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -91,13 +91,18 @@
     <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Services\BuildInformationProvider.cs" />
+    <Compile Include="Services\BuildingProjectsProvider.cs" />
+    <Compile Include="Services\IBuildingProjectsProvider.cs" />
+    <Compile Include="Services\ISolutionProvider.cs" />
+    <Compile Include="Services\SolutionProvider.cs" />
     <Compile Include="Helpers\ProjectIdentifierGenerator.cs" />
     <Compile Include="Core\BuildVisionPackage.cs" />
     <Compile Include="Core\ServiceProviderExports.cs" />
     <Compile Include="Core\ServiceProviderPackage.cs" />
     <Compile Include="Core\Services.cs" />
     <Compile Include="Core\SolutionBuildEvents.cs" />
-    <Compile Include="Core\StatusBarNotificationService.cs" />
+    <Compile Include="Services\StatusBarNotificationService.cs" />
     <Compile Include="Helpers\BuildEventContextExtensions.cs" />
     <Compile Include="Helpers\BuildMessageEventArgsExtensions.cs" />
     <Compile Include="Helpers\EnvDTEProjectKinds.cs" />

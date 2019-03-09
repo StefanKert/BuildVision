@@ -73,15 +73,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Helpers\ResetTaskBarItemInfoCondition.cs" />
+    <Compile Include="Enums\ResetTaskBarItemInfoCondition.cs" />
     <Compile Include="Helpers\SortDescription.cs" />
-    <Compile Include="Helpers\SortOrder.cs" />
-    <Compile Include="Helpers\WindowState.cs" />
+    <Compile Include="Enums\SortOrder.cs" />
+    <Compile Include="Enums\WindowState.cs" />
     <Compile Include="Helpers\WindowStateAction.cs" />
     <Compile Include="IPackageSettingsProvider.cs" />
-    <Compile Include="Models\BaseGridColumnSettings.cs" />
-    <Compile Include="Models\BuildMessagesSettings.cs" />
-    <Compile Include="Models\BuildProgressSettings.cs" />
+    <Compile Include="Settings\Models\BaseGridColumnSettings.cs" />
+    <Compile Include="Settings\Models\BuildMessagesSettings.cs" />
+    <Compile Include="Settings\Models\BuildProgressSettings.cs" />
     <Compile Include="Common\Logging\BindingErrorListener.cs" />
     <Compile Include="Common\Logging\TraceManager.cs" />
     <Compile Include="Components\ControlHeader.xaml.cs">
@@ -92,13 +92,13 @@
     </Compile>
     <Compile Include="Contracts\BuildedProjectsCollection.cs" />
     <Compile Include="Contracts\BuildProjectContextEntry.cs" />
-    <Compile Include="Models\ControlSettings.cs" />
-    <Compile Include="Models\GeneralSettings.cs" />
-    <Compile Include="Models\GridColumnSettings.cs" />
+    <Compile Include="Settings\Models\ControlSettings.cs" />
+    <Compile Include="Settings\Models\GeneralSettings.cs" />
+    <Compile Include="Settings\Models\GridColumnSettings.cs" />
     <Compile Include="Models\GridColumnSettingsCollection.cs" />
-    <Compile Include="Models\GridSettings.cs" />
+    <Compile Include="Settings\Models\GridSettings.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />
-    <Compile Include="Helpers\BuildMessages.cs" />
+    <Compile Include="Helpers\BuildMessagesFactory.cs" />
     <Compile Include="Contracts\BuildProjectEventArgs.cs" />
     <Compile Include="Components\ControlView.xaml.cs">
       <DependentUpon>ControlView.xaml</DependentUpon>
@@ -115,7 +115,7 @@
     <Compile Include="Extensions\TextBlockUtils.cs" />
     <Compile Include="Extensions\VectorResources.cs" />
     <Compile Include="Extensions\VisualHelper.cs" />
-    <Compile Include="Helpers\DisplayStringAttribute.cs" />
+    <Compile Include="Attributes\DisplayStringAttribute.cs" />
     <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Helpers\StyleConverting.cs" />
     <Compile Include="MainWindow.xaml.cs">
@@ -123,13 +123,12 @@
     </Compile>
     <Compile Include="Models\ProjectItem.cs" />
     <Compile Include="Extensions\ProjectStateExtensions.cs" />
-    <Compile Include="Models\BuildExtraMessageFormat.cs" />
-    <Compile Include="Models\BuildMajorMessageFormat.cs" />
-    <Compile Include="Models\NavigateToBuildFailureReasonCondition.cs" />
-    <Compile Include="Models\GridColumnAttribute.cs" />
+    <Compile Include="Enums\BuildExtraMessageFormat.cs" />
+    <Compile Include="Enums\BuildMajorMessageFormat.cs" />
+    <Compile Include="Enums\NavigateToBuildFailureReasonCondition.cs" />
+    <Compile Include="Attributes\GridColumnAttribute.cs" />
     <Compile Include="Helpers\ProjectItemColumnSorter.cs" />
-    <Compile Include="Models\SolutionItem.cs" />
-    <Compile Include="Models\ProjectItemSettings.cs" />
+    <Compile Include="Settings\Models\ProjectItemSettings.cs" />
     <Compile Include="Resources.Designer.cs">
       <DependentUpon>Resources.resx</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -153,11 +152,11 @@
     <Compile Include="Settings\WindowSettingsControl.xaml.cs">
       <DependentUpon>WindowSettingsControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\SolutionModel.cs" />
+    <Compile Include="Models\BuildInformationModel.cs" />
+    <Compile Include="Models\SolutionModel.cs" />
     <Compile Include="ViewModels\BuildProgressViewModel.cs" />
     <Compile Include="ViewModels\BuildVisionPaneViewModel.cs" />
-    <Compile Include="ViewModels\VisualStudioSolution.cs" />
-    <Compile Include="Models\WindowSettings.cs" />
+    <Compile Include="Settings\Models\WindowSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\AlternatingRowBackgroundConverter.cs" />

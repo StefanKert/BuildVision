@@ -15,7 +15,7 @@ namespace BuildVision.UI.Helpers
 
         public object Data
         {
-            get { return (object)GetValue(DataProperty); }
+            get { return (object) GetValue(DataProperty); }
             set { SetValue(DataProperty, value); }
         }
 

@@ -4,6 +4,7 @@
     {
         BuildScopeSolution = 1,
         BuildScopeBatch = 2,
-        BuildScopeProject = 3
+        BuildScopeProject = 3,
+        Unknown = 4
     }
 }

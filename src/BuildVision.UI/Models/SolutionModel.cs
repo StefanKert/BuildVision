@@ -1,12 +1,17 @@
 ﻿using BuildVision.Common;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using BuildVision.Contracts.Models;
 
-
-namespace BuildVision.UI.Models
+namespace BuildVision.Core
 {
-    public class SolutionItem : BindableBase
+    public class SolutionModel : BindableBase, ISolutionModel
     {
+        private string _fileName;
+        public string FileName
+        {
+            get => _fileName;
+            set => SetProperty(ref _fileName, value);
+        }
+
         private string _name;
         public string Name
         {
@@ -26,16 +31,6 @@ namespace BuildVision.UI.Models
         {
             get => _isEmpty;
             set => SetProperty(ref _isEmpty, value);
-        }
-
-        public ObservableCollection<ProjectItem> Projects { get; }
-
-        public List<ProjectItem> AllProjects { get; }
-
-        public SolutionItem()
-        {
-            Projects = new ObservableRangeCollection<ProjectItem>();
-            AllProjects = new List<ProjectItem>();
         }
     }
 }

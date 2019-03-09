@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using BuildVision.Common;
 using BuildVision.Contracts;
+using BuildVision.Exports.Providers;
 using BuildVision.Helpers;
 using BuildVision.Tool;
 using BuildVision.Tool.Building;
@@ -41,12 +42,9 @@ namespace BuildVision.Core
     // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(BuildVisionPane))]
     [Guid(PackageGuids.GuidBuildVisionPackageString)]
-    //[ProvideAutoLoad(VSConstants.UICONTEXT.SolutionOpening_string, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideBindingPath]
     [ProvideBindingPath(SubPath = "Lib")]
-    // TODO: Add ProvideProfileAttribute for each DialogPage and implement IVsUserSettings, IVsUserSettingsQuery.
     [ProvideProfile(typeof(GeneralSettingsDialogPage), PackageSettingsProvider.settingsCategoryName, "General Options", 0, 0, true)]
-    // TODO: ProvideOptionPage keywords.
     [ProvideOptionPage(typeof(GeneralSettingsDialogPage), "BuildVision", "General", 0, 0, true)]
     [ProvideOptionPage(typeof(WindowSettingsDialogPage), "BuildVision", "Tool Window", 0, 0, true)]
     [ProvideOptionPage(typeof(GridSettingsDialogPage), "BuildVision", "Projects Grid", 0, 0, true)]
@@ -59,13 +57,14 @@ namespace BuildVision.Core
         private SolutionEvents _solutionEvents;
         private BuildVisionPaneViewModel _viewModel;
         private IVsSolutionBuildManager2 _solutionBuildManager;
+        private IVsSolutionBuildManager5 _solutionBuildManager4;
+        private IBuildInformationProvider _buildInformationProvider;
         private uint _updateSolutionEvents4Cookie;
         private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
         private BuildOutputLogger _buildLogger;
-        private Solution _vsSolution;
-        private IVsSolutionBuildManager5 _solutionBuildManager4;
-        private SolutionModel _solutionState;
         private SolutionBuildEvents _solutionBuildEvents;
+        private ISolutionProvider _solutionProvider;
+        private IBuildingProjectsProvider _buildingProjectsProvider;
 
         public ControlSettings ControlSettings { get; set; }
 
@@ -88,11 +87,13 @@ namespace BuildVision.Core
                 var menuToolWin = new OleMenuCommand(ShowToolWindowAsync, toolwndCommandId);
                 mcs.AddCommand(menuToolWin);
             }
-            _solutionBuildManager = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
-            _solutionBuildManager4 = ServiceProvider.GlobalProvider.GetService(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager5;
+            _solutionBuildManager = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
+            _solutionBuildManager4 = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager5;
+            _buildInformationProvider = await GetServiceAsync(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
+            _solutionProvider = await GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
+            _buildingProjectsProvider = await GetServiceAsync(typeof(IBuildingProjectsProvider)) as IBuildingProjectsProvider;
 
             IPackageContext packageContext = this;
-
             _solutionEvents = _dte.Events.SolutionEvents;
             _solutionEvents.BeforeClosing += SolutionEvents_BeforeClosing;
             _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
@@ -103,8 +104,8 @@ namespace BuildVision.Core
                 SolutionEvents_Opened();
             }
 
-            var toolWindow = GetWindowPane(typeof(BuildVisionPane));
-            _viewModel = BuildVisionPane.GetViewModel(toolWindow);
+            //var toolWindow = GetWindowPane(typeof(BuildVisionPane));
+            //_viewModel = BuildVisionPane.GetViewModel(toolWindow);
         }
 
         private void SolutionEvents_BeforeClosing()
@@ -117,22 +118,15 @@ namespace BuildVision.Core
         private void SolutionEvents_Opened()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            _vsSolution = Services.Dte2.Solution;
-            _solutionState = _vsSolution.ToSolutionBuildState();
-            //_solutionBuildEvents = new SolutionBuildEvents(_solutionState);
+            _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider, _buildingProjectsProvider);
             _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
             _solutionBuildManager4.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
-            //_viewModel.ResetIndicators(ResetIndicatorMode.ResetValue);
         }
 
         private void SolutionEvents_AfterClosing()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            //_viewModel.TextCurrentState = Resources.BuildDoneText_BuildNotStarted;
-            ////_viewModel.ImageCurrentState = "TODO SET IMAGE"//VectorResources.TryGet(BuildImages.BuildActionResourcesUri, "StandBy");
-            //_viewModel.ProjectsList.Clear();
-            //_viewModel.ResetIndicators(ResetIndicatorMode.Disable);
-            _viewModel.BuildProgressViewModel.ResetTaskBarInfo();
+            //_viewModel.BuildProgressViewModel.ResetTaskBarInfo();
         }
 
         private async void ShowToolWindowAsync(object sender, EventArgs e)

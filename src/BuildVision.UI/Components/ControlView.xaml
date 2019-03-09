@@ -101,7 +101,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <components:ControlHeader DataContext="{Binding}"
+        <components:ControlHeader DataContext="{Binding BuildInformationModel}"
                                   Grid.Row="0"
                                   Height="auto" />
 

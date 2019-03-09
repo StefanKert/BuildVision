@@ -16,20 +16,20 @@ namespace BuildVision.UI.Helpers
             _labelSettings = labelsSettings;
         }
 
-        public string GetBuildBeginMajorMessage(VisualStudioSolution solutionItem)
+        public string GetBuildBeginMajorMessage(SolutionModel solutionItem, BuildInformationModel buildInformationModel)
         {
-            var mainString = GetMainString(solutionItem);
+            var mainString = GetMainString(solutionItem, buildInformationModel);
             return string.Format(_labelSettings.BuildBeginMajorMessageStringFormat, mainString);
         }
 
-        private string GetMainString(VisualStudioSolution solutionItem)
+        private string GetMainString(SolutionModel solutionItem, BuildInformationModel buildInformationModel)
         {
             var buildAction = BuildActions.BuildActionBuild; //TOdo replace
 
-            var unitName = GetUnitName(solutionItem);
-            var actionName = GetActionName(solutionItem.BuildAction);
-            var beginAtString = GetBeginAtString(solutionItem.BuildAction);
-            var timeString = GetTimeString(solutionItem);
+            var unitName = GetUnitName(solutionItem, buildInformationModel);
+            var actionName = GetActionName(buildInformationModel.BuildAction);
+            var beginAtString = GetBeginAtString(buildInformationModel.BuildAction);
+            var timeString = GetTimeString(solutionItem, buildInformationModel);
             string mainString;
             switch (_labelSettings.MajorMessageFormat)
             {
@@ -48,12 +48,12 @@ namespace BuildVision.UI.Helpers
             return mainString;
         }
 
-        private string GetTimeString(VisualStudioSolution solution)
+        private string GetTimeString(SolutionModel solution, BuildInformationModel buildInformationModel)
         {
             string timeString = "";
             try
             {
-                timeString = solution.BuildStartTime.Value.ToString(_labelSettings.DateTimeFormat);
+                timeString = buildInformationModel.BuildStartTime.Value.ToString(_labelSettings.DateTimeFormat);
             }
             catch (FormatException)
             {
@@ -97,10 +97,10 @@ namespace BuildVision.UI.Helpers
             }
         }
 
-        private string GetUnitName(VisualStudioSolution solutionItem)
+        private string GetUnitName(SolutionModel solutionItem, BuildInformationModel buildInformationModel)
         {
             string unitName = "";
-            switch (solutionItem.BuildScope)
+            switch (buildInformationModel.BuildScope)
             {
                 case BuildScopes.BuildScopeSolution:
                     unitName = Resources.BuildScopeSolution_UnitName;
@@ -118,20 +118,20 @@ namespace BuildVision.UI.Helpers
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(solutionItem.BuildScope));
+                    throw new ArgumentOutOfRangeException(nameof(buildInformationModel.BuildScope));
             }
 
             return unitName;
         }
 
-        public string GetBuildBeginExtraMessage(VisualStudioSolution solutionItem)
+        public string GetBuildBeginExtraMessage(SolutionModel solutionItem, BuildInformationModel buildInformationModel)
         {
-            if (solutionItem.BuildStartTime == null || !_labelSettings.ShowExtraMessage || _labelSettings.ExtraMessageDelay < 0)
+            if (buildInformationModel.BuildStartTime == null || !_labelSettings.ShowExtraMessage || _labelSettings.ExtraMessageDelay < 0)
             {
                 return string.Empty;
             }
 
-            TimeSpan timeSpan = DateTime.Now.Subtract(solutionItem.BuildStartTime.Value);
+            TimeSpan timeSpan = DateTime.Now.Subtract(buildInformationModel.BuildStartTime.Value);
             if (timeSpan.TotalSeconds > _labelSettings.ExtraMessageDelay)
             {
                 return GetExtraTimePartString( timeSpan);
@@ -140,23 +140,23 @@ namespace BuildVision.UI.Helpers
             return string.Empty;
         }
 
-        public string GetBuildDoneMessage(VisualStudioSolution solutionItem)
+        public string GetBuildDoneMessage(SolutionModel solutionItem, BuildInformationModel buildInformationModel)
         {
-            return GetBuildDoneMajorMessage(solutionItem) + GetBuildDoneExtraMessage(solutionItem);
+            return GetBuildDoneMajorMessage(solutionItem, buildInformationModel) + GetBuildDoneExtraMessage(solutionItem, buildInformationModel);
         }
 
-        private string GetBuildDoneMajorMessage(VisualStudioSolution solutionItem)
+        private string GetBuildDoneMajorMessage(SolutionModel solutionItem, BuildInformationModel buildInformationModel)
         {
-            var buildAction = solutionItem.BuildAction;
-            var buildScope = solutionItem.BuildScope;
+            var buildAction = buildInformationModel.BuildAction;
+            var buildScope = buildInformationModel.BuildScope;
 
-            if (solutionItem.BuildFinishTime == null)
+            if (buildInformationModel.BuildFinishTime == null)
                 throw new InvalidOperationException();
 
             string timeString;
             try
             {
-                timeString = solutionItem.BuildFinishTime.Value.ToString(_labelSettings.DateTimeFormat);
+                timeString = buildInformationModel.BuildFinishTime.Value.ToString(_labelSettings.DateTimeFormat);
             }
             catch (FormatException)
             {
@@ -181,9 +181,9 @@ namespace BuildVision.UI.Helpers
                     if (_labelSettings.ShowProjectName)
                     {
                         // Todo this is probably wrong. maybe we should go the extra mile and check which projects are selected?
-                        var uniqProjName = solutionItem.Projects.LastOrDefault(x => x.State == ProjectState.BuildDone)?.UniqueName;
-                        var projItem = solutionItem.Projects.FirstOrDefault(item => item.UniqueName == uniqProjName);
-                        unitName += string.Format(Resources.BuildScopeProject_ProjectNameTemplate, projItem.Name);
+                        //var uniqProjName = solutionItem.Projects.LastOrDefault(x => x.State == ProjectState.BuildDone)?.UniqueName;
+                        //var projItem = solutionItem.Projects.FirstOrDefault(item => item.UniqueName == uniqProjName);
+                        //unitName += string.Format(Resources.BuildScopeProject_ProjectNameTemplate, projItem.Name);
                     }
                     break;
 
@@ -191,8 +191,8 @@ namespace BuildVision.UI.Helpers
                     throw new ArgumentOutOfRangeException(nameof(buildScope));
             }
 
-            var actionName = GetActionName(solutionItem.BuildAction);
-            var resultName = GetResultName(solutionItem.ResultState);
+            var actionName = GetActionName(buildInformationModel.BuildAction);
+            var resultName = GetResultName(buildInformationModel.ResultState);
 
             string mainString;
             switch (_labelSettings.MajorMessageFormat)
@@ -239,12 +239,12 @@ namespace BuildVision.UI.Helpers
             }
         }
 
-        private string GetBuildDoneExtraMessage(VisualStudioSolution solutionItem)
+        private string GetBuildDoneExtraMessage(SolutionModel solutionItem, BuildInformationModel buildInformationModel)
         {
-            if (solutionItem.BuildStartTime == null || solutionItem.BuildFinishTime == null || !_labelSettings.ShowExtraMessage)
+            if (buildInformationModel.BuildStartTime == null || buildInformationModel.BuildFinishTime == null || !_labelSettings.ShowExtraMessage)
                 return string.Empty;
 
-            TimeSpan timeSpan = solutionItem.BuildFinishTime.Value.Subtract(solutionItem.BuildStartTime.Value);
+            TimeSpan timeSpan = buildInformationModel.BuildFinishTime.Value.Subtract(buildInformationModel.BuildStartTime.Value);
             string extraTimePartString = GetExtraTimePartString(timeSpan);
             return string.Format(_labelSettings.ExtraMessageStringFormat, extraTimePartString);
         }

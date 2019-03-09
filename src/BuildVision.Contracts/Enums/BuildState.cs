@@ -5,6 +5,7 @@ namespace BuildVision.Contracts
         NotStarted = 0,
         InProgress = 1,
         Done = 2,
-        Cancelled = 3
+        Cancelled = 3,
+        Failed = 4
     }
 }

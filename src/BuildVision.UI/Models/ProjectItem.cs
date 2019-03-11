@@ -8,7 +8,7 @@ using BuildVision.UI.Extensions;
 
 namespace BuildVision.UI.Models
 {
-    public class ProjectItem : BindableBase
+    public class ProjectItem : BindableBase, IProjectItem
     {
         private const string ResourcesUri = @"Resources/ProjectItem.Resources.xaml";
 
@@ -251,28 +251,6 @@ namespace BuildVision.UI.Models
             set => SetProperty(ref _solutionFolder, value);
         }
         public bool Success { get; set; }
-
-        public ProjectItem GetBatchBuildCopy(string configuration, string platform)
-        {
-            var pi = Clone();
-            pi.Configuration = configuration;
-            pi.Platform = platform;
-            pi.ErrorsBox = new ErrorsBox();
-            pi.IsBatchBuildProject = true;
-            return pi;
-        }
-
-        private ProjectItem Clone()
-        {
-            var xmlSerializer = new GenericXmlSerializer<ProjectItem>();
-            return xmlSerializer.Deserialize(xmlSerializer.Serialize(this));
-        }
-
-        public void UpdatePostBuildProperties(BuildedProject buildedProjectInfo)
-        {
-            if (buildedProjectInfo != null)
-                ErrorsBox = buildedProjectInfo.ErrorsBox;
-        }
 
         public void RaiseBuildElapsedTimeChanged()
         {

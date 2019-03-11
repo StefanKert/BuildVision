@@ -48,12 +48,9 @@ namespace BuildVision.Contracts
 
         public string Message { get; set; }
 
-        public Action GoToError { get; }
-
-        public ErrorItem(ErrorLevel errorLevel, Action<ErrorItem> goToError)
+        public ErrorItem(ErrorLevel errorLevel)
         {
             Level = errorLevel;
-            GoToError = () => goToError(this);
         }
 
         public ErrorItem() { }

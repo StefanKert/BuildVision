@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using BuildVision.Common;
@@ -24,6 +25,10 @@ namespace BuildVision.Tool.Building
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class BuildManager : IBuildService
     {
+        private const string CancelBuildCommand = "Build.Cancel";
+        private CancellationTokenSource _buildProcessCancellationToken;
+        private bool _buildCancelled;
+
         public BuildManager()
         {
             //_viewModel.RaiseCommandForSelectedProject += RaiseCommandForSelectedProject;
@@ -89,57 +94,57 @@ namespace BuildVision.Tool.Building
 
         private void SelectProjectInSolutionExplorer(UI.Models.ProjectItem projectItem)
         {
-            var solutionExplorer = Services.Dte2.ToolWindows.SolutionExplorer;
-            var project = Services.Dte2.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName);
-            var item = solutionExplorer.FindHierarchyItem(project);
-            if (item == null)
-                throw new ProjectNotFoundException($"Project '{projectItem.UniqueName}' not found in SolutionExplorer.");
-            solutionExplorer.Parent.Activate();
-            item.Select(vsUISelectionType.vsUISelectionTypeSelect);
+            //var solutionExplorer = Services.Dte2.ToolWindows.SolutionExplorer;
+            //var project = Services.Dte2.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName);
+            //var item = solutionExplorer.FindHierarchyItem(project);
+            //if (item == null)
+            //    throw new ProjectNotFoundException($"Project '{projectItem.UniqueName}' not found in SolutionExplorer.");
+            //solutionExplorer.Parent.Activate();
+            //item.Select(vsUISelectionType.vsUISelectionTypeSelect);
         }
 
         private void ProjectCopyBuildOutputFilesToClipBoard(UI.Models.ProjectItem projItem)
         {
             try
             {
-                Project project = Services.Dte.Solution.GetProject(x => x.UniqueName == projItem.UniqueName);
-                BuildOutputFileTypes fileTypes = null; //_packageContext.ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard;
-                if (fileTypes.IsEmpty)
-                {
-                    MessageBox.Show(@"Nothing to copy: all file types unchecked.", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
-                    return;
-                }
+                //Project project = Services.Dte.Solution.GetProject(x => x.UniqueName == projItem.UniqueName);
+                //BuildOutputFileTypes fileTypes = null; //_packageContext.ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard;
+                //if (fileTypes.IsEmpty)
+                //{
+                //    MessageBox.Show(@"Nothing to copy: all file types unchecked.", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
+                //    return;
+                //}
 
-                string[] filePaths = project.GetBuildOutputFilePaths(fileTypes, projItem.Configuration, projItem.Platform).ToArray();
-                if (filePaths.Length == 0)
-                {
-                    MessageBox.Show(@"Nothing copied: selected build output groups are empty.", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
-                    return;
-                }
+                //string[] filePaths = project.GetBuildOutputFilePaths(fileTypes, projItem.Configuration, projItem.Platform).ToArray();
+                //if (filePaths.Length == 0)
+                //{
+                //    MessageBox.Show(@"Nothing copied: selected build output groups are empty.", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
+                //    return;
+                //}
 
-                string[] existFilePaths = filePaths.Where(File.Exists).ToArray();
-                if (existFilePaths.Length == 0)
-                {
-                    string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Nothing copied. {0} wasn't found{1}", filePaths);
-                    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
+                //string[] existFilePaths = filePaths.Where(File.Exists).ToArray();
+                //if (existFilePaths.Length == 0)
+                //{
+                //    string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Nothing copied. {0} wasn't found{1}", filePaths);
+                //    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                //    return;
+                //}
 
-                CopyFiles(existFilePaths);
+                //CopyFiles(existFilePaths);
 
-                if (existFilePaths.Length == filePaths.Length)
-                {
-                    string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
-                    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                else
-                {
-                    string[] notExistFilePaths = filePaths.Except(existFilePaths).ToArray();
-                    string copiedMsg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
-                    string notFoundMsg = GetCopyBuildOutputFilesToClipboardActionMessage("{0} wasn't found{1}", notExistFilePaths);
-                    string msg = string.Concat(copiedMsg, Environment.NewLine, Environment.NewLine, notFoundMsg);
-                    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+                //if (existFilePaths.Length == filePaths.Length)
+                //{
+                //    string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
+                //    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
+                //}
+                //else
+                //{
+                //    string[] notExistFilePaths = filePaths.Except(existFilePaths).ToArray();
+                //    string copiedMsg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
+                //    string notFoundMsg = GetCopyBuildOutputFilesToClipboardActionMessage("{0} wasn't found{1}", notExistFilePaths);
+                //    string msg = string.Concat(copiedMsg, Environment.NewLine, Environment.NewLine, notFoundMsg);
+                //    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                //}
             }
             catch (Win32Exception ex)
             {
@@ -190,7 +195,7 @@ namespace BuildVision.Tool.Building
             {
                 object customIn = null;
                 object customOut = null;
-                Services.Dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), (int) command, ref customIn, ref customOut);
+                //Services.Dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), (int) command, ref customIn, ref customOut);
             }
             catch (Exception ex)
             {
@@ -213,9 +218,56 @@ namespace BuildVision.Tool.Building
             throw new NotImplementedException();
         }
 
+        private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)
+        {
+            if (id == (int) VSConstants.VSStd97CmdID.CancelBuild
+                && Guid.Parse(guid) == VSConstants.GUID_VSStandardCommandSet97)
+            {
+                //_buildCancelled = true;
+                //if (!_buildCancelledInternally)
+                //    OnBuildCancelled();
+            }
+        }
+
+        private void ApplyWindowState(UI.Settings.Models.ControlSettings settings)
+        {
+            // Figure out when build  is canceled
+            //int errorProjectsCount = _viewModel.ProjectsList.Count(item => item.State.IsErrorState());
+            //if (errorProjectsCount > 0 || BuildIsCancelled)
+            //    ApplyToolWindowStateAction(settings.WindowSettings.WindowActionOnBuildError);
+            //else
+            //    ApplyToolWindowStateAction(settings.WindowSettings.WindowActionOnBuildSuccess);
+        }
+
         public void RaiseCommandForSelectedProject()
         {
             throw new NotImplementedException();
+        }
+
+        private void NavigateToBuildErrorIfNeeded(UI.Settings.Models.ControlSettings settings)
+        {
+            // How to get errors that  happend during build?
+            //bool navigateToBuildFailureReason = (!BuildedProjects.BuildWithoutErrors
+            //                                     && settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone);
+            //if (navigateToBuildFailureReason && BuildedProjects.Any(p => p.ErrorsBox.Errors.Any(NavigateToErrorItem)))
+            //{
+            //    _buildErrorIsNavigated = true;
+            //}
+        }
+
+        private async void OnErrorRaised(object sender, BuildErrorRaisedEventArgs args)
+        {
+            //bool buildNeedToCancel = (args.ErrorLevel == ErrorLevel.Error && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError);
+            //if (buildNeedToCancel)
+            //    await CancelBuildAsync();
+
+            //bool navigateToBuildFailureReason = (!_buildErrorIsNavigated
+            //                                     && args.ErrorLevel == ErrorLevel.Error
+            //                                     && _viewModel.ControlSettings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnErrorRaised);
+            //if (navigateToBuildFailureReason && args.ProjectInfo.ErrorsBox.Errors.Any(NavigateToErrorItem))
+            //{
+            //    _buildErrorIsNavigated = true;
+            //}
         }
     }
 }

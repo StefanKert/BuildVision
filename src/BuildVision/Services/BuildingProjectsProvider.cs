@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Linq;
 using BuildVision.Common;
 using BuildVision.Contracts;
-using BuildVision.Contracts.Models;
+using BuildVision.Exports;
 using BuildVision.Exports.Providers;
 using BuildVision.Helpers;
-using BuildVision.Tool.Building;
-using BuildVision.Tool.Models;
 using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Contracts;
 using BuildVision.UI.Models;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.Build.Framework;
 
 namespace BuildVision.Core
 {
@@ -20,23 +19,62 @@ namespace BuildVision.Core
     [PartCreationPolicy(CreationPolicy.Shared)]
     public class BuildingProjectsProvider : IBuildingProjectsProvider
     {
-        public BuildOutputLogger _buildLogger;
-
-        private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
-        private readonly IServiceProvider _serviceProvider;
         private readonly ISolutionProvider _solutionProvider;
         private readonly IBuildInformationProvider _buildInformationProvider;
-        private ObservableCollection<ProjectItem> _projects;
+        private readonly IBuildOutputLogger _buildOutputLogger;
 
+        private ObservableCollection<IProjectItem> _projects;
 
         [ImportingConstructor]
         public BuildingProjectsProvider(
             [Import(typeof(ISolutionProvider))] ISolutionProvider solutionProvider, 
-            [Import(typeof(IBuildInformationProvider))] IBuildInformationProvider buildInformationProvider)
+            [Import(typeof(IBuildInformationProvider))] IBuildInformationProvider buildInformationProvider,
+            [Import(typeof(IBuildOutputLogger))] IBuildOutputLogger buildOutputLogger)
         {
-            _projects = new ObservableCollection<ProjectItem>();
+            _projects = new ObservableCollection<IProjectItem>();
             _solutionProvider = solutionProvider;
             _buildInformationProvider = buildInformationProvider;
+            _buildOutputLogger = buildOutputLogger;
+
+            _buildOutputLogger.OnErrorRaised += BuildOutputLogger_OnErrorRaised;
+            ReloadCurrentProjects();
+        }
+
+        private void BuildOutputLogger_OnErrorRaised(BuildProjectContextEntry projectEntry, object e, ErrorLevel errorLevel)
+        {
+            try
+            {
+                if (!TryGetProjectItem(projectEntry, out var projectItem))
+                {
+                    projectEntry.IsInvalid = true;
+                    return;
+                }
+
+                var errorItem = new ErrorItem(errorLevel);
+                switch (errorLevel)
+                {
+                    case ErrorLevel.Message:
+                        errorItem.Init((BuildMessageEventArgs) e);
+                        break;
+
+                    case ErrorLevel.Warning:
+                        errorItem.Init((BuildWarningEventArgs) e);
+                        throw new ArgumentOutOfRangeException("errorLevel");
+                    case ErrorLevel.Error:
+                        errorItem.Init((BuildErrorEventArgs) e);
+                        break;
+                    default:
+                        errorItem.VerifyValues();
+                        break;
+                }
+
+                projectItem.ErrorsBox.Add(errorItem);
+                //OnErrorRaised(this, new BuildErrorRaisedEventArgs(errorLevel, projectItem));
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
         }
 
         public void ReloadCurrentProjects()
@@ -45,28 +83,24 @@ namespace BuildVision.Core
             _projects.AddRange(_solutionProvider.GetProjects());
         }
 
-        public ObservableCollection<ProjectItem> GetBuildingProjects()
+        public ObservableCollection<IProjectItem> GetBuildingProjects()
         {
             return _projects;
         }
 
-        public void ProjectBuildStarted(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction)
+        public void ProjectBuildStarted(IProjectItem projectItem, uint dwAction)
         {
             try
             {
-                var projectItem = _projects.FirstOrDefault(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == ProjectIdentifierGenerator.GetIdentifierForInteropTypes(pHierProj, pCfgProj));
-                if (projectItem == null)
+                var projInCollection = _projects.FirstOrDefault(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == ProjectIdentifierGenerator.GetIdentifierForProjectItem(projectItem));
+                if(projInCollection == null)
                 {
-                    // In this case we are executing a batch build so we need to add the projectitem manually
-                    projectItem = new UI.Models.ProjectItem();
-                    var configPair = pCfgProj.ToConfigurationTuple();
-                    SolutionProjectsExtensions.UpdateProperties(pHierProj.ToProject(), projectItem, configPair.Item1, configPair.Item2);
                     _projects.Add(projectItem);
+                    projInCollection = projectItem;
                 }
-
-                projectItem.State = GetProjectState(_buildInformationProvider.GetBuildInformationModel().BuildAction);
-                projectItem.BuildFinishTime = null;
-                projectItem.BuildStartTime = DateTime.Now;
+                projInCollection.State = GetProjectState(_buildInformationProvider.GetBuildInformationModel().BuildAction);
+                projInCollection.BuildFinishTime = null;
+                projInCollection.BuildStartTime = DateTime.Now;
 
                 //  _viewModel.OnBuildProjectBegin();
                 //if (BuildScope == BuildScopes.BuildScopeSolution &&
@@ -87,60 +121,43 @@ namespace BuildVision.Core
             }
         }
 
-        private bool PlatformsIsEquals(string platformName1, string platformName2)
+        public bool TryGetProjectItem(BuildProjectContextEntry projectEntry, out IProjectItem projectItem)
         {
-            if (string.Compare(platformName1, platformName2, StringComparison.InvariantCultureIgnoreCase) == 0)
+            projectItem = projectEntry.ProjectItem;
+            if (projectItem != null)
                 return true;
 
-            // The ambiguity between Project.ActiveConfiguration.PlatformName and
-            // ProjectStartedEventArgs.ProjectPlatform in Microsoft.Build.Utilities.Logger
-            // (see BuildOutputLogger).
-            bool isAnyCpu1 = (platformName1 == "Any CPU" || platformName1 == "AnyCPU");
-            bool isAnyCpu2 = (platformName2 == "Any CPU" || platformName2 == "AnyCPU");
-            if (isAnyCpu1 && isAnyCpu2)
-                return true;
+            string projectFile = projectEntry.FileName;
+            if (ProjectExtensions.IsProjectHidden(projectFile))
+                return false;
 
-            return false;
+            var projectProperties = projectEntry.Properties;
+            var project = _projects.FirstOrDefault(x => x.FullName == projectFile);
+
+            if (projectProperties.ContainsKey("Configuration") && projectProperties.ContainsKey("Platform"))
+            {
+                string projectConfiguration = projectProperties["Configuration"];
+                string projectPlatform = projectProperties["Platform"];
+                projectItem = _projects.First(item => $"{item.FullName}-{item.Configuration}|{item.Platform.Replace(" ","")}" == $"{projectFile}-{projectConfiguration}|{projectPlatform}");
+                if (projectItem == null)
+                {
+                    TraceManager.Trace(
+                        string.Format("Project Item not found by: UniqueName='{0}', Configuration='{1}, Platform='{2}'.",
+                            project.UniqueName,
+                            projectConfiguration,
+                            projectPlatform),
+                        EventLogEntryType.Warning);
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+            projectEntry.ProjectItem = projectItem;
+            return true;
         }
-
-        //public bool GetProjectItem(IBuildVisionPaneViewModel viewModel, BuildProjectContextEntry projectEntry, out ProjectItem projectItem)
-        //{
-        //    projectItem = projectEntry.ProjectItem;
-        //    if (projectItem != null)
-        //        return true;
-
-        //    string projectFile = projectEntry.FileName;
-        //    if (ProjectExtensions.IsProjectHidden(projectFile))
-        //        return false;
-
-        //    var projectProperties = projectEntry.Properties;
-        //    var project = viewModel.ProjectsList.FirstOrDefault(x => x.FullName == projectFile);
-
-
-        //    if (projectProperties.ContainsKey("Configuration") && projectProperties.ContainsKey("Platform"))
-        //    {
-        //        string projectConfiguration = projectProperties["Configuration"];
-        //        string projectPlatform = projectProperties["Platform"];
-        //        projectItem = FindProjectItemInProjectsByUniqueName(viewModel, project.UniqueName, projectConfiguration, projectPlatform);
-        //        if (projectItem == null)
-        //        {
-        //            TraceManager.Trace(
-        //                string.Format("Project Item not found by: UniqueName='{0}', Configuration='{1}, Platform='{2}'.",
-        //                    project.UniqueName,
-        //                    projectConfiguration,
-        //                    projectPlatform),
-        //                EventLogEntryType.Warning);
-        //            return false;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return false;
-        //    }
-
-        //    projectEntry.ProjectItem = projectItem;
-        //    return true;
-        //}
 
         private ProjectState GetProjectState(BuildActions buildAction)
         {
@@ -161,54 +178,43 @@ namespace BuildVision.Core
             }
         }
 
-        public void ProjectBuildFinished(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, bool succeess, bool canceled)
+        public void ProjectBuildFinished(string projectIdentifier, bool succeess, bool canceled)
         {
-            var currentProject = _projects.First(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == ProjectIdentifierGenerator.GetIdentifierForInteropTypes(pHierProj, pCfgProj));
-            currentProject.State = ProjectState.BuildDone;
-            //currentProject.Success = fSuccess == 1;
-            //ProjectState projectState;
-            //switch (SolutionBuildState.BuildAction)
-            //{
-            //    case BuildActions.BuildActionBuild:
-            //    case BuildActions.BuildActionRebuildAll:
-            //        if (currentProject.Success)
-            //        {
-            //            if (_viewModel.ControlSettings.GeneralSettings.ShowWarningSignForBuilds && buildedProject.ErrorsBox.WarningsCount > 0)
-            //                projectState = ProjectState.BuildWarning;
-            //            else
-            //            {
-            //                bool upToDate = (_buildLogger != null && _buildLogger.Projects != null
-            //                             && !_buildLogger.Projects.Exists(t => t.FileName == buildedProject.FileName));
-            //                if (upToDate)
-            //                {
-            //                    // Because ErrorBox will be empty if project is UpToDate.
-            //                    buildedProject.ErrorsBox = currentProject.ErrorsBox;
-            //                }
-            //                projectState = upToDate ? ProjectState.UpToDate : ProjectState.BuildDone;
-            //            }
-            //        }
-            //        else
-            //        {
-            //            bool canceled = (_buildCancelled && buildedProject.ErrorsBox.ErrorsCount == 0);
-            //            projectState = canceled ? ProjectState.BuildCancelled : ProjectState.BuildError;
-            //        }
-            //        break;
+            var currentProject = _projects.First(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == projectIdentifier);
+            var buildAction = _buildInformationProvider.GetBuildInformationModel().BuildAction;
+            ProjectState projectState;
+            switch (buildAction)
+            {
+                case BuildActions.BuildActionBuild:
+                case BuildActions.BuildActionRebuildAll:
+                    if (succeess)
+                    {
+                        if (currentProject.ErrorsBox.WarningsCount > 0)
+                            projectState = ProjectState.BuildWarning;
+                        else
+                        {
+                            projectState = _buildOutputLogger.IsProjectUpToDate(currentProject) ? ProjectState.UpToDate : ProjectState.BuildDone;
+                        }
+                    }
+                    else
+                    {
+                        //bool canceled = (_buildCancelled && currentProject.ErrorsBox.ErrorsCount == 0);
+                        projectState = canceled ? ProjectState.BuildCancelled : ProjectState.BuildError;
+                    }
+                    break;
 
-            //    case BuildActions.BuildActionClean:
-            //        projectState = fSuccess == 1 ? ProjectState.CleanDone : ProjectState.CleanError;
-            //        break;
+                case BuildActions.BuildActionClean:
+                    projectState = succeess ? ProjectState.CleanDone : ProjectState.CleanError;
+                    break;
 
-            //    case BuildActions.BuildActionDeploy:
-            //        throw new InvalidOperationException("vsBuildActionDeploy not supported");
+                case BuildActions.BuildActionDeploy:
+                    throw new InvalidOperationException("vsBuildActionDeploy not supported");
 
-            //    default:
-            //        throw new ArgumentOutOfRangeException(nameof(SolutionBuildState.BuildAction));
-            //}
-
-            //buildedProject.ProjectState = projectState;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(buildAction));
+            }
+            currentProject.State = projectState;
             //OnBuildProjectDone(new BuildProjectEventArgs(currentProject, projectState, eventTime, buildedProject));
-
-            //Debug.WriteLine($"UpdateProjectCfg_Done {proj.UniqueName} ({projConfiguration}) ({slnConfiguration}");
 
             //if (e.ProjectState == ProjectState.BuildError && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError)
             //    CancelBuildAsync();

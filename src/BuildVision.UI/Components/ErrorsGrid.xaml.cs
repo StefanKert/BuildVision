@@ -37,7 +37,8 @@ namespace BuildVision.UI
             {
                 var row = (DataGridRow)sender;
                 var errorItem = (ErrorItem)row.Item;
-                errorItem.GoToError();
+                // TODO navigate to error
+                //errorItem.GoToError();
                 e.Handled = true;
             }
             catch (Exception ex)

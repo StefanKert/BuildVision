@@ -5,6 +5,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using BuildVision.Core;
 using BuildVision.Tool;
+using BuildVision.UI.Models;
 
 namespace BuildVision.Helpers
 {
@@ -110,6 +111,29 @@ namespace BuildVision.Helpers
             }
 
             return null;
+        }
+
+        private void ApplyToolWindowStateAction(WindowState windowState)
+        {
+            switch (windowState)
+            {
+                case WindowState.Nothing:
+                    break;
+                case WindowState.Show:
+                    Show();
+                    break;
+                case WindowState.ShowNoActivate:
+                    ShowNoActivate();
+                    break;
+                case WindowState.Hide:
+                    Hide();
+                    break;
+                case WindowState.Close:
+                    Close();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(windowState));
+            }
         }
     }
 }

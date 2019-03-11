@@ -38,6 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -49,19 +50,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\BuildedProjectsCollection.cs" />
+    <Compile Include="Models\BuildProjectContextEntry.cs" />
     <Compile Include="Enums\BuildResultState.cs" />
     <Compile Include="Enums\BuildActions.cs" />
-    <Compile Include="BuildedProject.cs" />
+    <Compile Include="Models\BuildedProject.cs" />
     <Compile Include="BuildErrorRaisedEventArgs.cs" />
     <Compile Include="BuildOutputFileTypes.cs" />
     <Compile Include="Enums\BuildScopes.cs" />
     <Compile Include="Enums\BuildState.cs" />
     <Compile Include="Enums\ColumnsOrder.cs" />
-    <Compile Include="ErrorItem.cs" />
+    <Compile Include="Models\BuildProjectEventArgs.cs" />
+    <Compile Include="Models\ErrorItem.cs" />
     <Compile Include="Enums\ErrorLevel.cs" />
-    <Compile Include="ErrorsBox.cs" />
+    <Compile Include="Models\ErrorsBox.cs" />
     <Compile Include="Enums\ProjectState.cs" />
     <Compile Include="Models\IBuildInformationModel.cs" />
+    <Compile Include="Models\IProjectItem.cs" />
     <Compile Include="Models\ISolutionModel.cs" />
     <Compile Include="ProjectNotFoundException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

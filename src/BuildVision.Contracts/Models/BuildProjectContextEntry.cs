@@ -13,7 +13,7 @@ namespace BuildVision.UI.Contracts
 
         public IDictionary<string, string> Properties { get; set; }
 
-        public ProjectItem ProjectItem { get; set; }
+        public IProjectItem ProjectItem { get; set; }
 
         public bool IsInvalid { get; set; }
 

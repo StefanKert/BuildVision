@@ -2,7 +2,12 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using BuildVision.Exports;
+using BuildVision.Exports.Factories;
 using BuildVision.Exports.Providers;
+using BuildVision.Tool.Building;
+using BuildVision.UI.Helpers;
+using BuildVision.UI.Settings.Models;
 using BuildVision.Views.Settings;
 using Microsoft;
 using Microsoft.VisualStudio.Shell;
@@ -16,8 +21,12 @@ namespace BuildVision.Core
     [ProvideService(typeof(IBuildInformationProvider), IsAsyncQueryable = true)]
     [ProvideService(typeof(ISolutionProvider), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildingProjectsProvider), IsAsyncQueryable = true)]
+    [ProvideService(typeof(IBuildMessagesFactory), IsAsyncQueryable = true)]
+    [ProvideService(typeof(IBuildOutputLogger), IsAsyncQueryable = true)]
     public sealed class ServiceProviderPackage : AsyncPackage
     {
+        private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
+
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await Task.CompletedTask;
@@ -25,6 +34,8 @@ namespace BuildVision.Core
             AddService(typeof(IBuildInformationProvider), CreateServiceAsync, true);
             AddService(typeof(ISolutionProvider), CreateServiceAsync, true);
             AddService(typeof(IBuildingProjectsProvider), CreateServiceAsync, true);
+            AddService(typeof(IBuildMessagesFactory), CreateServiceAsync, true);
+            AddService(typeof(IBuildOutputLogger), CreateServiceAsync, true);
         }
 
         async Task<object> CreateServiceAsync(IAsyncServiceContainer container, CancellationToken cancellation, Type serviceType)
@@ -41,7 +52,9 @@ namespace BuildVision.Core
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellation);
                 var sp = new ServiceProvider(Services.Dte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
                 Assumes.Present(sp);
-                return new BuildInformationProvider(sp);
+                var buildOutputLogger = sp.GetService(typeof(IBuildOutputLogger)) as IBuildOutputLogger;
+                Assumes.Present(buildOutputLogger);
+                return new BuildInformationProvider(sp, buildOutputLogger);
             }
             else if (serviceType == typeof(ISolutionProvider))
             {
@@ -59,8 +72,28 @@ namespace BuildVision.Core
                 Assumes.Present(solutionProvider);
                 var buildInformationProvider = sp.GetService(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
                 Assumes.Present(buildInformationProvider);
-                return new BuildingProjectsProvider(solutionProvider, buildInformationProvider);
-            }         
+                var buildOutputLogger = sp.GetService(typeof(IBuildOutputLogger)) as IBuildOutputLogger;
+                Assumes.Present(buildOutputLogger);
+                return new BuildingProjectsProvider(solutionProvider, buildInformationProvider, buildOutputLogger);
+            }
+            else if (serviceType == typeof(IBuildMessagesFactory))
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellation);
+                var sp = new ServiceProvider(Services.Dte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
+                Assumes.Present(sp);
+                var solutionProvider = sp.GetService(typeof(ISolutionProvider)) as ISolutionProvider;
+                Assumes.Present(solutionProvider);
+                var buildInformationProvider = sp.GetService(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
+                Assumes.Present(buildInformationProvider);
+                var buildingProjectsProvider = sp.GetService(typeof(IBuildingProjectsProvider)) as IBuildingProjectsProvider;
+                Assumes.Present(buildingProjectsProvider);
+                return new BuildMessagesFactory(new ControlSettings(), buildInformationProvider, buildingProjectsProvider);
+            }
+            else if (serviceType == typeof(IBuildOutputLogger))
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellation);
+                return new BuildOutputLogger(_parsingErrorsLoggerId, Microsoft.Build.Framework.LoggerVerbosity.Quiet);
+            }
             else
             {
                 throw new Exception("Not found");

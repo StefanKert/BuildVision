@@ -93,12 +93,10 @@
   <ItemGroup>
     <Compile Include="Services\BuildInformationProvider.cs" />
     <Compile Include="Services\BuildingProjectsProvider.cs" />
-    <Compile Include="Services\IBuildingProjectsProvider.cs" />
-    <Compile Include="Services\ISolutionProvider.cs" />
+    <Compile Include="Services\ProjectFileNavigationService.cs" />
     <Compile Include="Services\SolutionProvider.cs" />
     <Compile Include="Helpers\ProjectIdentifierGenerator.cs" />
     <Compile Include="Core\BuildVisionPackage.cs" />
-    <Compile Include="Core\ServiceProviderExports.cs" />
     <Compile Include="Core\ServiceProviderPackage.cs" />
     <Compile Include="Core\Services.cs" />
     <Compile Include="Core\SolutionBuildEvents.cs" />
@@ -116,7 +114,6 @@
     <Compile Include="Helpers\VsCfgExtensions.cs" />
     <Compile Include="Helpers\VsHierarchyExtensions.cs" />
     <Compile Include="Tool\Building\BackgroundBuildProcessUpdater.cs" />
-    <Compile Include="Tool\Building\BuildContext.cs" />
     <Compile Include="Tool\Building\BuildManager.cs" />
     <Compile Include="Tool\Building\BuildOutputLogger.cs" />
     <Compile Include="Core\IPackageContext.cs" />

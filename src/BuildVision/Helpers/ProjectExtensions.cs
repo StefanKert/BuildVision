@@ -156,7 +156,7 @@ namespace BuildVision.Helpers
         /// <param name="project">The project.</param>
         /// <param name="filePath">File path, relative to the <paramref name="project"/> root.</param>
         /// <returns>The found file or <c>null</c>.</returns>
-        private static ProjectItem FindProjectItem(this Project project, string filePath)
+        public static ProjectItem FindProjectItem(this Project project, string filePath)
         {
             return project.ProjectItems.FindProjectItem(filePath);
         }
@@ -494,71 +494,6 @@ namespace BuildVision.Helpers
             return false;
         }
 
-        /// <summary>
-        /// Navigate to the Error Item in the Visual Studio Editor.
-        /// </summary>
-        /// <param name="project">The project - owner of the Error Item.</param>
-        /// <param name="errorItem">The Error Item.</param>
-        public static bool NavigateToErrorItem(this Project project, BuildVision.Contracts.ErrorItem errorItem)
-        {
-            try
-            {
-                if (project == null)
-                    throw new ArgumentNullException("project");
-
-                if (errorItem == null)
-                    throw new ArgumentNullException("errorItem");
-
-                if (!errorItem.CanNavigateTo)
-                    return false;
-
-                if (string.IsNullOrEmpty(errorItem.File))
-                    return false;
-
-                string fullPath;
-
-                // Check if path is absolute.
-                if (Path.IsPathRooted(errorItem.File))
-                {
-                    // Foo VC++ projects errorItem.File contains full path.
-                    fullPath = errorItem.File;
-                }
-                else
-                {
-                    var projectItemFile = project.FindProjectItem(errorItem.File);
-                    if (projectItemFile == null)
-                        return false;
-
-                    fullPath = projectItemFile.Properties.GetPropertyOrDefault<string>("FullPath");
-                    if (fullPath == null)
-                        throw new KeyNotFoundException("FullPath property not found.");
-                }
-
-                try
-                {
-                    var window = project.DTE.ItemOperations.OpenFile(fullPath, EnvDTE.Constants.vsViewKindAny);
-                    if (window == null)
-                        throw new NullReferenceException("Associated window is null reference.");
-
-                    window.Activate();
-
-                    var selection = (TextSelection)window.Selection;
-                    selection.MoveToLineAndOffset(errorItem.LineNumber, errorItem.ColumnNumber);
-                    selection.MoveToLineAndOffset(errorItem.EndLineNumber, errorItem.EndColumnNumber, true /*select text*/);
-                }
-                catch (Exception ex)
-                {
-                    var msg = string.Format("Navigate to error item exception (fullPath='{0}').", fullPath);
-                    ex.Trace(msg);
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.Trace("Navigate to error item exception.");
-            }
-
-            return true;
-        }
 
         public static string GetTreePath(this Project project, bool includeSelfProjectName = true)
         {

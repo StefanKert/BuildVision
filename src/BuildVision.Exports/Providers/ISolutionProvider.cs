@@ -8,6 +8,6 @@ namespace BuildVision.Core
     {
         ISolutionModel GetSolutionModel();
         void ReloadSolution();
-        IEnumerable<ProjectItem> GetProjects();
+        IEnumerable<IProjectItem> GetProjects();
     }
 }

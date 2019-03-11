@@ -37,6 +37,7 @@ namespace BuildVision.Core
 
         public void UpdateSolution_BeginUpdateAction(uint dwAction)
         {
+            _solutionProvider.ReloadSolution();
             _buildInformationProvider.BuildStarted(dwAction);
             _buildingProjectsProvider.ReloadCurrentProjects();
 
@@ -51,13 +52,16 @@ namespace BuildVision.Core
 
         public int UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)
         {
-            _buildingProjectsProvider.ProjectBuildStarted(pHierProj, pCfgProj, pCfgSln, dwAction);
+            var projectItem = new UI.Models.ProjectItem();
+            var configPair = pCfgProj.ToConfigurationTuple();
+            SolutionProjectsExtensions.UpdateProperties(pHierProj.ToProject(), projectItem, configPair.Item1, configPair.Item2);
+            _buildingProjectsProvider.ProjectBuildStarted(projectItem, dwAction);
             return VSConstants.S_OK;
         }
 
         public int UpdateProjectCfg_Done(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, int fSuccess, int fCancel)
         {
-            _buildingProjectsProvider.ProjectBuildFinished(pHierProj, pCfgProj, pCfgSln, fSuccess == 1, fCancel == 1);
+            _buildingProjectsProvider.ProjectBuildFinished(ProjectIdentifierGenerator.GetIdentifierForInteropTypes(pHierProj, pCfgProj), fSuccess == 1, fCancel == 1);
             return VSConstants.S_OK;
         }
 
@@ -67,6 +71,15 @@ namespace BuildVision.Core
 
             var result = _buildInformationProvider.GetBuildInformationModel();
             var finishedProjects = _buildingProjectsProvider.GetBuildingProjects();
+
+            if (result.BuildScope == BuildScopes.BuildScopeSolution)
+            {
+                foreach (var projectItem in finishedProjects)
+                {
+                    if (projectItem.State == ProjectState.Pending)
+                        projectItem.State = ProjectState.Skipped;
+                }
+            }
 
             return VSConstants.S_OK;
         }

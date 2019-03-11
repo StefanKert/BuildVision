@@ -12,7 +12,6 @@ using Process = System.Diagnostics.Process;
 using Microsoft.VisualStudio;
 using BuildVision.Common;
 using BuildVision.Contracts;
-using BuildVision.UI.Contracts;
 using BuildVision.UI.DataGrid;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Helpers;

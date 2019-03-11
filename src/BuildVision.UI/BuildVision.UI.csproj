@@ -90,8 +90,6 @@
     <Compile Include="Components\ErrorsGrid.xaml.cs">
       <DependentUpon>ErrorsGrid.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Contracts\BuildedProjectsCollection.cs" />
-    <Compile Include="Contracts\BuildProjectContextEntry.cs" />
     <Compile Include="Settings\Models\ControlSettings.cs" />
     <Compile Include="Settings\Models\GeneralSettings.cs" />
     <Compile Include="Settings\Models\GridColumnSettings.cs" />
@@ -99,7 +97,6 @@
     <Compile Include="Settings\Models\GridSettings.cs" />
     <Compile Include="Helpers\BindingProxy.cs" />
     <Compile Include="Helpers\BuildMessagesFactory.cs" />
-    <Compile Include="Contracts\BuildProjectEventArgs.cs" />
     <Compile Include="Components\ControlView.xaml.cs">
       <DependentUpon>ControlView.xaml</DependentUpon>
     </Compile>

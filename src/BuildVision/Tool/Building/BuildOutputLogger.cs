@@ -9,19 +9,26 @@ using BuildVision.UI.Contracts;
 using BuildVision.UI.Common.Logging;
 using BuildVision.Helpers;
 using System.Diagnostics;
+using BuildVision.Core;
+using BuildVision.Exports.Providers;
+using BuildVision.UI.Models;
+using BuildVision.Exports;
 
 namespace BuildVision.Tool.Building
 {
-    public class BuildOutputLogger : Logger
+    public class BuildOutputLogger : Logger, IBuildOutputLogger
     {
-        private List<BuildProjectContextEntry> _projects;
-        private readonly Guid _id;
+        private readonly Guid _loggerId;
+        private readonly LoggerVerbosity _loggerVerbosity;
 
-        public List<BuildProjectContextEntry> Projects => _projects;
+        public RegisterLoggerResult LoggerState { get; set; }
 
-        private BuildOutputLogger(Guid id)
+        private List<BuildProjectContextEntry> _projects = new List<BuildProjectContextEntry>();
+
+        public BuildOutputLogger(Guid loggerId, LoggerVerbosity loggerVerbosity)
         {
-            _id = id;
+            _loggerId = loggerId;
+            _loggerVerbosity = loggerVerbosity;
         }
 
         public override void Initialize(IEventSource eventSource)
@@ -42,17 +49,18 @@ namespace BuildVision.Tool.Building
                 e.GlobalProperties));
         }
 
-        public static RegisterLoggerResult Register(Guid loggerId, LoggerVerbosity loggerVerbosity, out BuildOutputLogger buildLogger)
+        public void Attach()
         {
             try
             {
+                _projects.Clear();
+
                 const BindingFlags InterfacePropertyFlags = BindingFlags.GetProperty
                                                             | BindingFlags.Public
                                                             | BindingFlags.Instance;
-
                 var buildManager = Microsoft.Build.Execution.BuildManager.DefaultBuildManager;
-                Type buildHostType = buildManager.GetType().Assembly.GetType("Microsoft.Build.BackEnd.IBuildComponentHost");
-                PropertyInfo loggingSeviceProperty = buildHostType.GetProperty("LoggingService", InterfacePropertyFlags);
+                var buildHostType = buildManager.GetType().Assembly.GetType("Microsoft.Build.BackEnd.IBuildComponentHost");
+                var loggingSeviceProperty = buildHostType.GetProperty("LoggingService", InterfacePropertyFlags);
 
                 object loggingServiceObj;
                 try
@@ -63,33 +71,34 @@ namespace BuildVision.Tool.Building
                 catch (TargetInvocationException ex)
                 {
                     ex.Trace("Microsoft.Build.BackEnd.ILoggingService is not available.");
-                    buildLogger = null;
-                    return RegisterLoggerResult.FatalError;
+                    LoggerState = RegisterLoggerResult.FatalError;
+                    return;
                 }
 
-                PropertyInfo loggersProperty = loggingServiceObj.GetType().GetProperty("Loggers", InterfacePropertyFlags);
-                ICollection<ILogger> loggers = (ICollection<ILogger>)loggersProperty.GetValue(loggingServiceObj, null);
+                var loggersProperty = loggingServiceObj.GetType().GetProperty("Loggers", InterfacePropertyFlags);
+                var loggers = (ICollection<ILogger>) loggersProperty.GetValue(loggingServiceObj, null);
 
-                ILogger logger = loggers.FirstOrDefault(x => x is BuildOutputLogger && ((BuildOutputLogger)x)._id.Equals(loggerId));
+                var logger = loggers.FirstOrDefault(x => x is BuildOutputLogger && ((BuildOutputLogger) x)._loggerId.Equals(_loggerId));
                 if (logger != null)
                 {
-                    buildLogger = (BuildOutputLogger)logger;
-                    buildLogger.Verbosity = loggerVerbosity;
-                    return RegisterLoggerResult.AlreadyExists;
+                    LoggerState = RegisterLoggerResult.AlreadyExists;
+                    return;
                 }
 
-                MethodInfo registerLoggerMethod = loggingServiceObj.GetType().GetMethod("RegisterLogger");
-                buildLogger = new BuildOutputLogger(loggerId) { Verbosity = loggerVerbosity };
-                bool registerResult = (bool)registerLoggerMethod.Invoke(loggingServiceObj, new object[] { buildLogger });
-
-                return registerResult ? RegisterLoggerResult.RegisterSuccess : RegisterLoggerResult.RegisterFailed;
+                var registerLoggerMethod = loggingServiceObj.GetType().GetMethod("RegisterLogger");
+                var registerResult = (bool) registerLoggerMethod.Invoke(loggingServiceObj, new object[] { this });
+                LoggerState = registerResult ? RegisterLoggerResult.RegisterSuccess : RegisterLoggerResult.RegisterFailed;
             }
             catch (Exception ex)
             {
                 ex.TraceUnknownException();
-                buildLogger = null;
-                return RegisterLoggerResult.FatalError;
+                LoggerState = RegisterLoggerResult.FatalError;
             }
+        }
+
+        public bool IsProjectUpToDate(IProjectItem projectItem)
+        {
+            return !_projects.Exists(t => t.FileName == projectItem.FullName);
         }
 
         private void EventSource_ErrorRaised(object sender, BuildEventArgs e, ErrorLevel errorLevel)
@@ -103,7 +112,7 @@ namespace BuildVision.Tool.Building
                 int projectInstanceId = e.BuildEventContext.ProjectInstanceId;
                 int projectContextId = e.BuildEventContext.ProjectContextId;
 
-                var projectEntry = Projects.Find(t => t.InstanceId == projectInstanceId && t.ContextId == projectContextId);
+                var projectEntry = _projects.Find(t => t.InstanceId == projectInstanceId && t.ContextId == projectContextId);
                 if (projectEntry == null)
                 {
                     TraceManager.Trace(string.Format("Project entry not found by ProjectInstanceId='{0}' and ProjectContextId='{1}'.", projectInstanceId, projectContextId), EventLogEntryType.Warning);
@@ -112,38 +121,7 @@ namespace BuildVision.Tool.Building
                 if (projectEntry.IsInvalid)
                     return;
 
-                //if (!_locatorService.GetProjectItem(_viewModel, BuildScope, projectEntry, out var projectItem))
-                //{
-                //    projectEntry.IsInvalid = true;
-                //    return;
-                //}
-
-                //BuildedProject buildedProject = BuildedProjects[projectItem];
-                //var errorItem = new ErrorItem(errorLevel, (eI) =>
-                //{
-                //    Services.Dte.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName).NavigateToErrorItem(eI);
-                //});
-
-                //switch (errorLevel)
-                //{
-                //    case ErrorLevel.Message:
-                //        errorItem.Init((BuildMessageEventArgs) e);
-                //        break;
-
-                //    case ErrorLevel.Warning:
-                //        errorItem.Init((BuildWarningEventArgs) e);
-                //        throw new ArgumentOutOfRangeException("errorLevel");
-                //}
-                //errorItem.VerifyValues();
-                //        break;
-
-                //    case ErrorLevel.Error:
-                //        errorItem.Init((BuildErrorEventArgs) e);
-                //        break;
-
-                //    default:
-                //buildedProject.ErrorsBox.Add(errorItem);
-                //OnErrorRaised(this, new BuildErrorRaisedEventArgs(errorLevel, buildedProject));
+                OnErrorRaised(projectEntry, e, errorLevel);
             }
             catch (Exception ex)
             {
@@ -165,5 +143,12 @@ namespace BuildVision.Tool.Building
 
             return true;
         }
+
+        public void Reset()
+        {
+            _projects.Clear();
+        }
+
+        public event Action<BuildProjectContextEntry, object, ErrorLevel> OnErrorRaised;
     }
 }

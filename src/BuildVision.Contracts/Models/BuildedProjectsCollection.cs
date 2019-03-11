@@ -6,7 +6,7 @@ using BuildVision.UI.Models;
 
 namespace BuildVision.UI.Contracts
 {
-    public class BuildedProjectsCollection : List<ProjectItem>
+    public class BuildedProjectsCollection : List<IProjectItem>
     {
         public int BuildSuccessCount =>  this.Count(p => p.Success == true && p.State != ProjectState.BuildWarning && p.State != ProjectState.UpToDate);
         public int BuildErrorCount => this.Count(p => p.Success == false);
@@ -16,7 +16,7 @@ namespace BuildVision.UI.Contracts
 
         public bool BuildWithoutErrors => this.All(p => p.Success == null || p.Success == true);
 
-        public ProjectItem this[ProjectItem pi]
+        public IProjectItem this[IProjectItem pi]
         {
             get
             {

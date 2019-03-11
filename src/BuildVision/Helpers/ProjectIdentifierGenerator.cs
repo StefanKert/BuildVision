@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using BuildVision.UI.Models;
+using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -14,7 +15,7 @@ namespace BuildVision.Helpers
             return $"{project.UniqueName}-{projConfiguration}";
         }
 
-        public static string GetIdentifierForProjectItem(BuildVision.UI.Models.ProjectItem projectItem)
+        public static string GetIdentifierForProjectItem(IProjectItem projectItem)
         {
             return $"{projectItem.UniqueName}-{projectItem.Configuration}|{projectItem.Platform}";
         }

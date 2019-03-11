@@ -20,6 +20,7 @@ namespace BuildVision.Core
     public class SolutionProvider : ISolutionProvider
     {
         private readonly IServiceProvider _serviceProvider;
+
         private Solution _solution;
         private SolutionModel _solutionModel;
         private DTE2 _dte;
@@ -89,8 +90,10 @@ namespace BuildVision.Core
             }
         }
 
-        public IEnumerable<UI.Models.ProjectItem> GetProjects()
+        public IEnumerable<IProjectItem> GetProjects()
         {
+            if (_solution == null)
+                ReloadSolution();
             return _solution.GetProjectItems();
         }
     }

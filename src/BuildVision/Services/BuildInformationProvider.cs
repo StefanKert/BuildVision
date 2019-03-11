@@ -1,13 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.IO;
 using BuildVision.Contracts;
 using BuildVision.Contracts.Models;
+using BuildVision.Exports;
 using BuildVision.Exports.Providers;
-using BuildVision.Exports.Services;
-using BuildVision.Tool.Building;
+using BuildVision.Helpers;
 using BuildVision.Tool.Models;
-using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
 using EnvDTE;
 using EnvDTE80;
@@ -20,25 +18,27 @@ namespace BuildVision.Core
     [PartCreationPolicy(CreationPolicy.Shared)]
     public class BuildInformationProvider : IBuildInformationProvider
     {
-        public BuildOutputLogger _buildLogger;
-
-        private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
         private readonly IServiceProvider _serviceProvider;
+        private readonly IBuildOutputLogger _buildOutputLogger;
+
         private Solution _solution;
         private BuildInformationModel _buildInformationModel;
         private BuildEvents _buildEvents;
         private DTE2 _dte;
 
         [ImportingConstructor]
-        public BuildInformationProvider([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
+        public BuildInformationProvider(
+            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider,
+            [Import(typeof(IBuildOutputLogger))] IBuildOutputLogger buildOutputLogger)
         {
             _serviceProvider = serviceProvider;
+            _buildOutputLogger = buildOutputLogger;
             _buildInformationModel = new BuildInformationModel();
             _buildEvents = (serviceProvider.GetService(typeof(DTE)) as DTE).Events.BuildEvents;
-            _buildEvents.OnBuildBegin += _buildEvents_OnBuildBegin;
+            _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
         }
 
-        private void _buildEvents_OnBuildBegin(vsBuildScope scope, vsBuildAction action)
+        private void BuildEvents_OnBuildBegin(vsBuildScope scope, vsBuildAction action)
         {
             _buildInformationModel.BuildScope = (BuildScopes) scope; // we need to set buildscope explictly because it is not possible to get this via the other api
         }
@@ -50,7 +50,7 @@ namespace BuildVision.Core
 
         public void BuildStarted(uint dwAction)
         {
-            RegisterLogger();
+            _buildOutputLogger.Attach();
 
             _buildInformationModel.SucceededProjectsCount = 0;
             _buildInformationModel.FailedProjectsCount = 0;
@@ -69,6 +69,35 @@ namespace BuildVision.Core
             //_statusBarNotificationService.ShowTextWithFreeze(message);
             //_origTextCurrentState = message;
             //VisualStudioSolution.StateMessage = _origTextCurrentState; // Set message
+        }
+
+        private int GetProjectsCount(int projectsCount)
+        {
+            switch (_buildInformationModel.BuildScope)
+            {
+                case BuildScopes.BuildScopeSolution:
+                    try
+                    {
+                        Solution solution = _dte.Solution;
+                        if (solution != null)
+                            projectsCount = _solution.GetProjects().Count;
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.Trace("Unable to count projects in solution.");
+                    }
+
+                    break;
+
+                case BuildScopes.BuildScopeBatch:
+                case BuildScopes.BuildScopeProject:
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(_buildInformationModel.BuildScope));
+            }
+
+            return projectsCount;
         }
 
         public void BuildUpdate()
@@ -112,16 +141,6 @@ namespace BuildVision.Core
                 _buildInformationModel.CurrentBuildState = BuildState.Cancelled;
             else 
                 _buildInformationModel.CurrentBuildState = BuildState.Failed;
-        }
-
-        private void RegisterLogger()
-        {
-            _buildLogger = null;
-            RegisterLoggerResult result = BuildOutputLogger.Register(_parsingErrorsLoggerId, Microsoft.Build.Framework.LoggerVerbosity.Quiet, out _buildLogger);
-            if (result == RegisterLoggerResult.AlreadyExists)
-            {
-                _buildLogger.Projects?.Clear();
-            }
         }
     }
 }

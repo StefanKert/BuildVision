@@ -38,7 +38,7 @@ namespace BuildVision.Views.Settings
             if (_ctrl.DataContext == null)
                 _ctrl.DataContext = _editSettings;
 
-            _packageSettingsProvider = Services.DefaultExportProvider.GetExportedValue<IPackageSettingsProvider>();
+            //_packageSettingsProvider = Services.DefaultExportProvider.GetExportedValue<IPackageSettingsProvider>();
             base.OnActivate(e);
         }
 

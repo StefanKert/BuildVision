@@ -112,9 +112,9 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <!--<ContentControl Grid.Column="0"
+                <ContentControl Grid.Column="0"
                         Margin="0,-7,8,0"
-                        Template="{DynamicResource State}" /> TODO Add stateimages-->
+                        Template="{DynamicResource State}" />
 
                 <TextBlock Grid.Column="1"
                        FontSize="18"
@@ -124,8 +124,6 @@
                        extensions:TextBlockUtils.AutoTooltip="True" />
             </Grid>
             
-            <!-- TODO ADD  progressbar -->
-
             <controls:BuildVisionProgressBar DataContext="{Binding BuildProgressViewModel.ActionProgressIsVisible}" />
 
             <Grid Visibility="{Binding ControlSettings.GeneralSettings.IndicatorsPanelVisible,
@@ -144,40 +142,35 @@
                        Margin="0,0,0,0"
                        Orientation="Horizontal">
 
-                    <customButtons:BuildSolutionButton  
-                        Command="{Binding BuildSolutionAction}"
-                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
-                        IsEnabled="{Binding SolutionModel.IsEmpty, Converter={StaticResource InverseBoolean}}" />
-
-                    <customButtons:RebuildSolutionButton  
-                        Command="{Binding RebuildSolutionAction}"
-                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
-                        IsEnabled="{Binding SolutionModel.IsEmpty, Converter={StaticResource InverseBoolean}}" />
-
-
-                    <customButtons:CleanSolutionButton  
-                        Command="{Binding CleanSolutionAction}"
-                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
-                        IsEnabled="{Binding SolutionModel.IsEmpty, Converter={StaticResource InverseBoolean}}" />
-
-                    <customButtons:CancelButton  
-                        Command="{Binding CancelBuildSolutionAction}"
-                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <customButtons:CancelButton.Style>
-                            <Style TargetType="Button"
-                               BasedOn="{StaticResource ToolBarButtonBaseStyle}">
-                                <Setter Property="IsEnabled"
-                                    Value="True" />
+                    <StackPanel Orientation="Horizontal" 
+                                IsEnabled="true">
+                        <StackPanel.Style>
+                            <Style TargetType="{x:Type StackPanel}">
+                                <Setter Property="Visibility" Value="Visible" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SolutionModel.IsEmpty}"
-                                             Value="True">
-                                        <Setter Property="IsEnabled"
-                                            Value="False" />
+                                    <DataTrigger Binding="{Binding BuildInformationModel.CurrentBuildState}" Value="{x:Static contracts:BuildState.InProgress}">
+                                        <Setter Property="Visibility" Value="Collapsed" />
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding BuildProgressViewModel.ActionProgressIsPaused}"
-                                             Value="True">
-                                        <Setter Property="IsEnabled"
-                                            Value="False" />
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        
+                        <customButtons:BuildSolutionButton Command="{Binding BuildSolutionAction}" IsEnabled="True" />
+
+                        <customButtons:RebuildSolutionButton Command="{Binding RebuildSolutionButton}" />
+
+                        <customButtons:CleanSolutionButton Command="{Binding CleanSolutionButton}" />
+                    </StackPanel>
+
+                    <customButtons:CancelButton Command="{Binding CancelBuildSolutionAction}">
+                        <customButtons:CancelButton.Style>
+                            <Style TargetType="{x:Type customButtons:CancelButton}">
+                                <Setter Property="IsEnabled" Value="False" />
+                                <Setter Property="Visibility" Value="Collapsed" />
+
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding BuildInformationModel.CurrentBuildState}" Value="{x:Static contracts:BuildState.InProgress}">
+                                        <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

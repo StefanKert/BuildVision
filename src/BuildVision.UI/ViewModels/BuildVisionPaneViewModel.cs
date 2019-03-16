@@ -36,7 +36,7 @@ namespace BuildVision.UI.ViewModels
     public class BuildVisionPaneViewModel : BindableBase, IBuildVisionPaneViewModel
     {
         public IBuildProgressViewModel BuildProgressViewModel { get; set; }
-        public ISolutionModel SoltuionModel { get; set; }
+        public ISolutionModel SolutionModel { get; set; }
 
         private ObservableCollection<DataGridColumn> _gridColumnsRef;
 
@@ -198,7 +198,7 @@ namespace BuildVision.UI.ViewModels
             _buildInformationProvider = buildInformationProvider;
             BuildInformationModel = _buildInformationProvider.GetBuildInformationModel();
             BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
-            SoltuionModel = solutionProvider.GetSolutionModel();
+            SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
         }
 
@@ -209,6 +209,8 @@ namespace BuildVision.UI.ViewModels
         {
             ControlSettings = new ControlSettings();
             BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
+            BuildInformationModel = new BuildInformationModel();
+            SolutionModel = new SolutionModel();
         }
 
         private void OpenContainingFolder()

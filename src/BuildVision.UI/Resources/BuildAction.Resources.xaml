@@ -19,7 +19,7 @@
                         <Style TargetType="Polygon">
                             <Setter Property="Fill" Value="Gray" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=RebuildSolutionIcon, Path=IsMouseOver}" Value="True"> <!-- TODO Is this reallythe button`?? -->
+                                <DataTrigger Binding="{Binding ElementName=RebuildSolutionButton, Path=IsMouseOver}" Value="True"> <!-- TODO Is this reallythe button`?? -->
                                     <Setter Property="Fill" Value="#399AFC" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -47,7 +47,7 @@
                         <Style TargetType="Polygon">
                             <Setter Property="Fill" Value="Gray" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=BuildSolutionIcon, Path=IsMouseOver}" Value="True">
+                                <DataTrigger Binding="{Binding ElementName=BuildSolutionButton, Path=IsMouseOver}" Value="True">
                                     <Setter Property="Fill" Value="#399AFC" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -115,7 +115,7 @@
                             <Style TargetType="Path">
                                 <Setter Property="Fill" Value="Gray" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=CleanSolutionIcon, Path=IsMouseOver}" Value="True">
+                                    <DataTrigger Binding="{Binding ElementName=CleanSolutionButton, Path=IsMouseOver}" Value="True">
                                         <Setter Property="Fill" Value="#D0A200" />
                                     </DataTrigger>
                                 </Style.Triggers>

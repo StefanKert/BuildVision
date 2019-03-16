@@ -77,7 +77,7 @@ namespace BuildVision.Tool
                 var packageSettingsProvider = await sp.GetServiceAsync(typeof(IPackageSettingsProvider)) as IPackageSettingsProvider;
                 Assumes.Present(packageSettingsProvider);
 
-                var viewModel = new BuildVisionPaneViewModel(buildService, buildInformationProvider, packageSettingsProvider, solutionProvider);
+                var viewModel = new BuildVisionPaneViewModel(buildService, buildingProjectsProvider, buildInformationProvider, packageSettingsProvider, solutionProvider);
          
                 View = CreateControlView();
                 View.DataContext = viewModel;

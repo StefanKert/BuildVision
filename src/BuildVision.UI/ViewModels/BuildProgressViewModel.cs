@@ -9,13 +9,14 @@ using BuildVision.UI.Settings.Models;
 using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models.BuildProgress;
 using BuildVision.Contracts.Models;
+using BuildVision.Contracts;
 
 namespace BuildVision.UI.ViewModels
 { 
     public class BuildProgressViewModel : BindableBase, IBuildProgressViewModel
     {
         private readonly ControlSettings _settings;
-
+        private readonly IBuildInformationModel _buildInformationModel;
         private CancellationTokenSource _resetTaskBarInfoCts;
 
         private int _projectsCount;
@@ -26,26 +27,13 @@ namespace BuildVision.UI.ViewModels
 
         private bool _actionProgressIsMarquee;
 
-        private bool _actionProgressIsError;
-
-
         private readonly Lazy<TaskbarItemInfo> _taskbarItemInfo = new Lazy<TaskbarItemInfo>(() =>
         {
             var window = Application.Current.MainWindow;
             return window.TaskbarItemInfo ?? (window.TaskbarItemInfo = new TaskbarItemInfo());
         });
         private TaskbarItemInfo TaskbarItemInfo => _taskbarItemInfo.Value;
-
-
-        private int _currentQueuePosOfBuildingProject;
-        public int CurrentQueuePosOfBuildingProject => _currentQueuePosOfBuildingProject;
-
-        private bool _actionProgressIsVisible;
-        public bool ActionProgressIsVisible
-        {
-            get => _actionProgressIsVisible; 
-            set => SetProperty(ref _actionProgressIsVisible, value);
-        }
+        public int CurrentQueuePosOfBuildingProject { get; private set; }
 
         private bool _actionProgressIsPaused;
         public bool ActionProgressIsPaused
@@ -54,9 +42,10 @@ namespace BuildVision.UI.ViewModels
             set => SetProperty(ref _actionProgressIsPaused, value);
         }
 
-        public BuildProgressViewModel(ControlSettings settings)
+        public BuildProgressViewModel(ControlSettings settings, IBuildInformationModel buildInformationModel)
         {
             _settings = settings;
+            _buildInformationModel = buildInformationModel;
         }
 
         private void UpdateTaskBarInfo()
@@ -66,13 +55,13 @@ namespace BuildVision.UI.ViewModels
 
             TaskbarItemProgressState state;
 
-            if (!_actionProgressIsVisible)
+            if (_buildInformationModel.CurrentBuildState != BuildState.InProgress)
                 state = TaskbarItemProgressState.None;
             else if (_actionProgressIsPaused)
                 state = TaskbarItemProgressState.Paused;
             else if (_actionProgressIsMarquee)
                 state = TaskbarItemProgressState.Indeterminate;
-            else if (_actionProgressIsError)
+            else if (_buildInformationModel.CurrentBuildState == BuildState.Failed)
                 state = TaskbarItemProgressState.Error;
             else
                 state = TaskbarItemProgressState.Normal;
@@ -107,12 +96,10 @@ namespace BuildVision.UI.ViewModels
                 _incProgressValue = 0;
             }
 
-            _currentQueuePosOfBuildingProject = 0;
+            CurrentQueuePosOfBuildingProject = 0;
             _actionProgressValue = 0;
-            _actionProgressIsError = false;
             _actionProgressIsMarquee = true;
             ActionProgressIsPaused = false;
-            ActionProgressIsVisible = true;
 
             UpdateTaskBarInfo();
         }
@@ -129,15 +116,12 @@ namespace BuildVision.UI.ViewModels
                 _actionProgressIsMarquee = true;
             }
 
-            _currentQueuePosOfBuildingProject += 1;
+            CurrentQueuePosOfBuildingProject += 1;
             UpdateTaskBarInfo();
         }
 
         public void OnBuildProjectDone(bool success)
         {
-            if (!success)
-                _actionProgressIsError = true;
-
             if (_projectsCount > 0)
             {
                 _actionProgressIsMarquee = false;
@@ -156,10 +140,7 @@ namespace BuildVision.UI.ViewModels
             _actionProgressValue = 1;
             _actionProgressIsMarquee = false;
             UpdateTaskBarInfo();
-
-            ActionProgressIsVisible = false;
             _actionProgressValue = 0;
-
             ResetTaskBarInfoOnBuildDone();
         }
 

@@ -32,17 +32,8 @@
     </Style>
 
     <Style x:Key="IndicatorLabel">
-
-        <Setter Property="Label.Foreground"
-                Value="{DynamicResource ToolWindowTextKey}" />
-
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsEnabled}"
-                         Value="false">
-                <Setter Property="Label.Opacity"
-                        Value="0.4" />
-            </DataTrigger>
-        </Style.Triggers>
+        <Setter Property="Label.Foreground" Value="{DynamicResource ToolWindowTextKey}" />
+        <Setter Property="Label.Opacity" Value="0.4" />
     </Style>
 
     <converters1:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />

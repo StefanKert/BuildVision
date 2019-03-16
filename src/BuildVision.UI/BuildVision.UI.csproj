@@ -73,6 +73,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Components\ProjectGrid.xaml.cs">
+      <DependentUpon>ProjectGrid.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\BuildVisionProgressBar.xaml.cs">
       <DependentUpon>BuildVisionProgressBar.xaml</DependentUpon>
     </Compile>
@@ -225,6 +228,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Components\ErrorsGrid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\ProjectGrid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

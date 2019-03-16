@@ -56,7 +56,7 @@ namespace BuildVision.UI.Models
             set => SetProperty(ref _warnedProjectsCount, value);
         }
 
-        private string _stateMessage = "";
+        private string _stateMessage = Resources.BuildDoneText_BuildNotStarted;
         public string StateMessage
         {
             get => _stateMessage;

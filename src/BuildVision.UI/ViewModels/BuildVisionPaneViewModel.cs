@@ -48,6 +48,8 @@ namespace BuildVision.UI.ViewModels
 
         public ControlSettings ControlSettings { get; }
 
+        public ObservableCollection<IProjectItem> Projects { get; set; }
+
         public IBuildInformationModel BuildInformationModel { get; set; }
 
         public string GridGroupPropertyName
@@ -147,7 +149,7 @@ namespace BuildVision.UI.ViewModels
         {
             get
             {
-                var groupedList = new ListCollectionView(new List<object>()); // todo use projects here ProjectsList);
+                var groupedList = new ListCollectionView(Projects); // todo use projects here ProjectsList);
 
                 if (!string.IsNullOrWhiteSpace(GridGroupPropertyName))
                 {
@@ -183,6 +185,7 @@ namespace BuildVision.UI.ViewModels
 
         private ProjectItem _selectedProjectItem;
         private readonly IBuildService _buildManager;
+        private readonly IBuildingProjectsProvider _buildingProjectsProvider;
         private readonly IBuildInformationProvider _buildInformationProvider;
 
         public ProjectItem SelectedProjectItem
@@ -192,14 +195,16 @@ namespace BuildVision.UI.ViewModels
         }
 
         [ImportingConstructor]
-        public BuildVisionPaneViewModel(IBuildService buildManager, IBuildInformationProvider buildInformationProvider, IPackageSettingsProvider settingsProvider, ISolutionProvider solutionProvider)
+        public BuildVisionPaneViewModel(IBuildService buildManager, IBuildingProjectsProvider buildingProjectsProvider, IBuildInformationProvider buildInformationProvider, IPackageSettingsProvider settingsProvider, ISolutionProvider solutionProvider)
         {
             _buildManager = buildManager;
+            _buildingProjectsProvider = buildingProjectsProvider;
             _buildInformationProvider = buildInformationProvider;
             BuildInformationModel = _buildInformationProvider.GetBuildInformationModel();
-            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
+            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings, BuildInformationModel);
             SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
+            Projects = _buildingProjectsProvider.GetBuildingProjects();
         }
 
         /// <summary>
@@ -208,9 +213,10 @@ namespace BuildVision.UI.ViewModels
         internal BuildVisionPaneViewModel()
         {
             ControlSettings = new ControlSettings();
-            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
             BuildInformationModel = new BuildInformationModel();
+            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings, BuildInformationModel);
             SolutionModel = new SolutionModel();
+            Projects = new ObservableCollection<IProjectItem>();
         }
 
         private void OpenContainingFolder()

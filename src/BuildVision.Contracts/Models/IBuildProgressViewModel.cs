@@ -3,7 +3,6 @@
     public interface IBuildProgressViewModel
     {
         bool ActionProgressIsPaused { get; set; }
-        bool ActionProgressIsVisible { get; set; }
         int CurrentQueuePosOfBuildingProject { get; }
 
         void OnBuildBegin(int projectsCount);

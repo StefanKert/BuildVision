@@ -172,11 +172,11 @@ namespace BuildVision.UI.Models
             }
         }
 
-        [GridColumn("ProjectItemHeader_ErrorsCount", ColumnsOrder.ErrorsCount, true, ImageDictionaryUri = "Resources/ValueIndicator.Resources.xaml", ImageKey = "ErrorsIndicator", ExampleValue = 4)]
+        [GridColumn("ProjectItemHeader_ErrorsCount", ColumnsOrder.ErrorsCount, true, ImageDictionaryUri = "Resources/ValueIndicator.Resources.xaml", ImageKey = "ErrorsIndicatorIcon", ExampleValue = 4)]
         public int ErrorsCount => ErrorsBox.ErrorsCount;
-        [GridColumn("ProjectItemHeader_WarningsCount", ColumnsOrder.WarningsCount, true, ImageDictionaryUri = "Resources/ValueIndicator.Resources.xaml", ImageKey = "WarningsIndicator", ExampleValue = 1253)]
+        [GridColumn("ProjectItemHeader_WarningsCount", ColumnsOrder.WarningsCount, true, ImageDictionaryUri = "Resources/ValueIndicator.Resources.xaml", ImageKey = "WarningsIndicatorIcon", ExampleValue = 1253)]
         public int WarningsCount => ErrorsBox.WarningsCount;
-        [GridColumn("ProjectItemHeader_MessagesCount", ColumnsOrder.MessagesCount, false, ImageDictionaryUri = "Resources/ValueIndicator.Resources.xaml", ImageKey = "MessagesIndicator", ExampleValue = 2)]
+        [GridColumn("ProjectItemHeader_MessagesCount", ColumnsOrder.MessagesCount, false, ImageDictionaryUri = "Resources/ValueIndicator.Resources.xaml", ImageKey = "MessagesIndicatorIcon", ExampleValue = 2)]
         public int MessagesCount => ErrorsBox.MessagesCount;
 
         private string _framework;

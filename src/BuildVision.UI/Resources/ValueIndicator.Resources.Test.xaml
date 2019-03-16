@@ -25,21 +25,21 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource ErrorsIndicator}" />
+                            Template="{StaticResource ErrorsIndicatorIcon}" />
 
             <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource WarningsIndicator}" />
+                            Template="{StaticResource WarningsIndicatorIcon}" />
 
             <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource MessagesIndicator}" />
+                            Template="{StaticResource MessagesIndicatorIcon}" />
 
             <Separator Width="10"/>
             
@@ -48,7 +48,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource SuccessProjectsIndicator}" />
+                            Template="{StaticResource SuccessProjectsIndicatorIcon}" />
             <Separator Width="10"/>
 
 
@@ -57,7 +57,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource UpToDateProjectsIndicator}" />
+                            Template="{StaticResource UpToDateProjectsIndicatorIcon}" />
             
             <Separator Width="10"/>
 
@@ -67,7 +67,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource WarningProjectsIndicator}" />
+                            Template="{StaticResource WarningProjectsIndicatorIcon}" />
 
             <Separator Width="10"/>
 
@@ -76,7 +76,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource ErrorProjectsIndicator}" />
+                            Template="{StaticResource ErrorProjectsIndicatorIcon}" />
         </StackPanel>
     </Grid>
 </UserControl>

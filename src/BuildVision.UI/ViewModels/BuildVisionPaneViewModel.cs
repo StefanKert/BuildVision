@@ -35,6 +35,9 @@ namespace BuildVision.UI.ViewModels
     [Export(typeof(IBuildVisionPaneViewModel))]
     public class BuildVisionPaneViewModel : BindableBase, IBuildVisionPaneViewModel
     {
+        public IBuildProgressViewModel BuildProgressViewModel { get; set; }
+        public ISolutionModel SoltuionModel { get; set; }
+
         private ObservableCollection<DataGridColumn> _gridColumnsRef;
 
         public bool HideUpToDateTargets
@@ -42,8 +45,6 @@ namespace BuildVision.UI.ViewModels
             get => ControlSettings.GeneralSettings.HideUpToDateTargets;
             set => SetProperty(() => ControlSettings.GeneralSettings.HideUpToDateTargets, val => ControlSettings.GeneralSettings.HideUpToDateTargets = val, value);
         }
-
-        public BuildProgressViewModel BuildProgressViewModel { get; }
 
         public ControlSettings ControlSettings { get; }
 
@@ -191,13 +192,14 @@ namespace BuildVision.UI.ViewModels
         }
 
         [ImportingConstructor]
-        public BuildVisionPaneViewModel(IBuildService buildManager, IBuildInformationProvider buildInformationProvider, IPackageSettingsProvider settingsProvider)
+        public BuildVisionPaneViewModel(IBuildService buildManager, IBuildInformationProvider buildInformationProvider, IPackageSettingsProvider settingsProvider, ISolutionProvider solutionProvider)
         {
             _buildManager = buildManager;
             _buildInformationProvider = buildInformationProvider;
             BuildInformationModel = _buildInformationProvider.GetBuildInformationModel();
-            ControlSettings = settingsProvider.Settings;
             BuildProgressViewModel = new BuildProgressViewModel(ControlSettings);
+            SoltuionModel = solutionProvider.GetSolutionModel();
+            ControlSettings = settingsProvider.Settings;
         }
 
         /// <summary>

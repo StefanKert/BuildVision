@@ -30,16 +30,8 @@ using Task = System.Threading.Tasks.Task;
 
 namespace BuildVision.Core
 {
-
-    // This attribute tells the PkgDef creation utility (CreatePkgDef.exe) that this class is
-    // a package.
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    // This attribute is used to register the informations needed to show the this package
-    // in the Help/About dialog of Visual Studio. Resources are defined in VSPackage.resx.
-    //[InstalledProductRegistration("#110", "#112", BuildVisionVersion.PackageVersion, IconResourceID = 400)]
-    // This attribute is needed to let the shell know that this package exposes some menus.
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    // This attribute registers a tool window exposed by this package.
     [ProvideToolWindow(typeof(BuildVisionPane))]
     [Guid(PackageGuids.GuidBuildVisionPackageString)]
     [ProvideBindingPath]
@@ -103,9 +95,6 @@ namespace BuildVision.Core
             {
                 SolutionEvents_Opened();
             }
-
-            //var toolWindow = GetWindowPane(typeof(BuildVisionPane));
-            //_viewModel = BuildVisionPane.GetViewModel(toolWindow);
         }
 
         private void SolutionEvents_BeforeClosing()
@@ -126,7 +115,6 @@ namespace BuildVision.Core
         private void SolutionEvents_AfterClosing()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            //_viewModel.BuildProgressViewModel.ResetTaskBarInfo();
         }
 
         private async void ShowToolWindowAsync(object sender, EventArgs e)

@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <ControlTemplate x:Key="RebuildSolutionButton">
+    <ControlTemplate x:Key="RebuildSolutionIcon">
         <Viewbox Width="16" Height="16" Stretch="Uniform">
             <Canvas Width="100" Height="100">
                 <Rectangle Canvas.Left="0" Canvas.Top="40" Width="10" Height="60" Fill="Gray" />
@@ -12,14 +12,14 @@
                 <Rectangle Canvas.Left="70" Canvas.Top="50" Width="10" Height="10" Fill="Gray" />
                 <Rectangle Canvas.Left="58" Canvas.Top="70" Width="10" Height="10" Fill="Gray" />
                 <Rectangle Canvas.Left="33" Canvas.Top="70" Width="10" Height="10" Fill="Gray" />
-                <Rectangle Canvas.Left="45" Canvas.Top="0" Width="10" Height="25" Fill="{Binding ElementName=RebuildSolutionButtonPolygon1, Path=Fill}" />
-                <Polygon Points="25,15 75,15 50,45" Fill="{Binding ElementName=RebuildSolutionButtonPolygon1, Path=Fill}" />
-                <Polygon Name="RebuildSolutionButtonPolygon1" Points="25,35 75,35 50,65">
+                <Rectangle Canvas.Left="45" Canvas.Top="0" Width="10" Height="25" Fill="{Binding ElementName=RebuildSolutionIconPolygon1, Path=Fill}" />
+                <Polygon Points="25,15 75,15 50,45" Fill="{Binding ElementName=RebuildSolutionIconPolygon1, Path=Fill}" />
+                <Polygon Name="RebuildSolutionIconPolygon1" Points="25,35 75,35 50,65">
                     <Polygon.Style>
                         <Style TargetType="Polygon">
                             <Setter Property="Fill" Value="Gray" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=RebuildSolutionButton, Path=IsMouseOver}" Value="True">
+                                <DataTrigger Binding="{Binding ElementName=RebuildSolutionIcon, Path=IsMouseOver}" Value="True"> <!-- TODO Is this reallythe button`?? -->
                                     <Setter Property="Fill" Value="#399AFC" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -29,8 +29,8 @@
             </Canvas>
         </Viewbox>
     </ControlTemplate>
-    
-    <ControlTemplate x:Key="BuildSolutionButton">
+
+    <ControlTemplate x:Key="BuildSolutionIcon">
         <Viewbox Width="16" Height="16" Stretch="Uniform">
             <Canvas Width="100" Height="100">
                 <Rectangle Canvas.Left="0" Canvas.Top="40" Width="10" Height="60" Fill="Gray" />
@@ -41,13 +41,13 @@
                 <Rectangle Canvas.Left="70" Canvas.Top="50" Width="10" Height="10" Fill="Gray" />
                 <Rectangle Canvas.Left="58" Canvas.Top="70" Width="10" Height="10" Fill="Gray" />
                 <Rectangle Canvas.Left="33" Canvas.Top="70" Width="10" Height="10" Fill="Gray" />
-                <Rectangle Canvas.Left="45" Canvas.Top="0" Width="10" Height="25" Fill="{Binding ElementName=BuildSolutionButtonPolygon1, Path=Fill}" />
-                <Polygon Name="BuildSolutionButtonPolygon1" Points="25,15 75,15 50,45">
+                <Rectangle Canvas.Left="45" Canvas.Top="0" Width="10" Height="25" Fill="{Binding ElementName=BuildSolutionIconPolygon1, Path=Fill}" />
+                <Polygon Name="BuildSolutionIconPolygon1" Points="25,15 75,15 50,45">
                     <Polygon.Style>
                         <Style TargetType="Polygon">
                             <Setter Property="Fill" Value="Gray" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=BuildSolutionButton, Path=IsMouseOver}" Value="True">
+                                <DataTrigger Binding="{Binding ElementName=BuildSolutionIcon, Path=IsMouseOver}" Value="True">
                                     <Setter Property="Fill" Value="#399AFC" />
                                 </DataTrigger>
                             </Style.Triggers>
@@ -58,7 +58,7 @@
         </Viewbox>
     </ControlTemplate>
     
-    <ControlTemplate x:Key="CancelBuildSolutionButton">
+    <ControlTemplate x:Key="CancelBuildSolutionIcon">
         <Viewbox Width="16" Height="16" Stretch="Uniform">
             <Canvas Width="100" Height="100">
                 <Canvas.RenderTransform>
@@ -72,13 +72,13 @@
                 <Rectangle Canvas.Left="70" Canvas.Top="50" Width="10" Height="10" Fill="Gray" Visibility="Collapsed" />
                 <Rectangle Canvas.Left="58" Canvas.Top="70" Width="10" Height="10" Fill="Gray" />
                 <Rectangle Canvas.Left="33" Canvas.Top="70" Width="10" Height="10" Fill="Gray" />
-                <Line X1="30" Y1="20" X2="70" Y2="60" StrokeThickness="12" Stroke="{Binding ElementName=CancelBuildSolutionButtonLine1, Path=Stroke}" />
-                <Line Name="CancelBuildSolutionButtonLine1" X1="70" Y1="20" X2="30" Y2="60" StrokeThickness="12">
+                <Line X1="30" Y1="20" X2="70" Y2="60" StrokeThickness="12" Stroke="{Binding ElementName=CancelBuildSolutionIconLine1, Path=Stroke}" />
+                <Line Name="CancelBuildSolutionIconLine1" X1="70" Y1="20" X2="30" Y2="60" StrokeThickness="12">
                     <Line.Style>
                         <Style TargetType="Line">
                             <Setter Property="Stroke" Value="Gray" />
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding ElementName=CancelBuildSolutionButton, Path=IsMouseOver}" Value="True">
+                                <DataTrigger Binding="{Binding ElementName=CancelBuildSolutionIcon, Path=IsMouseOver}" Value="True">
                                     <Setter Property="Stroke" Value="Red" />
                                 </DataTrigger>
                                 <Trigger Property="IsEnabled" Value="False">
@@ -92,7 +92,7 @@
         </Viewbox>
     </ControlTemplate>
     
-    <ControlTemplate x:Key="CleanSolutionButton">
+    <ControlTemplate x:Key="CleanSolutionIcon">
         <Viewbox Width="16" Height="16" Stretch="Uniform">
             <Canvas Width="100" Height="100">
                 <Rectangle Canvas.Left="0" Canvas.Top="40" Width="10" Height="60" Fill="Gray" />
@@ -115,7 +115,7 @@
                             <Style TargetType="Path">
                                 <Setter Property="Fill" Value="Gray" />
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding ElementName=CleanSolutionButton, Path=IsMouseOver}" Value="True">
+                                    <DataTrigger Binding="{Binding ElementName=CleanSolutionIcon, Path=IsMouseOver}" Value="True">
                                         <Setter Property="Fill" Value="#D0A200" />
                                     </DataTrigger>
                                 </Style.Triggers>

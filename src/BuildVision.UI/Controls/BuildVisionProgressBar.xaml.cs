@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace BuildVision.UI.Components
+namespace BuildVision.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for ControlHeader.xaml
+    /// Interaction logic for BuildVisionProgressBar.xaml
     /// </summary>
-    public partial class ControlHeader : UserControl
+    public partial class BuildVisionProgressBar : UserControl
     {
-        public ControlHeader()
+        public BuildVisionProgressBar()
         {
             InitializeComponent();
         }

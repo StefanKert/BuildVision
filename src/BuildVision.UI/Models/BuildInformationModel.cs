@@ -3,7 +3,7 @@ using BuildVision.Common;
 using BuildVision.Contracts;
 using BuildVision.Contracts.Models;
 
-namespace BuildVision.Core
+namespace BuildVision.UI.Models
 {
     public class BuildInformationModel : BindableBase, IBuildInformationModel
     {

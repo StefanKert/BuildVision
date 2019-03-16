@@ -66,6 +66,7 @@
     <Compile Include="Models\ErrorsBox.cs" />
     <Compile Include="Enums\ProjectState.cs" />
     <Compile Include="Models\IBuildInformationModel.cs" />
+    <Compile Include="Models\IBuildProgressViewModel.cs" />
     <Compile Include="Models\IProjectItem.cs" />
     <Compile Include="Models\ISolutionModel.cs" />
     <Compile Include="ProjectNotFoundException.cs" />

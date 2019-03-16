@@ -136,7 +136,7 @@
     <Compile Include="Tool\Views\Settings\WindowSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\BuildVisionPane.cs" />
+    <Compile Include="Core\BuildVisionPane.cs" />
     <Compile Include="Core\PackageGuids.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\PackageIds.cs" />

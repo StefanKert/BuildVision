@@ -7,6 +7,7 @@ using BuildVision.Exports.Providers;
 using BuildVision.Helpers;
 using BuildVision.Tool.Models;
 using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Models;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;

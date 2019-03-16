@@ -73,6 +73,21 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Controls\BuildVisionProgressBar.xaml.cs">
+      <DependentUpon>BuildVisionProgressBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\Buttons\CleanSolutionButton.cs" />
+    <Compile Include="Controls\Buttons\BuildSolutionButton.cs" />
+    <Compile Include="Controls\Buttons\RebuildSolutionButton.cs" />
+    <Compile Include="Controls\Buttons\CancelButton.cs" />
+    <Compile Include="Controls\Indicators\ErrorsIndicator.cs" />
+    <Compile Include="Controls\Indicators\MessagesIndicator.cs" />
+    <Compile Include="Controls\Indicators\SuccessProjectsIndicator.cs" />
+    <Compile Include="Controls\Indicators\UpToDateProjectsIndicator.cs" />
+    <Compile Include="Controls\Indicators\ValueIndicator.cs" />
+    <Compile Include="Controls\Indicators\ErrorProjectsIndicator.cs" />
+    <Compile Include="Controls\Indicators\WarningProjectsIndicator.cs" />
+    <Compile Include="Controls\Indicators\WarningsIndicator.cs" />
     <Compile Include="Enums\ResetTaskBarItemInfoCondition.cs" />
     <Compile Include="Helpers\SortDescription.cs" />
     <Compile Include="Enums\SortOrder.cs" />
@@ -84,9 +99,6 @@
     <Compile Include="Settings\Models\BuildProgressSettings.cs" />
     <Compile Include="Common\Logging\BindingErrorListener.cs" />
     <Compile Include="Common\Logging\TraceManager.cs" />
-    <Compile Include="Components\ControlHeader.xaml.cs">
-      <DependentUpon>ControlHeader.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Components\ErrorsGrid.xaml.cs">
       <DependentUpon>ErrorsGrid.xaml</DependentUpon>
     </Compile>
@@ -208,10 +220,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Components\ControlHeader.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Components\ControlView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -227,6 +235,20 @@
     <Page Include="Components\UserControl_ForTesting.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\BuildVisionProgressBar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Buttons\Buttons.Test.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Controls\Indicators\Indicators.Test.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
@@ -340,6 +362,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Styles\ScrollViewerStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BuildVision.Exports;
 using BuildVision.Exports.Factories;
 using BuildVision.Exports.Providers;
+using BuildVision.Exports.Services;
 using BuildVision.Tool.Building;
 using BuildVision.UI.Helpers;
 using BuildVision.UI.Settings.Models;
@@ -23,6 +24,7 @@ namespace BuildVision.Core
     [ProvideService(typeof(IBuildingProjectsProvider), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildMessagesFactory), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildOutputLogger), IsAsyncQueryable = true)]
+    [ProvideService(typeof(IBuildService), IsAsyncQueryable = true)]
     public sealed class ServiceProviderPackage : AsyncPackage
     {
         private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
@@ -36,6 +38,7 @@ namespace BuildVision.Core
             AddService(typeof(IBuildingProjectsProvider), CreateServiceAsync, true);
             AddService(typeof(IBuildMessagesFactory), CreateServiceAsync, true);
             AddService(typeof(IBuildOutputLogger), CreateServiceAsync, true);
+            AddService(typeof(IBuildService), CreateServiceAsync, true);
         }
 
         async Task<object> CreateServiceAsync(IAsyncServiceContainer container, CancellationToken cancellation, Type serviceType)
@@ -93,6 +96,11 @@ namespace BuildVision.Core
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellation);
                 return new BuildOutputLogger(_parsingErrorsLoggerId, Microsoft.Build.Framework.LoggerVerbosity.Quiet);
+            }
+            else if (serviceType == typeof(IBuildService))
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellation);
+                return new BuildManager();
             }
             else
             {

@@ -1,0 +1,73 @@
+﻿<UserControl x:Class="BuildVision.UI.Controls.BuildVisionProgressBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d"
+             d:DesignWidth="697">
+    <Grid>
+        <Line Name="Line"
+                  Margin="0,3,3,3"
+                  Panel.ZIndex="1"
+                  Stretch="Fill"
+                  Stroke="{DynamicResource CommandBarMenuSeparatorKey}"
+                  StrokeThickness="2"
+                  X2="1" />
+
+        <Line Margin="3"
+                  Panel.ZIndex="2"
+                  Stretch="Fill"
+                  StrokeThickness="2"
+                  X2="1">
+            <Line.Stroke>
+                <LinearGradientBrush StartPoint="0,0.5"
+                                         EndPoint="1,0.5">
+                    <GradientStop Offset="1.0"
+                                      Color="{Binding ElementName=Line, Path=Stroke.Color}" />
+                    <GradientStop Offset="1.1"
+                                      Color="CornflowerBlue" />
+                    <GradientStop Offset="1.2"
+                                      Color="{Binding ElementName=Line, Path=Stroke.Color}" />
+                </LinearGradientBrush>
+            </Line.Stroke>
+
+            <Line.Style>
+                <Style>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding ActionProgressIsVisible, FallbackValue=True}" Value="True">
+                            <DataTrigger.EnterActions>
+                                <BeginStoryboard x:Name="LineProgressBeginStoryboard">
+                                    <Storyboard>
+                                        <DoubleAnimation AutoReverse="True"
+                                                             Duration="0:0:3"
+                                                             From="1.0"
+                                                             RepeatBehavior="Forever"
+                                                             Storyboard.TargetProperty="(Line.Stroke).(LinearGradientBrush.GradientStops)[0].(GradientStop.Offset)"
+                                                             To="-0.2" />
+                                        <DoubleAnimation AutoReverse="True"
+                                                             Duration="0:0:3"
+                                                             From="1.1"
+                                                             RepeatBehavior="Forever"
+                                                             Storyboard.TargetProperty="(Line.Stroke).(LinearGradientBrush.GradientStops)[1].(GradientStop.Offset)"
+                                                             To="-0.1" />
+                                        <DoubleAnimation AutoReverse="True"
+                                                             Duration="0:0:3"
+                                                             From="1.2"
+                                                             RepeatBehavior="Forever"
+                                                             Storyboard.TargetProperty="(Line.Stroke).(LinearGradientBrush.GradientStops)[2].(GradientStop.Offset)"
+                                                             To="0.0" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </DataTrigger.EnterActions>
+
+                            <DataTrigger.ExitActions>
+                                <StopStoryboard BeginStoryboardName="LineProgressBeginStoryboard" />
+                            </DataTrigger.ExitActions>
+
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Line.Style>
+        </Line>
+    </Grid>
+</UserControl>

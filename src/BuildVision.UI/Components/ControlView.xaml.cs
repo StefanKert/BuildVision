@@ -34,7 +34,7 @@ namespace BuildVision.UI
             // By default, WPF uses en-US as the culture, regardless of the system settings.
             Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
 
-            Grid.TargetUpdated += GridOnTargetUpdated;
+            //Grid.TargetUpdated += GridOnTargetUpdated;
         }
 
         private void GridOnTargetUpdated(object sender, DataTransferEventArgs e)
@@ -45,9 +45,9 @@ namespace BuildVision.UI
 
         private void RefreshSortDirectionInGrid()
         {
-            DataGridColumn dataGridColumn = Grid.Columns.FirstOrDefault(col => col.GetBindedProperty() == _viewModel.GridSortDescription.Property);
-            if (dataGridColumn != null)
-                dataGridColumn.SortDirection = _viewModel.GridSortDescription.Order.ToSystem();
+            //DataGridColumn dataGridColumn = Grid.Columns.FirstOrDefault(col => col.GetBindedProperty() == _viewModel.GridSortDescription.Property);
+            //if (dataGridColumn != null)
+            //    dataGridColumn.SortDirection = _viewModel.GridSortDescription.Order.ToSystem();
         }
 
         private void GridOnSorting(object sender, DataGridSortingEventArgs e)
@@ -61,7 +61,7 @@ namespace BuildVision.UI
             Debug.Assert(DataContext != null);
 
             _viewModel = (BuildVisionPaneViewModel)DataContext;
-            _viewModel.SetGridColumnsRef(Grid.Columns);
+            //_viewModel.SetGridColumnsRef(Grid.Columns);
             _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         }
 

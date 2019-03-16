@@ -1,0 +1,28 @@
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:indicators="clr-namespace:BuildVision.UI.Controls.Indicators"
+             mc:Ignorable="d">
+    <WrapPanel Grid.Column="0"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Margin="0,0,0,0"
+                       Orientation="Horizontal">
+
+        <indicators:ErrorsIndicator Value="11" />
+
+        <indicators:WarningsIndicator Value="22" />
+
+        <indicators:MessagesIndicator Value="33" />
+
+        <indicators:SuccessProjectsIndicator Value="30" />
+
+        <indicators:UpToDateProjectsIndicator Value="20" />
+        
+        <indicators:WarningProjectsIndicator Value="50" />
+        
+        <indicators:ErrorProjectsIndicator Value="15" />
+
+    </WrapPanel>
+</UserControl>

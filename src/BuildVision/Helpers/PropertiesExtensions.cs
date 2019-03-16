@@ -15,7 +15,6 @@ namespace BuildVision.Helpers
             }
             catch (ArgumentException)
             {
-                // not found.
                 return null;
             }
         }

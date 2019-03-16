@@ -5,11 +5,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:res="clr-namespace:BuildVision.UI"
              xmlns:views="clr-namespace:BuildVision.UI"
-             xmlns:components="clr-namespace:BuildVision.UI.Components"
              xmlns:viewModels="clr-namespace:BuildVision.UI.ViewModels"
              xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"
              xmlns:helpers="clr-namespace:BuildVision.UI.Helpers"
              xmlns:contracts="clr-namespace:BuildVision.Contracts;assembly=BuildVision.Contracts"
+             xmlns:customButtons="clr-namespace:BuildVision.UI.Controls.Buttons"
+             xmlns:indicators="clr-namespace:BuildVision.UI.Controls.Indicators"
+             xmlns:controls="clr-namespace:BuildVision.UI.Controls"
              mc:Ignorable="d"
              Name="OwnerUserControl"
              Background="{DynamicResource ToolWindowBackgroundKey}"
@@ -28,6 +30,7 @@
                 <ResourceDictionary Source="../Styles/ScrollViewerStyle.xaml" />
                 <ResourceDictionary Source="../Styles/DataGridColumnHeaderStyle.xaml" />
                 <ResourceDictionary Source="../Styles/ControlViewStyle.xaml" />
+                <ResourceDictionary Source="../Resources/ValueIndicator.Resources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
 
@@ -39,14 +42,14 @@
             <CompositeCollection x:Key="GridColumnsMenuItems">
                 <CollectionContainer Collection="{Binding Source={StaticResource GridColumnsCollection}}" />
                 <Separator />
-              <MenuItem Command="{Binding OpenGridColumnsSettingsAction}"
+                <MenuItem Command="{Binding OpenGridColumnsSettingsAction}"
                           CommandParameter="{Binding Source={StaticResource GridColumnsCollection}}"
                           Header="{x:Static res:Resources.GridColumnsOpenSettingsMenuItem}"
                           IsCheckable="False"
                           IsChecked="False"
                           StaysOpenOnClick="False" />
             </CompositeCollection>
-            
+
             <CompositeCollection x:Key="CopyBuildOutputFilesToClipboardMenuItems">
                 <MenuItem Command="{Binding SelectedProjectCopyBuildOutputFilesToClipboardAction}"
                           Header="{x:Static res:Resources.SelectedProjectItem_CopyBuildOutputFilesToClipboard_CopyMenuItem}"/>
@@ -101,15 +104,170 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <components:ControlHeader DataContext="{Binding BuildInformationModel}"
-                                  Grid.Row="0"
-                                  Height="auto" />
+        <StackPanel Orientation="Vertical" Grid.Row="0" Height="auto">
 
-        <!-- Note: ScrollViewer.CanContentScroll: 
-            true if the ScrollViewer scrolls in terms of logical units; 
-            false if the ScrollViewer scrolls in terms of physical units. 
-            The default is false.  
-        -->
+            <Grid Background="{DynamicResource ToolWindowBackgroundKey}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--<ContentControl Grid.Column="0"
+                        Margin="0,-7,8,0"
+                        Template="{DynamicResource State}" /> TODO Add stateimages-->
+
+                <TextBlock Grid.Column="1"
+                       FontSize="18"
+                       Foreground="{DynamicResource ToolWindowTextKey}"
+                       Text="{Binding StateMessage}"
+                       TextTrimming="WordEllipsis"
+                       extensions:TextBlockUtils.AutoTooltip="True" />
+            </Grid>
+            
+            <!-- TODO ADD  progressbar -->
+
+            <controls:BuildVisionProgressBar DataContext="{Binding BuildProgressViewModel.ActionProgressIsVisible}" />
+
+            <Grid Visibility="{Binding ControlSettings.GeneralSettings.IndicatorsPanelVisible,
+                                       Converter={StaticResource BoolToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <WrapPanel Grid.Column="0"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Margin="0,0,0,0"
+                       Orientation="Horizontal">
+
+                    <customButtons:BuildSolutionButton  
+                        Command="{Binding BuildSolutionAction}"
+                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
+                        IsEnabled="{Binding SolutionModel.IsEmpty, Converter={StaticResource InverseBoolean}}" />
+
+                    <customButtons:RebuildSolutionButton  
+                        Command="{Binding RebuildSolutionAction}"
+                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
+                        IsEnabled="{Binding SolutionModel.IsEmpty, Converter={StaticResource InverseBoolean}}" />
+
+
+                    <customButtons:CleanSolutionButton  
+                        Command="{Binding CleanSolutionAction}"
+                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource InvertedBoolToVisibilityConverter}}"
+                        IsEnabled="{Binding SolutionModel.IsEmpty, Converter={StaticResource InverseBoolean}}" />
+
+                    <customButtons:CancelButton  
+                        Command="{Binding CancelBuildSolutionAction}"
+                        Visibility="{Binding BuildProgressViewModel.ActionProgressIsVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <customButtons:CancelButton.Style>
+                            <Style TargetType="Button"
+                               BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+                                <Setter Property="IsEnabled"
+                                    Value="True" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SolutionModel.IsEmpty}"
+                                             Value="True">
+                                        <Setter Property="IsEnabled"
+                                            Value="False" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding BuildProgressViewModel.ActionProgressIsPaused}"
+                                             Value="True">
+                                        <Setter Property="IsEnabled"
+                                            Value="False" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </customButtons:CancelButton.Style>
+                    </customButtons:CancelButton>
+                </WrapPanel>
+
+                <Border Grid.Column="1"
+                    Width="2"
+                    BorderThickness="2"
+                    BorderBrush="{DynamicResource CommandBarMenuSeparatorBrushKey}"
+                    Margin="10,2,10,2" />
+
+                <ListBox Grid.Column="2"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     UseLayoutRounding="False">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel VerticalAlignment="Center"
+                                    Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.Resources>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="IsEnabled" Value="false" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0,0,5,0" />
+                            <Setter Property="Border.BorderBrush" Value="Transparent" />
+                            <Setter Property="Border.BorderThickness" Value="0" />
+                            <Setter Property="Border.Background" Value="Transparent" />
+                            <Setter Property="Border.Padding" Value="0" />
+                        </Style>
+                    </ListBox.Resources>
+
+                    <indicators:ErrorsIndicator Value="{Binding ErrorCount}" />
+
+                    <indicators:WarningsIndicator Value="{Binding WarningsCount}" />
+
+                    <indicators:MessagesIndicator Value="{Binding MessagesCount}" />
+                </ListBox>
+
+                <Border Grid.Column="3"
+                    Width="2"
+                    BorderThickness="2"
+                    BorderBrush="{DynamicResource CommandBarMenuSeparatorBrushKey}"
+                    Margin="10,2,10,2" />
+
+                <ListBox Grid.Column="4"
+                     Background="Transparent"
+                     BorderThickness="0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     UseLayoutRounding="False">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel VerticalAlignment="Center"
+                                    Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    <ListBox.Resources>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="IsEnabled" Value="false" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Margin" Value="0,0,5,0" />
+                            <Setter Property="Border.BorderBrush" Value="Transparent" />
+                            <Setter Property="Border.BorderThickness" Value="0" />
+                            <Setter Property="Border.Background" Value="Transparent" />
+                            <Setter Property="Border.Padding" Value="0" />
+                        </Style>
+                    </ListBox.Resources>
+
+                    <indicators:SuccessProjectsIndicator Value="{Binding SucceededProjectsCount}" />
+
+                    <indicators:UpToDateProjectsIndicator Value="{Binding UpToDateProjectsCount}" />
+
+                    <indicators:WarningProjectsIndicator Value="{Binding WarnedProjectsCount}" />
+
+                    <indicators:ErrorProjectsIndicator Value="{Binding FailedProjectsCount}" />
+                </ListBox>
+
+            </Grid>
+        </StackPanel>
+        
         <DataGrid Name="Grid"
                   Grid.Row="1"
                   AlternatingRowBackground="{Binding ElementName=Grid,
@@ -189,7 +347,7 @@
                     </Setter>
                 </Style>
             </DataGrid.CellStyle>
-            
+
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">
 
@@ -214,7 +372,7 @@
                             </MultiDataTrigger.Conditions>
                             <Setter Property="Visibility" Value="Collapsed"/>
                         </MultiDataTrigger>
-                        
+
                         <DataTrigger Value="True">
                             <DataTrigger.Binding>
                                 <MultiBinding Converter="{StaticResource ObjectsReferencesEqualsConverter}">

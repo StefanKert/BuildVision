@@ -8,10 +8,11 @@ using BuildVision.Common;
 using BuildVision.UI.Settings.Models;
 using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models.BuildProgress;
+using BuildVision.Contracts.Models;
 
 namespace BuildVision.UI.ViewModels
 { 
-    public class BuildProgressViewModel : BindableBase
+    public class BuildProgressViewModel : BindableBase, IBuildProgressViewModel
     {
         private readonly ControlSettings _settings;
 

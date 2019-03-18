@@ -10,20 +10,12 @@
         <ResourceDictionary Source="/BuildVision.UI;component/Resources/ValueIndicator.Resources.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="{x:Type ui:BuildSolutionButton}">
+    <Style TargetType="{x:Type ui:BuildSolutionButton}" BasedOn="{StaticResource ToolBarButtonBaseStyle}">
+        <Setter Property="ToolTip" Value="{x:Static res:Resources.BuildSolutionButtonTooltip}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ui:BuildSolutionButton}">
-                    <Button Name="BuildSolutionButton"
-                        ToolTip="{x:Static res:Resources.BuildSolutionButtonTooltip}">
-                        <StackPanel Orientation="Horizontal">
-                            <ContentControl Template="{StaticResource BuildSolutionIcon}" />
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button"
-                               BasedOn="{StaticResource ToolBarButtonBaseStyle}" />
-                        </Button.Style>
-                    </Button>
+                    <ContentControl Template="{StaticResource BuildSolutionIcon}" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

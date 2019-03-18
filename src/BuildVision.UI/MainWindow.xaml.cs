@@ -1,5 +1,7 @@
 ﻿using BuildVision.UI.Settings;
 using BuildVision.UI.ViewModels;
+using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Linq;
 using System.Windows;

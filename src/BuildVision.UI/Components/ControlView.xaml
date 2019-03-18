@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:res="clr-namespace:BuildVision.UI"
-             xmlns:views="clr-namespace:BuildVision.UI"
              xmlns:viewModels="clr-namespace:BuildVision.UI.ViewModels"
              xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"
              xmlns:helpers="clr-namespace:BuildVision.UI.Helpers"
@@ -34,7 +32,6 @@
                 <ResourceDictionary Source="../Resources/ValueIndicator.Resources.xaml" />
                 <ResourceDictionary Source="../Resources/BuildResult.Resources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
 
             <viewModels:BuildVisionPaneViewModel x:Key="DesignViewModel"/>
             <helpers:BindingProxy x:Key="proxy" Data="{Binding}" />
@@ -98,8 +95,8 @@
                                 </Style.Triggers>
                             </Style>
                         </StackPanel.Style>
-                        
-                        <customButtons:BuildSolutionButton Command="{Binding BuildSolutionAction}" IsEnabled="True" />
+
+                        <customButtons:BuildSolutionButton Command="{Binding BuildSolutionAction}" x:Name="BuildSolutionButton" IsEnabled="True" />
 
                         <customButtons:RebuildSolutionButton Command="{Binding RebuildSolutionButton}" />
 

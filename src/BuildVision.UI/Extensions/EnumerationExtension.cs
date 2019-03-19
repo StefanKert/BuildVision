@@ -1,4 +1,4 @@
-using BuildVision.UI.Helpers;
+﻿using BuildVision.UI.Helpers;
 using System;
 using System.Linq;
 using System.Windows.Markup;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,9 +10,11 @@ namespace BuildVision.UI.DataGrid
     {
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
         {
-            Image image = (cell != null) ? (cell.Content as Image) : null;
+            var image = (cell != null) ? (cell.Content as Image) : null;
             if (image == null)
+            {
                 image = new Image();
+            }
 
             image.Stretch = Stretch.None;
             image.SnapsToDevicePixels = true;

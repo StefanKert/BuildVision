@@ -8,7 +8,6 @@ namespace BuildVision.Helpers
     {
         static readonly object mLock = new object();
         static Version mVsVersion;
-        static Version mOsVersion;
 
         public static Version FullVersion
         {
@@ -44,21 +43,5 @@ namespace BuildVision.Helpers
                 return mVsVersion;
             }
         }
-
-        public static Version OSVersion => mOsVersion ?? (mOsVersion = Environment.OSVersion.Version);
-
-        public static bool VS2012OrLater => FullVersion >= new Version(11, 0);
-
-        public static bool VS2010OrLater => FullVersion >= new Version(10, 0);
-
-        public static bool VS2008OrOlder => FullVersion < new Version(9, 0);
-
-        public static bool VS2005 => FullVersion.Major == 8;
-
-        public static bool VS2008 => FullVersion.Major == 9;
-
-        public static bool VS2010 => FullVersion.Major == 10;
-
-        public static bool VS2012 => FullVersion.Major == 11;
     }
 }

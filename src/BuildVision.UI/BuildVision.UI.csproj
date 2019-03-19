@@ -79,10 +79,7 @@
     <Compile Include="Controls\BuildVisionProgressBar.xaml.cs">
       <DependentUpon>BuildVisionProgressBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\Buttons\CleanSolutionButton.cs" />
-    <Compile Include="Controls\Buttons\BuildSolutionButton.cs" />
-    <Compile Include="Controls\Buttons\RebuildSolutionButton.cs" />
-    <Compile Include="Controls\Buttons\CancelButton.cs" />
+    <Compile Include="Controls\Buttons\BuildActionButton.cs" />
     <Compile Include="Controls\Indicators\ErrorsIndicator.cs" />
     <Compile Include="Controls\Indicators\MessagesIndicator.cs" />
     <Compile Include="Controls\Indicators\SuccessProjectsIndicator.cs" />
@@ -246,11 +243,6 @@
     <Page Include="Controls\BuildVisionProgressBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\Buttons\Buttons.Test.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
     <Page Include="Controls\Indicators\Indicators.Test.xaml">
       <Generator>MSBuild:Compile</Generator>

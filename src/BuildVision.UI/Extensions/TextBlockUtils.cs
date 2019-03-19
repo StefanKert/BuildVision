@@ -5,29 +5,17 @@ namespace BuildVision.UI.Extensions
 {
     public class TextBlockUtils
     {
-        /// <summary>
-        /// Identified the attached AutoTooltip property.
-        /// When <c>true</c>, this will set the <see cref="TextBlock.TextTrimming"/>
-        /// property to <see cref="TextTrimming.WordEllipsis"/>, and display a tooltip
-        /// with the full text whenever the text is trimmed.
-        /// </summary>
         public static readonly DependencyProperty AutoTooltipProperty = DependencyProperty.RegisterAttached(
             "AutoTooltip",
             typeof(bool),
             typeof(TextBlockUtils),
             new PropertyMetadata(false, OnAutoTooltipPropertyChanged));
 
-        /// <summary>
-        /// Gets the value of the <see cref="AutoTooltipProperty"/> dependency property.
-        /// </summary>
         public static bool GetAutoTooltip(DependencyObject obj)
         {
             return (bool)obj.GetValue(AutoTooltipProperty);
         }
 
-        /// <summary>
-        /// Sets the value of the <see cref="AutoTooltipProperty"/> dependency property.
-        /// </summary>
         public static void SetAutoTooltip(DependencyObject obj, bool value)
         {
             obj.SetValue(AutoTooltipProperty, value);
@@ -57,9 +45,6 @@ namespace BuildVision.UI.Extensions
             ComputeAutoTooltip(textBlock);
         }
 
-        /// <summary>
-        /// Assigns the ToolTip for the given TextBlock based on whether the text is trimmed.
-        /// </summary>
         private static void ComputeAutoTooltip(TextBlock textBlock)
         {
             textBlock.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));

@@ -50,7 +50,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\BuildedProjectsCollection.cs" />
     <Compile Include="Models\BuildProjectContextEntry.cs" />
     <Compile Include="Enums\BuildResultState.cs" />
     <Compile Include="Enums\BuildActions.cs" />
@@ -60,7 +59,6 @@
     <Compile Include="Enums\BuildScopes.cs" />
     <Compile Include="Enums\BuildState.cs" />
     <Compile Include="Enums\ColumnsOrder.cs" />
-    <Compile Include="Models\BuildProjectEventArgs.cs" />
     <Compile Include="Models\ErrorItem.cs" />
     <Compile Include="Enums\ErrorLevel.cs" />
     <Compile Include="Models\ErrorsBox.cs" />

@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shell;
-
 using BuildVision.Common;
 using BuildVision.UI.Settings.Models;
 using BuildVision.UI.Models;

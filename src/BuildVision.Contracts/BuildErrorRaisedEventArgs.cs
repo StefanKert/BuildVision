@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using BuildVision.UI.Models;
 
 namespace BuildVision.Contracts

@@ -79,7 +79,7 @@ namespace BuildVision.Core
                 case BuildScopes.BuildScopeSolution:
                     try
                     {
-                        Solution solution = _dte.Solution;
+                        var solution = _dte.Solution;
                         if (solution != null)
                             projectsCount = _solution.GetProjects().Count;
                     }

@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:ui="clr-namespace:BuildVision.UI.Controls.Buttons"
                     xmlns:indicators="clr-namespace:BuildVision.UI.Controls.Indicators"
-                    xmlns:res="clr-namespace:BuildVision.UI">
+                    xmlns:res="clr-namespace:BuildVision.UI"
+                    xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/BuildVision.UI;component/Resources/CommonResources.xaml" />
         <ResourceDictionary Source="/BuildVision.UI;component/Styles/ControlViewStyle.xaml" />
@@ -10,67 +11,37 @@
         <ResourceDictionary Source="/BuildVision.UI;component/Resources/ValueIndicator.Resources.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="{x:Type ui:BuildSolutionButton}" BasedOn="{StaticResource ToolBarButtonBaseStyle}">
-        <Setter Property="ToolTip" Value="{x:Static res:Resources.BuildSolutionButtonTooltip}"/>
+    <Style TargetType="{x:Type ui:BuildActionButton}" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ui:BuildSolutionButton}">
-                    <ContentControl Template="{StaticResource BuildSolutionIcon}" />
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+                <ControlTemplate TargetType="{x:Type ui:BuildActionButton}">
 
-    <Style TargetType="{x:Type ui:RebuildSolutionButton}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ui:RebuildSolutionButton">
-                    <Button Name="RebuildSolutionButton" ToolTip="{x:Static res:Resources.RebuildSolutionButtonTooltip}">
-                        <StackPanel Orientation="Horizontal">
-                            <ContentControl Template="{StaticResource RebuildSolutionIcon}" />
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource ToolBarButtonBaseStyle}" />
-                        </Button.Style>
-                    </Button>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+                    <Border x:Name="Border"
+                            Background="{x:Null}"
+                            BorderBrush="Transparent"
+                            BorderThickness="1">
+                        <ContentPresenter Margin="2"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True" />
+                    </Border>
 
-    <Style TargetType="{x:Type ui:CleanSolutionButton}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ui:CleanSolutionButton">
-                    <Button Name="CleanSolutionButton" ToolTip="{x:Static res:Resources.CleanSolutionButtonTooltip}">
-                        <StackPanel Orientation="Horizontal">
-                            <ContentControl Template="{StaticResource CleanSolutionIcon}" />
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource ToolBarButtonBaseStyle}" />
-                        </Button.Style>
-                    </Button>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMouseOverBackgroundGradientKey}}" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarSelectedBorderKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Border" Property="Opacity" Value="0.5" />
+                            <Setter TargetName="Border" Property="Background" Value="{x:Null}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMouseDownBackgroundGradientKey}}" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMouseDownBorderKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
 
-    <Style TargetType="{x:Type ui:CancelButton}">
-        <Setter Property="HorizontalAlignment" Value="Stretch"/>
-        <Setter Property="MinWidth" Value="66"/>
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ui:CancelButton">
-                    <Button Name="CleanSolutionButton"
-                        ToolTip="{x:Static res:Resources.CleanSolutionButtonTooltip}">
-                        <StackPanel Orientation="Horizontal">
-                            <ContentControl Template="{StaticResource CancelBuildSolutionIcon}" />
-                            <TextBlock Margin="2,0,0,0" Text="{x:Static res:Resources.CancelBuildSolutionButtonCaption}" />
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource ToolBarButtonBaseStyle}" />
-                        </Button.Style>
-                    </Button>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

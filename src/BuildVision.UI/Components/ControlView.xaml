@@ -11,6 +11,7 @@
              xmlns:indicators="clr-namespace:BuildVision.UI.Controls.Indicators"
              xmlns:controls="clr-namespace:BuildVision.UI.Controls"
              xmlns:components="clr-namespace:BuildVision.UI.Components"
+             xmlns:res="clr-namespace:BuildVision.UI"
              mc:Ignorable="d"
              Name="OwnerUserControl"
              Background="{DynamicResource ToolWindowBackgroundKey}"
@@ -96,27 +97,49 @@
                             </Style>
                         </StackPanel.Style>
 
-                        <customButtons:BuildSolutionButton Command="{Binding BuildSolutionAction}" x:Name="BuildSolutionButton" IsEnabled="True" />
+                        <customButtons:BuildActionButton Command="{Binding BuildSolutionAction}" ToolTip="{x:Static res:Resources.BuildSolutionButtonTooltip}">
+                            <ContentControl Template="{StaticResource BuildSolutionIcon}" />
+                        </customButtons:BuildActionButton>
 
-                        <customButtons:RebuildSolutionButton Command="{Binding RebuildSolutionButton}" />
+                        <customButtons:BuildActionButton Command="{Binding BuildSolutionAction}" ToolTip="{x:Static res:Resources.RebuildSolutionButtonTooltip}">
+                            <ContentControl Template="{StaticResource RebuildSolutionIcon}" />
+                        </customButtons:BuildActionButton>
 
-                        <customButtons:CleanSolutionButton Command="{Binding CleanSolutionButton}" />
+                        <customButtons:BuildActionButton Command="{Binding BuildSolutionAction}" ToolTip="{x:Static res:Resources.CleanSolutionButtonTooltip}">
+                            <ContentControl Template="{StaticResource CleanSolutionIcon}" />
+                        </customButtons:BuildActionButton>
+
                     </StackPanel>
 
-                    <customButtons:CancelButton Command="{Binding CancelBuildSolutionAction}">
-                        <customButtons:CancelButton.Style>
-                            <Style TargetType="{x:Type customButtons:CancelButton}">
-                                <Setter Property="IsEnabled" Value="False" />
-                                <Setter Property="Visibility" Value="Collapsed" />
 
+                    <customButtons:BuildActionButton 
+                        Command="{Binding BuildSolutionAction}" 
+                        HorizontalAlignment="Stretch" 
+                        MinWidth="66" 
+                        ToolTip="{x:Static res:Resources.CancelBuildSolutionButtonTooltip}"
+                        IsEnabled="False"
+                        Visibility="Collapsed">
+                        <customButtons:BuildActionButton.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <ContentControl Template="{StaticResource CancelBuildSolutionIcon}" />
+                                <TextBlock Margin="2,0,0,0" Text="{x:Static res:Resources.CancelBuildSolutionButtonCaption}" />
+                            </StackPanel>
+                        </customButtons:BuildActionButton.Content>
+       
+                        <customButtons:BuildActionButton.Style>
+                            <Style TargetType="{x:Type customButtons:BuildActionButton}">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding BuildInformationModel.CurrentBuildState}" Value="{x:Static contracts:BuildState.InProgress}">
                                         <Setter Property="Visibility" Value="Visible" />
                                     </DataTrigger>
+                                    <DataTrigger Binding="{Binding BuildInformationModel.CurrentBuildState}" Value="{x:Static contracts:BuildState.InProgress}">
+                                        <Setter Property="IsEnabled" Value="True" />
+                                    </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </customButtons:CancelButton.Style>
-                    </customButtons:CancelButton>
+                        </customButtons:BuildActionButton.Style>
+                    </customButtons:BuildActionButton>
+
                 </WrapPanel>
 
                 <Border Grid.Column="1"

@@ -1,4 +1,4 @@
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Data;
 
 namespace BuildVision.UI.Extensions
@@ -7,16 +7,14 @@ namespace BuildVision.UI.Extensions
     {
         public static void UpdateTarget(this FrameworkElement element, DependencyProperty property)
         {
-            BindingExpression expression = element.GetBindingExpression(property);
-            if (expression != null)
-                expression.UpdateTarget();
+            var expression = element.GetBindingExpression(property);
+            expression?.UpdateTarget();
         }
 
         public static void UpdateSource(this FrameworkElement element, DependencyProperty property)
         {
-            BindingExpression expression = element.GetBindingExpression(property);
-            if (expression != null)
-                expression.UpdateSource();
+            var expression = element.GetBindingExpression(property);
+            expression?.UpdateSource();
         }
     }
 }

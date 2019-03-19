@@ -1,4 +1,4 @@
-using BuildVision.Contracts;
+﻿using BuildVision.Contracts;
 using System.Windows.Controls;
 
 namespace BuildVision.UI.Extensions
@@ -8,7 +8,6 @@ namespace BuildVision.UI.Extensions
         public static bool IsErrorState(this ProjectState state)
         {
             return state == ProjectState.BuildError || state == ProjectState.CleanError;
-
         }
 
         public static ControlTemplate GetAssociatedContent(this ProjectState state)

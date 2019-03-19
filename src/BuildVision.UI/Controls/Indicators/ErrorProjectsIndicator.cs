@@ -14,7 +14,7 @@ namespace BuildVision.UI.Controls.Indicators
 
         public ErrorProjectsIndicator()
         {
-            Description = UI.Resources.ErrorProjectsIndicator_Header;
+            Header = UI.Resources.ErrorProjectsIndicator_Header;
         }
     }
 }

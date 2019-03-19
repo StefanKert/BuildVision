@@ -11,7 +11,7 @@ namespace BuildVision.UI.Controls.Indicators
 
         public WarningsIndicator()
         {
-            Description = UI.Resources.WarningsIndicator_Header;
+            Header = UI.Resources.WarningsIndicator_Header;
         }
     }
 }

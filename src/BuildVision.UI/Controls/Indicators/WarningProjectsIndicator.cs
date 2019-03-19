@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using BuildVision.UI.Extensions;
 
 namespace BuildVision.UI.Controls.Indicators
 {
@@ -11,7 +12,7 @@ namespace BuildVision.UI.Controls.Indicators
 
         public WarningProjectsIndicator()
         {
-            Description = UI.Resources.WarningProjectsIndicator_Header;
+            Header = UI.Resources.WarningProjectsIndicator_Header;
         }
     }
 }

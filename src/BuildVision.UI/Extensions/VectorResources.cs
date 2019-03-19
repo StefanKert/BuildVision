@@ -1,4 +1,4 @@
-using BuildVision.UI;
+﻿using BuildVision.UI;
 using System;
 using System.Collections.Generic;
 using System.Management.Instrumentation;

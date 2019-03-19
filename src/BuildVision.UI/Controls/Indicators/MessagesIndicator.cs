@@ -11,7 +11,7 @@ namespace BuildVision.UI.Controls.Indicators
 
         public MessagesIndicator()
         {
-            Description = UI.Resources.MessagesIndicator_Header;
+            Header = UI.Resources.MessagesIndicator_Header;
         }
     }
 }

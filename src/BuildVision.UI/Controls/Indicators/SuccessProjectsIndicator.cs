@@ -11,7 +11,7 @@ namespace BuildVision.UI.Controls.Indicators
 
         public SuccessProjectsIndicator()
         {
-            Description = UI.Resources.SuccessProjectsIndicator_Header;
+            Header = UI.Resources.SuccessProjectsIndicator_Header;
         }
     }
 }

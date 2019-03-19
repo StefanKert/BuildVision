@@ -11,7 +11,7 @@ namespace BuildVision.UI.Controls.Indicators
 
         public UpToDateProjectsIndicator()
         {
-            Description = UI.Resources.UpToDateProjectsIndicator_Header;
+            Header = UI.Resources.UpToDateProjectsIndicator_Header;
         }
     }
 }

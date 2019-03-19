@@ -6,7 +6,6 @@
                     xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/BuildVision.UI;component/Resources/CommonResources.xaml" />
-        <ResourceDictionary Source="/BuildVision.UI;component/Styles/ControlViewStyle.xaml" />
         <ResourceDictionary Source="/BuildVision.UI;component/Resources/BuildAction.Resources.xaml" />
         <ResourceDictionary Source="/BuildVision.UI;component/Resources/ValueIndicator.Resources.xaml" />
     </ResourceDictionary.MergedDictionaries>
@@ -47,49 +46,26 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type indicators:ErrorProjectsIndicator}">
+    <Style x:Key="ValueIndicator" TargetType="{x:Type indicators:ValueIndicator}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type indicators:ErrorProjectsIndicator}">
-                    <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
+                <ControlTemplate TargetType="{x:Type indicators:ValueIndicator}">
+                    <StackPanel Orientation="Vertical" ToolTipService.ShowOnDisabled="True" ToolTipService.ToolTip="{TemplateBinding Header}">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0"
-                            Width="16"
-                            Height="16"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource ErrorProjectsIndicatorIcon}" />
-                            <Label Grid.Column="1" Content="{TemplateBinding Value}" Style="{StaticResource ResourceKey=IndicatorLabel}" />
-                        </Grid>
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    
-    <Style TargetType="{x:Type indicators:WarningProjectsIndicator}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type indicators:WarningProjectsIndicator}">
-                    <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0"
-                            Width="16"
-                            Height="16"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource WarningProjectsIndicatorIcon}" />
-                            <Label Grid.Column="1" Content="{TemplateBinding Value}" Style="{StaticResource ResourceKey=IndicatorLabel}" />
+                            <ContentControl 
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                SnapsToDevicePixels="True"
+                                ClipToBounds="True"
+                                UseLayoutRounding="False"
+                                Template="{TemplateBinding Icon}" />
+                            <Label Grid.Column="1" Content="{TemplateBinding Value}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4"/>
+
                         </Grid>
                     </StackPanel>
                 </ControlTemplate>
@@ -97,129 +73,13 @@
         </Setter>
     </Style>
 
-    <Style TargetType="{x:Type indicators:SuccessProjectsIndicator}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type indicators:SuccessProjectsIndicator}">
-                    <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0"
-                            Width="16"
-                            Height="16"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource SuccessProjectsIndicatorIcon}" />
-                            <Label Grid.Column="1" Content="{TemplateBinding Value}"  Style="{StaticResource ResourceKey=IndicatorLabel}" />
-                        </Grid>
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:SuccessProjectsIndicator}" />
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:UpToDateProjectsIndicator}" />
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:WarningProjectsIndicator}" />
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:ErrorProjectsIndicator}" />
 
-    <Style TargetType="{x:Type indicators:UpToDateProjectsIndicator}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type indicators:UpToDateProjectsIndicator}" >
-                    <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0"
-                            Width="16"
-                            Height="16"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource UpToDateProjectsIndicatorIcon}" />
-                            <Label Grid.Column="1" Content="{TemplateBinding Value}"  Style="{StaticResource ResourceKey=IndicatorLabel}" />
-                        </Grid>
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="{x:Type indicators:ErrorsIndicator}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type indicators:ErrorsIndicator}">
-                    <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0"
-                            Width="16"
-                            Height="16"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource ErrorsIndicatorIcon}" />
-                            <Label Grid.Column="1" Content="{TemplateBinding Value}"  Style="{StaticResource ResourceKey=IndicatorLabel}" />
-                        </Grid>
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="{x:Type indicators:WarningsIndicator}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type indicators:WarningsIndicator}">
-                    <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0"
-                            Width="16"
-                            Height="16"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource WarningsIndicatorIcon}" />
-                            <Label Grid.Column="1" Content="{TemplateBinding Value}"  Style="{StaticResource ResourceKey=IndicatorLabel}" />
-                        </Grid>
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
-    <Style TargetType="{x:Type indicators:MessagesIndicator}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type indicators:MessagesIndicator}">
-                    <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ContentControl Grid.Column="0"
-                            Width="16"
-                            Height="16"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource MessagesIndicatorIcon}" />
-                            <Label Grid.Column="1" Content="{TemplateBinding Value}"  Style="{StaticResource ResourceKey=IndicatorLabel}" />
-                        </Grid>
-                    </StackPanel>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:ErrorsIndicator}" />
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:WarningsIndicator}" />
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:MessagesIndicator}" />
 
 </ResourceDictionary>

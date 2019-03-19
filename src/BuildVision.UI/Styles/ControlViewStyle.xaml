@@ -31,11 +31,6 @@
         </Style.Triggers>
     </Style>
 
-    <Style x:Key="IndicatorLabel">
-        <Setter Property="Label.Foreground" Value="{DynamicResource ToolWindowTextKey}" />
-        <Setter Property="Label.Opacity" Value="0.4" />
-    </Style>
-
     <converters1:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
     <converters2:VisibilityToBooleanConverter x:Key="VisibilityToBoolConverter" />
     <converters2:GridColumnHeadersVisibilityToBooleanConverter x:Key="ColumnHeadersVisibilityToBool" />

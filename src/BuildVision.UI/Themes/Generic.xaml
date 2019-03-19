@@ -52,7 +52,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type indicators:ErrorProjectsIndicator}">
                     <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{x:Static res:Resources.ErrorsIndicator_Header}">
+                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
@@ -77,7 +77,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type indicators:WarningProjectsIndicator}">
                     <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{x:Static res:Resources.WarningProjectsIndicator_Header}">
+                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
@@ -102,7 +102,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type indicators:SuccessProjectsIndicator}">
                     <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{x:Static res:Resources.SuccessProjectsIndicator_Header}">
+                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
@@ -125,9 +125,9 @@
     <Style TargetType="{x:Type indicators:UpToDateProjectsIndicator}">
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="{x:Type indicators:UpToDateProjectsIndicator}">
+                <ControlTemplate TargetType="{x:Type indicators:UpToDateProjectsIndicator}" >
                     <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{x:Static res:Resources.UpToDateProjectsIndicator_Header}">
+                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
@@ -152,7 +152,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type indicators:ErrorsIndicator}">
                     <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{x:Static res:Resources.ErrorsIndicator_Header}" ToolTipService.ShowOnDisabled="True">
+                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
@@ -177,7 +177,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type indicators:WarningsIndicator}">
                     <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{x:Static res:Resources.WarningsIndicator_Header}" ToolTipService.ShowOnDisabled="True">
+                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
@@ -202,7 +202,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type indicators:MessagesIndicator}">
                     <StackPanel Orientation="Vertical">
-                        <Grid ToolTip="{x:Static res:Resources.MessagesIndicator_Header}" ToolTipService.ShowOnDisabled="True">
+                        <Grid ToolTip="{TemplateBinding Description}" ToolTipService.ShowOnDisabled="True">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />

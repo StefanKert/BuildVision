@@ -8,5 +8,10 @@ namespace BuildVision.UI.Controls.Indicators
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(ErrorsIndicator), new FrameworkPropertyMetadata(typeof(ErrorsIndicator)));
         }
+
+        public ErrorsIndicator()
+        {
+            Description = UI.Resources.ErrorsIndicator_Header;
+        }
     }
 }

@@ -8,5 +8,10 @@ namespace BuildVision.UI.Controls.Indicators
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(SuccessProjectsIndicator), new FrameworkPropertyMetadata(typeof(SuccessProjectsIndicator)));
         }
+
+        public SuccessProjectsIndicator()
+        {
+            Description = UI.Resources.SuccessProjectsIndicator_Header;
+        }
     }
 }

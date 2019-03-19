@@ -8,5 +8,10 @@ namespace BuildVision.UI.Controls.Indicators
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(UpToDateProjectsIndicator), new FrameworkPropertyMetadata(typeof(UpToDateProjectsIndicator)));
         }
+
+        public UpToDateProjectsIndicator()
+        {
+            Description = UI.Resources.UpToDateProjectsIndicator_Header;
+        }
     }
 }

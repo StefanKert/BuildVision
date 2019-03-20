@@ -29,12 +29,9 @@ namespace BuildVision.UI
         public ControlView()
         {
             InitializeComponent();
-
             // Ensure the current culture passed into bindings is the OS culture.
             // By default, WPF uses en-US as the culture, regardless of the system settings.
             Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
-
-            //Grid.TargetUpdated += GridOnTargetUpdated;
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

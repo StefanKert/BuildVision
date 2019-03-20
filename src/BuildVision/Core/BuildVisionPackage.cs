@@ -47,13 +47,10 @@ namespace BuildVision.Core
         private DTE _dte;
         private DTE2 _dte2;
         private SolutionEvents _solutionEvents;
-        private BuildVisionPaneViewModel _viewModel;
         private IVsSolutionBuildManager2 _solutionBuildManager;
         private IVsSolutionBuildManager5 _solutionBuildManager4;
         private IBuildInformationProvider _buildInformationProvider;
         private uint _updateSolutionEvents4Cookie;
-        private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
-        private BuildOutputLogger _buildLogger;
         private SolutionBuildEvents _solutionBuildEvents;
         private ISolutionProvider _solutionProvider;
         private IBuildingProjectsProvider _buildingProjectsProvider;
@@ -121,10 +118,12 @@ namespace BuildVision.Core
         {
             try
             {
+                var window = ShowToolWindow(Guid.Parse(PackageGuids.GuidBuildVisionToolWindowString));
+
                 // Get the instance number 0 of this tool window. This window is single instance so this instance
                 // is actually the only one.
                 // The last flag is set to true so that if the tool window does not exists it will be created.
-                var window = FindToolWindow(typeof(BuildVisionPane), 0, true);
+               // var window = FindToolWindow(typeof(BuildVisionPane), 0, true);
                 if (window == null || window.Frame == null)
                     throw new InvalidOperationException(Resources.CanNotCreateWindow);
 
@@ -138,20 +137,54 @@ namespace BuildVision.Core
             }
         }
 
+
+        ToolWindowPane ShowToolWindow(Guid windowGuid)
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+
+            var shell = GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
+            IVsWindowFrame frame;
+            if (ErrorHandler.Failed(shell.FindToolWindow((uint)__VSCREATETOOLWIN.CTW_fForceCreate,
+                ref windowGuid, out frame)))
+            {
+                return null;
+            }
+            if (ErrorHandler.Failed(frame.Show()))
+            {
+                return null;
+            }
+
+            object docView = null;
+            if (ErrorHandler.Failed(frame.GetProperty((int)__VSFPROPID.VSFPROPID_DocView, out docView)))
+            {
+                return null;
+            }
+            return docView as ToolWindowPane;
+        }
+
         public void NotifyControlSettingsChanged()
         {
             ControlSettingsChanged(ControlSettings);
-        }
-
-        private ToolWindowPane GetWindowPane(Type windowType)
-        {
-            return FindToolWindow(windowType, 0, false) ?? FindToolWindow(windowType, 0, true);
         }
 
         public async Task ExecuteCommandAsync(string commandName)
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
             _dte.ExecuteCommand(commandName);
+        }
+
+
+        async Task EnsurePackageLoaded(Guid packageGuid)
+        {
+            await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
+
+            var shell = await GetServiceAsync(typeof(SVsShell)) as IVsShell;
+            if (shell != null)
+            {
+                IVsPackage vsPackage;
+                ErrorHandler.ThrowOnFailure(shell.LoadPackage(ref packageGuid, out vsPackage));
+            }
         }
     }
 }

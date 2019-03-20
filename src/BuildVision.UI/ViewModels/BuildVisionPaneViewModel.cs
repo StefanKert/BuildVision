@@ -307,11 +307,11 @@ namespace BuildVision.UI.ViewModels
 
         public void OnControlSettingsChanged(ControlSettings settings)
         {
-            //ControlSettings.InitFrom(settings);
+            ControlSettings.InitFrom(settings);
 
             GenerateColumns();
 
-            // Refresh build message
+            //Refresh build message
             //if (_buildState == BuildState.Done)
             //{
             //    Model.TextCurrentState = getBuildMessage(_buildInfo);

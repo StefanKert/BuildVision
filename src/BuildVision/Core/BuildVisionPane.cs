@@ -15,6 +15,7 @@ using BuildVision.Exports.Providers;
 using BuildVision.Tool.Building;
 using BuildVision.Exports.Services;
 using BuildVision.Views.Settings;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace BuildVision.Tool
 {
@@ -43,7 +44,7 @@ namespace BuildVision.Tool
             Caption = Resources.ToolWindowTitle;
             BitmapResourceID = 301;
             BitmapIndex = 1;
-            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+            //FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
         }
 
         protected override void Initialize()
@@ -55,6 +56,7 @@ namespace BuildVision.Tool
 
             viewModelTask = JoinableTaskFactory.RunAsync(() => InitializeAsync(asyncPackage));
 
+            base.Initialize();
         }
 
         public Task<BuildVisionPaneViewModel> GetViewModelAsync() => viewModelTask.JoinAsync();
@@ -64,17 +66,15 @@ namespace BuildVision.Tool
             await JoinableTaskFactory.SwitchToMainThreadAsync();
             try
             {
-                var sp = (AsyncPackage) Package;
-                Assumes.Present(sp);
-                var solutionProvider = await sp.GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
+                var solutionProvider = await asyncPackage.GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
                 Assumes.Present(solutionProvider);
-                var buildInformationProvider = await sp.GetServiceAsync(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
+                var buildInformationProvider = await asyncPackage.GetServiceAsync(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
                 Assumes.Present(buildInformationProvider);
-                var buildingProjectsProvider = await sp.GetServiceAsync(typeof(IBuildingProjectsProvider)) as IBuildingProjectsProvider;
+                var buildingProjectsProvider = await asyncPackage.GetServiceAsync(typeof(IBuildingProjectsProvider)) as IBuildingProjectsProvider;
                 Assumes.Present(buildingProjectsProvider);
-                var buildService = await sp.GetServiceAsync(typeof(IBuildService)) as IBuildService;
+                var buildService = await asyncPackage.GetServiceAsync(typeof(IBuildService)) as IBuildService;
                 Assumes.Present(buildService);
-                var packageSettingsProvider = await sp.GetServiceAsync(typeof(IPackageSettingsProvider)) as IPackageSettingsProvider;
+                var packageSettingsProvider = await asyncPackage.GetServiceAsync(typeof(IPackageSettingsProvider)) as IPackageSettingsProvider;
                 Assumes.Present(packageSettingsProvider);
 
                 var viewModel = new BuildVisionPaneViewModel(buildService, buildingProjectsProvider, buildInformationProvider, packageSettingsProvider, solutionProvider);
@@ -82,7 +82,6 @@ namespace BuildVision.Tool
                 View = CreateControlView();
                 View.DataContext = viewModel;
                 _controlCreatedSuccessfully = true;
-                base.Initialize();
                 return viewModel;
             }
             catch (Exception e)

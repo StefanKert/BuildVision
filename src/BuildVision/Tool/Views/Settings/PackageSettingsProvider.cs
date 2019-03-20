@@ -53,6 +53,10 @@ namespace BuildVision.Views.Settings
                     var value = _settingsStore.GetString(settingsCategoryName, settingsPropertyName);
                     Settings = legacySerialized.Deserialize(value);
                 }
+                else
+                {
+                    Settings = new ControlSettings();
+                }
             }
             catch (Exception ex)
             {

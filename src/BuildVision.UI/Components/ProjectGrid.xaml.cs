@@ -30,6 +30,8 @@ namespace BuildVision.UI.Components
         public ProjectGrid()
         {
             InitializeComponent();
+
+            Grid.TargetUpdated += GridOnTargetUpdated;
         }
 
         private void GridOnTargetUpdated(object sender, DataTransferEventArgs e)

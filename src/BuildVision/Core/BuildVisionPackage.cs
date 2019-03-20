@@ -60,7 +60,18 @@ namespace BuildVision.Core
         public BuildVisionPackage()
         {
             string hello = string.Format("{0} {1}", Resources.ProductName, "BuildVisionVersion.PackageVersion");
-            TraceManager.Trace(hello, EventLogEntryType.Information);    
+            TraceManager.Trace(hello, EventLogEntryType.Information);
+
+            if (Application.Current != null)
+            {
+                Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException; ;
+            }
+        }
+
+        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            MessageBox.Show($"Diagnostics mode caught and marked as handled the following DispatcherUnhandledException raised in Visual Studio: {e.Exception}.");
+            e.Handled = true;
         }
 
         public event Action<ControlSettings> ControlSettingsChanged = delegate { };

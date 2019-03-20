@@ -16,6 +16,7 @@ using BuildVision.Tool.Building;
 using BuildVision.Exports.Services;
 using BuildVision.Views.Settings;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.Windows.Controls;
 
 namespace BuildVision.Tool
 {
@@ -35,8 +36,17 @@ namespace BuildVision.Tool
         private readonly BuildVisionPaneViewModel _viewModel;
 
         JoinableTask<BuildVisionPaneViewModel> viewModelTask;
+        private ContentPresenter _contentPresenter;
+
         public JoinableTaskFactory JoinableTaskFactory { get; private set; }
-        public ControlView View { get; set; }
+        public ControlView View
+        {
+            get { return _contentPresenter.Content as ControlView; }
+            set
+            {
+                _contentPresenter.Content = value;
+            }
+        }
 
         public BuildVisionPane()
             :base(null)
@@ -44,6 +54,8 @@ namespace BuildVision.Tool
             Caption = Resources.ToolWindowTitle;
             BitmapResourceID = 301;
             BitmapIndex = 1;
+
+            Content = _contentPresenter = new ContentPresenter();
             //FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
         }
 

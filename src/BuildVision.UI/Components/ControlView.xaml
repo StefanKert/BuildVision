@@ -225,6 +225,6 @@
             </Grid>
         </StackPanel>
 
-        <!--<components:ProjectGrid DataContext="{Binding}" Grid.Row="1"/>-->
+        <components:ProjectGrid DataContext="{Binding}" Grid.Row="1"/>
     </Grid>
 </UserControl>

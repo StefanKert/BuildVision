@@ -7,49 +7,49 @@ namespace BuildVision.UI.Models
 {
     public class BuildInformationModel : BindableBase, IBuildInformationModel
     {
-        private int _errorCount = -1;
+        private int _errorCount;
         public int ErrorCount
         {
             get => _errorCount;
             set => SetProperty(ref _errorCount, value);
         }
 
-        private int _warningsCount = -1;
+        private int _warningsCount;
         public int WarningsCount
         {
             get => _warningsCount;
             set => SetProperty(ref _warningsCount, value);
         }
 
-        private int _messagesCount = -1;
+        private int _messagesCount;
         public int MessagesCount
         {
             get => _messagesCount;
             set => SetProperty(ref _messagesCount, value);
         }
 
-        private int _succeededProjectsCount = -1;
+        private int _succeededProjectsCount;
         public int SucceededProjectsCount
         {
             get => _warningsCount;
             set => SetProperty(ref _succeededProjectsCount, value);
         }
 
-        private int _upToDateProjectsCount = -1;
+        private int _upToDateProjectsCount;
         public int UpToDateProjectsCount
         {
             get => _warningsCount;
             set => SetProperty(ref _upToDateProjectsCount, value);
         }
 
-        private int _failedProjectsCount = -1;
+        private int _failedProjectsCount;
         public int FailedProjectsCount
         {
             get => _warningsCount;
             set => SetProperty(ref _failedProjectsCount, value);
         }
 
-        private int _warnedProjectsCount = -1;
+        private int _warnedProjectsCount;
         public int WarnedProjectsCount
         {
             get => _warningsCount;

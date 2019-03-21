@@ -66,9 +66,7 @@ steps:
     configuration: '$(BuildConfiguration)'
 
 - powershell: |
-   $testDll = (Get-Childitem -Filter "BuildVision.IntegrationTests.dll" -Recurse | Where-Object {$_.FullName -like "*\bin\$(BuildConfiguration)\*" }).FullName;
-   "Dll used for tests: $testDll"
-   dotnet vstest $testDll
+    & "$env:userprofile/.nuget/packages/xunit.runner.console/2.4.1/tools/net472/xunit.console.x86.exe"  (Get-Childitem -Filter "BuildVision.IntegrationTests.dll" -Recurse | Where-Object {$_.FullName -like "*\bin\Debug\*" }).FullName
   displayName: Execute Integration Tests
 
 - task: PublishBuildArtifacts@1

@@ -10,7 +10,6 @@
     <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" Version="15.0.27" />
     <PackageReference Include="Microsoft.VSSDK.UnitTestLibrary" Version="14.3.25407" />
     <PackageReference Include="stdole" Version="7.0.3303" />
-    <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="xunit.runner.console" Version="2.4.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -30,9 +29,6 @@
      <Reference Include="Microsoft.CSharp" />
      <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
        <HintPath>..\..\libs\2017\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
-     </Reference>
-     <Reference Include="Microsoft.VisualStudioTools.VSTestHost.15.0">
-       <HintPath>..\..\libs\2017\Microsoft.VisualStudioTools.VSTestHost.15.0.dll</HintPath>
      </Reference>
      <Reference Include="Microsoft.VSSDK.TestHostFramework">
        <HintPath>..\..\libs\2017\Microsoft.VSSDK.TestHostFramework.dll</HintPath>

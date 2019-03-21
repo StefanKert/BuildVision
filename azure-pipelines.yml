@@ -26,6 +26,9 @@ steps:
 - script: nbgv cloud -a
   displayName: Set Version
 
+- task: VisualStudioTestPlatformInstaller@1
+  displayName: VsTest Platform Installer
+
 - task: NuGetToolInstaller@0
 
 - task: NuGetCommand@2
@@ -58,6 +61,7 @@ steps:
     testAssemblyVer2: |
       **\$(BuildConfiguration)\**\*IntegrationTests*.dll
       !**\obj\**
+    vsTestVersion: toolsInstaller
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
 

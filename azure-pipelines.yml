@@ -50,9 +50,18 @@ steps:
 - task: DotNetCoreCLI@2
   inputs:
     command: test
-    projects: 'test/**/*.csproj'
+    projects: 'test/**/BuildVision.UnitTests.csproj'
     arguments: -c $(BuildConfiguration) --no-build --no-restore
-  displayName: Run Tests
+  displayName: Run Unittests
+
+- task: VSTest@2
+  displayName: Execute Integrationtests
+  inputs:
+    testAssemblyVer2: |
+      **\$(BuildConfiguration)\*IntegrationTests*.dll
+      !**\obj\**
+    platform: '$(BuildPlatform)'
+    configuration: '$(BuildConfiguration)'
 
 - task: PublishBuildArtifacts@1
   inputs:

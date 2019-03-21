@@ -58,7 +58,7 @@ steps:
   displayName: Execute Integrationtests
   inputs:
     testAssemblyVer2: |
-      **\$(BuildConfiguration)\*IntegrationTests*.dll
+      **\$(BuildConfiguration)\**\*IntegrationTests*.dll
       !**\obj\**
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'

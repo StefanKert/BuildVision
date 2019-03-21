@@ -65,6 +65,9 @@ steps:
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
 
+- powershell: dotnet vstest (Get-Childitem -Filter "fiskaltrust.space.helipad.test.dll" -Recurse | Where-Object {$_.FullName -like "*\bin\$(BuildConfiguration)\*" }).FullName
+  displayName: Execute Integration Tests
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: $(Build.ArtifactStagingDirectory)/artifacts

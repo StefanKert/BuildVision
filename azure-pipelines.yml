@@ -2,13 +2,11 @@ trigger:
   branches:
     include:
       - master
-      - develop
 
 pr:
   branches:
     include:
     - master
-    - develop
 
 pool:
   vmImage: 'VS2017-Win2016'

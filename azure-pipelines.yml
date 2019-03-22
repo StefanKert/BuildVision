@@ -8,12 +8,10 @@ pr:
     include:
     - master
 
-pool:
-  name: 'Local'
-
 variables:
   BuildPlatform: 'Any CPU'
   BuildConfiguration: 'Release'
+
 jobs:
   - job: Build
     pool:

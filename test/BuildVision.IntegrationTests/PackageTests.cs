@@ -32,7 +32,6 @@ namespace BuildVision.IntegrationTests
         [VsixFact(VisualStudioVersion.Current, RootSuffix = "Exp", RunOnUIThread = true)]
         public void ClickOnBuildVisionMenuItem_Should_ShowBuildVision()
         {
-            Assert.True(false);
             var toolwndCommandId = new CommandID(PackageGuids.GuidBuildVisionCmdSet, (int) PackageIds.CmdIdBuildVisionToolWindow);
             ExecuteCommand(toolwndCommandId);
             Assert.True(CanFindToolwindow(PackageGuids.GuidBuildVisionToolWindow));

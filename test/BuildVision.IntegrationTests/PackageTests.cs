@@ -18,7 +18,7 @@ namespace BuildVision.IntegrationTests
         private static IVsUIShell UiShellService => GlobalServices.GetService<SVsUIShell>() as IVsUIShell;
         private static DTE DTE => GlobalServices.GetService<DTE>() as DTE;
 
-        [VsixFact("15.0", DisplayName = "PackageLoad_Should_Succeed")]
+        [VsixFact(VisualStudioVersion.Current, RootSuffix = "Exp", RunOnUIThread = true)]
         public void PackageLoad_Should_Succeed()
         {
             IVsPackage package;
@@ -29,9 +29,10 @@ namespace BuildVision.IntegrationTests
             Assert.NotNull(package);
         }
 
-        [VsixFact("15.0", DisplayName = "ClickOnBuildVisionMenuItem_Should_ShowBuildVision")]
+        [VsixFact(VisualStudioVersion.Current, RootSuffix = "Exp", RunOnUIThread = true)]
         public void ClickOnBuildVisionMenuItem_Should_ShowBuildVision()
         {
+            Assert.True(false);
             var toolwndCommandId = new CommandID(PackageGuids.GuidBuildVisionCmdSet, (int) PackageIds.CmdIdBuildVisionToolWindow);
             ExecuteCommand(toolwndCommandId);
             Assert.True(CanFindToolwindow(PackageGuids.GuidBuildVisionToolWindow));

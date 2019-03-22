@@ -14,64 +14,57 @@ pool:
 variables:
   BuildPlatform: 'Any CPU'
   BuildConfiguration: 'Release'
+jobs:
+  - job: Build
+    pool:
+      name: UI-VS2017
+    steps:
+    - task: DotNetCoreCLI@2  
+      inputs:
+        command: custom
+        custom: tool
+        arguments: install --tool-path . nbgv
+      displayName: Install NBGV tool
+      continueOnError: true
 
-steps:
-- task: DotNetCoreCLI@2  
-  inputs:
-    command: custom
-    custom: tool
-    arguments: install --tool-path . nbgv
-  displayName: Install NBGV tool
-  continueOnError: true
+    - script: nbgv cloud -a
+      displayName: Set Version
 
-- script: nbgv cloud -a
-  displayName: Set Version
+    - task: VisualStudioTestPlatformInstaller@1
+      displayName: VsTest Platform Installer
 
-- task: VisualStudioTestPlatformInstaller@1
-  displayName: VsTest Platform Installer
+    - task: NuGetToolInstaller@0
 
-- task: NuGetToolInstaller@0
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: BuildVision.sln
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: BuildVision.sln
+    - task: MSBuild@1
+      displayName: Build BuildVision.sln
+      inputs:
+        solution: BuildVision.sln
+        platform: $(BuildPlatform)
+        configuration: $(BuildConfiguration)
 
-- task: MSBuild@1
-  displayName: Build BuildVision.sln
-  inputs:
-    solution: BuildVision.sln
-    platform: $(BuildPlatform)
-    configuration: $(BuildConfiguration)
+    - task: CopyFiles@2
+      inputs:
+        contents: '**/bin/$(BuildConfiguration)/*.vsix'
+        targetFolder: $(Build.ArtifactStagingDirectory)/artifacts
+        flattenFolders: true
 
-- task: CopyFiles@2
-  inputs:
-    contents: '**/bin/$(BuildConfiguration)/*.vsix'
-    targetFolder: $(Build.ArtifactStagingDirectory)/artifacts
-    flattenFolders: true
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: test
+        projects: 'test/**/BuildVision.UnitTests.csproj'
+        arguments: -c $(BuildConfiguration) --no-build --no-restore
+      displayName: Run Unittests
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: test
-    projects: 'test/**/BuildVision.UnitTests.csproj'
-    arguments: -c $(BuildConfiguration) --no-build --no-restore
-  displayName: Run Unittests
+    - powershell: |
+        & "$env:userprofile/.nuget/packages/xunit.runner.console/2.4.1/tools/net472/xunit.console.x86.exe"  (Get-Childitem -Filter "BuildVision.IntegrationTests.dll" -Recurse | Where-Object {$_.FullName -like "*\bin\$(BuildConfiguration)\*" }).FullName
+      displayName: Execute Integration Tests
 
-- task: VSTest@2
-  displayName: Execute Integrationtests
-  inputs:
-    testAssemblyVer2: |
-      **\$(BuildConfiguration)\**\*IntegrationTests*.dll
-      !**\obj\**
-    vsTestVersion: toolsInstaller
-    platform: '$(BuildPlatform)'
-    configuration: '$(BuildConfiguration)'
-
-- powershell: |
-    & "$env:userprofile/.nuget/packages/xunit.runner.console/2.4.1/tools/net472/xunit.console.x86.exe"  (Get-Childitem -Filter "BuildVision.IntegrationTests.dll" -Recurse | Where-Object {$_.FullName -like "*\bin\$(BuildConfiguration)\*" }).FullName
-  displayName: Execute Integration Tests
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: $(Build.ArtifactStagingDirectory)/artifacts
-    ArtifactName: artifacts
-    publishLocation: Container
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/artifacts
+        ArtifactName: artifacts
+        publishLocation: Container

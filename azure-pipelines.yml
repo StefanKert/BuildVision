@@ -9,7 +9,7 @@ pr:
     - master
 
 pool:
-  vmImage: 'VS2017-Win2016'
+  name: 'Local'
 
 variables:
   BuildPlatform: 'Any CPU'

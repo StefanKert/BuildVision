@@ -15,7 +15,7 @@ variables:
 jobs:
   - job: Build
     pool:
-      name: UI-VS2017
+      vmImage: vs2017-win2016
     steps:
     - task: DotNetCoreCLI@2  
       inputs:
@@ -60,6 +60,7 @@ jobs:
     - powershell: |
         & "$env:userprofile/.nuget/packages/xunit.runner.console/2.4.1/tools/net472/xunit.console.x86.exe"  (Get-Childitem -Filter "BuildVision.IntegrationTests.dll" -Recurse | Where-Object {$_.FullName -like "*\bin\$(BuildConfiguration)\*" }).FullName
       displayName: Execute Integration Tests
+      enabled: false
 
     - task: PublishBuildArtifacts@1
       inputs:

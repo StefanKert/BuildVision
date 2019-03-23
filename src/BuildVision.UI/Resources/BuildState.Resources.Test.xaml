@@ -11,47 +11,197 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="0" Background="Black">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <StackPanel Grid.RowSpan="2" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+    <StackPanel>
+        <Grid Margin="0" Background="Black">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel Margin="10" Grid.Row="0" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource RebuildDone}" />
 
-            <ContentControl Width="32"
+                <Separator Width="10"/>
+
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource RebuildErrorDone}" />
+
+                <Separator Width="10"/>
+
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource RebuildCancelled}" />
+
+                <Separator Width="10"/>
+
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource RebuildError}" />
+            </StackPanel>
+
+            <StackPanel Margin="10" Grid.Row="1" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource BuildDone}" />
+
+                <Separator Width="10"/>
+
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource BuildErrorDone}" />
+
+                <Separator Width="10"/>
+
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource BuildCancelled}" />
+
+                <Separator Width="10"/>
+
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource BuildError}" />
+            </StackPanel>
+
+            <StackPanel Margin="10" Grid.Row="2" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource CleanDone}" />
+
+                <Separator Width="10"/>
+
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource CleanErrorDone}" />
+
+                <Separator Width="10"/>
+
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource CleanCancelled}" />
+
+                <Separator Width="10"/>
+
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource CleanError}" />
+            </StackPanel>
+
+            <StackPanel Margin="10" Grid.Row="3" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+                <ContentControl 
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource StandBy}" />
+
+            </StackPanel>
+        </Grid>
+
+        <Grid Margin="0" Background="Black">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.RowSpan="2" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+
+                <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
                             Template="{StaticResource Failed}" />
-            
-            <Separator Width="10"/>
 
-            <ContentControl Width="32"
+                <Separator Width="10"/>
+
+                <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
                             Template="{StaticResource Done}" />
-            
-            <Separator Width="10"/>
 
-            <ContentControl Width="32"
+                <Separator Width="10"/>
+
+                <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
                             Template="{StaticResource Cancelled}" />
 
-            <Separator Width="10"/>
-            
-            <ContentControl Width="32"
+                <Separator Width="10"/>
+
+                <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
                             Template="{StaticResource FailedWithErrors}" />
-            <Separator Width="10"/>
-        </StackPanel>
-    </Grid>
+                <Separator Width="10"/>
+            </StackPanel>
+        </Grid>
+
+        <Grid Margin="0" Background="Black">
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.RowSpan="2" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+
+                <ContentControl Width="32"
+                            Height="32"
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource Clean}" />
+                <Separator Width="10"/>
+
+
+                <ContentControl Width="32"
+                            Height="32"
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource Build}" />
+                <Separator Width="10"/>
+
+                <ContentControl Width="32"
+                            Height="32"
+                            SnapsToDevicePixels="True"
+                            ClipToBounds="True"
+                            UseLayoutRounding="False"
+                            Template="{StaticResource Rebuild}" />
+            </StackPanel>
+        </Grid>
+    </StackPanel>
+    
+    
 </UserControl>

@@ -3,10 +3,13 @@ using System.ComponentModel.Composition;
 using BuildVision.Contracts;
 using BuildVision.Contracts.Models;
 using BuildVision.Exports;
+using BuildVision.Exports.Factories;
 using BuildVision.Exports.Providers;
+using BuildVision.Exports.Services;
 using BuildVision.Helpers;
 using BuildVision.Tool.Models;
 using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
 using EnvDTE;
 using EnvDTE80;
@@ -21,7 +24,8 @@ namespace BuildVision.Core
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly IBuildOutputLogger _buildOutputLogger;
-
+        private readonly IStatusBarNotificationService _statusBarNotificationService;
+        private readonly IBuildMessagesFactory _buildMessagesFactory;
         private Solution _solution;
         private BuildInformationModel _buildInformationModel;
         private BuildEvents _buildEvents;
@@ -31,10 +35,14 @@ namespace BuildVision.Core
         [ImportingConstructor]
         public BuildInformationProvider(
             [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider,
-            [Import(typeof(IBuildOutputLogger))] IBuildOutputLogger buildOutputLogger)
+            [Import(typeof(IBuildOutputLogger))] IBuildOutputLogger buildOutputLogger,
+            [Import(typeof(IStatusBarNotificationService))] IStatusBarNotificationService statusBarNotificationService,
+            [Import(typeof(IBuildMessagesFactory))] IBuildMessagesFactory buildMessagesFactory)
         {
             _serviceProvider = serviceProvider;
             _buildOutputLogger = buildOutputLogger;
+            _statusBarNotificationService = statusBarNotificationService;
+            _buildMessagesFactory = buildMessagesFactory;
             _buildInformationModel = new BuildInformationModel();
             _buildEvents = (serviceProvider.GetService(typeof(DTE)) as DTE).Events.BuildEvents;
             _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
@@ -43,6 +51,11 @@ namespace BuildVision.Core
         private void BuildEvents_OnBuildBegin(vsBuildScope scope, vsBuildAction action)
         {
             _buildInformationModel.BuildScope = (BuildScopes) scope; // we need to set buildscope explictly because it is not possible to get this via the other api
+                                                                     //TODO use settings 
+            string message = _buildMessagesFactory.GetBuildBeginMajorMessage(_buildInformationModel);
+            _statusBarNotificationService.ShowTextWithFreeze(message);
+            _origTextCurrentState = message;
+            _buildInformationModel.StateMessage = _origTextCurrentState;
         }
 
         public IBuildInformationModel GetBuildInformationModel()
@@ -66,11 +79,6 @@ namespace BuildVision.Core
             _buildInformationModel.BuildFinishTime = null;
             _buildInformationModel.CurrentBuildState = BuildState.InProgress;
             _buildInformationModel.BuildAction = StateConverterHelper.ConvertSolutionBuildFlagsToBuildAction(dwAction, (VSSOLNBUILDUPDATEFLAGS) dwAction);
-            //TODO use settings 
-            //string message = new BuildMessagesFactory(new UI.Settings.Models.BuildMessagesSettings()).GetBuildBeginMajorMessage(VisualStudioSolution);
-            //_statusBarNotificationService.ShowTextWithFreeze(message);
-            //_origTextCurrentState = message;
-            //VisualStudioSolution.StateMessage = _origTextCurrentState; // Set message
         }
 
         private int GetProjectsCount(int projectsCount)
@@ -104,45 +112,27 @@ namespace BuildVision.Core
 
         public void BuildUpdate()
         {
-            //_buildInformationModel.StateMessage = _origTextCurrentState + BuildMessages.GetBuildBeginExtraMessage(this, labelsSettings);
+            _buildInformationModel.StateMessage = _origTextCurrentState + _buildMessagesFactory.GetBuildBeginExtraMessage(_buildInformationModel);
         }
 
         public void BuildFinished(bool success, bool modified, bool canceled)
         {
-            //try
-            //{
-            //    var settings = _viewModel.ControlSettings;
-
-            //    SetFinalStateForUnfinishedProjects();
-
-            //    // Update header? This might be happening impliclty when updating solution
-            //    //_viewModel.UpdateIndicators(this);
-
-            //    var message = BuildMessages.GetBuildDoneMessage(_viewModel.SolutionItem, this, settings.BuildMessagesSettings);
-            //    var buildDoneImage = BuildImages.GetBuildDoneImage(this, _viewModel.ProjectsList, out ControlTemplate stateImage);
-
-            //    _statusBarNotificationService.ShowText(message);
-            //    _viewModel.TextCurrentState = message;
-            //    _viewModel.ImageCurrentState = buildDoneImage;
-            //    _viewModel.ImageCurrentStateResult = stateImage;
-            //    _viewModel.CurrentProject = null;
-            //    _viewModel.OnBuildDone(this);
-
-            //    ApplyWindowState(settings);
-            //    NavigateToBuildErrorIfNeeded(settings);
-            //}
-            //catch (Exception ex)
-            //{
-            //    ex.TraceUnknownException();
-            //}
-
             _buildInformationModel.BuildFinishTime = DateTime.Now;
-            if(success)
+            if (success)
                 _buildInformationModel.CurrentBuildState = BuildState.Done;
-            else if(canceled)
+            else if (canceled)
                 _buildInformationModel.CurrentBuildState = BuildState.Cancelled;
-            else 
+            else
                 _buildInformationModel.CurrentBuildState = BuildState.Failed;
+
+
+            var message = _buildMessagesFactory.GetBuildDoneMessage(_buildInformationModel);
+            _statusBarNotificationService.ShowText(message);
+            _buildInformationModel.StateMessage = message;
+            //_viewModel.OnBuildDone(this);
+
+            ///ApplyWindowState(settings);
+            //NavigateToBuildErrorIfNeeded(settings);
         }
     }
 }

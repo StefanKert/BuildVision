@@ -22,7 +22,7 @@ namespace BuildVision.Tool.Models
             }
             else
             {
-                throw new Exception($"Unkonw buildaction {(VSSOLNBUILDUPDATEFLAGS) dwAction} ({dwAction})");
+                return BuildActions.Unknown;
             }
         }
 

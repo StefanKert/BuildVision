@@ -25,6 +25,7 @@ namespace BuildVision.Core
     [ProvideService(typeof(IBuildMessagesFactory), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildOutputLogger), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildService), IsAsyncQueryable = true)]
+    [ProvideService(typeof(IStatusBarNotificationService), IsAsyncQueryable = true)]
     public sealed class ServiceProviderPackage : AsyncPackage
     {
         private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
@@ -39,6 +40,7 @@ namespace BuildVision.Core
             AddService(typeof(IBuildMessagesFactory), CreateServiceAsync, true);
             AddService(typeof(IBuildOutputLogger), CreateServiceAsync, true);
             AddService(typeof(IBuildService), CreateServiceAsync, true);
+            AddService(typeof(IStatusBarNotificationService), CreateServiceAsync, true);    
         }
 
         async Task<object> CreateServiceAsync(IAsyncServiceContainer container, CancellationToken cancellation, Type serviceType)
@@ -57,7 +59,11 @@ namespace BuildVision.Core
                 Assumes.Present(sp);
                 var buildOutputLogger = sp.GetService(typeof(IBuildOutputLogger)) as IBuildOutputLogger;
                 Assumes.Present(buildOutputLogger);
-                return new BuildInformationProvider(sp, buildOutputLogger);
+                var statusBarNotificationService = sp.GetService(typeof(IStatusBarNotificationService)) as IStatusBarNotificationService;
+                Assumes.Present(statusBarNotificationService);
+                var buildMessagesFactory = sp.GetService(typeof(IBuildMessagesFactory)) as IBuildMessagesFactory;
+                Assumes.Present(buildMessagesFactory);
+                return new BuildInformationProvider(sp, buildOutputLogger, statusBarNotificationService, buildMessagesFactory);
             }
             else if (serviceType == typeof(ISolutionProvider))
             {
@@ -82,15 +88,7 @@ namespace BuildVision.Core
             else if (serviceType == typeof(IBuildMessagesFactory))
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellation);
-                var sp = new ServiceProvider(Services.Dte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
-                Assumes.Present(sp);
-                var solutionProvider = sp.GetService(typeof(ISolutionProvider)) as ISolutionProvider;
-                Assumes.Present(solutionProvider);
-                var buildInformationProvider = sp.GetService(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
-                Assumes.Present(buildInformationProvider);
-                var buildingProjectsProvider = sp.GetService(typeof(IBuildingProjectsProvider)) as IBuildingProjectsProvider;
-                Assumes.Present(buildingProjectsProvider);
-                return new BuildMessagesFactory(new ControlSettings(), buildInformationProvider, buildingProjectsProvider);
+                return new BuildMessagesFactory(new ControlSettings().BuildMessagesSettings);
             }
             else if (serviceType == typeof(IBuildOutputLogger))
             {
@@ -101,6 +99,13 @@ namespace BuildVision.Core
             {
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellation);
                 return new BuildManager();
+            }
+            else if (serviceType == typeof(IStatusBarNotificationService))
+            {
+                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(cancellation);
+                var sp = new ServiceProvider(Services.Dte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
+                Assumes.Present(sp);
+                return new StatusBarNotificationService(sp);
             }
             else
             {

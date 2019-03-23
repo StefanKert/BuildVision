@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace BuildVision.Contracts.Models
 {
@@ -13,12 +14,13 @@ namespace BuildVision.Contracts.Models
         int ErrorCount { get; set; }
         int FailedProjectsCount { get; set; }
         int MessagesCount { get; set; }
-        BuildResultState ResultState { get; }
         string StateMessage { get; set; }
         int SucceededProjectsCount { get; set; }
         int UpToDateProjectsCount { get; set; }
         int WarnedProjectsCount { get; set; }
         int WarningsCount { get; set; }
-        BuildResultState GetBuildState();
+
+        BuildResultState ResultState { get; }
+        string StateIconKey { get; }
     }
 }

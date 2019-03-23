@@ -4,18 +4,18 @@
     {
         Unknown,
 
-        RebuildSucceeded,
-        RebuildSucceededWithErrors,
+        RebuildDone,
+        RebuildErrorDone,
         RebuildFailed,
         RebuildCancelled,
 
-        BuildSucceeded,
-        BuildSucceededWithErrors,
+        BuildDone,
+        BuildErrorDone,
         BuildFailed,
         BuildCancelled,
 
-        CleanSucceeded,
-        CleanSucceededWithErrors,
+        CleanDone,
+        CleanErrorDone,
         CleanFailed,
         CleanCancelled
     }

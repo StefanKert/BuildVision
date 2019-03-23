@@ -24,7 +24,7 @@
                             ClipToBounds="True"
                             UseLayoutRounding="False"
                             Template="{StaticResource RebuildSolutionIcon}" />
-            
+
             <Separator Width="10"/>
 
             <ContentControl Width="32"
@@ -33,7 +33,7 @@
                             ClipToBounds="True"
                             UseLayoutRounding="False"
                             Template="{StaticResource BuildSolutionIcon}" />
-            
+
             <Separator Width="10"/>
 
             <ContentControl Width="32"
@@ -44,39 +44,13 @@
                             Template="{StaticResource CancelBuildSolutionIcon}" />
 
             <Separator Width="10"/>
-            
+
             <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
                             Template="{StaticResource CleanSolutionIcon}" />
-            <Separator Width="10"/>
-
-
-            <ContentControl Width="32"
-                            Height="32"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource Clean}" />
-            <Separator Width="10"/>
-
-
-            <ContentControl Width="32"
-                            Height="32"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource Build}" />
-            <Separator Width="10"/>
-
-            <ContentControl Width="32"
-                            Height="32"
-                            SnapsToDevicePixels="True"
-                            ClipToBounds="True"
-                            UseLayoutRounding="False"
-                            Template="{StaticResource Rebuild}" />
         </StackPanel>
     </Grid>
 </UserControl>

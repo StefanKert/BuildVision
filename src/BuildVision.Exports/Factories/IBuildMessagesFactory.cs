@@ -1,9 +1,11 @@
-﻿namespace BuildVision.Exports.Factories
+﻿using BuildVision.Contracts.Models;
+
+namespace BuildVision.Exports.Factories
 {
     public interface IBuildMessagesFactory
     {
-        string GetBuildBeginExtraMessage();
-        string GetBuildBeginMajorMessage();
-        string GetBuildDoneMessage();
+        string GetBuildBeginExtraMessage(IBuildInformationModel buildInformationModel);
+        string GetBuildBeginMajorMessage(IBuildInformationModel buildInformationModel);
+        string GetBuildDoneMessage(IBuildInformationModel buildInformationModel);
     }
 }

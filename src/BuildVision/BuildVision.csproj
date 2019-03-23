@@ -113,28 +113,28 @@
     <Compile Include="Helpers\UIHierarchyExtensions.cs" />
     <Compile Include="Helpers\VsCfgExtensions.cs" />
     <Compile Include="Helpers\VsHierarchyExtensions.cs" />
-    <Compile Include="Tool\Building\BackgroundBuildProcessUpdater.cs" />
-    <Compile Include="Tool\Building\BuildManager.cs" />
-    <Compile Include="Tool\Building\BuildOutputLogger.cs" />
+    <Compile Include="Services\BackgroundBuildProcessUpdater.cs" />
+    <Compile Include="Services\BuildManager.cs" />
+    <Compile Include="Services\BuildOutputLogger.cs" />
     <Compile Include="Core\IPackageContext.cs" />
-    <Compile Include="Tool\Building\WindowStateManager.cs" />
-    <Compile Include="Tool\Views\Settings\BuildMessagesSettingsDialogPage.cs">
+    <Compile Include="Services\WindowStateManager.cs" />
+    <Compile Include="Views\Settings\BuildMessagesSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Settings\GeneralSettingsDialogPage.cs">
+    <Compile Include="Views\Settings\GeneralSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Settings\GridSettingsDialogPage.cs">
+    <Compile Include="Views\Settings\GridSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Settings\PackageSettingsProvider.cs" />
-    <Compile Include="Tool\Views\Settings\ProjectItemSettingsDialogPage.cs">
+    <Compile Include="Views\Settings\PackageSettingsProvider.cs" />
+    <Compile Include="Views\Settings\ProjectItemSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Settings\SettingsDialogPage.cs">
+    <Compile Include="Views\Settings\SettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Settings\WindowSettingsDialogPage.cs">
+    <Compile Include="Views\Settings\WindowSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Core\BuildVisionPane.cs" />

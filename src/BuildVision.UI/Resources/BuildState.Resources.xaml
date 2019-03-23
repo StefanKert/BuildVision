@@ -74,4 +74,409 @@
         </Viewbox>
     </ControlTemplate>
 
+    <ControlTemplate x:Key="Clean">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="64" Height="64">
+
+                <Path Fill="#FFF5F5F5" Stroke="#FFF5F5F5" StrokeThickness="3">
+                    <Path.Data>
+                        <PathGeometry Figures="M 32 54 4 54 4 36 4 18 l 28 0 28 0 0 18 0 18 z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF414141">
+                    <Path.Data>
+                        <PathGeometry Figures="M 32 54 4 54 4 36 4 18 l 28 0 28 0 0 18 0 18 z m -16 -4 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m 16 0 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m 16 0 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m -16 -12 24 0 0 -8 0 -8 -24 0 -24 0 0 8 0 8 z m -16 -4 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z m 16 0 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z m 16 0 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+
+                <Canvas Width="128" 
+                            Height="128"
+                            Canvas.Left="2"
+                            Canvas.Top="8">
+                    <Canvas.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleY="0.3" ScaleX="0.3"/>
+                            <RotateTransform Angle="10"/>
+                        </TransformGroup>
+                    </Canvas.RenderTransform>
+                    <Path Fill="#D0A200" Stroke="#FF414141" StrokeThickness="6">
+                        <Path.Data>
+                            <PathGeometry Figures="m 80.839352 126.21041 c 19.382138 -7.62246 40.553388 -32.520564 45.985518 -54.080519 1.9315 -7.666081 1.19136 -8.587519 -6.89787 -8.587519 -10.58084 0 -21.608968 -3.827257 -32.455148 -11.263404 l -4.3675 -2.994357 -17.0489 17.048905 -17.04891 17.048904 1.79599 4.829976 c 2.74924 7.39358 10.25938 22.020384 14.7731 28.772194 7.35822 11.00673 8.68939 11.81132 15.26372 9.22582 z m -20.48864 -66.210645 16.48864 -16.542606 -4.32846 -4.066701 c -3.7308 -3.505183 -4.75974 -3.980446 -7.45193 -3.442009 -1.71791 0.343581 -4.17299 1.610672 -5.45575 2.815757 L 57.270932 40.95527 37.295752 20.998821 17.32057 1.0423734 l -4.92495 0 c -4.0816501 0 -5.4477601 0.500876 -7.9781601 2.92516 -3.54111004 3.392593 -4.67989004 7.8373096 -3.09635 12.0852446 0.61294 1.644277 9.7356501 11.636757 20.2726701 22.205511 l 19.158232 19.215917 -2.05732 2.284083 c -2.88587 3.203961 -3.46082 5.373722 -2.26367 8.542767 0.99324 2.62928 5.66246 8.241316 6.85678 8.241316 0.31586 0 7.99416 -7.444173 17.06291 -16.542607 z" FillRule="NonZero"/>
+                        </Path.Data>
+                    </Path>
+                </Canvas>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="Build">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="64" Height="64">
+                <Path Fill="#FFF5F5F5" Stroke="#FFF5F5F5" StrokeThickness="3">
+                    <Path.Data>
+                        <PathGeometry Figures="M 32 54 4 54 4 36 4 18 l 28 0 28 0 0 18 0 18 z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF414141">
+                    <Path.Data>
+                        <PathGeometry Figures="M 32 54 4 54 4 36 4 18 l 28 0 28 0 0 18 0 18 z m -16 -4 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m 16 0 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m 16 0 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m -16 -12 24 0 0 -8 0 -8 -24 0 -24 0 0 8 0 8 z m -16 -4 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z m 16 0 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z m 16 0 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+
+                <Polygon Points="16,9 16,25 6,25 20,40 34,25 24,25 24,9" Stroke="#FF414141" StrokeThickness="2" StrokeLineJoin="Bevel" Fill="#FF00B1FF" />
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="Rebuild">
+        <Viewbox Stretch="Uniform">
+            <Canvas Width="64" Height="64">
+                <Path Fill="#FFF5F5F5" Stroke="#FFF5F5F5" StrokeThickness="3">
+                    <Path.Data>
+                        <PathGeometry Figures="M 32 54 4 54 4 36 4 18 l 28 0 28 0 0 18 0 18 z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF414141">
+                    <Path.Data>
+                        <PathGeometry Figures="M 32 54 4 54 4 36 4 18 l 28 0 28 0 0 18 0 18 z m -16 -4 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m 16 0 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m 16 0 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m -16 -12 24 0 0 -8 0 -8 -24 0 -24 0 0 8 0 8 z m -16 -4 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z m 16 0 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z m 16 0 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+
+                <Polygon Points="16,9 16,25 6,25 20,40 34,25 24,25 24,9" Stroke="#FF414141" StrokeThickness="2" StrokeLineJoin="Bevel" Fill="#FF00B1FF">
+                    <Polygon.RenderTransform>
+                        <TransformGroup>
+                            <TranslateTransform Y="8"/>
+                        </TransformGroup>
+                    </Polygon.RenderTransform>
+                </Polygon>
+                <Polygon Points="16,9 16,25 6,25 20,40 34,25 24,25 24,9" Stroke="#FF414141" StrokeThickness="2" StrokeLineJoin="Bevel" Fill="#FF00B1FF" />
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="RebuildDone">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Rebuild}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Done}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="RebuildErrorDone">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Rebuild}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource FailedWithErrors}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="RebuildError">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Rebuild}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Failed}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="RebuildCancelled">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Rebuild}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Cancelled}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BuildDone">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Build}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Done}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BuildErrorDone">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Build}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource FailedWithErrors}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BuildError">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Build}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Failed}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BuildCancelled">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Build}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Cancelled}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="CleanDone">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Clean}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Done}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="CleanErrorDone">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Clean}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource FailedWithErrors}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="CleanError">
+        <StackPanel Grid.Column="0"
+                        Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Clean}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Failed}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="CleanCancelled">
+        <StackPanel Orientation="Vertical"
+                        Margin="0,-7,8,0">
+            <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Clean}" />
+            <ContentControl Width="24"
+                                Height="24"
+                                Margin="-4,-22"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Template="{StaticResource Cancelled}" />
+        </StackPanel>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="StandBy">
+        <Viewbox Stretch="Uniform" Height="32" Width="32">
+            <Canvas Width="64" Height="64">
+                <Path Fill="#FFF5F5F5" Stroke="#FFF5F5F5" StrokeThickness="3">
+                    <Path.Data>
+                        <PathGeometry Figures="M 32 54 4 54 4 36 4 18 l 28 0 28 0 0 18 0 18 z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF414141">
+                    <Path.Data>
+                        <PathGeometry Figures="M 32 54 4 54 4 36 4 18 l 28 0 28 0 0 18 0 18 z m -16 -4 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m 16 0 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m 16 0 4 0 0 -4 0 -4 -4 0 -4 0 0 4 0 4 z m -16 -12 24 0 0 -8 0 -8 -24 0 -24 0 0 8 0 8 z m -16 -4 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z m 16 0 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z m 16 0 -4 0 0 -4 0 -4 4 0 4 0 0 4 0 4 z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FFF5F5F5">
+                    <Path.Data>
+                        <PathGeometry Figures="m 45.655545 26.246013 c -1.821672 -0.303479 -3.78132 -1.469975 -4.964718 -2.955301 -0.642684 -0.806663 -1.298558 -2.10609 -1.571573 -3.11363 -0.281151 -1.037482 -0.283137 -3.022368 -0.0041 -4.045987 1.081469 -3.967321 4.859998 -6.590108 8.821085 -6.122951 3.399722 0.400955 6.189862 2.79954 7.084421 6.090229 0.287592 1.057999 0.289683 3.025415 0.0041 4.078709 -0.740536 2.732915 -2.766252 4.882836 -5.452977 5.787294 -1.092964 0.367942 -2.703234 0.483722 -3.916387 0.281634 l 0 0 z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF00B1FF" StrokeThickness="1" Stroke="#FF00B1FF">
+                    <Path.Data>
+                        <PathGeometry Figures="m 45.183203 27.073413 c -2.519776 -0.22512 -4.780759 -0.871009 -7.030088 -2.008238 -2.941667 -1.487263 -5.4641 -3.696044 -7.271652 -6.367455 l -0.432076 -0.638576 0.360866 -0.523657 c 2.791723 -4.051122 6.983796 -6.921662 11.679972 -7.997912 1.524661 -0.349415 2.805271 -0.491168 4.437937 -0.49124 4.484077 -1.99e-4 8.659376 1.486762 12.230175 4.355568 1.204363 0.967595 2.804105 2.697368 3.744367 4.04872 l 0.334905 0.481327 -0.376105 0.560436 c -2.941621 4.383325 -7.497282 7.404688 -12.547473 8.321618 -1.444486 0.262265 -3.778231 0.380259 -5.130828 0.259409 l 0 0 z m 2.561313 -2.040598 c 3.116498 -0.407207 5.525058 -2.617658 6.179111 -5.670862 0.142815 -0.666723 0.142745 -2.10628 -1.72e-4 -2.773408 -0.722464 -3.372932 -3.626939 -5.726008 -7.067772 -5.726008 -0.836626 0 -1.81912 0.174717 -2.541847 0.452038 -2.111018 0.810006 -3.699402 2.490909 -4.339898 4.592691 -1.179218 3.86959 1.098423 7.896642 5.06753 8.959793 0.747749 0.200289 1.898622 0.270864 2.703048 0.165744 l 0 0 z" FillRule="NonZero"/>
+                    </Path.Data>
+                </Path>
+                <Path Fill="#FF00B1FF" StrokeThickness="0" Stroke="#FF00B1FF" RenderTransformOrigin="0.938,0.827">
+                    <Path.Data>
+                        <PathGeometry Figures="m 46.223 21.408407 c -0.786847 -0.131084 -1.633292 -0.634937 -2.144445 -1.276504 -0.277599 -0.348427 -0.560895 -0.909698 -0.67882 -1.344891 -0.121439 -0.448127 -0.122297 -1.305473 -0.0018 -1.747611 0.467126 -1.713632 2.099212 -2.84651 3.810151 -2.644728 1.468465 0.173187 2.673629 1.209224 3.060023 2.630593 0.124221 0.45699 0.125125 1.306789 0.0018 1.761746 -0.319865 1.180447 -1.194847 2.109076 -2.355342 2.499745 -0.472092 0.158928 -1.167626 0.208937 -1.691632 0.121648 l 0 0 z" FillRule="NonZero">
+                            <PathGeometry.Transform>
+                                <TransformGroup>
+                                    <TranslateTransform X="0.13" Y="0.25" />
+                                </TransformGroup>
+                            </PathGeometry.Transform>
+                        </PathGeometry>
+                    </Path.Data>
+                </Path>
+            </Canvas>
+        </Viewbox>
+    </ControlTemplate>
+
 </ResourceDictionary>

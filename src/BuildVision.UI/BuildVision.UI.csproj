@@ -88,6 +88,8 @@
     <Compile Include="Controls\Indicators\ErrorProjectsIndicator.cs" />
     <Compile Include="Controls\Indicators\WarningProjectsIndicator.cs" />
     <Compile Include="Controls\Indicators\WarningsIndicator.cs" />
+    <Compile Include="Converters\BooleanToHiddenConverter.cs" />
+    <Compile Include="Converters\StateIconKeyToIconConverter.cs" />
     <Compile Include="Enums\ResetTaskBarItemInfoCondition.cs" />
     <Compile Include="Helpers\SortDescription.cs" />
     <Compile Include="Enums\SortOrder.cs" />
@@ -247,16 +249,6 @@
     <Page Include="MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\BuildResult.Resources.Test.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Page>
-    <Page Include="Resources\BuildResult.Resources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Page>
     <Page Include="Resources\BuildAction.Resources.xaml">
       <Generator>MSBuild:Compile</Generator>

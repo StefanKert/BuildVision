@@ -36,7 +36,6 @@ namespace BuildVision.Core
             _buildInformationProvider = buildInformationProvider;
             _buildOutputLogger = buildOutputLogger;
             _buildOutputLogger.OnErrorRaised += BuildOutputLogger_OnErrorRaised;
-            ReloadCurrentProjects();
         }
 
         private void BuildOutputLogger_OnErrorRaised(BuildProjectContextEntry projectEntry, object e, ErrorLevel errorLevel)

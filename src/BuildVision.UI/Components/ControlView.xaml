@@ -12,6 +12,7 @@
              xmlns:controls="clr-namespace:BuildVision.UI.Controls"
              xmlns:components="clr-namespace:BuildVision.UI.Components"
              xmlns:res="clr-namespace:BuildVision.UI"
+             xmlns:converters="clr-namespace:BuildVision.UI.Converters"
              mc:Ignorable="d"
              Name="OwnerUserControl"
              Background="{DynamicResource ToolWindowBackgroundKey}"
@@ -31,11 +32,13 @@
                 <ResourceDictionary Source="../Styles/DataGridColumnHeaderStyle.xaml" />
                 <ResourceDictionary Source="../Styles/ControlViewStyle.xaml" />
                 <ResourceDictionary Source="../Resources/ValueIndicator.Resources.xaml" />
-                <ResourceDictionary Source="../Resources/BuildResult.Resources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <viewModels:BuildVisionPaneViewModel x:Key="DesignViewModel"/>
             <helpers:BindingProxy x:Key="proxy" Data="{Binding}" />
+
+            <converters:StateIconKeyToIconConverter x:Key="StateIconKeyToIconConverter" />
+            <converters:BooleanToHiddenConverter x:Key="BooleanToHiddenConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -54,9 +57,28 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-                <ContentControl Grid.Column="0"
-                        Margin="0,-7,8,0"
-                        Template="{StaticResource StandBy}" />
+
+                <Grid Grid.Column="0"
+                        Margin="0,-7,8,0">
+                    <ContentControl Width="32"
+                                Height="32"
+                                VerticalAlignment="Top"
+                                ClipToBounds="True"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Visibility="{Binding BuildInformationModel.IsFinished, Converter={StaticResource BooleanToHiddenConverter}}"
+                                Template="{Binding BuildInformationModel.StateIconKey, Converter={StaticResource StateIconKeyToIconConverter}}" />
+                    <ContentControl Width="32"
+                                Height="32"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Panel.ZIndex="1"
+                                ClipToBounds="False"
+                                SnapsToDevicePixels="True"
+                                UseLayoutRounding="False"
+                                Visibility="{Binding BuildInformationModel.IsFinished, Converter={StaticResource VisibilityToBoolConverter}}"
+                                Template="{Binding BuildInformationModel.StateIconKey, Converter={StaticResource StateIconKeyToIconConverter}}" />
+                </Grid>
 
                 <TextBlock Grid.Column="1"
                        FontSize="18"
@@ -125,7 +147,7 @@
                                 <TextBlock Margin="2,0,0,0" Text="{x:Static res:Resources.CancelBuildSolutionButtonCaption}" />
                             </StackPanel>
                         </customButtons:BuildActionButton.Content>
-       
+
                         <customButtons:BuildActionButton.Style>
                             <Style TargetType="{x:Type customButtons:BuildActionButton}">
                                 <Style.Triggers>
@@ -218,13 +240,13 @@
 
                     <indicators:SuccessProjectsIndicator Value="{Binding BuildInformationModel.SucceededProjectsCount, UpdateSourceTrigger=PropertyChanged}" />
                     <Label Margin="-8,0,0,0" Content="{Binding BuildInformationModel.SucceededProjectsCount}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
-                    
+
                     <indicators:UpToDateProjectsIndicator Value="{Binding BuildInformationModel.UpToDateProjectsCount, UpdateSourceTrigger=PropertyChanged}" />
                     <Label Margin="-6,0,0,0" Content="{Binding BuildInformationModel.UpToDateProjectsCount}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
-                    
+
                     <indicators:WarningProjectsIndicator Value="{Binding BuildInformationModel.WarnedProjectsCount, UpdateSourceTrigger=PropertyChanged}" />
                     <Label Margin="-6,0,0,0" Content="{Binding BuildInformationModel.WarnedProjectsCount}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
-                    
+
                     <indicators:ErrorProjectsIndicator Value="{Binding BuildInformationModel.FailedProjectsCount, UpdateSourceTrigger=PropertyChanged}" />
                     <Label Margin="-6,0,0,0" Content="{Binding BuildInformationModel.FailedProjectsCount}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
 

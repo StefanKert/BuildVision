@@ -1,9 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using System.Linq;
-using BuildVision.Helpers;
 using BuildVision.UI.Settings.Models.ToolWindow;
-using BuildVision.Views.Settings;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -12,6 +9,8 @@ using WindowState = BuildVision.UI.Models.WindowState;
 
 namespace BuildVision.Tool.Building
 {
+    [Export(typeof(IWindowStateService))]
+    [PartCreationPolicy(CreationPolicy.Shared)]
     public class WindowStateService : IWindowStateService
     {
         private DTE _dte;
@@ -125,7 +124,7 @@ namespace BuildVision.Tool.Building
             }
         }
 
-        public void ApplyToolWindowStateAction(WindowStateAction windowStateAction)
+        public void Initialize(ToolWindowPane toolWindowPane)
         {
             if (_window == null || _windowFrame == null)
             {
@@ -133,11 +132,15 @@ namespace BuildVision.Tool.Building
                 _dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
                 if (_dte == null)
                     throw new InvalidOperationException("Unable to get DTE instance.");
-                _windowFrame = (IVsWindowFrame)(_package.FindToolWindow(typeof(BuildVisionPane), 0, false) ?? _package.FindToolWindow(typeof(BuildVisionPane), 0, true));
+                _windowFrame = (IVsWindowFrame)toolWindowPane.Frame;
                 _window = GetWindowInstance(_dte, typeof(BuildVisionPane).GUID);
                 if (_window == null)
                     throw new InvalidOperationException("Unable to get Window instance.");
             }
+        }
+
+        public void ApplyToolWindowStateAction(WindowStateAction windowStateAction)
+        {
             ApplyToolWindowStateAction(windowStateAction.State); 
         }
     }

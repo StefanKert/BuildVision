@@ -35,7 +35,7 @@ namespace BuildVision.Core
 
         public void ShowTextWithFreeze(string str)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            //ThreadHelper.ThrowIfNotOnUIThread();
             var statusBar = _serviceProvider.GetService(typeof(IVsStatusbar)) as IVsStatusbar;
             var settings = _serviceProvider.GetService(typeof(IPackageSettingsProvider)) as IPackageSettingsProvider;
             if (settings == null || statusBar == null)

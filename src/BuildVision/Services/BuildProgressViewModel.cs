@@ -15,7 +15,6 @@ namespace BuildVision.UI.ViewModels
 { 
     public class BuildProgressViewModel : BindableBase, IBuildProgressViewModel
     {
-        private readonly ControlSettings _settings;
         private readonly IPackageSettingsProvider _packageSettingsProvider;
         private IBuildInformationModel _buildInformationModel;
         private CancellationTokenSource _resetTaskBarInfoCts;
@@ -51,7 +50,7 @@ namespace BuildVision.UI.ViewModels
 
         private void UpdateTaskBarInfo()
         {
-            if (!_settings.GeneralSettings.BuildProgressSettings.TaskBarProgressEnabled)
+            if (!_packageSettingsProvider.Settings.GeneralSettings.BuildProgressSettings.TaskBarProgressEnabled)
                 return;
 
             TaskbarItemProgressState state;
@@ -74,7 +73,7 @@ namespace BuildVision.UI.ViewModels
         public void ResetTaskBarInfo(bool ifTaskBarProgressEnabled = true)
         {
             if (_taskbarItemInfo.IsValueCreated 
-                && _settings.GeneralSettings.BuildProgressSettings.TaskBarProgressEnabled == ifTaskBarProgressEnabled)
+                && _packageSettingsProvider.Settings.GeneralSettings.BuildProgressSettings.TaskBarProgressEnabled == ifTaskBarProgressEnabled)
             {
                 TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
                 TaskbarItemInfo.ProgressValue = 0;
@@ -148,7 +147,7 @@ namespace BuildVision.UI.ViewModels
 
         private void ResetTaskBarInfoOnBuildDone()
         {
-            var buildProgressSettings = _settings.GeneralSettings.BuildProgressSettings;
+            var buildProgressSettings = _packageSettingsProvider.Settings.GeneralSettings.BuildProgressSettings;
             if (!buildProgressSettings.TaskBarProgressEnabled)
                 return;
 

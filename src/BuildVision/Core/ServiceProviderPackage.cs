@@ -51,7 +51,6 @@ namespace BuildVision.Core
             AddService(typeof(IWindowStateService), CreateServiceAsync, true);
             AddService(typeof(IBuildProgressViewModel), CreateServiceAsync, true);
             AddService(typeof(IErrorNavigationService), CreateServiceAsync, true);
-
         }
 
         async Task<object> CreateServiceAsync(IAsyncServiceContainer container, CancellationToken cancellation, Type serviceType)

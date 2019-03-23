@@ -26,9 +26,9 @@ namespace BuildVision.Core
 
         public static IComponentModel ComponentModel => GetGlobalService<SComponentModel, IComponentModel>();
 
-        public static IVsSolution GetSolution(this IServiceProvider provider)
+        public static Solution GetSolution(this IServiceProvider provider)
         {
-            return GetGlobalService<SVsSolution, IVsSolution>(provider);
+            return Dte.Solution;
         }
     }
 }

@@ -131,9 +131,9 @@ namespace BuildVision.Core
                 case BuildScopes.BuildScopeSolution:
                     try
                     {
-                        var solution = _dte.Solution;
+                        var solution = _serviceProvider.GetSolution();
                         if (solution != null)
-                            projectsCount = _solution.GetProjects().Count;
+                            projectsCount = solution.GetProjects().Count;
                     }
                     catch (Exception ex)
                     {
@@ -167,10 +167,6 @@ namespace BuildVision.Core
         public void BuildFinished(IEnumerable<IProjectItem> projects, bool success, bool canceled)
         {
             if (_buildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
-            {
-                return;
-            }
-            if (_buildInformationModel.CurrentBuildState == BuildState.InProgress)
             {
                 return;
             }
@@ -240,21 +236,18 @@ namespace BuildVision.Core
 
         public void Run(CancellationToken cancellationToken)
         {
-            lock (_buildProcessLockObject)
+            while (!cancellationToken.IsCancellationRequested)
             {
-                while (!cancellationToken.IsCancellationRequested)
+                BuildUpdate();
+
+                for (int i = 0; i < BuildInProcessQuantumSleep * BuildInProcessCountOfQuantumSleep; i += BuildInProcessQuantumSleep)
                 {
-                    BuildUpdate();
-
-                    for (int i = 0; i < BuildInProcessQuantumSleep * BuildInProcessCountOfQuantumSleep; i += BuildInProcessQuantumSleep)
+                    if (cancellationToken.IsCancellationRequested)
                     {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            break;
-                        }
-
-                        System.Threading.Thread.Sleep(BuildInProcessQuantumSleep);
+                        break;
                     }
+
+                    System.Threading.Thread.Sleep(BuildInProcessQuantumSleep);
                 }
             }
         }

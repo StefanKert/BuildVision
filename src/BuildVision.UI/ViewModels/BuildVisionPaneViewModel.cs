@@ -27,6 +27,7 @@ using BuildVision.Exports.Services;
 using BuildVision.Exports.ViewModels;
 using BuildVision.Exports.Providers;
 using BuildVision.Contracts.Models;
+using Microsoft.VisualStudio;
 
 namespace BuildVision.UI.ViewModels
 {
@@ -181,9 +182,9 @@ namespace BuildVision.UI.ViewModels
         }
 
         private ProjectItem _selectedProjectItem;
-        private readonly IBuildService _buildManager;
         private readonly IBuildingProjectsProvider _buildingProjectsProvider;
         private readonly IBuildInformationProvider _buildInformationProvider;
+        private readonly IBuildService _buildService;
 
         public ProjectItem SelectedProjectItem
         {
@@ -192,11 +193,11 @@ namespace BuildVision.UI.ViewModels
         }
 
         [ImportingConstructor]
-        public BuildVisionPaneViewModel(IBuildService buildManager, IBuildingProjectsProvider buildingProjectsProvider, IBuildInformationProvider buildInformationProvider, IPackageSettingsProvider settingsProvider, ISolutionProvider solutionProvider)
+        public BuildVisionPaneViewModel(IBuildingProjectsProvider buildingProjectsProvider, IBuildInformationProvider buildInformationProvider, IPackageSettingsProvider settingsProvider, ISolutionProvider solutionProvider, IBuildService buildService)
         {
-            _buildManager = buildManager;
             _buildingProjectsProvider = buildingProjectsProvider;
             _buildInformationProvider = buildInformationProvider;
+            _buildService = buildService;
             BuildInformationModel = _buildInformationProvider.GetBuildInformationModel();
             SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
@@ -359,38 +360,38 @@ namespace BuildVision.UI.ViewModels
 
         public ICommand SelectedProjectOpenContainingFolderAction => new RelayCommand(obj => OpenContainingFolder(),
                 canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.FullName)));
-    
+
         //public ICommand SelectedProjectCopyBuildOutputFilesToClipboardAction => new RelayCommand(
-        //    obj => _buildManager.ProjectCopyBuildOutputFilesToClipBoard(SelectedProjectItem),
+        //    obj => _buildService.ProjectCopyBuildOutputFilesToClipBoard(SelectedProjectItem),
         //    canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard.IsEmpty));
 
         //public ICommand SelectedProjectBuildAction => new RelayCommand(
-        //    obj => _buildManager.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.BuildCtx),
+        //    obj => _buildService.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.BuildCtx),
         //    canExecute: obj => IsProjectItemEnabledForActions());
 
 
         //public ICommand SelectedProjectRebuildAction => new RelayCommand(
-        //    obj => _buildManager.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.RebuildCtx),
+        //    obj => _buildService.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.RebuildCtx),
         //    canExecute: obj => IsProjectItemEnabledForActions());
 
         //public ICommand SelectedProjectCleanAction => new RelayCommand(
-        //    obj => _buildManager.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx),
+        //    obj => _buildService.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx),
         //    canExecute: obj => IsProjectItemEnabledForActions());
 
         public ICommand SelectedProjectCopyErrorMessagesAction => new RelayCommand(obj => CopyErrorMessageToClipboard(SelectedProjectItem),
         canExecute: obj => SelectedProjectItem?.ErrorsCount > 0);
 
-        public ICommand BuildSolutionAction => new RelayCommand(obj => _buildManager.BuildSolution());
+        public ICommand BuildSolutionAction => new RelayCommand(obj => _buildService.BuildSolution());
 
-        public ICommand RebuildSolutionAction => new RelayCommand(obj => _buildManager.RebuildSolution());
+        public ICommand RebuildSolutionAction => new RelayCommand(obj => _buildService.RebuildSolution());
 
-        public ICommand CleanSolutionAction => new RelayCommand(obj => _buildManager.CleanSolution());
+        public ICommand CleanSolutionAction => new RelayCommand(obj => _buildService.CleanSolution());
 
-        public ICommand CancelBuildSolutionAction => new RelayCommand(obj => _buildManager.CancelBuildSolution());
+        public ICommand CancelBuildSolutionAction => new RelayCommand(obj => _buildService.CancelBuildSolution());
 
-        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => _buildManager.ShowGridColumnsSettingsPage()); 
+        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => _buildService.ShowGridColumnsSettingsPage()); 
 
-        public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => _buildManager.ShowGeneralSettingsPage()); 
+        public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => _buildService.ShowGeneralSettingsPage()); 
 
         #endregion
     }

@@ -9,6 +9,7 @@ using BuildVision.Exports.Providers;
 using BuildVision.Helpers;
 using BuildVision.Services;
 using BuildVision.Tool;
+using BuildVision.Tool.Building;
 using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Settings.Models;
@@ -192,6 +193,10 @@ namespace BuildVision.Core
                 await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
                 var windowFrame = (IVsWindowFrame)window.Frame;
                 ErrorHandler.ThrowOnFailure(windowFrame.Show());
+
+                var windowStateService = await GetServiceAsync(typeof(IWindowStateService)) as IWindowStateService;
+                Assumes.Present(windowStateService);
+                windowStateService.Initialize(window);
             }
             catch (Exception ex)
             {

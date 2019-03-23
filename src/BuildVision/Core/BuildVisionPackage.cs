@@ -4,8 +4,10 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
+using System.Windows.Threading;
 using BuildVision.Exports.Providers;
 using BuildVision.Helpers;
+using BuildVision.Services;
 using BuildVision.Tool;
 using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
@@ -13,6 +15,7 @@ using BuildVision.UI.Settings.Models;
 using BuildVision.Views.Settings;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -48,6 +51,7 @@ namespace BuildVision.Core
         private ISolutionProvider _solutionProvider;
         private IBuildingProjectsProvider _buildingProjectsProvider;
         private Window _activeProjectContext;
+        private IErrorNavigationService _errorNavigationService;
 
         public ControlSettings ControlSettings { get; set; }
 
@@ -62,7 +66,7 @@ namespace BuildVision.Core
             }
         }
 
-        private void Current_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             MessageBox.Show($"Diagnostics mode caught and marked as handled the following DispatcherUnhandledException raised in Visual Studio: {e.Exception}.");
             e.Handled = true;
@@ -72,6 +76,8 @@ namespace BuildVision.Core
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            await base.InitializeAsync(cancellationToken, progress);
+
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
             _dte = await GetServiceAsync(typeof(DTE)) as DTE;
             _dte2 = await GetServiceAsync(typeof(DTE)) as DTE2;
@@ -82,15 +88,20 @@ namespace BuildVision.Core
                 mcs.AddCommand(menuToolWin);
             }
             _solutionBuildManager = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
+            Assumes.Present(_solutionBuildManager);
             _solutionBuildManager4 = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager5;
+            Assumes.Present(_solutionBuildManager4);
             _buildInformationProvider = await GetServiceAsync(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
+            Assumes.Present(_buildInformationProvider);
             _solutionProvider = await GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
+            Assumes.Present(_solutionProvider);
             _buildingProjectsProvider = await GetServiceAsync(typeof(IBuildingProjectsProvider)) as IBuildingProjectsProvider;
+            Assumes.Present(_buildingProjectsProvider);
 
             IPackageContext packageContext = this;
 
             _commandEvents = _dte.Events.CommandEvents;
-            _commandEvents.AfterExecute += CommandEvents_AfterExecute;
+          //  _commandEvents.AfterExecute += CommandEvents_AfterExecute;
 
             _windowEvents = _dte.Events.WindowEvents;
             _windowEvents.WindowActivated += WindowEvents_WindowActivated;

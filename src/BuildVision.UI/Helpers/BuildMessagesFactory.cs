@@ -7,22 +7,23 @@ using BuildVision.Core;
 using BuildVision.Exports.Providers;
 using BuildVision.Contracts.Models;
 using BuildVision.Exports.Factories;
+using BuildVision.Views.Settings;
 
 namespace BuildVision.UI.Helpers
 {
     public class BuildMessagesFactory : IBuildMessagesFactory
     {
-        private readonly BuildMessagesSettings _buildMessageSettings;
+        private readonly IPackageSettingsProvider _packageSettingsProvider;
 
-        public BuildMessagesFactory(BuildMessagesSettings buildMessageSettings)
+        public BuildMessagesFactory(IPackageSettingsProvider packageSettingsProvider)
         {
-            _buildMessageSettings = buildMessageSettings;
+            _packageSettingsProvider = packageSettingsProvider;
         }
 
         public string GetBuildBeginMajorMessage(IBuildInformationModel buildInformationModel)
         {
             var mainString = GetMainString(buildInformationModel);
-            return string.Format(_buildMessageSettings.BuildBeginMajorMessageStringFormat, mainString);
+            return string.Format(_packageSettingsProvider.Settings.BuildMessagesSettings.BuildBeginMajorMessageStringFormat, mainString);
         }
 
         private string GetMainString(IBuildInformationModel buildInformationModel)
@@ -32,7 +33,7 @@ namespace BuildVision.UI.Helpers
             var beginAtString = GetBeginAtString(buildInformationModel.BuildAction);
             var timeString = GetTimeString(buildInformationModel.BuildStartTime);
             string mainString;
-            switch (_buildMessageSettings.MajorMessageFormat)
+            switch (_packageSettingsProvider.Settings.BuildMessagesSettings.MajorMessageFormat)
             {
                 case BuildMajorMessageFormat.Entire:
                     mainString = string.Format(Resources.BuildBeginStateLabelTemplate_Default, actionName, unitName, beginAtString, timeString);
@@ -43,7 +44,7 @@ namespace BuildVision.UI.Helpers
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(_buildMessageSettings.MajorMessageFormat));
+                    throw new ArgumentOutOfRangeException(nameof(_packageSettingsProvider.Settings.BuildMessagesSettings.MajorMessageFormat));
             }
 
             return mainString;
@@ -54,7 +55,7 @@ namespace BuildVision.UI.Helpers
             string timeString = "";
             try
             {
-                timeString = startTime.Value.ToString(_buildMessageSettings.DateTimeFormat);
+                timeString = startTime.Value.ToString(_packageSettingsProvider.Settings.BuildMessagesSettings.DateTimeFormat);
             }
             catch (FormatException)
             {
@@ -127,13 +128,13 @@ namespace BuildVision.UI.Helpers
 
         public string GetBuildBeginExtraMessage(IBuildInformationModel buildInformationModel)
         {
-            if (buildInformationModel.BuildStartTime == null || !_buildMessageSettings.ShowExtraMessage || _buildMessageSettings.ExtraMessageDelay < 0)
+            if (buildInformationModel.BuildStartTime == null || !_packageSettingsProvider.Settings.BuildMessagesSettings.ShowExtraMessage || _packageSettingsProvider.Settings.BuildMessagesSettings.ExtraMessageDelay < 0)
             {
                 return string.Empty;
             }
 
             TimeSpan timeSpan = DateTime.Now.Subtract(buildInformationModel.BuildStartTime.Value);
-            if (timeSpan.TotalSeconds > _buildMessageSettings.ExtraMessageDelay)
+            if (timeSpan.TotalSeconds > _packageSettingsProvider.Settings.BuildMessagesSettings.ExtraMessageDelay)
             {
                 return GetExtraTimePartString( timeSpan);
             }
@@ -157,7 +158,7 @@ namespace BuildVision.UI.Helpers
             string timeString;
             try
             {
-                timeString = buildInformationModel.BuildFinishTime.Value.ToString(_buildMessageSettings.DateTimeFormat);
+                timeString = buildInformationModel.BuildFinishTime.Value.ToString(_packageSettingsProvider.Settings.BuildMessagesSettings.DateTimeFormat);
             }
             catch (FormatException)
             {
@@ -179,7 +180,7 @@ namespace BuildVision.UI.Helpers
 
                 case BuildScopes.BuildScopeProject:
                     unitName = Resources.BuildScopeProject_UnitName;
-                    if (_buildMessageSettings.ShowProjectName)
+                    if (_packageSettingsProvider.Settings.BuildMessagesSettings.ShowProjectName)
                     {
                         // Todo this is probably wrong. maybe we should go the extra mile and check which projects are selected?
                         //var uniqProjName = solutionItem.Projects.LastOrDefault(x => x.State == ProjectState.BuildDone)?.UniqueName;
@@ -196,7 +197,7 @@ namespace BuildVision.UI.Helpers
             var resultName = GetResultName(buildInformationModel.ResultState);
 
             string mainString;
-            switch (_buildMessageSettings.MajorMessageFormat)
+            switch (_packageSettingsProvider.Settings.BuildMessagesSettings.MajorMessageFormat)
             {
                 case BuildMajorMessageFormat.Entire:
                     mainString = string.Format(Resources.BuildDoneStateLabelTemplate_Default, actionName, unitName, resultName, timeString);
@@ -207,10 +208,10 @@ namespace BuildVision.UI.Helpers
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(_buildMessageSettings.MajorMessageFormat));
+                    throw new ArgumentOutOfRangeException(nameof(_packageSettingsProvider.Settings.BuildMessagesSettings.MajorMessageFormat));
             }
 
-            string resultMainString = string.Format(_buildMessageSettings.BuildDoneMajorMessageStringFormat, mainString);
+            string resultMainString = string.Format(_packageSettingsProvider.Settings.BuildMessagesSettings.BuildDoneMajorMessageStringFormat, mainString);
             return resultMainString;
         }
 
@@ -242,23 +243,23 @@ namespace BuildVision.UI.Helpers
 
         private string GetBuildDoneExtraMessage(IBuildInformationModel buildInformationModel)
         {
-            if (buildInformationModel.BuildStartTime == null || buildInformationModel.BuildFinishTime == null || !_buildMessageSettings.ShowExtraMessage)
+            if (buildInformationModel.BuildStartTime == null || buildInformationModel.BuildFinishTime == null || !_packageSettingsProvider.Settings.BuildMessagesSettings.ShowExtraMessage)
                 return string.Empty;
 
             TimeSpan timeSpan = buildInformationModel.BuildFinishTime.Value.Subtract(buildInformationModel.BuildStartTime.Value);
             string extraTimePartString = GetExtraTimePartString(timeSpan);
-            return string.Format(_buildMessageSettings.ExtraMessageStringFormat, extraTimePartString);
+            return string.Format(_packageSettingsProvider.Settings.BuildMessagesSettings.ExtraMessageStringFormat, extraTimePartString);
         }
 
         private string GetExtraTimePartString(TimeSpan timeSpan)
         {
             string extraTimePartString;
-            switch (_buildMessageSettings.ExtraMessageFormat)
+            switch (_packageSettingsProvider.Settings.BuildMessagesSettings.ExtraMessageFormat)
             {
                 case BuildExtraMessageFormat.Custom:
                     try
                     {
-                        extraTimePartString = timeSpan.ToString(_buildMessageSettings.TimeSpanFormat);
+                        extraTimePartString = timeSpan.ToString(_packageSettingsProvider.Settings.BuildMessagesSettings.TimeSpanFormat);
                     }
                     catch (FormatException)
                     {
@@ -279,10 +280,10 @@ namespace BuildVision.UI.Helpers
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(_buildMessageSettings.ExtraMessageFormat));
+                    throw new ArgumentOutOfRangeException(nameof(_packageSettingsProvider.Settings.BuildMessagesSettings.ExtraMessageFormat));
             }
 
-            return string.Format(_buildMessageSettings.ExtraMessageStringFormat, extraTimePartString);
+            return string.Format(_packageSettingsProvider.Settings.BuildMessagesSettings.ExtraMessageStringFormat, extraTimePartString);
         }
     }
 }

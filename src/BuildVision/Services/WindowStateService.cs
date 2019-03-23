@@ -14,29 +14,19 @@ namespace BuildVision.Tool.Building
 {
     public class WindowStateService : IWindowStateService
     {
-        private readonly DTE _dte;
-        private readonly IVsWindowFrame _windowFrame;
-        private readonly Window _window;
-
-        private readonly IServiceProvider _serviceProvider;
-        private readonly IPackageSettingsProvider _packageSettingsProvider;
+        private DTE _dte;
+        private IVsWindowFrame _windowFrame;
+        private Window _window;
+        private IServiceProvider _serviceProvider;
+        private AsyncPackage _package;
 
         [ImportingConstructor]
         public WindowStateService(
-            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
+            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider, 
+            AsyncPackage package)
         {
             _serviceProvider = serviceProvider;
-            _dte = serviceProvider.GetService(typeof(DTE)) as DTE;
-            if (_dte == null)
-                throw new InvalidOperationException("Unable to get DTE instance.");
-
-            _windowFrame = serviceProvider.GetService(typeof(IVsWindowFrame)) as IVsWindowFrame;
-            if (_windowFrame == null)
-                throw new InvalidOperationException("Unable to get IVsWindowFrame instance.");
-
-            _window = GetWindowInstance(_dte, typeof(BuildVisionPane).GUID);
-            if (_window == null)
-                throw new InvalidOperationException("Unable to get Window instance.");
+            _package = package;
         }
 
         private bool IsVisible()
@@ -137,6 +127,17 @@ namespace BuildVision.Tool.Building
 
         public void ApplyToolWindowStateAction(WindowStateAction windowStateAction)
         {
+            if (_window == null || _windowFrame == null)
+            {
+                ThreadHelper.ThrowIfNotOnUIThread();
+                _dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
+                if (_dte == null)
+                    throw new InvalidOperationException("Unable to get DTE instance.");
+                _windowFrame = (IVsWindowFrame)(_package.FindToolWindow(typeof(BuildVisionPane), 0, false) ?? _package.FindToolWindow(typeof(BuildVisionPane), 0, true));
+                _window = GetWindowInstance(_dte, typeof(BuildVisionPane).GUID);
+                if (_window == null)
+                    throw new InvalidOperationException("Unable to get Window instance.");
+            }
             ApplyToolWindowStateAction(windowStateAction.State); 
         }
     }

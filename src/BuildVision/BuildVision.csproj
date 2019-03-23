@@ -97,9 +97,7 @@
     <Compile Include="Services\BuildProgressViewModel.cs" />
     <Compile Include="Services\ErrorNavigationService.cs" />
     <Compile Include="Services\IErrorNavigationService.cs" />
-    <Compile Include="Services\IProjectFileNavigationService.cs" />
     <Compile Include="Services\IWindowStateService.cs" />
-    <Compile Include="Services\ProjectFileNavigationService.cs" />
     <Compile Include="Services\SolutionProvider.cs" />
     <Compile Include="Helpers\ProjectIdentifierGenerator.cs" />
     <Compile Include="Core\BuildVisionPackage.cs" />

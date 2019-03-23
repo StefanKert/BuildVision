@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Threading;
 using BuildVision.Contracts;
@@ -30,7 +31,7 @@ namespace BuildVision.Core
         private readonly IServiceProvider _serviceProvider;
         private readonly IPackageSettingsProvider _packageSettingsProvider;
         private readonly IBuildProgressViewModel _buildProgressViewModel;
-        private readonly IProjectFileNavigationService _projectFileNavigationService;
+        private readonly IErrorNavigationService _errorNavigationService;
         private readonly IBuildOutputLogger _buildOutputLogger;
         private readonly IStatusBarNotificationService _statusBarNotificationService;
         private readonly IBuildMessagesFactory _buildMessagesFactory;
@@ -55,12 +56,12 @@ namespace BuildVision.Core
             [Import(typeof(IWindowStateService))] IWindowStateService windowStateService,
             [Import(typeof(IPackageSettingsProvider))] IPackageSettingsProvider packageSettingsProvider,
             [Import(typeof(IBuildProgressViewModel))] IBuildProgressViewModel buildProgressViewModel,
-            [Import(typeof(IProjectFileNavigationService))] IProjectFileNavigationService projectFileNavigationService)
+            [Import(typeof(IErrorNavigationService))] IErrorNavigationService errorNavigationService)
         {
             _serviceProvider = serviceProvider;
             _packageSettingsProvider = packageSettingsProvider;
             _buildProgressViewModel = buildProgressViewModel;
-            _projectFileNavigationService = projectFileNavigationService;
+            _errorNavigationService = errorNavigationService;
             _buildOutputLogger = buildOutputLogger;
             _statusBarNotificationService = statusBarNotificationService;
             _buildMessagesFactory = buildMessagesFactory;
@@ -78,6 +79,9 @@ namespace BuildVision.Core
             _statusBarNotificationService.ShowTextWithFreeze(message);
             _origTextCurrentState = message;
             _buildInformationModel.StateMessage = _origTextCurrentState;
+
+            var projectsCount = GetProjectsCount();
+            _buildProgressViewModel.OnBuildBegin(_buildInformationModel, projectsCount);
         }
 
         public void ResetBuildInformationModel()
@@ -113,14 +117,10 @@ namespace BuildVision.Core
             _buildInformationModel.BuildFinishTime = null;
             _buildInformationModel.CurrentBuildState = BuildState.InProgress;
             _buildInformationModel.BuildAction = StateConverterHelper.ConvertSolutionBuildFlagsToBuildAction(dwAction, (VSSOLNBUILDUPDATEFLAGS) dwAction);
-            var projectsCount = GetProjectsCount();
 
             _buildProcessCancellationToken = new CancellationTokenSource();
             _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildBegin);
-            //_viewModel.OnBuildBegin(projectsCount, this);
             System.Threading.Tasks.Task.Run(() => Run(_buildProcessCancellationToken.Token), _buildProcessCancellationToken.Token);
-
-            _buildProgressViewModel.OnBuildBegin(_buildInformationModel, projectsCount);
         }
 
         private int GetProjectsCount()
@@ -164,7 +164,7 @@ namespace BuildVision.Core
             */
         }
 
-        public void BuildFinished(bool success, bool canceled)
+        public void BuildFinished(IEnumerable<IProjectItem> projects, bool success, bool canceled)
         {
             if (_buildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
             {
@@ -173,6 +173,15 @@ namespace BuildVision.Core
             if (_buildInformationModel.CurrentBuildState == BuildState.InProgress)
             {
                 return;
+            }
+
+            if (_buildInformationModel.BuildScope == BuildScopes.BuildScopeSolution)
+            {
+                foreach (var projectItem in projects)
+                {
+                    if (projectItem.State == ProjectState.Pending)
+                        projectItem.State = ProjectState.Skipped;
+                }
             }
 
             _buildProcessCancellationToken.Cancel();
@@ -209,11 +218,22 @@ namespace BuildVision.Core
                 _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildSuccess);
             }
 
-            if(_buildInformationModel.FailedProjectsCount > 0)
+
+            if (_buildInformationModel.FailedProjectsCount > 0)
             {
                 if (_packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone)
                 {
-                    _projectFileNavigationService.NavigateToFirstError();
+                    foreach (var project in projects)
+                    {
+                        if (ErrorNavigationService.BuildErrorNavigated)
+                            break;
+                        foreach (var error in project.ErrorsBox)
+                        {
+                            if (ErrorNavigationService.BuildErrorNavigated)
+                                break;
+                            _errorNavigationService.NavigateToErrorItem(error);
+                        }
+                    }
                 }
             }
         }
@@ -224,7 +244,7 @@ namespace BuildVision.Core
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    _buildInformationProvider.BuildUpdate();
+                    BuildUpdate();
 
                     for (int i = 0; i < BuildInProcessQuantumSleep * BuildInProcessCountOfQuantumSleep; i += BuildInProcessQuantumSleep)
                     {

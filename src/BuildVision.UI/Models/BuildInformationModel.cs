@@ -120,6 +120,13 @@ namespace BuildVision.UI.Models
             get => CurrentBuildState > BuildState.InProgress;
         }
 
+        private IProjectItem _currentProject = null;
+        public IProjectItem CurrentProject
+        {
+            get => _currentProject;
+            set => SetProperty(ref _currentProject, value);
+        }
+   
         private string GetStateIconKey()
         {
             var resultState = GetBuildResultState();

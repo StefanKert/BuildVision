@@ -7,6 +7,7 @@ using BuildVision.Common;
 using BuildVision.Contracts;
 using BuildVision.Exports.Providers;
 using BuildVision.Helpers;
+using BuildVision.Services;
 using BuildVision.Tool.Building;
 using BuildVision.Tool.Models;
 using BuildVision.UI.Common.Logging;
@@ -61,20 +62,7 @@ namespace BuildVision.Core
 
         public int UpdateSolution_Done(int fSucceeded, int fModified, int fCancelCommand)
         {
-            _buildInformationProvider.BuildFinished(fSucceeded == 1, fCancelCommand == 1);
-
-            var result = _buildInformationProvider.GetBuildInformationModel();
-            var finishedProjects = _buildingProjectsProvider.GetBuildingProjects();
-
-            if (result.BuildScope == BuildScopes.BuildScopeSolution)
-            {
-                foreach (var projectItem in finishedProjects)
-                {
-                    if (projectItem.State == ProjectState.Pending)
-                        projectItem.State = ProjectState.Skipped;
-                }
-            }
-
+            _buildInformationProvider.BuildFinished(_buildingProjectsProvider.GetBuildingProjects(), fSucceeded == 1, fCancelCommand == 1);
             return VSConstants.S_OK;
         }
 

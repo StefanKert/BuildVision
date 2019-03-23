@@ -9,7 +9,6 @@ using System.Windows.Input;
 using System.ComponentModel;
 
 using Process = System.Diagnostics.Process;
-using Microsoft.VisualStudio;
 using BuildVision.Common;
 using BuildVision.Contracts;
 using BuildVision.UI.DataGrid;
@@ -22,7 +21,6 @@ using BuildVision.UI.Settings.Models;
 using BuildVision.Helpers;
 using System.ComponentModel.Composition;
 using System.Text;
-using System.Collections.Generic;
 using BuildVision.Core;
 using BuildVision.Views.Settings;
 using BuildVision.Exports.Services;
@@ -35,7 +33,6 @@ namespace BuildVision.UI.ViewModels
     [Export(typeof(IBuildVisionPaneViewModel))]
     public class BuildVisionPaneViewModel : BindableBase, IBuildVisionPaneViewModel
     {
-        public IBuildProgressViewModel BuildProgressViewModel { get; set; }
         public ISolutionModel SolutionModel { get; set; }
 
         private ObservableCollection<DataGridColumn> _gridColumnsRef;
@@ -201,11 +198,19 @@ namespace BuildVision.UI.ViewModels
             _buildingProjectsProvider = buildingProjectsProvider;
             _buildInformationProvider = buildInformationProvider;
             BuildInformationModel = _buildInformationProvider.GetBuildInformationModel();
-            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings, BuildInformationModel);
             SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
             Projects = _buildingProjectsProvider.GetBuildingProjects();
+
+            if (settingsProvider.Settings.GeneralSettings.FillProjectListOnBuildBegin)
+            {
+                Projects.CollectionChanged += (sender, e) =>
+                {
+                    OnPropertyChanged(nameof(GroupedProjectsList));
+                };
+            }
         }
+
 
         /// <summary>
         /// Uses as design-time ViewModel. 
@@ -214,7 +219,6 @@ namespace BuildVision.UI.ViewModels
         {
             ControlSettings = new ControlSettings();
             BuildInformationModel = new BuildInformationModel();
-            BuildProgressViewModel = new BuildProgressViewModel(ControlSettings, BuildInformationModel);
             SolutionModel = new SolutionModel();
             Projects = new ObservableCollection<IProjectItem>();
         }
@@ -320,33 +324,7 @@ namespace BuildVision.UI.ViewModels
             // Raise all properties have changed.
             OnPropertyChanged(null);
 
-            BuildProgressViewModel.ResetTaskBarInfo(false);
-        }
-
-        public void OnBuildProjectBegin()
-        {
-            BuildProgressViewModel.OnBuildProjectBegin();
-        }
-
-        public void OnBuildProjectDone(BuildedProject buildedProjectInfo)
-        {
-            bool success = buildedProjectInfo.Success.GetValueOrDefault(true);
-            BuildProgressViewModel.OnBuildProjectDone(success);
-        }
-
-        public void OnBuildBegin(int projectsCount)
-        {
-            BuildProgressViewModel.OnBuildBegin(projectsCount);
-        }
-
-        public void OnBuildDone()
-        {
-            BuildProgressViewModel.OnBuildDone();
-        }
-
-        public void OnBuildCancelled()
-        {
-            BuildProgressViewModel.OnBuildCancelled();
+            //BuildProgressViewModel.ResetTaskBarInfo(false);
         }
 
         private bool IsProjectItemEnabledForActions()

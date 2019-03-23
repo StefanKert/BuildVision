@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using BuildVision.Exports.Providers;
+using BuildVision.Helpers;
 using BuildVision.Tool;
 using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
@@ -16,6 +17,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
+using Window = EnvDTE.Window;
 
 namespace BuildVision.Core
 {
@@ -35,6 +37,8 @@ namespace BuildVision.Core
     {
         private DTE _dte;
         private DTE2 _dte2;
+        private CommandEvents _commandEvents;
+        private WindowEvents _windowEvents;
         private SolutionEvents _solutionEvents;
         private IVsSolutionBuildManager2 _solutionBuildManager;
         private IVsSolutionBuildManager5 _solutionBuildManager4;
@@ -43,6 +47,7 @@ namespace BuildVision.Core
         private SolutionBuildEvents _solutionBuildEvents;
         private ISolutionProvider _solutionProvider;
         private IBuildingProjectsProvider _buildingProjectsProvider;
+        private Window _activeProjectContext;
 
         public ControlSettings ControlSettings { get; set; }
 
@@ -83,8 +88,14 @@ namespace BuildVision.Core
             _buildingProjectsProvider = await GetServiceAsync(typeof(IBuildingProjectsProvider)) as IBuildingProjectsProvider;
 
             IPackageContext packageContext = this;
+
+            _commandEvents = _dte.Events.CommandEvents;
+            _commandEvents.AfterExecute += CommandEvents_AfterExecute;
+
+            _windowEvents = _dte.Events.WindowEvents;
+            _windowEvents.WindowActivated += WindowEvents_WindowActivated;
+
             _solutionEvents = _dte.Events.SolutionEvents;
-            _solutionEvents.BeforeClosing += SolutionEvents_BeforeClosing;
             _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
             _solutionEvents.Opened += SolutionEvents_Opened;
 
@@ -94,16 +105,14 @@ namespace BuildVision.Core
             }
         }
 
-        private void SolutionEvents_BeforeClosing()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            _solutionBuildManager.UnadviseUpdateSolutionEvents(_updateSolutionEvents4Cookie);
-            _solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
-        }
-
         private void SolutionEvents_Opened()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+
+            _solutionProvider.ReloadSolution();
+            _buildingProjectsProvider.ResetCurrentProjects();
+            _buildInformationProvider.ResetBuildInformationModel();
+            
             _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider, _buildingProjectsProvider);
             _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
             _solutionBuildManager4.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
@@ -112,6 +121,48 @@ namespace BuildVision.Core
         private void SolutionEvents_AfterClosing()
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+
+            _solutionProvider.ReloadSolution();
+            _buildingProjectsProvider.ResetCurrentProjects();
+            _buildInformationProvider.ResetBuildInformationModel();
+
+            _solutionBuildManager.UnadviseUpdateSolutionEvents(_updateSolutionEvents4Cookie);
+            _solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
+        }
+
+
+        private void WindowEvents_WindowActivated(Window gotFocus, Window lostFocus)
+        {
+            if (gotFocus == null)
+                return;
+
+            switch (gotFocus.Type)
+            {
+                case vsWindowType.vsWindowTypeSolutionExplorer:
+                    _activeProjectContext = gotFocus;
+                    break;
+
+                case vsWindowType.vsWindowTypeDocument:
+                case vsWindowType.vsWindowTypeDesigner:
+                case vsWindowType.vsWindowTypeCodeWindow:
+                    if (gotFocus.Project != null && !gotFocus.Project.IsHidden())
+                        _activeProjectContext = gotFocus;
+                    break;
+
+                default:
+                    return;
+            }
+        }
+
+        private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)
+        {
+            if (id == (int)VSConstants.VSStd97CmdID.CancelBuild
+                && Guid.Parse(guid) == VSConstants.GUID_VSStandardCommandSet97)
+            {
+                //_buildCancelled = true;
+                //if (!_buildCancelledInternally)
+                //    OnBuildCancelled();
+            }
         }
 
         private async void ShowToolWindowAsync(object sender, EventArgs e)

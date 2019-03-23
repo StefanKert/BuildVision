@@ -165,7 +165,6 @@
     </Compile>
     <Compile Include="Models\BuildInformationModel.cs" />
     <Compile Include="Models\SolutionModel.cs" />
-    <Compile Include="ViewModels\BuildProgressViewModel.cs" />
     <Compile Include="ViewModels\BuildVisionPaneViewModel.cs" />
     <Compile Include="Settings\Models\WindowSettings.cs" />
   </ItemGroup>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Controls;
+using BuildVision.UI.Models;
 
 namespace BuildVision.Contracts.Models
 {
@@ -22,5 +23,6 @@ namespace BuildVision.Contracts.Models
 
         BuildResultState ResultState { get; }
         string StateIconKey { get; }
+        IProjectItem CurrentProject { get; set; }
     }
 }

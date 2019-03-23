@@ -5,13 +5,19 @@ using System.Diagnostics;
 using System.Linq;
 using BuildVision.Common;
 using BuildVision.Contracts;
+using BuildVision.Contracts.Models;
 using BuildVision.Exports;
+using BuildVision.Exports.Factories;
 using BuildVision.Exports.Providers;
+using BuildVision.Exports.Services;
 using BuildVision.Helpers;
+using BuildVision.Services;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Contracts;
 using BuildVision.UI.Models;
+using BuildVision.Views.Settings;
 using Microsoft.Build.Framework;
+using Microsoft.VisualStudio.Shell;
 
 namespace BuildVision.Core
 {
@@ -22,19 +28,30 @@ namespace BuildVision.Core
         private readonly ISolutionProvider _solutionProvider;
         private readonly IBuildInformationProvider _buildInformationProvider;
         private readonly IBuildOutputLogger _buildOutputLogger;
-        private readonly IPackageContext _packageContext;
+        private readonly IBuildProgressViewModel _buildProgressViewModel;
+        private readonly IPackageSettingsProvider _packageSettingsProvider;
+        private readonly IBuildService _buildService;
+        private readonly IErrorNavigationService _errorNavigationService;
         private ObservableCollection<IProjectItem> _projects;
 
         [ImportingConstructor]
         public BuildingProjectsProvider(
             [Import(typeof(ISolutionProvider))] ISolutionProvider solutionProvider, 
             [Import(typeof(IBuildInformationProvider))] IBuildInformationProvider buildInformationProvider,
-            [Import(typeof(IBuildOutputLogger))] IBuildOutputLogger buildOutputLogger)
+            [Import(typeof(IBuildOutputLogger))] IBuildOutputLogger buildOutputLogger,
+            [Import(typeof(IBuildProgressViewModel))] IBuildProgressViewModel buildProgressViewModel,
+            [Import(typeof(IPackageSettingsProvider))] IPackageSettingsProvider packageSettingsProvider,
+            [Import(typeof(IBuildService))] IBuildService buildService,
+            [Import(typeof(IErrorNavigationService))] IErrorNavigationService errorNavigationService)
         {
             _projects = new ObservableCollection<IProjectItem>();
             _solutionProvider = solutionProvider;
             _buildInformationProvider = buildInformationProvider;
             _buildOutputLogger = buildOutputLogger;
+            _buildProgressViewModel = buildProgressViewModel;
+            _packageSettingsProvider = packageSettingsProvider;
+            _buildService = buildService;
+            _errorNavigationService = errorNavigationService;
             _buildOutputLogger.OnErrorRaised += BuildOutputLogger_OnErrorRaised;
         }
 
@@ -67,7 +84,20 @@ namespace BuildVision.Core
                 }
 
                 projectItem.ErrorsBox.Add(errorItem);
-                //OnErrorRaised(this, new BuildErrorRaisedEventArgs(errorLevel, projectItem));
+
+                var args = new BuildErrorRaisedEventArgs(errorLevel, projectItem);
+
+                bool buildNeedCancel = (args.ErrorLevel == ErrorLevel.Error && _packageSettingsProvider.Settings.GeneralSettings.StopBuildAfterFirstError);
+                if (buildNeedCancel)
+                {
+                    _buildService.CancelBuildSolution();
+                }
+
+                bool navigateToBuildFailure = (args.ErrorLevel == ErrorLevel.Error && _packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnErrorRaised);
+                if (_packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone)
+                {
+                    _errorNavigationService.NavigateToErrorItem(errorItem);
+                }
             }
             catch (Exception ex)
             {
@@ -81,6 +111,11 @@ namespace BuildVision.Core
             _projects.AddRange(_solutionProvider.GetProjects());
         }
 
+        public void ResetCurrentProjects()
+        {
+            _projects.Clear();
+        }
+
         public ObservableCollection<IProjectItem> GetBuildingProjects()
         {
             return _projects;
@@ -88,6 +123,12 @@ namespace BuildVision.Core
 
         public void ProjectBuildStarted(IProjectItem projectItem, uint dwAction)
         {
+            var buildInformationModel = _buildInformationProvider.GetBuildInformationModel();
+            if (buildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
+            {
+                return;
+            }
+
             try
             {
                 var projInCollection = _projects.FirstOrDefault(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == ProjectIdentifierGenerator.GetIdentifierForProjectItem(projectItem));
@@ -96,22 +137,19 @@ namespace BuildVision.Core
                     _projects.Add(projectItem);
                     projInCollection = projectItem;
                 }
-                projInCollection.State = GetProjectState(_buildInformationProvider.GetBuildInformationModel().BuildAction);
+                projInCollection.State = GetProjectState(buildInformationModel.BuildAction);
                 projInCollection.BuildFinishTime = null;
                 projInCollection.BuildStartTime = DateTime.Now;
 
-                //  _viewModel.OnBuildProjectBegin();
-                //if (BuildScope == BuildScopes.BuildScopeSolution &&
-                //    (BuildAction == BuildActions.BuildActionBuild ||
-                //     BuildAction == BuildActions.BuildActionRebuildAll))
-                //{
-                //    currentProject.BuildOrder = _viewModel.BuildProgressViewModel.CurrentQueuePosOfBuildingProject;
-                //}
-                //if (!_viewModel.ProjectsList.Contains(currentProject))
-                //    _viewModel.ProjectsList.Add(currentProject);
-                //else if (_viewModel.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
-                //    _viewModel.OnPropertyChanged(nameof(BuildVisionPaneViewModel.GroupedProjectsList));
-                //_viewModel.CurrentProject = currentProject;
+                _buildProgressViewModel.OnBuildProjectBegin();
+
+                if (buildInformationModel.BuildScope == BuildScopes.BuildScopeSolution &&
+                    (buildInformationModel.BuildAction == BuildActions.BuildActionBuild ||
+                     buildInformationModel.BuildAction == BuildActions.BuildActionRebuildAll))
+                {
+                    projInCollection.BuildOrder = _buildProgressViewModel.CurrentQueuePosOfBuildingProject;
+                }
+                buildInformationModel.CurrentProject = projInCollection;
             }
             catch (Exception ex)
             {
@@ -176,8 +214,14 @@ namespace BuildVision.Core
             }
         }
 
-        public void ProjectBuildFinished(string projectIdentifier, bool succeess, bool canceled)
+        public void ProjectBuildFinished(string projectIdentifier, bool success, bool canceled)
         {
+            var buildInformationModel = _buildInformationProvider.GetBuildInformationModel();
+            if (buildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
+            {
+                return;
+            }
+
             var currentProject = _projects.First(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == projectIdentifier);
             var buildAction = _buildInformationProvider.GetBuildInformationModel().BuildAction;
             ProjectState projectState;
@@ -185,35 +229,44 @@ namespace BuildVision.Core
             {
                 case BuildActions.BuildActionBuild:
                 case BuildActions.BuildActionRebuildAll:
-                    if (succeess)
+                    if (success)
                     {
-                        if (currentProject.ErrorsBox.WarningsCount > 0)
+                        if (_packageSettingsProvider.Settings.GeneralSettings.ShowWarningSignForBuilds && currentProject.ErrorsBox.WarningsCount > 0)
+                        {
                             projectState = ProjectState.BuildWarning;
+                        }
                         else
                         {
                             projectState = _buildOutputLogger.IsProjectUpToDate(currentProject) ? ProjectState.UpToDate : ProjectState.BuildDone;
+                            if(projectState == ProjectState.UpToDate)
+                            {
+                                // do i have to set errorbox here?
+                            }
                         }
                     }
                     else
                     {
-                        //bool canceled = (_buildCancelled && currentProject.ErrorsBox.ErrorsCount == 0);
-                        projectState = canceled ? ProjectState.BuildCancelled : ProjectState.BuildError;
+                        bool buildCancelled = (canceled && currentProject.ErrorsBox.ErrorsCount == 0);
+                        projectState = buildCancelled ? ProjectState.BuildCancelled : ProjectState.BuildError;
                     }
                     break;
 
                 case BuildActions.BuildActionClean:
-                    projectState = succeess ? ProjectState.CleanDone : ProjectState.CleanError;
+                    projectState = success ? ProjectState.CleanDone : ProjectState.CleanError;
                     break;
-
-                case BuildActions.BuildActionDeploy:
-                    throw new InvalidOperationException("vsBuildActionDeploy not supported");
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buildAction));
             }
+            currentProject.Success = success;
             currentProject.State = projectState;
+            currentProject.BuildFinishTime = DateTime.Now;
 
-            var buildInformationModel = _buildInformationProvider.GetBuildInformationModel();
+            if (currentProject.State == ProjectState.BuildError && _packageSettingsProvider.Settings.GeneralSettings.StopBuildAfterFirstError)
+            {
+                _buildService.CancelBuildSolution();
+            }
+             
             buildInformationModel.SucceededProjectsCount = _projects.Count(x => x.State == ProjectState.BuildDone || x.State == ProjectState.CleanDone);
             buildInformationModel.FailedProjectsCount = _projects.Count(x => x.State == ProjectState.BuildError || x.State == ProjectState.CleanError);
             buildInformationModel.WarnedProjectsCount = _projects.Count(x => x.State == ProjectState.BuildWarning);
@@ -222,34 +275,12 @@ namespace BuildVision.Core
             buildInformationModel.ErrorCount = _projects.Sum(x => x.ErrorsCount);
             buildInformationModel.WarningsCount = _projects.Sum(x => x.WarningsCount);
 
-            //OnBuildProjectDone(new BuildProjectEventArgs(currentProject, projectState, eventTime, buildedProject));
-
-            //if (currentProject.State == ProjectState.BuildError && _packageContext..ControlSettings.GeneralSettings.StopBuildAfterFirstError)
-            //    CancelBuildAsync();
-
-            try
+            if (buildInformationModel.CurrentProject == null)
             {
-                currentProject.BuildFinishTime = DateTime.Now;
-                //currentProject.UpdatePostBuildProperties(e.BuildedProjectInfo);
-
-                //if (ReferenceEquals(_viewModel.CurrentProject, e.ProjectItem) && BuildingProjects.Any())
-                //    _viewModel.CurrentProject = BuildingProjects.Last();
-            }
-            catch (Exception ex)
-            {
-                ex.TraceUnknownException();
+                buildInformationModel.CurrentProject = GetBuildingProjects().Last();
             }
 
-            //_viewModel.UpdateIndicators(this);
-
-            //try
-            //{
-            //    _viewModel.OnBuildProjectDone(e.BuildedProjectInfo);
-            //}
-            //catch (Exception ex)
-            //{
-            //    ex.TraceUnknownException();
-            //}
+            _buildProgressViewModel.OnBuildProjectDone(success);
         }
     }
 }

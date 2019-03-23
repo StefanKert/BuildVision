@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using BuildVision.Helpers;
 using BuildVision.UI.Settings.Models.ToolWindow;
+using BuildVision.Views.Settings;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -11,19 +12,20 @@ using WindowState = BuildVision.UI.Models.WindowState;
 
 namespace BuildVision.Tool.Building
 {
-    public class WindowStateManager
+    public class WindowStateService : IWindowStateService
     {
         private readonly DTE _dte;
         private readonly IVsWindowFrame _windowFrame;
         private readonly Window _window;
 
         private readonly IServiceProvider _serviceProvider;
+        private readonly IPackageSettingsProvider _packageSettingsProvider;
 
         [ImportingConstructor]
-        public WindowStateManager([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
+        public WindowStateService(
+            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-
             _dte = serviceProvider.GetService(typeof(DTE)) as DTE;
             if (_dte == null)
                 throw new InvalidOperationException("Unable to get DTE instance.");

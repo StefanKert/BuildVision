@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Threading;
 using BuildVision.Contracts;
 using BuildVision.Contracts.Models;
 using BuildVision.Exports;
@@ -7,10 +8,14 @@ using BuildVision.Exports.Factories;
 using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
 using BuildVision.Helpers;
+using BuildVision.Services;
+using BuildVision.Tool.Building;
 using BuildVision.Tool.Models;
+using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
+using BuildVision.Views.Settings;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -23,26 +28,43 @@ namespace BuildVision.Core
     public class BuildInformationProvider : IBuildInformationProvider
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly IPackageSettingsProvider _packageSettingsProvider;
+        private readonly IBuildProgressViewModel _buildProgressViewModel;
+        private readonly IProjectFileNavigationService _projectFileNavigationService;
         private readonly IBuildOutputLogger _buildOutputLogger;
         private readonly IStatusBarNotificationService _statusBarNotificationService;
         private readonly IBuildMessagesFactory _buildMessagesFactory;
+        private readonly IWindowStateService _windowStateService;
         private Solution _solution;
         private BuildInformationModel _buildInformationModel;
         private BuildEvents _buildEvents;
         private DTE2 _dte;
         private string _origTextCurrentState;
 
+        private const int BuildInProcessCountOfQuantumSleep = 5;
+        private const int BuildInProcessQuantumSleep = 50;
+        private readonly object _buildProcessLockObject;
+        private CancellationTokenSource _buildProcessCancellationToken;
+  
         [ImportingConstructor]
         public BuildInformationProvider(
             [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider,
             [Import(typeof(IBuildOutputLogger))] IBuildOutputLogger buildOutputLogger,
             [Import(typeof(IStatusBarNotificationService))] IStatusBarNotificationService statusBarNotificationService,
-            [Import(typeof(IBuildMessagesFactory))] IBuildMessagesFactory buildMessagesFactory)
+            [Import(typeof(IBuildMessagesFactory))] IBuildMessagesFactory buildMessagesFactory,
+            [Import(typeof(IWindowStateService))] IWindowStateService windowStateService,
+            [Import(typeof(IPackageSettingsProvider))] IPackageSettingsProvider packageSettingsProvider,
+            [Import(typeof(IBuildProgressViewModel))] IBuildProgressViewModel buildProgressViewModel,
+            [Import(typeof(IProjectFileNavigationService))] IProjectFileNavigationService projectFileNavigationService)
         {
             _serviceProvider = serviceProvider;
+            _packageSettingsProvider = packageSettingsProvider;
+            _buildProgressViewModel = buildProgressViewModel;
+            _projectFileNavigationService = projectFileNavigationService;
             _buildOutputLogger = buildOutputLogger;
             _statusBarNotificationService = statusBarNotificationService;
             _buildMessagesFactory = buildMessagesFactory;
+            _windowStateService = windowStateService;
             _buildInformationModel = new BuildInformationModel();
             _buildEvents = (serviceProvider.GetService(typeof(DTE)) as DTE).Events.BuildEvents;
             _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
@@ -58,6 +80,23 @@ namespace BuildVision.Core
             _buildInformationModel.StateMessage = _origTextCurrentState;
         }
 
+        public void ResetBuildInformationModel()
+        {
+            _buildInformationModel.ErrorCount = 0;
+            _buildInformationModel.WarningsCount = 0;
+            _buildInformationModel.MessagesCount = 0;
+            _buildInformationModel.SucceededProjectsCount = 0;
+            _buildInformationModel.UpToDateProjectsCount = 0;
+            _buildInformationModel.FailedProjectsCount = 0;
+            _buildInformationModel.WarnedProjectsCount = 0;
+            _buildInformationModel.StateMessage = Resources.BuildDoneText_BuildNotStarted;
+            _buildInformationModel.CurrentBuildState = BuildState.NotStarted;
+            _buildInformationModel.BuildAction = BuildActions.Unknown;
+            _buildInformationModel.BuildScope = BuildScopes.Unknown;
+            _buildInformationModel.BuildStartTime = null;
+            _buildInformationModel.BuildFinishTime = null;
+        }
+
         public IBuildInformationModel GetBuildInformationModel()
         {
             return _buildInformationModel;
@@ -65,24 +104,28 @@ namespace BuildVision.Core
 
         public void BuildStarted(uint dwAction)
         {
+            ErrorNavigationService.BuildErrorNavigated = false;
             _buildOutputLogger.Attach();
 
-            _buildInformationModel.SucceededProjectsCount = 0;
-            _buildInformationModel.FailedProjectsCount = 0;
-            _buildInformationModel.WarnedProjectsCount = 0;
-            _buildInformationModel.UpToDateProjectsCount = 0;
-            _buildInformationModel.MessagesCount = 0;
-            _buildInformationModel.WarnedProjectsCount = 0;
-            _buildInformationModel.ErrorCount = 0;
-            _buildInformationModel.StateMessage = "";
+            ResetBuildInformationModel();
+
             _buildInformationModel.BuildStartTime = DateTime.Now;
             _buildInformationModel.BuildFinishTime = null;
             _buildInformationModel.CurrentBuildState = BuildState.InProgress;
             _buildInformationModel.BuildAction = StateConverterHelper.ConvertSolutionBuildFlagsToBuildAction(dwAction, (VSSOLNBUILDUPDATEFLAGS) dwAction);
+            var projectsCount = GetProjectsCount();
+
+            _buildProcessCancellationToken = new CancellationTokenSource();
+            _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildBegin);
+            //_viewModel.OnBuildBegin(projectsCount, this);
+            System.Threading.Tasks.Task.Run(() => Run(_buildProcessCancellationToken.Token), _buildProcessCancellationToken.Token);
+
+            _buildProgressViewModel.OnBuildBegin(_buildInformationModel, projectsCount);
         }
 
-        private int GetProjectsCount(int projectsCount)
+        private int GetProjectsCount()
         {
+            int projectsCount = -1;
             switch (_buildInformationModel.BuildScope)
             {
                 case BuildScopes.BuildScopeSolution:
@@ -112,14 +155,40 @@ namespace BuildVision.Core
 
         public void BuildUpdate()
         {
-            _buildInformationModel.StateMessage = _origTextCurrentState + _buildMessagesFactory.GetBuildBeginExtraMessage(_buildInformationModel);
+            var message = _origTextCurrentState + _buildMessagesFactory.GetBuildBeginExtraMessage(_buildInformationModel);
+            _buildInformationModel.StateMessage = message;
+            _statusBarNotificationService.ShowTextWithFreeze(message);
+            /*
+             *             for (int i = 0; i < buildingProjects.Count; i++)
+                    buildingProjects[i].RaiseBuildElapsedTimeChanged();
+            */
         }
 
-        public void BuildFinished(bool success, bool modified, bool canceled)
+        public void BuildFinished(bool success, bool canceled)
         {
+            if (_buildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
+            {
+                return;
+            }
+            if (_buildInformationModel.CurrentBuildState == BuildState.InProgress)
+            {
+                return;
+            }
+
+            _buildProcessCancellationToken.Cancel();
+
             _buildInformationModel.BuildFinishTime = DateTime.Now;
             if (success)
-                _buildInformationModel.CurrentBuildState = BuildState.Done;
+            {
+                if (_buildInformationModel.ErrorCount > 0)
+                {
+                    _buildInformationModel.CurrentBuildState = BuildState.ErrorDone;
+                }
+                else
+                {
+                    _buildInformationModel.CurrentBuildState = BuildState.Done;
+                }
+            }
             else if (canceled)
                 _buildInformationModel.CurrentBuildState = BuildState.Cancelled;
             else
@@ -129,10 +198,45 @@ namespace BuildVision.Core
             var message = _buildMessagesFactory.GetBuildDoneMessage(_buildInformationModel);
             _statusBarNotificationService.ShowText(message);
             _buildInformationModel.StateMessage = message;
-            //_viewModel.OnBuildDone(this);
+            _buildProgressViewModel.OnBuildDone();
 
-            ///ApplyWindowState(settings);
-            //NavigateToBuildErrorIfNeeded(settings);
+            if(_buildInformationModel.FailedProjectsCount > 0 || canceled)
+            {
+                _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildError);
+            }
+            else
+            {
+                _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildSuccess);
+            }
+
+            if(_buildInformationModel.FailedProjectsCount > 0)
+            {
+                if (_packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone)
+                {
+                    _projectFileNavigationService.NavigateToFirstError();
+                }
+            }
+        }
+
+        public void Run(CancellationToken cancellationToken)
+        {
+            lock (_buildProcessLockObject)
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    _buildInformationProvider.BuildUpdate();
+
+                    for (int i = 0; i < BuildInProcessQuantumSleep * BuildInProcessCountOfQuantumSleep; i += BuildInProcessQuantumSleep)
+                    {
+                        if (cancellationToken.IsCancellationRequested)
+                        {
+                            break;
+                        }
+
+                        System.Threading.Thread.Sleep(BuildInProcessQuantumSleep);
+                    }
+                }
+            }
         }
     }
 }

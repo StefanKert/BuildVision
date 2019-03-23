@@ -9,13 +9,15 @@ using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models.BuildProgress;
 using BuildVision.Contracts.Models;
 using BuildVision.Contracts;
+using BuildVision.Views.Settings;
 
 namespace BuildVision.UI.ViewModels
 { 
     public class BuildProgressViewModel : BindableBase, IBuildProgressViewModel
     {
         private readonly ControlSettings _settings;
-        private readonly IBuildInformationModel _buildInformationModel;
+        private readonly IPackageSettingsProvider _packageSettingsProvider;
+        private IBuildInformationModel _buildInformationModel;
         private CancellationTokenSource _resetTaskBarInfoCts;
 
         private int _projectsCount;
@@ -31,6 +33,7 @@ namespace BuildVision.UI.ViewModels
             var window = Application.Current.MainWindow;
             return window.TaskbarItemInfo ?? (window.TaskbarItemInfo = new TaskbarItemInfo());
         });
+
         private TaskbarItemInfo TaskbarItemInfo => _taskbarItemInfo.Value;
         public int CurrentQueuePosOfBuildingProject { get; private set; }
 
@@ -41,10 +44,9 @@ namespace BuildVision.UI.ViewModels
             set => SetProperty(ref _actionProgressIsPaused, value);
         }
 
-        public BuildProgressViewModel(ControlSettings settings, IBuildInformationModel buildInformationModel)
+        public BuildProgressViewModel(IPackageSettingsProvider packageSettingsProvider)
         {
-            _settings = settings;
-            _buildInformationModel = buildInformationModel;
+            _packageSettingsProvider = packageSettingsProvider;
         }
 
         private void UpdateTaskBarInfo()
@@ -79,8 +81,9 @@ namespace BuildVision.UI.ViewModels
             }
         }
 
-        public void OnBuildBegin(int projectsCount)
+        public void OnBuildBegin(IBuildInformationModel buildInformationModel, int projectsCount)
         {
+            _buildInformationModel = buildInformationModel;
             if (_resetTaskBarInfoCts != null)
                 _resetTaskBarInfoCts.Cancel();
 
@@ -145,7 +148,7 @@ namespace BuildVision.UI.ViewModels
 
         private void ResetTaskBarInfoOnBuildDone()
         {
-            BuildProgressSettings buildProgressSettings = _settings.GeneralSettings.BuildProgressSettings;
+            var buildProgressSettings = _settings.GeneralSettings.BuildProgressSettings;
             if (!buildProgressSettings.TaskBarProgressEnabled)
                 return;
 

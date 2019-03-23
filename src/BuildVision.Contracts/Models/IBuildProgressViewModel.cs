@@ -5,7 +5,7 @@
         bool ActionProgressIsPaused { get; set; }
         int CurrentQueuePosOfBuildingProject { get; }
 
-        void OnBuildBegin(int projectsCount);
+        void OnBuildBegin(IBuildInformationModel buildInformationModel, int projectsCount);
         void OnBuildCancelled();
         void OnBuildDone();
         void OnBuildProjectBegin();

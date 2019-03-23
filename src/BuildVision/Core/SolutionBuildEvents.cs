@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using BuildVision.Common;
 using BuildVision.Contracts;
 using BuildVision.Exports.Providers;
@@ -40,15 +41,8 @@ namespace BuildVision.Core
             _solutionProvider.ReloadSolution();
             _buildInformationProvider.BuildStarted(dwAction);
             _buildingProjectsProvider.ReloadCurrentProjects();
-
-            //ApplyToolWindowStateAction(_viewModel.ControlSettings.WindowSettings.WindowActionOnBuildBegin);
-            //int projectsCount = -1;
-            //projectsCount = GetProjectsCount(projectsCount);
-            //_viewModel.OnBuildBegin(projectsCount, this);
-            //_buildProcessCancellationToken = new CancellationTokenSource();
-            // Startbackground process 
-            //Task.Factory.StartNew(BuildEvents_BuildInProcess, _buildProcessCancellationToken.Token, _buildProcessCancellationToken.Token);
         }
+
 
         public int UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)
         {
@@ -67,7 +61,7 @@ namespace BuildVision.Core
 
         public int UpdateSolution_Done(int fSucceeded, int fModified, int fCancelCommand)
         {
-            _buildInformationProvider.BuildFinished(fSucceeded == 1, fModified == 1, fCancelCommand == 1);
+            _buildInformationProvider.BuildFinished(fSucceeded == 1, fCancelCommand == 1);
 
             var result = _buildInformationProvider.GetBuildInformationModel();
             var finishedProjects = _buildingProjectsProvider.GetBuildingProjects();

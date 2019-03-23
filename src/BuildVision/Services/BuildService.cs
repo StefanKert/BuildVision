@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using BuildVision.Common;
 using BuildVision.Contracts;
+using BuildVision.Contracts.Models;
 using BuildVision.Core;
 using BuildVision.Exports.Services;
 using BuildVision.Helpers;
@@ -17,24 +18,25 @@ using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Models;
 using EnvDTE;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 
 namespace BuildVision.Tool.Building
 {
     [Export(typeof(IBuildService))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class BuildManager : IBuildService
+    public class BuildService : IBuildService
     {
         private const string CancelBuildCommand = "Build.Cancel";
+        private bool _buildCancelledInternally;
         private CancellationTokenSource _buildProcessCancellationToken;
         private bool _buildCancelled;
+        private IServiceProvider _serviceProvider;
 
-        public BuildManager()
+        [ImportingConstructor]
+        public BuildService(
+            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
         {
-            //_viewModel.RaiseCommandForSelectedProject += RaiseCommandForSelectedProject;
-            //_viewModel.ProjectCopyBuildOutputFilesToClipBoard += ProjectCopyBuildOutputFilesToClipBoard;
-            //_viewModel.ShowGeneralSettingsPage += () => _packageContext.ShowOptionPage(typeof(GeneralSettingsDialogPage));
-            //_viewModel.ShowGridColumnsSettingsPage += () => _packageContext.ShowOptionPage(typeof(GridSettingsDialogPage));
-            //_viewModel.CopyErrorMessageToClipboard += CopyErrorMessageToClipboard;
+            _serviceProvider = serviceProvider;
         }
 
         public void CancelBuildSolution()
@@ -57,25 +59,27 @@ namespace BuildVision.Tool.Building
             RaiseCommand(VSConstants.VSStd97CmdID.BuildSln);
         }
 
-        public async Task CancelBuildAsync()
+        public async System.Threading.Tasks.Task CancelBuildAsync(IBuildInformationModel buildInformationModel)
         {
-            //if (BuildAction == BuildActions.BuildActionClean)
-            //    return;
-            //if (CurrentBuildState != BuildState.InProgress || _buildCancelled || _buildCancelledInternally)
-            //    return;
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+            if (buildInformationModel.BuildAction == BuildActions.BuildActionClean)
+                return;
+            if (buildInformationModel.CurrentBuildState != BuildState.InProgress || _buildCancelled || _buildCancelledInternally)
+                return;
 
-            //try
-            //{
-            //    // We need to create a separate task here because of some weird things that are going on
-            //    // when calling ExecuteCommand directly. Directly calling it leads to a freeze. No need 
-            //    // for that!
-            //    //await _packageContext.ExecuteCommandAsync(CancelBuildCommand);
-            //    _buildCancelledInternally = true;
-            //}
-            //catch (Exception ex)
-            //{
-            //    ex.Trace("Cancel build failed.");
-            //}
+            try
+            {
+                // We need to create a separate task here because of some weird things that are going on
+                // when calling ExecuteCommand directly. Directly calling it leads to a freeze. No need 
+                // for that!
+                var dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
+                dte.ExecuteCommand(CancelBuildCommand);
+                _buildCancelledInternally = true;
+            }
+            catch (Exception ex)
+            {
+                ex.Trace("Cancel build failed.");
+            }
         }
 
         public void RaiseCommandForSelectedProject(UI.Models.ProjectItem selectedProjectItem, int commandId)
@@ -215,17 +219,6 @@ namespace BuildVision.Tool.Building
         public void ProjectCopyBuildOutputFilesToClipBoard()
         {
             throw new NotImplementedException();
-        }
-
-        private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)
-        {
-            if (id == (int) VSConstants.VSStd97CmdID.CancelBuild
-                && Guid.Parse(guid) == VSConstants.GUID_VSStandardCommandSet97)
-            {
-                //_buildCancelled = true;
-                //if (!_buildCancelledInternally)
-                //    OnBuildCancelled();
-            }
         }
 
         public void RaiseCommandForSelectedProject()

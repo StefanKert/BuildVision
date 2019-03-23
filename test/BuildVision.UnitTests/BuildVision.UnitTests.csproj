@@ -13,5 +13,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\BuildVision.Common\BuildVision.Common.csproj" />
+    <ProjectReference Include="..\..\src\BuildVision\BuildVision.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
   </ItemGroup>
 </Project>

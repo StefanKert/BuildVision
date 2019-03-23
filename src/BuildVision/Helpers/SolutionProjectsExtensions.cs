@@ -1,15 +1,14 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using BuildVision.Core;
+using BuildVision.UI;
+using BuildVision.UI.Common.Logging;
 using EnvDTE;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
-using System.Runtime.InteropServices;
-using BuildVision.UI;
-using System.IO;
-using BuildVision.UI.Common.Logging;
-using BuildVision.Core;
 using ProjectItem = BuildVision.UI.Models.ProjectItem;
-using System.Linq;
-using BuildVision.Common;
 
 namespace BuildVision.Helpers
 {

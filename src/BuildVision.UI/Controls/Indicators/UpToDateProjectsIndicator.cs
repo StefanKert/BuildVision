@@ -13,5 +13,10 @@ namespace BuildVision.UI.Controls.Indicators
         {
             Header = UI.Resources.UpToDateProjectsIndicator_Header;
         }
+
+        static void OnValueChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            d.SetValue(ValueProperty, (long)e.NewValue);
+        }
     }
 }

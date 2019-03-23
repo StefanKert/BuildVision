@@ -14,5 +14,10 @@ namespace BuildVision.UI.Controls.Indicators
         {
             Header = UI.Resources.ErrorsIndicator_Header;
         }
+
+        static void OnValueChange(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            d.SetValue(ValueProperty, (long)e.NewValue);
+        }
     }
 }

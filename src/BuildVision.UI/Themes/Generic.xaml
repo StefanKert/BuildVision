@@ -51,12 +51,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type indicators:ValueIndicator}">
                     <StackPanel Orientation="Vertical" ToolTipService.ShowOnDisabled="True" ToolTipService.ToolTip="{TemplateBinding Header}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ContentControl 
+                        <ContentControl 
                                 Grid.Column="0"
                                 Width="16"
                                 Height="16"
@@ -64,9 +59,6 @@
                                 ClipToBounds="True"
                                 UseLayoutRounding="False"
                                 Template="{TemplateBinding Icon}" />
-                            <Label Grid.Column="1" Content="{TemplateBinding Value}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4"/>
-
-                        </Grid>
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>

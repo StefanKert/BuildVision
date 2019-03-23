@@ -18,6 +18,7 @@ namespace BuildVision.IntegrationTests
         private static IVsUIShell UiShellService => GlobalServices.GetService<SVsUIShell>() as IVsUIShell;
         private static DTE DTE => GlobalServices.GetService<DTE>() as DTE;
 
+        [Trait("Category", "SkipWhenLiveUnitTesting")]
         [VsixFact(VisualStudioVersion.Current, RootSuffix = "Exp", RunOnUIThread = true)]
         public void PackageLoad_Should_Succeed()
         {
@@ -29,6 +30,7 @@ namespace BuildVision.IntegrationTests
             Assert.NotNull(package);
         }
 
+        [Trait("Category", "SkipWhenLiveUnitTesting")]
         [VsixFact(VisualStudioVersion.Current, RootSuffix = "Exp", RunOnUIThread = true)]
         public void ClickOnBuildVisionMenuItem_Should_ShowBuildVision()
         {

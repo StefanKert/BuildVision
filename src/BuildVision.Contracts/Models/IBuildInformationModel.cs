@@ -1,8 +1,9 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace BuildVision.Contracts.Models
 {
-    public interface IBuildInformationModel
+    public interface IBuildInformationModel : INotifyPropertyChanged
     {
         BuildActions BuildAction { get; set; }
         DateTime? BuildFinishTime { get; set; }

@@ -22,7 +22,7 @@ namespace BuildVision.Core
         private readonly ISolutionProvider _solutionProvider;
         private readonly IBuildInformationProvider _buildInformationProvider;
         private readonly IBuildOutputLogger _buildOutputLogger;
-
+        private readonly IPackageContext _packageContext;
         private ObservableCollection<IProjectItem> _projects;
 
         [ImportingConstructor]
@@ -35,7 +35,6 @@ namespace BuildVision.Core
             _solutionProvider = solutionProvider;
             _buildInformationProvider = buildInformationProvider;
             _buildOutputLogger = buildOutputLogger;
-
             _buildOutputLogger.OnErrorRaised += BuildOutputLogger_OnErrorRaised;
             ReloadCurrentProjects();
         }
@@ -59,7 +58,7 @@ namespace BuildVision.Core
 
                     case ErrorLevel.Warning:
                         errorItem.Init((BuildWarningEventArgs) e);
-                        throw new ArgumentOutOfRangeException("errorLevel");
+                        break;
                     case ErrorLevel.Error:
                         errorItem.Init((BuildErrorEventArgs) e);
                         break;
@@ -214,28 +213,33 @@ namespace BuildVision.Core
                     throw new ArgumentOutOfRangeException(nameof(buildAction));
             }
             currentProject.State = projectState;
+
+            var buildInformationModel = _buildInformationProvider.GetBuildInformationModel();
+            buildInformationModel.SucceededProjectsCount = _projects.Count(x => x.State == ProjectState.BuildDone || x.State == ProjectState.CleanDone);
+            buildInformationModel.FailedProjectsCount = _projects.Count(x => x.State == ProjectState.BuildError || x.State == ProjectState.CleanError);
+            buildInformationModel.WarnedProjectsCount = _projects.Count(x => x.State == ProjectState.BuildWarning);
+            buildInformationModel.UpToDateProjectsCount = _projects.Count(x => x.State == ProjectState.UpToDate);
+            buildInformationModel.MessagesCount = _projects.Sum(x => x.MessagesCount);
+            buildInformationModel.ErrorCount = _projects.Sum(x => x.ErrorsCount);
+            buildInformationModel.WarningsCount = _projects.Sum(x => x.WarningsCount);
+
             //OnBuildProjectDone(new BuildProjectEventArgs(currentProject, projectState, eventTime, buildedProject));
 
-            //if (e.ProjectState == ProjectState.BuildError && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError)
+            //if (currentProject.State == ProjectState.BuildError && _packageContext..ControlSettings.GeneralSettings.StopBuildAfterFirstError)
             //    CancelBuildAsync();
 
-            //try
-            //{
-            //    ProjectItem currentProject = e.ProjectItem;
-            //    currentProject.State = e.ProjectState;
-            //    currentProject.BuildFinishTime = DateTime.Now;
-            //    currentProject.UpdatePostBuildProperties(e.BuildedProjectInfo);
+            try
+            {
+                currentProject.BuildFinishTime = DateTime.Now;
+                //currentProject.UpdatePostBuildProperties(e.BuildedProjectInfo);
 
-            //    if (!_viewModel.ProjectsList.Contains(currentProject))
-            //        _viewModel.ProjectsList.Add(currentProject);
-
-            //    if (ReferenceEquals(_viewModel.CurrentProject, e.ProjectItem) && BuildingProjects.Any())
-            //        _viewModel.CurrentProject = BuildingProjects.Last();
-            //}
-            //catch (Exception ex)
-            //{
-            //    ex.TraceUnknownException();
-            //}
+                //if (ReferenceEquals(_viewModel.CurrentProject, e.ProjectItem) && BuildingProjects.Any())
+                //    _viewModel.CurrentProject = BuildingProjects.Last();
+            }
+            catch (Exception ex)
+            {
+                ex.TraceUnknownException();
+            }
 
             //_viewModel.UpdateIndicators(this);
 

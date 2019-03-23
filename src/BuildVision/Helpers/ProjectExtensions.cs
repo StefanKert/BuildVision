@@ -1,28 +1,19 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-
-using EnvDTE;
-using EnvDTE80;
-
-using Microsoft.Win32;
-using VSLangProj;
 using System.Globalization;
-using Microsoft.VisualStudio.Shell.Interop;
-using System.IO;
+using System.Linq;
 using System.Text;
+using BuildVision.Contracts;
 using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
-using BuildVision.Contracts;
+using EnvDTE;
+using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.Win32;
+using VSLangProj;
 
 namespace BuildVision.Helpers
 {
-    public class EnvDTECodeModelLanguageConstants2
-    {
-        public const string CMLanguageJSharp = "{E6FDF8BF-F3D1-11D4-8576-0002A516ECE8}";
-    }
-
     public static class ProjectExtensions
     {
         private static readonly HashSet<string> _hiddenProjectsUniqueNames = new HashSet<string>

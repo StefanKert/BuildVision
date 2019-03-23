@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -19,7 +19,6 @@ namespace BuildVision.Tool.Building
     public class BuildOutputLogger : Logger, IBuildOutputLogger
     {
         private readonly Guid _loggerId;
-        private readonly LoggerVerbosity _loggerVerbosity;
 
         public RegisterLoggerResult LoggerState { get; set; }
 
@@ -28,7 +27,7 @@ namespace BuildVision.Tool.Building
         public BuildOutputLogger(Guid loggerId, LoggerVerbosity loggerVerbosity)
         {
             _loggerId = loggerId;
-            _loggerVerbosity = loggerVerbosity;
+            Verbosity = loggerVerbosity;
         }
 
         public override void Initialize(IEventSource eventSource)

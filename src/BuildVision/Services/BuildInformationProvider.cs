@@ -26,6 +26,7 @@ namespace BuildVision.Core
         private BuildInformationModel _buildInformationModel;
         private BuildEvents _buildEvents;
         private DTE2 _dte;
+        private string _origTextCurrentState;
 
         [ImportingConstructor]
         public BuildInformationProvider(

@@ -31,21 +31,21 @@ namespace BuildVision.UI.Models
         private int _succeededProjectsCount;
         public int SucceededProjectsCount
         {
-            get => _warningsCount;
+            get => _succeededProjectsCount;
             set => SetProperty(ref _succeededProjectsCount, value);
         }
 
         private int _upToDateProjectsCount;
         public int UpToDateProjectsCount
         {
-            get => _warningsCount;
+            get => _upToDateProjectsCount;
             set => SetProperty(ref _upToDateProjectsCount, value);
         }
 
         private int _failedProjectsCount;
         public int FailedProjectsCount
         {
-            get => _warningsCount;
+            get => _failedProjectsCount;
             set => SetProperty(ref _failedProjectsCount, value);
         }
 

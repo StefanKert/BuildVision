@@ -1,26 +1,34 @@
-using System;
-
+﻿using System;
+using System.ComponentModel.Composition;
+using System.Linq;
+using BuildVision.Helpers;
+using BuildVision.UI.Settings.Models.ToolWindow;
 using EnvDTE;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using BuildVision.Core;
-using BuildVision.Tool;
-using BuildVision.UI.Models;
+using WindowState = BuildVision.UI.Models.WindowState;
 
-namespace BuildVision.Helpers
+namespace BuildVision.Tool.Building
 {
-    public class ToolWindowManager
+    public class WindowStateManager
     {
         private readonly DTE _dte;
         private readonly IVsWindowFrame _windowFrame;
         private readonly Window _window;
 
-        public ToolWindowManager(DTE dte, IVsWindowFrame windowFrame)
+        private readonly IServiceProvider _serviceProvider;
+
+        [ImportingConstructor]
+        public WindowStateManager([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
         {
+            _serviceProvider = serviceProvider;
+
+            _dte = serviceProvider.GetService(typeof(DTE)) as DTE;
             if (_dte == null)
                 throw new InvalidOperationException("Unable to get DTE instance.");
 
-            _windowFrame = windowFrame;
+            _windowFrame = serviceProvider.GetService(typeof(IVsWindowFrame)) as IVsWindowFrame;
             if (_windowFrame == null)
                 throw new InvalidOperationException("Unable to get IVsWindowFrame instance.");
 
@@ -29,47 +37,36 @@ namespace BuildVision.Helpers
                 throw new InvalidOperationException("Unable to get Window instance.");
         }
 
-        public bool IsVisible()
+        private bool IsVisible()
         {
-            int isOnScreen;
-            int result = _windowFrame.IsOnScreen(out isOnScreen);
-            return (result == VSConstants.S_OK
-                    && isOnScreen == 1
-                    && _windowFrame.IsVisible() == VSConstants.S_OK);
+            int result = _windowFrame.IsOnScreen(out var isOnScreen);
+            return (result == VSConstants.S_OK && isOnScreen == 1 && _windowFrame.IsVisible() == VSConstants.S_OK);
         }
 
-        public void Show()
-        {
-            _windowFrame.Show();
-        }
-
-        public void ShowNoActivate()
-        {
-            _windowFrame.ShowNoActivate();
-        }
-
-        public void Close()
-        {
-            _windowFrame.Hide();
-        }
-
-        public void Hide()
+        private void Hide()
         {
             if (!IsVisible())
+            {
                 return;
+            }
 
-            Window window = _window;
+            var window = _window;
             switch (window.WindowState)
             {
                 case vsWindowState.vsWindowStateNormal:
                     if (!window.IsFloating)
+                    {
                         MinimizeToolWindow();
+                    }
                     else
-                        Close();
+                    {
+                        _windowFrame.Hide();
+                    }
+
                     break;
 
                 case vsWindowState.vsWindowStateMaximize:
-                    Close();
+                    _windowFrame.Hide();
                     break;
 
                 case vsWindowState.vsWindowStateMinimize:
@@ -86,28 +83,28 @@ namespace BuildVision.Helpers
             // or _window.IsFloating.
             _window.AutoHides = true;
 
-            Window win = _dte.ActiveWindow;
+            var win = _dte.ActiveWindow;
             if (win != _window)
             {
                 win.Activate();
                 return;
             }
 
-            Document doc = _dte.ActiveDocument;
+            var doc = _dte.ActiveDocument;
             if (doc != null)
                 doc.Activate();
         }
 
         private static Window GetWindowInstance(DTE dte, Guid windowGuid)
         {
-            Windows windows = dte.Windows;
-
+            var windows = dte.Windows;
             for (int i = 1; i <= windows.Count; i++)
             {
-                Window window = windows.Item(i);
-                Guid guid;
-                if (Guid.TryParse(window.ObjectKind, out guid) && guid == windowGuid)
+                var window = windows.Item(i);
+                if (Guid.TryParse(window.ObjectKind, out var guid) && guid == windowGuid)
+                {
                     return window;
+                }
             }
 
             return null;
@@ -120,20 +117,25 @@ namespace BuildVision.Helpers
                 case WindowState.Nothing:
                     break;
                 case WindowState.Show:
-                    Show();
+                    _windowFrame.Show();
                     break;
                 case WindowState.ShowNoActivate:
-                    ShowNoActivate();
+                    _windowFrame.ShowNoActivate();
                     break;
                 case WindowState.Hide:
                     Hide();
                     break;
                 case WindowState.Close:
-                    Close();
+                    _windowFrame.Hide();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(windowState));
             }
+        }
+
+        public void ApplyToolWindowStateAction(WindowStateAction windowStateAction)
+        {
+            ApplyToolWindowStateAction(windowStateAction.State); 
         }
     }
 }

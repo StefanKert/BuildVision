@@ -4,28 +4,17 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
-using BuildVision.Common;
-using BuildVision.Contracts;
 using BuildVision.Exports.Providers;
-using BuildVision.Helpers;
 using BuildVision.Tool;
-using BuildVision.Tool.Building;
-using BuildVision.Tool.Models;
 using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
-using BuildVision.UI.Extensions;
-using BuildVision.UI.Helpers;
 using BuildVision.UI.Settings.Models;
-using BuildVision.UI.ViewModels;
 using BuildVision.Views.Settings;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Shell.Settings;
-using VSLangProj;
 using Task = System.Threading.Tasks.Task;
 
 namespace BuildVision.Core
@@ -148,7 +137,6 @@ namespace BuildVision.Core
             }
         }
 
-
         ToolWindowPane ShowToolWindow(Guid windowGuid)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -183,19 +171,6 @@ namespace BuildVision.Core
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
             _dte.ExecuteCommand(commandName);
-        }
-
-
-        async Task EnsurePackageLoaded(Guid packageGuid)
-        {
-            await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
-
-            var shell = await GetServiceAsync(typeof(SVsShell)) as IVsShell;
-            if (shell != null)
-            {
-                IVsPackage vsPackage;
-                ErrorHandler.ThrowOnFailure(shell.LoadPackage(ref packageGuid, out vsPackage));
-            }
         }
     }
 }

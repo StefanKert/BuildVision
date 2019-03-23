@@ -4,7 +4,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -227,16 +226,6 @@ namespace BuildVision.Tool.Building
                 //if (!_buildCancelledInternally)
                 //    OnBuildCancelled();
             }
-        }
-
-        private void ApplyWindowState(UI.Settings.Models.ControlSettings settings)
-        {
-            // Figure out when build  is canceled
-            //int errorProjectsCount = _viewModel.ProjectsList.Count(item => item.State.IsErrorState());
-            //if (errorProjectsCount > 0 || BuildIsCancelled)
-            //    ApplyToolWindowStateAction(settings.WindowSettings.WindowActionOnBuildError);
-            //else
-            //    ApplyToolWindowStateAction(settings.WindowSettings.WindowActionOnBuildSuccess);
         }
 
         public void RaiseCommandForSelectedProject()

@@ -174,11 +174,14 @@
                         </Style>
                     </ListBox.Resources>
 
-                    <indicators:ErrorsIndicator Value="{Binding ErrorCount}" />
+                    <indicators:ErrorsIndicator Value="{Binding BuildInformationModel.ErrorCount, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Margin="-6,0,0,0" Content="{Binding BuildInformationModel.ErrorCount, UpdateSourceTrigger=PropertyChanged}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
 
-                    <indicators:WarningsIndicator Value="{Binding WarningsCount}" />
+                    <indicators:WarningsIndicator Value="{Binding BuildInformationModel.WarningsCount, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Margin="-6,0,0,0" Content="{Binding BuildInformationModel.WarningsCount, UpdateSourceTrigger=PropertyChanged}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
 
-                    <indicators:MessagesIndicator Value="{Binding MessagesCount}" />
+                    <indicators:MessagesIndicator Value="{Binding BuildInformationModel.MessagesCount, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Margin="-6,0,0,0" Content="{Binding BuildInformationModel.MessagesCount, UpdateSourceTrigger=PropertyChanged}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
                 </ListBox>
 
                 <Border Grid.Column="3"
@@ -213,13 +216,18 @@
                         </Style>
                     </ListBox.Resources>
 
-                    <indicators:SuccessProjectsIndicator Value="{Binding SucceededProjectsCount}" />
+                    <indicators:SuccessProjectsIndicator Value="{Binding BuildInformationModel.SucceededProjectsCount, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Margin="-8,0,0,0" Content="{Binding BuildInformationModel.SucceededProjectsCount}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
+                    
+                    <indicators:UpToDateProjectsIndicator Value="{Binding BuildInformationModel.UpToDateProjectsCount, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Margin="-6,0,0,0" Content="{Binding BuildInformationModel.UpToDateProjectsCount}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
+                    
+                    <indicators:WarningProjectsIndicator Value="{Binding BuildInformationModel.WarnedProjectsCount, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Margin="-6,0,0,0" Content="{Binding BuildInformationModel.WarnedProjectsCount}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
+                    
+                    <indicators:ErrorProjectsIndicator Value="{Binding BuildInformationModel.FailedProjectsCount, UpdateSourceTrigger=PropertyChanged}" />
+                    <Label Margin="-6,0,0,0" Content="{Binding BuildInformationModel.FailedProjectsCount}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
 
-                    <indicators:UpToDateProjectsIndicator Value="{Binding UpToDateProjectsCount}" />
-
-                    <indicators:WarningProjectsIndicator Value="{Binding WarnedProjectsCount}" />
-
-                    <indicators:ErrorProjectsIndicator Value="{Binding FailedProjectsCount}" />
                 </ListBox>
 
             </Grid>

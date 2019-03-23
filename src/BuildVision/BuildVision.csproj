@@ -91,6 +91,7 @@
     <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\EnvDTECodeModelLanguageConstants2.cs" />
     <Compile Include="Services\BuildInformationProvider.cs" />
     <Compile Include="Services\BuildingProjectsProvider.cs" />
     <Compile Include="Services\ProjectFileNavigationService.cs" />
@@ -103,11 +104,10 @@
     <Compile Include="Services\StatusBarNotificationService.cs" />
     <Compile Include="Helpers\BuildEventContextExtensions.cs" />
     <Compile Include="Helpers\BuildMessageEventArgsExtensions.cs" />
-    <Compile Include="Helpers\EnvDTEProjectKinds.cs" />
-    <Compile Include="Helpers\ProjectItemExtensions.cs" />
+    <Compile Include="Constants\EnvDTEProjectKinds.cs" />
     <Compile Include="Helpers\SolutionProjectsExtensions.cs" />
     <Compile Include="Helpers\ProjectExtensions.cs" />
-    <Compile Include="Helpers\ProjectItemsExtensions.cs" />
+    <Compile Include="Helpers\ProjectItemExtensions.cs" />
     <Compile Include="Helpers\PropertiesExtensions.cs" />
     <Compile Include="Helpers\StateConverterHelper.cs" />
     <Compile Include="Helpers\UIHierarchyExtensions.cs" />
@@ -117,6 +117,7 @@
     <Compile Include="Tool\Building\BuildManager.cs" />
     <Compile Include="Tool\Building\BuildOutputLogger.cs" />
     <Compile Include="Core\IPackageContext.cs" />
+    <Compile Include="Tool\Building\WindowStateManager.cs" />
     <Compile Include="Tool\Views\Settings\BuildMessagesSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -137,10 +138,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Core\BuildVisionPane.cs" />
-    <Compile Include="Core\PackageGuids.cs" />
+    <Compile Include="Constants\PackageGuids.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\PackageIds.cs" />
-    <Compile Include="Helpers\ToolWindowManager.cs" />
+    <Compile Include="Constants\PackageIds.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VSPackage.resx">

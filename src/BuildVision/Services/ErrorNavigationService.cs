@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using BuildVision.Contracts;
 using BuildVision.Exports.Providers;
+using BuildVision.Exports.Services;
 using BuildVision.Helpers;
 using BuildVision.UI.Common.Logging;
 using EnvDTE;
@@ -14,7 +15,6 @@ namespace BuildVision.Services
     public class ErrorNavigationService : IErrorNavigationService
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly IBuildingProjectsProvider _buildingProjectsProvider;
 
         public static bool BuildErrorNavigated { get; set; }
 
@@ -27,9 +27,6 @@ namespace BuildVision.Services
 
         public void NavigateToErrorItem(ErrorItem errorItem)
         {
-            if (BuildErrorNavigated)
-                return;
-
             try
             {
                 var dte = _serviceProvider.GetService(typeof(DTE)) as DTE;

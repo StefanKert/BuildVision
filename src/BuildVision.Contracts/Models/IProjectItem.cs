@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using BuildVision.Contracts;
 
@@ -12,8 +13,6 @@ namespace BuildVision.UI.Models
         DateTime? BuildStartTime { get; set; }
         string CommonType { get; set; }
         string Configuration { get; set; }
-        ErrorsBox ErrorsBox { get; set; }
-        int ErrorsCount { get; }
         string ExtenderNames { get; set; }
         string FlavourType { get; set; }
         string Framework { get; set; }
@@ -22,7 +21,6 @@ namespace BuildVision.UI.Models
         bool IsBatchBuildProject { get; set; }
         string Language { get; set; }
         string MainFlavourType { get; set; }
-        int MessagesCount { get; }
         string Name { get; set; }
         string OutputType { get; set; }
         string Platform { get; set; }
@@ -32,7 +30,12 @@ namespace BuildVision.UI.Models
         ControlTemplate StateBitmap { get; }
         bool Success { get; set; }
         string UniqueName { get; set; }
-        int WarningsCount { get; }
+        int MessagesCount { get; set; }
+        int ErrorsCount { get; set; }
+        int WarningsCount { get; set; }
+        ObservableCollection<ErrorItem> Errors { get; set; }
+        ObservableCollection<ErrorItem> Warnings { get; set; } 
+        ObservableCollection<ErrorItem> Messages { get; set; }
 
         void RaiseBuildElapsedTimeChanged();
     }

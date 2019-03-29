@@ -78,15 +78,14 @@ namespace BuildVision.Core
                     case ErrorLevel.Error:
                         errorItem.Init((BuildErrorEventArgs) e);
                         break;
-                    default:
-                        errorItem.VerifyValues();
+                    default:  
                         break;
                 }
 
-                projectItem.ErrorsBox.Add(errorItem);
+                errorItem.VerifyValues();
+                AddErrorItem(projectItem, errorItem);
 
                 var args = new BuildErrorRaisedEventArgs(errorLevel, projectItem);
-
                 bool buildNeedCancel = (args.ErrorLevel == ErrorLevel.Error && _packageSettingsProvider.Settings.GeneralSettings.StopBuildAfterFirstError);
                 if (buildNeedCancel)
                 {
@@ -94,7 +93,7 @@ namespace BuildVision.Core
                 }
 
                 bool navigateToBuildFailure = (args.ErrorLevel == ErrorLevel.Error && _packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnErrorRaised);
-                if (_packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone)
+                if (_packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone && !ErrorNavigationService.BuildErrorNavigated)
                 {
                     _errorNavigationService.NavigateToErrorItem(errorItem);
                 }
@@ -102,6 +101,46 @@ namespace BuildVision.Core
             catch (Exception ex)
             {
                 ex.TraceUnknownException();
+            }
+        }
+
+        public void AddErrorItem(IProjectItem projectItem, ErrorItem errorItem)
+        {
+            switch (errorItem.Level)
+            {
+                case ErrorLevel.Message:
+                    projectItem.MessagesCount++;
+                    break;
+                case ErrorLevel.Warning:
+                    projectItem.WarningsCount++;
+                    break;
+                case ErrorLevel.Error:
+                    projectItem.ErrorsCount++;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("errorLevel");
+            }
+            if (errorItem.Level != ErrorLevel.Error)
+                return;
+
+            int errorNumber = projectItem.Errors.Count + projectItem.Warnings.Count + projectItem.Messages.Count + 1;
+            errorItem.Number = errorNumber;
+            switch (errorItem.Level)
+            {
+                case ErrorLevel.Message:
+                    projectItem.Messages.Add(errorItem);
+                    break;
+
+                case ErrorLevel.Warning:
+                    projectItem.Warnings.Add(errorItem);
+                    break;
+
+                case ErrorLevel.Error:
+                    projectItem.Errors.Add(errorItem);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException("errorLevel");
             }
         }
 
@@ -231,7 +270,7 @@ namespace BuildVision.Core
                 case BuildActions.BuildActionRebuildAll:
                     if (success)
                     {
-                        if (_packageSettingsProvider.Settings.GeneralSettings.ShowWarningSignForBuilds && currentProject.ErrorsBox.WarningsCount > 0)
+                        if (_packageSettingsProvider.Settings.GeneralSettings.ShowWarningSignForBuilds && currentProject.WarningsCount > 0)
                         {
                             projectState = ProjectState.BuildWarning;
                         }
@@ -246,7 +285,7 @@ namespace BuildVision.Core
                     }
                     else
                     {
-                        bool buildCancelled = (canceled && currentProject.ErrorsBox.ErrorsCount == 0);
+                        bool buildCancelled = (canceled && currentProject.ErrorsCount == 0);
                         projectState = buildCancelled ? ProjectState.BuildCancelled : ProjectState.BuildError;
                     }
                     break;

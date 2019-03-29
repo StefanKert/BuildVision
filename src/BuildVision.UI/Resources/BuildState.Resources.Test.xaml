@@ -19,8 +19,9 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <StackPanel Margin="10" Grid.Row="0" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
-                <ContentControl 
+            <StackPanel Margin="10"  Grid.Row="0" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -28,7 +29,8 @@
 
                 <Separator Width="10"/>
 
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -36,7 +38,8 @@
 
                 <Separator Width="10"/>
 
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -44,7 +47,8 @@
 
                 <Separator Width="10"/>
 
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -52,7 +56,8 @@
             </StackPanel>
 
             <StackPanel Margin="10" Grid.Row="1" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -60,7 +65,8 @@
 
                 <Separator Width="10"/>
 
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -68,7 +74,8 @@
 
                 <Separator Width="10"/>
 
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -76,7 +83,8 @@
 
                 <Separator Width="10"/>
 
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -84,7 +92,8 @@
             </StackPanel>
 
             <StackPanel Margin="10" Grid.Row="2" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -92,7 +101,8 @@
 
                 <Separator Width="10"/>
 
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -100,7 +110,8 @@
 
                 <Separator Width="10"/>
 
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -108,7 +119,8 @@
 
                 <Separator Width="10"/>
 
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -116,7 +128,8 @@
             </StackPanel>
 
             <StackPanel Margin="10" Grid.Row="3" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
-                <ContentControl 
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -130,14 +143,14 @@
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <StackPanel Grid.RowSpan="2" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+            <StackPanel Margin="10" Grid.RowSpan="2" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
 
                 <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource Failed}" />
+                            Template="{StaticResource FailedIcon}" />
 
                 <Separator Width="10"/>
 
@@ -146,7 +159,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource Done}" />
+                            Template="{StaticResource DoneIcon}" />
 
                 <Separator Width="10"/>
 
@@ -155,7 +168,7 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource Cancelled}" />
+                            Template="{StaticResource CancelledIcon}" />
 
                 <Separator Width="10"/>
 
@@ -164,20 +177,20 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource FailedWithErrors}" />
+                            Template="{StaticResource FailedWithErrorsIcon}" />
                 <Separator Width="10"/>
             </StackPanel>
         </Grid>
 
-        <Grid Margin="0" Background="Black">
+        <Grid Background="Black">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <StackPanel Grid.RowSpan="2" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
+            <StackPanel Margin="10" Grid.RowSpan="2" Orientation="Horizontal" SnapsToDevicePixels="True" ClipToBounds="True" UseLayoutRounding="False">
 
-                <ContentControl Width="32"
-                            Height="32"
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
@@ -185,16 +198,16 @@
                 <Separator Width="10"/>
 
 
-                <ContentControl Width="32"
-                            Height="32"
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
                             Template="{StaticResource Build}" />
                 <Separator Width="10"/>
 
-                <ContentControl Width="32"
-                            Height="32"
+                <ContentControl Width="Auto"
+                            Height="Auto"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"

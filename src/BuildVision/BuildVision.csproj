@@ -96,7 +96,6 @@
     <Compile Include="Services\BuildingProjectsProvider.cs" />
     <Compile Include="Services\BuildProgressViewModel.cs" />
     <Compile Include="Services\ErrorNavigationService.cs" />
-    <Compile Include="Services\IErrorNavigationService.cs" />
     <Compile Include="Services\IWindowStateService.cs" />
     <Compile Include="Services\SolutionProvider.cs" />
     <Compile Include="Helpers\ProjectIdentifierGenerator.cs" />

@@ -16,6 +16,9 @@ namespace BuildVision.UI
     /// </summary>
     public partial class ErrorsGrid : UserControl
     {
+        public static readonly DependencyProperty ProjectItemProperty = DependencyProperty.Register(nameof(ProjectItem), typeof(ProjectItem), typeof(ErrorsGrid));
+        public static DependencyProperty NavigateToErrorCommandProperty = DependencyProperty.Register(nameof(NavigateToErrorCommand), typeof(ICommand), typeof(ErrorsGrid));
+
         private ScrollViewer _errorsGridScrollViewer;
 
         public ErrorsGrid()
@@ -23,12 +26,17 @@ namespace BuildVision.UI
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty ProjectItemProperty = DependencyProperty.Register(nameof(ProjectItem), typeof(ProjectItem), typeof(ErrorsGrid));
 
         public ProjectItem ProjectItem
         {
             get => (ProjectItem)GetValue(ProjectItemProperty);
             set => SetValue(ProjectItemProperty, value);
+        }
+
+        public ICommand NavigateToErrorCommand
+        {
+            get => (ICommand)GetValue(NavigateToErrorCommandProperty);
+            set => SetValue(NavigateToErrorCommandProperty, value);
         }
 
         private void ErrorsGridRowOnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -37,8 +45,7 @@ namespace BuildVision.UI
             {
                 var row = (DataGridRow)sender;
                 var errorItem = (ErrorItem)row.Item;
-                // TODO navigate to error
-                //errorItem.GoToError();
+                NavigateToErrorCommand.Execute(errorItem);
                 e.Handled = true;
             }
             catch (Exception ex)
@@ -62,7 +69,6 @@ namespace BuildVision.UI
             var parent = (UIElement)VisualTreeHelper.GetParent((DependencyObject)sender);
             parent.RaiseEvent(eventArg);
         }
-
 
         private void ErrorsGridLoaded(object sender, RoutedEventArgs e)
         {

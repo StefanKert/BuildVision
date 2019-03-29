@@ -193,12 +193,13 @@ namespace BuildVision.Tool.Building
 
         private void RaiseCommand(VSConstants.VSStd97CmdID command)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 object customIn = null;
                 object customOut = null;
-                //Services.Dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), (int) command, ref customIn, ref customOut);
+                var dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
+                dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), (int) command, ref customIn, ref customOut);
             }
             catch (Exception ex)
             {

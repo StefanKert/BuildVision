@@ -55,7 +55,6 @@ namespace BuildVision.Contracts
 
         public ErrorItem() { }
 
-
         public void Init(BuildErrorEventArgs e)
         {
             Code = e.Code;
@@ -94,6 +93,7 @@ namespace BuildVision.Contracts
             Subcategory = e.Subcategory;
             Message = e.Message;
         }
+
         // 1. EnvDTE.TextSelection.MoveToLineAndOffset requires line and offset numbers beginning at one.
         // BuildErrorEventArgs.LineNumber and BuildErrorEventArgs.ColumnNumber may be uninitialized.
         // 2. BuildErrorEventArgs.EndLineNumber and BuildErrorEventArgs.EndColumnNumber may be uninitialized,

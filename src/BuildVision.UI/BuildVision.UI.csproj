@@ -89,6 +89,8 @@
     <Compile Include="Controls\Indicators\WarningProjectsIndicator.cs" />
     <Compile Include="Controls\Indicators\WarningsIndicator.cs" />
     <Compile Include="Converters\BooleanToHiddenConverter.cs" />
+    <Compile Include="Converters\InProgressToCollapsedConverter.cs" />
+    <Compile Include="Converters\InProgressToVisibleConverter.cs" />
     <Compile Include="Converters\StateIconKeyToIconConverter.cs" />
     <Compile Include="Enums\ResetTaskBarItemInfoCondition.cs" />
     <Compile Include="Helpers\SortDescription.cs" />

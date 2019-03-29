@@ -223,7 +223,7 @@ namespace BuildVision.Core
                     {
                         if (ErrorNavigationService.BuildErrorNavigated)
                             break;
-                        foreach (var error in project.ErrorsBox)
+                        foreach (var error in project.Errors)
                         {
                             if (ErrorNavigationService.BuildErrorNavigated)
                                 break;

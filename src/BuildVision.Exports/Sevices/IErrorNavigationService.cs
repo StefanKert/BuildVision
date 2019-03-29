@@ -1,6 +1,6 @@
 ﻿using BuildVision.Contracts;
 
-namespace BuildVision.Services
+namespace BuildVision.Exports.Services
 {
     public interface IErrorNavigationService
     {

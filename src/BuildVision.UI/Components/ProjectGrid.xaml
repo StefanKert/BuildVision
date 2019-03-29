@@ -9,9 +9,6 @@
              xmlns:extensions="clr-namespace:BuildVision.UI.Extensions"
              xmlns:helpers="clr-namespace:BuildVision.UI.Helpers"
              xmlns:contracts="clr-namespace:BuildVision.Contracts;assembly=BuildVision.Contracts"
-             xmlns:customButtons="clr-namespace:BuildVision.UI.Controls.Buttons"
-             xmlns:indicators="clr-namespace:BuildVision.UI.Controls.Indicators"
-             xmlns:controls="clr-namespace:BuildVision.UI.Controls"
              xmlns:local="clr-namespace:BuildVision.UI.Components"
              mc:Ignorable="d" 
              Background="{DynamicResource ToolWindowBackgroundKey}"
@@ -93,7 +90,6 @@
                           StaysOpenOnClick="False" />
             </CompositeCollection>
 
-
         </ResourceDictionary>
     </UserControl.Resources>
     <DataGrid Name="Grid"
@@ -116,11 +112,9 @@
                   GridLinesVisibility="None"
                   HeadersVisibility="{Binding GridHeadersVisibility}"
                   IsReadOnly="True"
-                  ItemsSource="{Binding GroupedProjectsList, 
-                                        NotifyOnTargetUpdated=True}"
+                  ItemsSource="{Binding GroupedProjectsList, NotifyOnTargetUpdated=True}"
                   RowBackground="{DynamicResource ToolboxBackgroundKey}"
-                  ScrollViewer.CanContentScroll="{Binding GridGroupPropertyName, 
-                                                          Converter={StaticResource StringIsNullOrEmptyConverter}}"
+                  ScrollViewer.CanContentScroll="{Binding GridGroupPropertyName, Converter={StaticResource StringIsNullOrEmptyConverter}}"
                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
                   ScrollViewer.IsDeferredScrollingEnabled="False"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -326,6 +320,7 @@
                                                   Background="Transparent"
                                                   MouseLeftButtonDown="DataGridRowDetailsOnMouseLeftButtonDown"
                                                   ProjectItem="{Binding}"
+                                                  NavigateToErrorCommand="{Binding DataContext.NavigateToErrorCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ProjectGrid}}"
                                                   MaxHeight="100" />
             </DataTemplate>
         </DataGrid.RowDetailsTemplate>

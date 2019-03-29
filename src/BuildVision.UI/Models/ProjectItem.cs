@@ -5,6 +5,8 @@ using BuildVision.Common.Extensions;
 using BuildVision.Contracts;
 using BuildVision.UI.Modelss;
 using BuildVision.UI.Extensions;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace BuildVision.UI.Models
 {
@@ -154,30 +156,35 @@ namespace BuildVision.UI.Models
             }
         }
 
-        private ErrorsBox _errorsBox;
+        public ObservableCollection<ErrorItem> Errors { get; set; } = new ObservableCollection<ErrorItem>();
 
-        public ErrorsBox ErrorsBox
+        public ObservableCollection<ErrorItem> Warnings { get; set; } = new ObservableCollection<ErrorItem>();
+
+        public ObservableCollection<ErrorItem> Messages { get; set; } = new ObservableCollection<ErrorItem>();
+
+        private int _errorsCount;
+        [GridColumn("ProjectItemHeader_ErrorsCount", ColumnsOrder.ErrorsCount, true, ImageDictionaryUri = "Resources/ValueIndicator.Resources.xaml", ImageKey = "ErrorsIndicatorIcon", ExampleValue = 4)]
+        public int ErrorsCount
         {
-            get { return _errorsBox ?? (_errorsBox = new ErrorsBox()); }
-            set
-            {
-                if (_errorsBox != value)
-                {
-                    _errorsBox = value;
-                    OnPropertyChanged("ErrorsBox");
-                    OnPropertyChanged("ErrorsCount");
-                    OnPropertyChanged("WarningsCount");
-                    OnPropertyChanged("MessagesCount");
-                }
-            }
+            get => _errorsCount;
+            set => SetProperty(ref _errorsCount, value);
         }
 
-        [GridColumn("ProjectItemHeader_ErrorsCount", ColumnsOrder.ErrorsCount, true, ImageDictionaryUri = "Resources/ValueIndicator.Resources.xaml", ImageKey = "ErrorsIndicatorIcon", ExampleValue = 4)]
-        public int ErrorsCount => ErrorsBox.ErrorsCount;
+        private int _warningsCount;
         [GridColumn("ProjectItemHeader_WarningsCount", ColumnsOrder.WarningsCount, true, ImageDictionaryUri = "Resources/ValueIndicator.Resources.xaml", ImageKey = "WarningsIndicatorIcon", ExampleValue = 1253)]
-        public int WarningsCount => ErrorsBox.WarningsCount;
+        public int WarningsCount
+        {
+            get => _warningsCount;
+            set => SetProperty(ref _warningsCount, value);
+        }
+
+        private int _messagesCount;
         [GridColumn("ProjectItemHeader_MessagesCount", ColumnsOrder.MessagesCount, false, ImageDictionaryUri = "Resources/ValueIndicator.Resources.xaml", ImageKey = "MessagesIndicatorIcon", ExampleValue = 2)]
-        public int MessagesCount => ErrorsBox.MessagesCount;
+        public int MessagesCount
+        {
+            get => _messagesCount;
+            set => SetProperty(ref _messagesCount, value);
+        }
 
         private string _framework;
 

@@ -185,6 +185,7 @@ namespace BuildVision.UI.ViewModels
         private readonly IBuildingProjectsProvider _buildingProjectsProvider;
         private readonly IBuildInformationProvider _buildInformationProvider;
         private readonly IBuildService _buildService;
+        private readonly IErrorNavigationService _errorNavigationService;
 
         public ProjectItem SelectedProjectItem
         {
@@ -193,11 +194,18 @@ namespace BuildVision.UI.ViewModels
         }
 
         [ImportingConstructor]
-        public BuildVisionPaneViewModel(IBuildingProjectsProvider buildingProjectsProvider, IBuildInformationProvider buildInformationProvider, IPackageSettingsProvider settingsProvider, ISolutionProvider solutionProvider, IBuildService buildService)
+        public BuildVisionPaneViewModel(
+            IBuildingProjectsProvider buildingProjectsProvider, 
+            IBuildInformationProvider buildInformationProvider, 
+            IPackageSettingsProvider settingsProvider, 
+            ISolutionProvider solutionProvider, 
+            IBuildService buildService,
+            IErrorNavigationService errorNavigationService)
         {
             _buildingProjectsProvider = buildingProjectsProvider;
             _buildInformationProvider = buildInformationProvider;
             _buildService = buildService;
+            _errorNavigationService = errorNavigationService;
             BuildInformationModel = _buildInformationProvider.GetBuildInformationModel();
             SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
@@ -338,7 +346,7 @@ namespace BuildVision.UI.ViewModels
             try
             {
                 var errors = new StringBuilder();
-                foreach (var errorItem in projectItem.ErrorsBox.Errors)
+                foreach (var errorItem in projectItem.Errors)
                 {
                     errors.AppendLine(string.Format("{0}({1},{2},{3},{4}): error {5}: {6}", errorItem.File, errorItem.LineNumber, errorItem.ColumnNumber, errorItem.EndLineNumber, errorItem.EndColumnNumber, errorItem.Code, errorItem.Message));
                 }
@@ -352,14 +360,15 @@ namespace BuildVision.UI.ViewModels
 
         #region Commands
 
+        public ICommand NavigateToErrorCommand => new RelayCommand(obj => _errorNavigationService.NavigateToErrorItem(obj as ErrorItem));
+
         public ICommand ReportIssues => new RelayCommand(obj => GithubHelper.OpenBrowserWithPrefilledIssue());
 
         public ICommand GridSorting => new RelayCommand(obj => ReorderGrid(obj));
 
         public ICommand GridGroupPropertyMenuItemClicked => new RelayCommand(obj => GridGroupPropertyName = (obj != null) ? obj.ToString() : string.Empty);
 
-        public ICommand SelectedProjectOpenContainingFolderAction => new RelayCommand(obj => OpenContainingFolder(),
-                canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.FullName)));
+        public ICommand SelectedProjectOpenContainingFolderAction => new RelayCommand(obj => OpenContainingFolder(), canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.FullName)));
 
         //public ICommand SelectedProjectCopyBuildOutputFilesToClipboardAction => new RelayCommand(
         //    obj => _buildService.ProjectCopyBuildOutputFilesToClipBoard(SelectedProjectItem),
@@ -378,8 +387,7 @@ namespace BuildVision.UI.ViewModels
         //    obj => _buildService.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx),
         //    canExecute: obj => IsProjectItemEnabledForActions());
 
-        public ICommand SelectedProjectCopyErrorMessagesAction => new RelayCommand(obj => CopyErrorMessageToClipboard(SelectedProjectItem),
-        canExecute: obj => SelectedProjectItem?.ErrorsCount > 0);
+        public ICommand SelectedProjectCopyErrorMessagesAction => new RelayCommand(obj => CopyErrorMessageToClipboard(SelectedProjectItem), canExecute: obj => SelectedProjectItem?.ErrorsCount > 0);
 
         public ICommand BuildSolutionAction => new RelayCommand(obj => _buildService.BuildSolution());
 

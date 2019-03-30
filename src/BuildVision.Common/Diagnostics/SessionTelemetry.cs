@@ -14,17 +14,6 @@ namespace BuildVision.Common.Diagnostics
         private readonly string _operatingSystem = RuntimeInformation.OSDescription?.Replace("Microsoft ", ""); // Shorter description
         private readonly string _session = Guid.NewGuid().ToString();
 
-#if STORE
-        private const string Channel = "store";
-#elif NIGHTLY
-        private const string Channel = "nightly";
-#elif CHOCO
-        private const string Channel = "chocolatey";
-#else
-        private const string Channel = "zip";
-#endif
-
-
         public SessionTelemetry()
         {
             try
@@ -43,7 +32,7 @@ namespace BuildVision.Common.Diagnostics
 
         public void Initialize(ITelemetry telemetry)
         {
-            telemetry.Context.GlobalProperties["Environment"] = Channel;
+            telemetry.Context.GlobalProperties["Environment"] = "release";
             // Always default to development if we're in the debugger
             if (Debugger.IsAttached)
             {

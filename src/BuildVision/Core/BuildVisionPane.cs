@@ -17,6 +17,8 @@ using BuildVision.Exports.Services;
 using BuildVision.Views.Settings;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Windows.Controls;
+using BuildVision.UI.Settings.Models;
+using BuildVision.UI.Settings.Models.Columns;
 
 namespace BuildVision.Tool
 {
@@ -33,19 +35,16 @@ namespace BuildVision.Tool
     public sealed class BuildVisionPane : ToolWindowPane
     {
         private bool _controlCreatedSuccessfully;
-        private readonly BuildVisionPaneViewModel _viewModel;
 
         JoinableTask<BuildVisionPaneViewModel> viewModelTask;
         private ContentPresenter _contentPresenter;
+        private IPackageSettingsProvider _packageSettingsProvider;
 
         public JoinableTaskFactory JoinableTaskFactory { get; private set; }
         public ControlView View
         {
-            get { return _contentPresenter.Content as ControlView; }
-            set
-            {
-                _contentPresenter.Content = value;
-            }
+            get => _contentPresenter.Content as ControlView;
+            set => _contentPresenter.Content = value;
         }
 
         public BuildVisionPane()
@@ -76,70 +75,54 @@ namespace BuildVision.Tool
         async Task<BuildVisionPaneViewModel> InitializeAsync(AsyncPackage asyncPackage)
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync();
-            try
-            {
-                var solutionProvider = await asyncPackage.GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
-                Assumes.Present(solutionProvider);
-                var buildInformationProvider = await asyncPackage.GetServiceAsync(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
-                Assumes.Present(buildInformationProvider);
-                var buildingProjectsProvider = await asyncPackage.GetServiceAsync(typeof(IBuildingProjectsProvider)) as IBuildingProjectsProvider;
-                Assumes.Present(buildingProjectsProvider);
-                var buildService = await asyncPackage.GetServiceAsync(typeof(IBuildService)) as IBuildService;
-                Assumes.Present(buildService);
-                var packageSettingsProvider = await asyncPackage.GetServiceAsync(typeof(IPackageSettingsProvider)) as IPackageSettingsProvider;
-                Assumes.Present(packageSettingsProvider);
-                var errorNavigationService = await asyncPackage.GetServiceAsync(typeof(IErrorNavigationService)) as IErrorNavigationService;
-                Assumes.Present(packageSettingsProvider);
 
-                var viewModel = new BuildVisionPaneViewModel(buildingProjectsProvider, buildInformationProvider, packageSettingsProvider, solutionProvider, buildService, errorNavigationService);
-         
-                View = CreateControlView();
-                View.DataContext = viewModel;
-                _controlCreatedSuccessfully = true;
-                return viewModel;
-            }
-            catch (Exception e)
-            {
-                throw;
-            }
+            _packageSettingsProvider = await asyncPackage.GetServiceAsync(typeof(IPackageSettingsProvider)) as IPackageSettingsProvider;
+            Assumes.Present(_packageSettingsProvider);
+            var solutionProvider = await asyncPackage.GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
+            Assumes.Present(solutionProvider);
+            var buildInformationProvider = await asyncPackage.GetServiceAsync(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
+            Assumes.Present(buildInformationProvider);
+            var buildService = await asyncPackage.GetServiceAsync(typeof(IBuildService)) as IBuildService;
+            Assumes.Present(buildService);
+            var errorNavigationService = await asyncPackage.GetServiceAsync(typeof(IErrorNavigationService)) as IErrorNavigationService;
+            Assumes.Present(errorNavigationService);
+            var taskBarInfoService = await asyncPackage.GetServiceAsync(typeof(ITaskBarInfoService)) as ITaskBarInfoService;
+            Assumes.Present(taskBarInfoService);
+
+            var viewModel = new BuildVisionPaneViewModel(buildInformationProvider, _packageSettingsProvider, solutionProvider, buildService, errorNavigationService, taskBarInfoService);
+
+            View = CreateControlView();
+            View.DataContext = viewModel;
+            viewModel.ShowOptionPage += ViewModel_ShowOptionPage;
+            _controlCreatedSuccessfully = true;
+            return viewModel;
+        }
+
+        private void ViewModel_ShowOptionPage(Type obj)
+        {
+            var asyncPackage = (AsyncPackage)Package;
+            if (obj == typeof(GeneralSettings))
+                asyncPackage.ShowOptionPage(typeof(GeneralSettingsDialogPage));
+            if(obj == typeof(GridColumnSettings))
+                asyncPackage.ShowOptionPage(typeof(GridSettingsDialogPage));
         }
 
         protected override void OnClose()
         {
             if (_controlCreatedSuccessfully)
-                SaveControlSettings();
+                _packageSettingsProvider.Save();
 
             base.OnClose();
         }
 
         private ControlView CreateControlView()
         {
-            var packageContext = (IPackageContext)Package;
-            packageContext.ControlSettingsChanged += (settings) =>
-            {
-                _viewModel.OnControlSettingsChanged(settings); //, buildInfo => BuildMessages.GetBuildDoneMessage(viewModel.SolutionItem, buildInfo, viewModel.ControlSettings.BuildMessagesSettings));
-            };
             var view = new ControlView();
             view.Resources.MergedDictionaries.Add(new ResourceDictionary
             {
                 Source = new Uri("pack://application:,,,/BuildVision.UI;component/Styles/ExtensionStyle.xaml")
             });
             return view;
-        }
-
-        private void SaveControlSettings()
-        {
-            var viewModel = GetViewModel(this);
-            viewModel.SyncColumnSettings();
-
-            var packageContext = (IPackageContext)Package;
-            //packageContext.SaveSettings();
-        }
-
-        public static BuildVisionPaneViewModel GetViewModel(ToolWindowPane toolWindow)
-        {
-            var controlView = (ControlView)toolWindow.Content;
-            return (BuildVisionPaneViewModel)controlView.DataContext;
         }
     }
 }

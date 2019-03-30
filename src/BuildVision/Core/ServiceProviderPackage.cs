@@ -25,13 +25,12 @@ namespace BuildVision.Core
     [ProvideService(typeof(IPackageSettingsProvider), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildInformationProvider), IsAsyncQueryable = true)]
     [ProvideService(typeof(ISolutionProvider), IsAsyncQueryable = true)]
-    [ProvideService(typeof(IBuildingProjectsProvider), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildMessagesFactory), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildOutputLogger), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildService), IsAsyncQueryable = true)]
     [ProvideService(typeof(IStatusBarNotificationService), IsAsyncQueryable = true)]
     [ProvideService(typeof(IWindowStateService), IsAsyncQueryable = true)]
-    [ProvideService(typeof(IBuildProgressViewModel), IsAsyncQueryable = true)]
+    [ProvideService(typeof(ITaskBarInfoService), IsAsyncQueryable = true)]
     [ProvideService(typeof(IErrorNavigationService), IsAsyncQueryable = true)]
     public sealed class ServiceProviderPackage : AsyncPackage
     {
@@ -43,13 +42,12 @@ namespace BuildVision.Core
             AddService(typeof(IPackageSettingsProvider), CreateServiceAsync, true);
             AddService(typeof(IBuildInformationProvider), CreateServiceAsync, true);
             AddService(typeof(ISolutionProvider), CreateServiceAsync, true);
-            AddService(typeof(IBuildingProjectsProvider), CreateServiceAsync, true);
             AddService(typeof(IBuildMessagesFactory), CreateServiceAsync, true);
             AddService(typeof(IBuildOutputLogger), CreateServiceAsync, true);
             AddService(typeof(IBuildService), CreateServiceAsync, true);
             AddService(typeof(IStatusBarNotificationService), CreateServiceAsync, true);
             AddService(typeof(IWindowStateService), CreateServiceAsync, true);
-            AddService(typeof(IBuildProgressViewModel), CreateServiceAsync, true);
+            AddService(typeof(ITaskBarInfoService), CreateServiceAsync, true);
             AddService(typeof(IErrorNavigationService), CreateServiceAsync, true);
         }
 
@@ -84,17 +82,18 @@ namespace BuildVision.Core
             }
             else if (serviceType == typeof(IStatusBarNotificationService))
             {
-                return new StatusBarNotificationService(sp);
+                var packageSettingsProvider = await GetServiceAsync<IPackageSettingsProvider>(cancellation);
+                return new StatusBarNotificationService(sp, packageSettingsProvider);
             }
             else if (serviceType == typeof(IBuildMessagesFactory))
             {
                 var packageSettingsProvider = await GetServiceAsync<IPackageSettingsProvider>(cancellation);
                 return new BuildMessagesFactory(packageSettingsProvider);
             }
-            else if (serviceType == typeof(IBuildProgressViewModel))
+            else if (serviceType == typeof(ITaskBarInfoService))
             {
                 var packageSettingsProvider = await GetServiceAsync<IPackageSettingsProvider>(cancellation);
-                return new BuildProgressViewModel(packageSettingsProvider);
+                return new TaskBarInfoService(packageSettingsProvider);
             }
             else if (serviceType == typeof(IBuildInformationProvider))
             {
@@ -104,21 +103,10 @@ namespace BuildVision.Core
                 var packageSettingsProvider = await GetServiceAsync<IPackageSettingsProvider>(cancellation);
                 var statusBarNotificationService = await GetServiceAsync<IStatusBarNotificationService>(cancellation);
                 var windowStateService = await GetServiceAsync<IWindowStateService>(cancellation);
-                var buildProgressViewModel = await GetServiceAsync<IBuildProgressViewModel>(cancellation);
+                var taskBarInfoService = await GetServiceAsync<ITaskBarInfoService>(cancellation);
                 var buildService = await GetServiceAsync<IBuildService>(cancellation);
                 var errorNavigationService = await GetServiceAsync<IErrorNavigationService>(cancellation);
-                return new BuildInformationProvider(sp, buildOutputLogger, statusBarNotificationService, buildMessagesFactory, windowStateService, packageSettingsProvider, buildProgressViewModel, errorNavigationService);
-            }
-            else if (serviceType == typeof(IBuildingProjectsProvider))
-            {
-                var solutionProvider = await GetServiceAsync<ISolutionProvider>(cancellation);
-                var buildInformationProvider = await GetServiceAsync<IBuildInformationProvider>(cancellation);
-                var buildOutputLogger = await GetServiceAsync<IBuildOutputLogger>(cancellation);
-                var packageSettingsProvider = await GetServiceAsync<IPackageSettingsProvider>(cancellation);
-                var buildProgressViewModel = await GetServiceAsync<IBuildProgressViewModel>(cancellation); 
-                var buildService = await GetServiceAsync<IBuildService>(cancellation);
-                var errorNavigationService = await GetServiceAsync<IErrorNavigationService>(cancellation);
-                return new BuildingProjectsProvider(solutionProvider, buildInformationProvider, buildOutputLogger, buildProgressViewModel, packageSettingsProvider, buildService, errorNavigationService);
+                return new BuildInformationProvider(sp, buildOutputLogger, statusBarNotificationService, buildMessagesFactory, windowStateService, packageSettingsProvider, errorNavigationService, solutionProvider, buildService, taskBarInfoService);
             }
             else
             {

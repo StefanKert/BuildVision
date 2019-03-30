@@ -92,9 +92,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants\EnvDTECodeModelLanguageConstants2.cs" />
+    <Compile Include="Extensions\IServiceProviderExtensions.cs" />
     <Compile Include="Services\BuildInformationProvider.cs" />
-    <Compile Include="Services\BuildingProjectsProvider.cs" />
-    <Compile Include="Services\BuildProgressViewModel.cs" />
     <Compile Include="Services\ErrorNavigationService.cs" />
     <Compile Include="Services\IWindowStateService.cs" />
     <Compile Include="Services\SolutionProvider.cs" />
@@ -117,7 +116,7 @@
     <Compile Include="Helpers\VsHierarchyExtensions.cs" />
     <Compile Include="Services\BuildService.cs" />
     <Compile Include="Services\BuildOutputLogger.cs" />
-    <Compile Include="Core\IPackageContext.cs" />
+    <Compile Include="Services\TaskBarInfoService.cs" />
     <Compile Include="Services\WindowStateService.cs" />
     <Compile Include="Views\Settings\BuildMessagesSettingsDialogPage.cs">
       <SubType>Component</SubType>
@@ -151,6 +150,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -222,6 +224,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AppInsights.WindowsDesktop">
+      <Version>2.10.17-preview</Version>
+    </PackageReference>
     <PackageReference Include="EnvDTE">
       <Version>8.0.2</Version>
     </PackageReference>

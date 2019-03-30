@@ -1,9 +1,4 @@
-﻿using System.ComponentModel;
-using System.Runtime.InteropServices;
-
-using Microsoft.VisualStudio.Shell;
-using BuildVision.UI.ViewModels;
-using BuildVision.Tool;
+﻿using System.Runtime.InteropServices;
 using BuildVision.UI.Settings.Models;
 using BuildVision.UI.Settings;
 
@@ -15,18 +10,8 @@ namespace BuildVision.Views.Settings
     {
         protected override GridSettings Settings
         {
-            get { return ControlSettings.GridSettings; }
-            set { ControlSettings.GridSettings = value; }
-        }
-
-        protected override void OnActivate(CancelEventArgs e)
-        {
-            //TODO FIx
-            //ToolWindowPane toolWindow = Package.GetToolWindow();
-            //ControlViewModel viewModel = ToolWindow.GetViewModel(toolWindow);
-            //viewModel.SyncColumnSettings();
-
-            base.OnActivate(e);
+            get => ControlSettings?.GridSettings;
+            set => ControlSettings.GridSettings = value;
         }
     }
 }

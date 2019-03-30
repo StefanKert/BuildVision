@@ -17,6 +17,7 @@ using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Models;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 
@@ -28,7 +29,6 @@ namespace BuildVision.Tool.Building
     {
         private const string CancelBuildCommand = "Build.Cancel";
         private bool _buildCancelledInternally;
-        private CancellationTokenSource _buildProcessCancellationToken;
         private bool _buildCancelled;
         private IServiceProvider _serviceProvider;
 
@@ -82,7 +82,7 @@ namespace BuildVision.Tool.Building
             }
         }
 
-        public void RaiseCommandForSelectedProject(UI.Models.ProjectItem selectedProjectItem, int commandId)
+        public void RaiseCommandForSelectedProject(IProjectItem selectedProjectItem, int commandId)
         {
             try
             {
@@ -95,18 +95,18 @@ namespace BuildVision.Tool.Building
             }
         }
 
-        private void SelectProjectInSolutionExplorer(UI.Models.ProjectItem projectItem)
+        private void SelectProjectInSolutionExplorer(IProjectItem projectItem)
         {
-            //var solutionExplorer = Services.Dte2.ToolWindows.SolutionExplorer;
-            //var project = Services.Dte2.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName);
-            //var item = solutionExplorer.FindHierarchyItem(project);
-            //if (item == null)
-            //    throw new ProjectNotFoundException($"Project '{projectItem.UniqueName}' not found in SolutionExplorer.");
-            //solutionExplorer.Parent.Activate();
-            //item.Select(vsUISelectionType.vsUISelectionTypeSelect);
+            var solutionExplorer = Core.Services.Dte2.ToolWindows.SolutionExplorer;
+            var project = Core.Services.Dte2.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName);
+            var item = solutionExplorer.FindHierarchyItem(project);
+            if (item == null)
+                throw new ProjectNotFoundException($"Project '{projectItem.UniqueName}' not found in SolutionExplorer.");
+            solutionExplorer.Parent.Activate();
+            item.Select(vsUISelectionType.vsUISelectionTypeSelect);
         }
 
-        private void ProjectCopyBuildOutputFilesToClipBoard(UI.Models.ProjectItem projItem)
+        public void ProjectCopyBuildOutputFilesToClipBoard(IProjectItem projItem)
         {
             try
             {
@@ -193,7 +193,6 @@ namespace BuildVision.Tool.Building
 
         private void RaiseCommand(VSConstants.VSStd97CmdID command)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
             try
             {
                 object customIn = null;
@@ -207,22 +206,7 @@ namespace BuildVision.Tool.Building
             }
         }
 
-        public void ShowGridColumnsSettingsPage()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ShowGeneralSettingsPage()
-        {
-            throw new NotImplementedException();
-        }
-
         public void ProjectCopyBuildOutputFilesToClipBoard()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RaiseCommandForSelectedProject()
         {
             throw new NotImplementedException();
         }

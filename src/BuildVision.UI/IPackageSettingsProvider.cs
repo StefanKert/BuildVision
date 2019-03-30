@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using BuildVision.UI.Settings.Models;
 
 namespace BuildVision.Views.Settings
@@ -8,5 +9,7 @@ namespace BuildVision.Views.Settings
         void Save();
 
         ControlSettings Settings { get; }
+
+        event Action SettingsChanged;
     }
 }

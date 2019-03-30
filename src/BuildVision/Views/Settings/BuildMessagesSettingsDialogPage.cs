@@ -11,8 +11,8 @@ namespace BuildVision.Views.Settings
     {
         protected override BuildMessagesSettings Settings
         {
-            get { return ControlSettings.BuildMessagesSettings; }
-            set { ControlSettings.BuildMessagesSettings = value; }
+            get =>  ControlSettings?.BuildMessagesSettings; 
+            set => ControlSettings.BuildMessagesSettings = value; 
         }
     }
 }

@@ -31,6 +31,7 @@ namespace BuildVision.Views.Settings
         public void Save()
         {
             SaveSettings();
+            SettingsChanged?.Invoke();
         }
 
         private void SaveSettings()
@@ -64,5 +65,7 @@ namespace BuildVision.Views.Settings
                 MessageBox.Show("An error occurred when trying to load current settings. To make sure everything is still working the settings are set to default.");
             }
         }
+
+        public event Action SettingsChanged;
     }
 }

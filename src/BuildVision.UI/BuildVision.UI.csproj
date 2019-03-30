@@ -89,14 +89,15 @@
     <Compile Include="Controls\Indicators\WarningProjectsIndicator.cs" />
     <Compile Include="Controls\Indicators\WarningsIndicator.cs" />
     <Compile Include="Converters\BooleanToHiddenConverter.cs" />
+    <Compile Include="Converters\InProgressToBoolConverter.cs" />
     <Compile Include="Converters\InProgressToCollapsedConverter.cs" />
     <Compile Include="Converters\InProgressToVisibleConverter.cs" />
     <Compile Include="Converters\StateIconKeyToIconConverter.cs" />
     <Compile Include="Enums\ResetTaskBarItemInfoCondition.cs" />
-    <Compile Include="Helpers\SortDescription.cs" />
+    <Compile Include="Models\SortDescription.cs" />
     <Compile Include="Enums\SortOrder.cs" />
     <Compile Include="Enums\WindowState.cs" />
-    <Compile Include="Helpers\WindowStateAction.cs" />
+    <Compile Include="Models\WindowStateAction.cs" />
     <Compile Include="IPackageSettingsProvider.cs" />
     <Compile Include="Settings\Models\BaseGridColumnSettings.cs" />
     <Compile Include="Settings\Models\BuildMessagesSettings.cs" />
@@ -372,9 +373,15 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="AppInsights.WindowsDesktop">
+      <Version>2.10.17-preview</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Shell.14.0">
       <Version>14.3.25407</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -42,7 +42,7 @@
 
             <converters:InProgressToCollapsedConverter x:Key="InProgressToCollapsedConverter" />
             <converters:InProgressToVisibleConverter x:Key="InProgressToVisibleConverter" />
-
+            <converters:InProgressToBoolConverter x:Key="InProgressToBoolConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -115,26 +115,16 @@
                         HorizontalAlignment="Stretch" 
                         MinWidth="66" 
                         ToolTip="{x:Static res:Resources.CancelBuildSolutionButtonTooltip}"
-                        IsEnabled="False"
+                        IsEnabled="{Binding BuildInformationModel.CurrentBuildState, Converter={StaticResource InProgressToBoolConverter}}"
                         Visibility="{Binding BuildInformationModel.CurrentBuildState, Converter={StaticResource InProgressToVisibleConverter}}">
-                        
+
                         <customButtons:BuildActionButton.Content>
                             <StackPanel Orientation="Horizontal">
                                 <ContentControl Template="{StaticResource CancelBuildSolutionIcon}" />
                                 <TextBlock Margin="2,0,0,0" Text="{x:Static res:Resources.CancelBuildSolutionButtonCaption}" />
                             </StackPanel>
                         </customButtons:BuildActionButton.Content>
-
-                        <customButtons:BuildActionButton.Style>
-                            <Style TargetType="{x:Type customButtons:BuildActionButton}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding BuildInformationModel.CurrentBuildState}" Value="{x:Static contracts:BuildState.InProgress}">
-                                        <Setter Property="customButtons:BuildActionButton.Visibility" Value="Visible" />
-                                        <Setter Property="customButtons:BuildActionButton.IsEnabled" Value="True" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </customButtons:BuildActionButton.Style>
+                        
                     </customButtons:BuildActionButton>
 
                 </WrapPanel>

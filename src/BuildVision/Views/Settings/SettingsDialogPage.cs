@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Shell;
 using BuildVision.Common;
 using BuildVision.Core;
 using BuildVision.UI.Settings.Models;
+using Microsoft;
 
 namespace BuildVision.Views.Settings
 {
@@ -32,13 +33,13 @@ namespace BuildVision.Views.Settings
 
         protected override void OnActivate(CancelEventArgs e)
         {
+            _packageSettingsProvider = Package.GetGlobalService(typeof(IPackageSettingsProvider)) as IPackageSettingsProvider;
+            Assumes.Present(_packageSettingsProvider);
             if (_editSettings == null)
                 _editSettings = Settings.Clone<TSettings>();
 
             if (_ctrl.DataContext == null)
                 _ctrl.DataContext = _editSettings;
-
-            //_packageSettingsProvider = Services.DefaultExportProvider.GetExportedValue<IPackageSettingsProvider>();
             base.OnActivate(e);
         }
 
@@ -77,6 +78,6 @@ namespace BuildVision.Views.Settings
             base.ResetSettings();
         }
 
-        protected ControlSettings ControlSettings => _packageSettingsProvider.Settings;
+        protected ControlSettings ControlSettings => _packageSettingsProvider?.Settings;
     }
 }

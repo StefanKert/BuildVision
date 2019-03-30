@@ -25,44 +25,43 @@ namespace BuildVision.Core
     {
         private readonly ISolutionProvider _solutionProvider;
         private readonly IBuildInformationProvider _buildInformationProvider;
-        private readonly IBuildingProjectsProvider _buildingProjectsProvider;
 
         public SolutionBuildEvents(
             ISolutionProvider solutionProvider, 
-            IBuildInformationProvider buildInformationProvider,
-            IBuildingProjectsProvider buildingProjectsProvider)
+            IBuildInformationProvider buildInformationProvider)
         {
             _solutionProvider = solutionProvider;
             _buildInformationProvider = buildInformationProvider;
-            _buildingProjectsProvider = buildingProjectsProvider;
         }
 
         public void UpdateSolution_BeginUpdateAction(uint dwAction)
         {
             _solutionProvider.ReloadSolution();
-            _buildInformationProvider.BuildStarted(dwAction);
-            _buildingProjectsProvider.ReloadCurrentProjects();
+            var buildAction = StateConverterHelper.ConvertSolutionBuildFlagsToBuildAction(dwAction, (VSSOLNBUILDUPDATEFLAGS)dwAction);
+            _buildInformationProvider.BuildStarted(buildAction);
+            _buildInformationProvider.ReloadCurrentProjects();
         }
-
 
         public int UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)
         {
             var projectItem = new UI.Models.ProjectItem();
             var configPair = pCfgProj.ToConfigurationTuple();
             SolutionProjectsExtensions.UpdateProperties(pHierProj.ToProject(), projectItem, configPair.Item1, configPair.Item2);
-            _buildingProjectsProvider.ProjectBuildStarted(projectItem, dwAction);
+            var buildAction = StateConverterHelper.ConvertSolutionBuildFlagsToBuildAction(dwAction, (VSSOLNBUILDUPDATEFLAGS)dwAction);
+            _buildInformationProvider.ProjectBuildStarted(projectItem, buildAction);
             return VSConstants.S_OK;
         }
 
         public int UpdateProjectCfg_Done(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, int fSuccess, int fCancel)
         {
-            _buildingProjectsProvider.ProjectBuildFinished(ProjectIdentifierGenerator.GetIdentifierForInteropTypes(pHierProj, pCfgProj), fSuccess == 1, fCancel == 1);
+            var buildAction = StateConverterHelper.ConvertSolutionBuildFlagsToBuildAction(dwAction, (VSSOLNBUILDUPDATEFLAGS)dwAction);
+            _buildInformationProvider.ProjectBuildFinished(buildAction, ProjectIdentifierGenerator.GetIdentifierForInteropTypes(pHierProj, pCfgProj), fSuccess == 1, fCancel == 1);
             return VSConstants.S_OK;
         }
 
         public int UpdateSolution_Done(int fSucceeded, int fModified, int fCancelCommand)
         {
-            _buildInformationProvider.BuildFinished(_buildingProjectsProvider.GetBuildingProjects(), fSucceeded == 1, fCancelCommand == 1);
+            _buildInformationProvider.BuildFinished(fSucceeded == 1, fCancelCommand == 1);
             return VSConstants.S_OK;
         }
 

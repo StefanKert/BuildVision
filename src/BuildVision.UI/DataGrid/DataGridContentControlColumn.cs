@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,9 +9,11 @@ namespace BuildVision.UI.DataGrid
     {
         protected override FrameworkElement GenerateElement(DataGridCell cell, object dataItem)
         {
-            ContentControl contentControl = (cell != null) ? (cell.Content as ContentControl) : null;
+            var contentControl = (cell != null) ? (cell.Content as ContentControl) : null;
             if (contentControl == null)
+            {
                 contentControl = new ContentControl();
+            }
 
             contentControl.ClipToBounds = true;
             contentControl.SnapsToDevicePixels = true;

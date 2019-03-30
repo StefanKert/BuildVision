@@ -52,17 +52,14 @@ namespace BuildVision.UI.Helpers
 
         private string GetTimeString(DateTime? startTime)
         {
-            string timeString = "";
             try
             {
-                timeString = startTime.Value.ToString(_packageSettingsProvider.Settings.BuildMessagesSettings.DateTimeFormat);
+                return startTime.Value.ToString(_packageSettingsProvider.Settings.BuildMessagesSettings.DateTimeFormat);
             }
             catch (FormatException)
             {
-                timeString = Resources.InvalidTimeStringFormat;
+                return Resources.InvalidTimeStringFormat;
             }
-
-            return timeString;
         }
 
         private string GetBeginAtString(BuildActions? buildAction)
@@ -133,7 +130,7 @@ namespace BuildVision.UI.Helpers
                 return string.Empty;
             }
 
-            TimeSpan timeSpan = DateTime.Now.Subtract(buildInformationModel.BuildStartTime.Value);
+            var timeSpan = DateTime.Now.Subtract(buildInformationModel.BuildStartTime.Value);
             if (timeSpan.TotalSeconds > _packageSettingsProvider.Settings.BuildMessagesSettings.ExtraMessageDelay)
             {
                 return GetExtraTimePartString( timeSpan);

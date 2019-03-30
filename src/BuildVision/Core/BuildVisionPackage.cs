@@ -38,7 +38,7 @@ namespace BuildVision.Core
     [ProvideOptionPage(typeof(GridSettingsDialogPage), "BuildVision", "Projects Grid", 0, 0, true)]
     [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), "BuildVision", "Build Messages", 0, 0, true)]
     [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
-    public sealed partial class BuildVisionPackage : AsyncPackage, IPackageContext
+    public sealed partial class BuildVisionPackage : AsyncPackage
     {
         private DTE _dte;
         private DTE2 _dte2;
@@ -51,9 +51,7 @@ namespace BuildVision.Core
         private uint _updateSolutionEvents4Cookie;
         private SolutionBuildEvents _solutionBuildEvents;
         private ISolutionProvider _solutionProvider;
-        private IBuildingProjectsProvider _buildingProjectsProvider;
         private Window _activeProjectContext;
-        private IErrorNavigationService _errorNavigationService;
 
         public ControlSettings ControlSettings { get; set; }
 
@@ -73,8 +71,6 @@ namespace BuildVision.Core
             MessageBox.Show($"Diagnostics mode caught and marked as handled the following DispatcherUnhandledException raised in Visual Studio: {e.Exception}.");
             e.Handled = true;
         }
-
-        public event Action<ControlSettings> ControlSettingsChanged = delegate { };
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
@@ -97,13 +93,9 @@ namespace BuildVision.Core
             Assumes.Present(_buildInformationProvider);
             _solutionProvider = await GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
             Assumes.Present(_solutionProvider);
-            _buildingProjectsProvider = await GetServiceAsync(typeof(IBuildingProjectsProvider)) as IBuildingProjectsProvider;
-            Assumes.Present(_buildingProjectsProvider);
-
-            IPackageContext packageContext = this;
 
             _commandEvents = _dte.Events.CommandEvents;
-          //  _commandEvents.AfterExecute += CommandEvents_AfterExecute;
+            _commandEvents.AfterExecute += CommandEvents_AfterExecute;
 
             _windowEvents = _dte.Events.WindowEvents;
             _windowEvents.WindowActivated += WindowEvents_WindowActivated;
@@ -123,10 +115,10 @@ namespace BuildVision.Core
             ThreadHelper.ThrowIfNotOnUIThread();
 
             _solutionProvider.ReloadSolution();
-            _buildingProjectsProvider.ResetCurrentProjects();
+            _buildInformationProvider.ResetCurrentProjects();
             _buildInformationProvider.ResetBuildInformationModel();
             
-            _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider, _buildingProjectsProvider);
+            _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider);
             _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
             _solutionBuildManager4.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
         }
@@ -136,13 +128,12 @@ namespace BuildVision.Core
             ThreadHelper.ThrowIfNotOnUIThread();
 
             _solutionProvider.ReloadSolution();
-            _buildingProjectsProvider.ResetCurrentProjects();
+            _buildInformationProvider.ResetCurrentProjects();
             _buildInformationProvider.ResetBuildInformationModel();
 
             _solutionBuildManager.UnadviseUpdateSolutionEvents(_updateSolutionEvents4Cookie);
             _solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
         }
-
 
         private void WindowEvents_WindowActivated(Window gotFocus, Window lostFocus)
         {
@@ -228,17 +219,6 @@ namespace BuildVision.Core
                 return null;
             }
             return docView as ToolWindowPane;
-        }
-
-        public void NotifyControlSettingsChanged()
-        {
-            ControlSettingsChanged(ControlSettings);
-        }
-
-        public async Task ExecuteCommandAsync(string commandName)
-        {
-            await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
-            _dte.ExecuteCommand(commandName);
         }
     }
 }

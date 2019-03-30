@@ -1,4 +1,4 @@
-using BuildVision.UI.Settings;
+﻿using BuildVision.UI.Settings;
 using BuildVision.UI.Settings.Models;
 using System.Runtime.InteropServices;
 
@@ -11,8 +11,8 @@ namespace BuildVision.Views.Settings
     {
         protected override GeneralSettings Settings
         {
-            get { return ControlSettings.GeneralSettings; }
-            set { ControlSettings.GeneralSettings = value; }
+            get => ControlSettings?.GeneralSettings; 
+            set => ControlSettings.GeneralSettings = value;
         }
     }
 }

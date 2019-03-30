@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 using BuildVision.UI.Settings.Models;
 using BuildVision.UI.Settings;
@@ -11,8 +11,8 @@ namespace BuildVision.Views.Settings
     {
         protected override ProjectItemSettings Settings
         {
-            get { return ControlSettings.ProjectItemSettings; }
-            set { ControlSettings.ProjectItemSettings = value; }
+            get => ControlSettings?.ProjectItemSettings; 
+            set => ControlSettings.ProjectItemSettings = value;
         }
     }
 }

@@ -4,31 +4,30 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace BuildVision.Core
 {
     public static class Services
     {
-        static TResult GetGlobalService<T, TResult>(IServiceProvider provider = null) where T : class where TResult : class
-        {
+        public static IServiceProvider UnitTestServiceProvider { get; set; }
 
-            if(provider != null)
-                return provider.GetService(typeof(T)) as TResult;
-            return Package.GetGlobalService(typeof(T)) as TResult;
+        static Ret GetGlobalService<T, Ret>(IServiceProvider provider = null) where T : class where Ret : class
+        {
+            Ret ret = null;
+            if (provider != null)
+                ret = provider.GetService(typeof(T)) as Ret;
+            if (ret != null)
+                return ret;
+            if (UnitTestServiceProvider != null)
+                return UnitTestServiceProvider.GetService(typeof(T)) as Ret;
+            return Package.GetGlobalService(typeof(T)) as Ret;
         }
+
+        public static IComponentModel ComponentModel => GetGlobalService<SComponentModel, IComponentModel>();
+        public static ExportProvider DefaultExportProvider => ComponentModel.DefaultExportProvider;
 
         public static DTE Dte => GetGlobalService<DTE, DTE>();
 
         public static DTE2 Dte2 => Dte as DTE2;
-
-        public static ExportProvider DefaultExportProvider => ComponentModel.DefaultExportProvider;
-
-        public static IComponentModel ComponentModel => GetGlobalService<SComponentModel, IComponentModel>();
-
-        public static Solution GetSolution(this IServiceProvider provider)
-        {
-            return Dte.Solution;
-        }
     }
 }

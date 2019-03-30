@@ -1,42 +1,51 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.ComponentModel;
-
-using Process = System.Diagnostics.Process;
 using BuildVision.Common;
 using BuildVision.Contracts;
-using BuildVision.UI.DataGrid;
-using BuildVision.UI.Common.Logging;
-using BuildVision.UI.Helpers;
-using BuildVision.UI.Models;
-using BuildVision.UI.Settings.Models.Columns;
-using SortDescription = BuildVision.UI.Settings.Models.Sorting.SortDescription;
-using BuildVision.UI.Settings.Models;
-using BuildVision.Helpers;
-using System.ComponentModel.Composition;
-using System.Text;
+using BuildVision.Contracts.Models;
 using BuildVision.Core;
-using BuildVision.Views.Settings;
+using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
 using BuildVision.Exports.ViewModels;
-using BuildVision.Exports.Providers;
-using BuildVision.Contracts.Models;
+using BuildVision.Helpers;
+using BuildVision.UI.Common.Logging;
+using BuildVision.UI.DataGrid;
+using BuildVision.UI.Helpers;
+using BuildVision.UI.Models;
+using BuildVision.UI.Settings.Models;
+using BuildVision.UI.Settings.Models.Columns;
+using BuildVision.Views.Settings;
 using Microsoft.VisualStudio;
+using Process = System.Diagnostics.Process;
+using SortDescription = BuildVision.UI.Settings.Models.Sorting.SortDescription;
 
 namespace BuildVision.UI.ViewModels
 {
     [Export(typeof(IBuildVisionPaneViewModel))]
     public class BuildVisionPaneViewModel : BindableBase, IBuildVisionPaneViewModel
     {
+        private ProjectItem _selectedProjectItem;
+        private readonly IBuildInformationProvider _buildInformationProvider;
+        private readonly IBuildService _buildService;
+        private readonly IErrorNavigationService _errorNavigationService;
+        private readonly ITaskBarInfoService _taskBarInfoService;
+        private readonly IPackageSettingsProvider _settingsProvider;
+        private ObservableCollection<DataGridColumn> _gridColumnsRef;
+
         public ISolutionModel SolutionModel { get; set; }
 
-        private ObservableCollection<DataGridColumn> _gridColumnsRef;
+        public string GridGroupHeaderName => string.IsNullOrEmpty(GridGroupPropertyName) ? string.Empty : ControlSettings.GridSettings.Columns[GridGroupPropertyName].Header;
+
+        public CompositeCollection GridColumnsGroupMenuItems => CreateContextMenu();
 
         public bool HideUpToDateTargets
         {
@@ -66,19 +75,6 @@ namespace BuildVision.UI.ViewModels
             }
         }
 
-        public string GridGroupHeaderName
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(GridGroupPropertyName))
-                    return string.Empty;
-
-                return ControlSettings.GridSettings.Columns[GridGroupPropertyName].Header;
-            }
-        }
-
-        public CompositeCollection GridColumnsGroupMenuItems => CreateContextMenu();
-
         private CompositeCollection CreateContextMenu()
         {
             var collection = new CompositeCollection();
@@ -88,7 +84,7 @@ namespace BuildVision.UI.ViewModels
                 Tag = string.Empty
             });
 
-            foreach (GridColumnSettings column in ControlSettings.GridSettings.Columns)
+            foreach (var column in ControlSettings.GridSettings.Columns)
             {
                 if (!ColumnsManager.ColumnIsGroupable(column))
                     continue;
@@ -181,35 +177,44 @@ namespace BuildVision.UI.ViewModels
             }
         }
 
-        private ProjectItem _selectedProjectItem;
-        private readonly IBuildingProjectsProvider _buildingProjectsProvider;
-        private readonly IBuildInformationProvider _buildInformationProvider;
-        private readonly IBuildService _buildService;
-        private readonly IErrorNavigationService _errorNavigationService;
-
         public ProjectItem SelectedProjectItem
         {
             get => _selectedProjectItem; 
             set => SetProperty(ref _selectedProjectItem, value);
         }
 
+        internal BuildVisionPaneViewModel()
+        {
+            ControlSettings = new ControlSettings();
+            BuildInformationModel = new BuildInformationModel();
+            SolutionModel = new SolutionModel();
+            Projects = new ObservableCollection<IProjectItem>();
+        }
+
         [ImportingConstructor]
         public BuildVisionPaneViewModel(
-            IBuildingProjectsProvider buildingProjectsProvider, 
             IBuildInformationProvider buildInformationProvider, 
             IPackageSettingsProvider settingsProvider, 
             ISolutionProvider solutionProvider, 
             IBuildService buildService,
-            IErrorNavigationService errorNavigationService)
+            IErrorNavigationService errorNavigationService,
+            ITaskBarInfoService taskBarInfoService)
         {
-            _buildingProjectsProvider = buildingProjectsProvider;
             _buildInformationProvider = buildInformationProvider;
             _buildService = buildService;
             _errorNavigationService = errorNavigationService;
+            _taskBarInfoService = taskBarInfoService;
             BuildInformationModel = _buildInformationProvider.GetBuildInformationModel();
             SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
-            Projects = _buildingProjectsProvider.GetBuildingProjects();
+            Projects = _buildInformationProvider.GetBuildingProjects();
+
+            _settingsProvider = settingsProvider;
+            _settingsProvider.SettingsChanged += () =>
+            {
+                SyncColumnSettings();
+                OnControlSettingsChanged();
+            };
 
             if (settingsProvider.Settings.GeneralSettings.FillProjectListOnBuildBegin)
             {
@@ -218,18 +223,6 @@ namespace BuildVision.UI.ViewModels
                     OnPropertyChanged(nameof(GroupedProjectsList));
                 };
             }
-        }
-
-
-        /// <summary>
-        /// Uses as design-time ViewModel. 
-        /// </summary>
-        internal BuildVisionPaneViewModel()
-        {
-            ControlSettings = new ControlSettings();
-            BuildInformationModel = new BuildInformationModel();
-            SolutionModel = new SolutionModel();
-            Projects = new ObservableCollection<IProjectItem>();
         }
 
         private void OpenContainingFolder()
@@ -284,7 +277,7 @@ namespace BuildVision.UI.ViewModels
 
         private static ProjectItemColumnSorter GetProjectItemSorter(SortDescription sortDescription)
         {
-            SortOrder sortOrder = sortDescription.Order;
+            var sortOrder = sortDescription.Order;
             string sortPropertyName = sortDescription.Property;
 
             if (sortOrder != SortOrder.None && !string.IsNullOrEmpty(sortPropertyName))
@@ -318,22 +311,13 @@ namespace BuildVision.UI.ViewModels
             ColumnsManager.SyncColumnSettings(_gridColumnsRef, ControlSettings.GridSettings);
         }
 
-        public void OnControlSettingsChanged(ControlSettings settings)
+        public void OnControlSettingsChanged()
         {
-            ControlSettings.InitFrom(settings);
-
+            ControlSettings.InitFrom(_settingsProvider.Settings);
             GenerateColumns();
-
-            //Refresh build message
-            //if (_buildState == BuildState.Done)
-            //{
-            //    Model.TextCurrentState = getBuildMessage(_buildInfo);
-            //}
-
             // Raise all properties have changed.
             OnPropertyChanged(null);
-
-            //BuildProgressViewModel.ResetTaskBarInfo(false);
+            _taskBarInfoService.ResetTaskBarInfo(false);
         }
 
         private bool IsProjectItemEnabledForActions()
@@ -370,22 +354,13 @@ namespace BuildVision.UI.ViewModels
 
         public ICommand SelectedProjectOpenContainingFolderAction => new RelayCommand(obj => OpenContainingFolder(), canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.FullName)));
 
-        //public ICommand SelectedProjectCopyBuildOutputFilesToClipboardAction => new RelayCommand(
-        //    obj => _buildService.ProjectCopyBuildOutputFilesToClipBoard(SelectedProjectItem),
-        //    canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard.IsEmpty));
+        public ICommand SelectedProjectCopyBuildOutputFilesToClipboardAction => new RelayCommand(obj => _buildService.ProjectCopyBuildOutputFilesToClipBoard(SelectedProjectItem), canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard.IsEmpty));
 
-        //public ICommand SelectedProjectBuildAction => new RelayCommand(
-        //    obj => _buildService.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.BuildCtx),
-        //    canExecute: obj => IsProjectItemEnabledForActions());
+        public ICommand SelectedProjectBuildAction => new RelayCommand(obj => _buildService.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.BuildCtx), canExecute: obj => IsProjectItemEnabledForActions());
 
+        public ICommand SelectedProjectRebuildAction => new RelayCommand(obj => _buildService.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.RebuildCtx), canExecute: obj => IsProjectItemEnabledForActions());
 
-        //public ICommand SelectedProjectRebuildAction => new RelayCommand(
-        //    obj => _buildService.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.RebuildCtx),
-        //    canExecute: obj => IsProjectItemEnabledForActions());
-
-        //public ICommand SelectedProjectCleanAction => new RelayCommand(
-        //    obj => _buildService.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx),
-        //    canExecute: obj => IsProjectItemEnabledForActions());
+        public ICommand SelectedProjectCleanAction => new RelayCommand(obj => _buildService.RaiseCommandForSelectedProject(SelectedProjectItem, (int)VSConstants.VSStd97CmdID.CleanCtx), canExecute: obj => IsProjectItemEnabledForActions());
 
         public ICommand SelectedProjectCopyErrorMessagesAction => new RelayCommand(obj => CopyErrorMessageToClipboard(SelectedProjectItem), canExecute: obj => SelectedProjectItem?.ErrorsCount > 0);
 
@@ -397,10 +372,12 @@ namespace BuildVision.UI.ViewModels
 
         public ICommand CancelBuildSolutionAction => new RelayCommand(obj => _buildService.CancelBuildSolution());
 
-        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => _buildService.ShowGridColumnsSettingsPage()); 
+        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => ShowOptionPage?.Invoke(typeof(GridSettings))); 
 
-        public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => _buildService.ShowGeneralSettingsPage()); 
+        public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => ShowOptionPage?.Invoke(typeof(GeneralSettings)));
 
         #endregion
+
+        public event Action<Type> ShowOptionPage;
     }
 }

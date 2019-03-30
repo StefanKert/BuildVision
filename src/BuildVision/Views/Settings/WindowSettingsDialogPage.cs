@@ -11,8 +11,8 @@ namespace BuildVision.Views.Settings
     {
         protected override WindowSettings Settings
         {
-            get { return ControlSettings.WindowSettings; }
-            set { ControlSettings.WindowSettings = value; }
+            get => ControlSettings?.WindowSettings;
+            set => ControlSettings.WindowSettings = value;
         }
     }
 }

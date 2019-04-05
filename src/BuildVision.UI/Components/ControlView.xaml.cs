@@ -54,6 +54,5 @@ namespace BuildVision.UI
             //        Grid.ScrollIntoView(_viewModel.CurrentProject);
             //}
         }
-
     }
 }

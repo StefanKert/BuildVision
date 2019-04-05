@@ -74,7 +74,7 @@
                     VerticalAlignment="Center" />
             </Grid>
 
-            <controls:BuildVisionProgressBar DataContext="{Binding BuildInformationModel.CurrentBuildState}" />
+            <controls:BuildVisionProgressBar DataContext="{Binding BuildInformationModel}" />
 
             <Grid Visibility="{Binding ControlSettings.GeneralSettings.IndicatorsPanelVisible,
                                        Converter={StaticResource BoolToVisibilityConverter}}">

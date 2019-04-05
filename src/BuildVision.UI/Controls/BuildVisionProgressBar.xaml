@@ -5,7 +5,16 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d"
              xmlns:contracts="clr-namespace:BuildVision.Contracts;assembly=BuildVision.Contracts"
-             d:DesignWidth="697">
+             xmlns:models="clr-namespace:BuildVision.UI.Models"
+             d:DesignWidth="697"
+             d:DataContext="{Binding Source={StaticResource DesignViewModel}}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+
+            <models:BuildInformationModel x:Key="DesignViewModel"/>
+            
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Line Name="Line"
                   Margin="0,3,3,3"
@@ -35,7 +44,7 @@
             <Line.Style>
                 <Style>
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding}" Value="{x:Static contracts:BuildState.InProgress}">
+                        <DataTrigger Binding="{Binding CurrentBuildState}" Value="{x:Static contracts:BuildState.InProgress}">
                             <DataTrigger.EnterActions>
                                 <BeginStoryboard x:Name="LineProgressBeginStoryboard">
                                     <Storyboard>

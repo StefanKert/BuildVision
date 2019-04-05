@@ -55,8 +55,6 @@ namespace BuildVision.UI.Components
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            Debug.Assert(DataContext != null);
-
             _viewModel = (BuildVisionPaneViewModel) DataContext;
             _viewModel.SetGridColumnsRef(Grid.Columns);
             _viewModel.PropertyChanged += ViewModelOnPropertyChanged;

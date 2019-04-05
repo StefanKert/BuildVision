@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using BuildVision.Common.Diagnostics;
 using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
 using BuildVision.Helpers;
@@ -62,14 +63,13 @@ namespace BuildVision.Core
 
             if (Application.Current != null)
             {
-                Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException; ;
+                Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             }
         }
 
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show($"Diagnostics mode caught and marked as handled the following DispatcherUnhandledException raised in Visual Studio: {e.Exception}.");
-            e.Handled = true;
+            DiagnosticsClient.Notify(e.Exception);
         }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

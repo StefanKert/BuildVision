@@ -376,8 +376,8 @@
     <PackageReference Include="AppInsights.WindowsDesktop">
       <Version>2.10.17-preview</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.14.0">
-      <Version>14.3.25407</Version>
+    <PackageReference Include="Madskristensen.VisualStudio.SDK">
+      <Version>14.3.81-pre</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

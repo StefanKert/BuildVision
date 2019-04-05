@@ -300,6 +300,7 @@ namespace BuildVision.Core
             _buildOutputLogger.Attach();
 
             ResetBuildInformationModel();
+            ResetCurrentProjects();
 
             _buildInformationModel.BuildStartTime = DateTime.Now;
             _buildInformationModel.BuildFinishTime = null;

@@ -15,6 +15,8 @@ using BuildVision.Views.Settings;
 using System.Windows.Controls;
 using BuildVision.UI.Settings.Models;
 using BuildVision.UI.Settings.Models.Columns;
+using System.Windows.Markup;
+using System.Globalization;
 
 namespace BuildVision.Tool
 {
@@ -51,7 +53,7 @@ namespace BuildVision.Tool
             BitmapIndex = 1;
 
             Content = _contentPresenter = new ContentPresenter();
-            //FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
+            FrameworkElement.LanguageProperty.OverrideMetadata(typeof(FrameworkElement), new FrameworkPropertyMetadata(XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
         }
 
         protected override void Initialize()

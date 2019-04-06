@@ -1,13 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using BuildVision.Common;
+using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Settings.Models;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
-using BuildVision.UI.Common.Logging;
-using BuildVision.Core;
 
 namespace BuildVision.Views.Settings
 {

@@ -59,7 +59,6 @@ namespace BuildVision.Core
         private uint _updateSolutionEvents4Cookie;
         private SolutionBuildEvents _solutionBuildEvents;
         private ISolutionProvider _solutionProvider;
-        private Window _activeProjectContext;
         private ServiceProvider _serviceProvider;
 
         public static ToolWindowPane ToolWindowPane { get; set; }
@@ -108,9 +107,6 @@ namespace BuildVision.Core
             _commandEvents = _dte.Events.CommandEvents;
             _commandEvents.AfterExecute += CommandEvents_AfterExecute;
 
-            _windowEvents = _dte.Events.WindowEvents;
-            _windowEvents.WindowActivated += WindowEvents_WindowActivated;
-
             _solutionEvents = _dte.Events.SolutionEvents;
             _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
             _solutionEvents.Opened += SolutionEvents_Opened;
@@ -119,8 +115,6 @@ namespace BuildVision.Core
             {
                 SolutionEvents_Opened();
             }
-
-            //InitToolWindow(this);
         }
 
         private void SolutionEvents_Opened()
@@ -148,29 +142,6 @@ namespace BuildVision.Core
             _solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
         }
 
-        private void WindowEvents_WindowActivated(Window gotFocus, Window lostFocus)
-        {
-            if (gotFocus == null)
-                return;
-
-            switch (gotFocus.Type)
-            {
-                case vsWindowType.vsWindowTypeSolutionExplorer:
-                    _activeProjectContext = gotFocus;
-                    break;
-
-                case vsWindowType.vsWindowTypeDocument:
-                case vsWindowType.vsWindowTypeDesigner:
-                case vsWindowType.vsWindowTypeCodeWindow:
-                    if (gotFocus.Project != null && !gotFocus.Project.IsHidden())
-                        _activeProjectContext = gotFocus;
-                    break;
-
-                default:
-                    return;
-            }
-        }
-
         private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)
         {
             if (id == (int)VSConstants.VSStd97CmdID.CancelBuild
@@ -188,16 +159,5 @@ namespace BuildVision.Core
             pfShowTool = 1;
             return 0;
         }
-
-        //public static void InitToolWindow(AsyncPackage package)
-        //{
-        //    package.JoinableTaskFactory.RunAsync(async () =>
-        //    {
-        //        var window = package.FindToolWindow(typeof(BuildVisionPane), 0, false) ?? package.FindToolWindow(typeof(BuildVisionPane), 0, true);
-        //        var windowStateService = await package.GetServiceAsync(typeof(IWindowStateService)) as IWindowStateService;
-        //        Assumes.Present(windowStateService);
-        //        windowStateService.Initialize(window);
-        //    });
-        //}
     }
 }

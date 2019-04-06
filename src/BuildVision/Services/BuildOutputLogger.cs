@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using BuildVision.Contracts;
+using BuildVision.Exports;
+using BuildVision.Helpers;
+using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Contracts;
+using BuildVision.UI.Models;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using BuildVision.Contracts;
-using BuildVision.UI.Contracts;
-using BuildVision.UI.Common.Logging;
-using BuildVision.Helpers;
-using System.Diagnostics;
-using BuildVision.Core;
-using BuildVision.Exports.Providers;
-using BuildVision.UI.Models;
-using BuildVision.Exports;
 
 namespace BuildVision.Tool.Building
 {
@@ -75,9 +73,9 @@ namespace BuildVision.Tool.Building
                 }
 
                 var loggersProperty = loggingServiceObj.GetType().GetProperty("Loggers", InterfacePropertyFlags);
-                var loggers = (ICollection<ILogger>) loggersProperty.GetValue(loggingServiceObj, null);
+                var loggers = (ICollection<ILogger>)loggersProperty.GetValue(loggingServiceObj, null);
 
-                var logger = loggers.FirstOrDefault(x => x is BuildOutputLogger && ((BuildOutputLogger) x)._loggerId.Equals(_loggerId));
+                var logger = loggers.FirstOrDefault(x => x is BuildOutputLogger && ((BuildOutputLogger)x)._loggerId.Equals(_loggerId));
                 if (logger != null)
                 {
                     LoggerState = RegisterLoggerResult.AlreadyExists;
@@ -85,7 +83,7 @@ namespace BuildVision.Tool.Building
                 }
 
                 var registerLoggerMethod = loggingServiceObj.GetType().GetMethod("RegisterLogger");
-                var registerResult = (bool) registerLoggerMethod.Invoke(loggingServiceObj, new object[] { this });
+                var registerResult = (bool)registerLoggerMethod.Invoke(loggingServiceObj, new object[] { this });
                 LoggerState = registerResult ? RegisterLoggerResult.RegisterSuccess : RegisterLoggerResult.RegisterFailed;
             }
             catch (Exception ex)
@@ -135,7 +133,7 @@ namespace BuildVision.Tool.Building
 
             if (errorLevel == ErrorLevel.Message)
             {
-                var messageEventArgs = (BuildMessageEventArgs) eventArgs;
+                var messageEventArgs = (BuildMessageEventArgs)eventArgs;
                 if (!messageEventArgs.IsUserMessage(this))
                     return false;
             }

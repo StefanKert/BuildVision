@@ -2,16 +2,13 @@
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-using BuildVision.Contracts.Models;
 using BuildVision.Exports;
 using BuildVision.Exports.Factories;
 using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
 using BuildVision.Services;
-using BuildVision.Tool;
 using BuildVision.Tool.Building;
 using BuildVision.UI.Helpers;
-using BuildVision.UI.Settings.Models;
 using BuildVision.UI.ViewModels;
 using BuildVision.Views.Settings;
 using Microsoft;
@@ -114,7 +111,7 @@ namespace BuildVision.Core
             }
         }
 
-        private async Task<T> GetServiceAsync<T>(CancellationToken cancellation) where T: class
+        private async Task<T> GetServiceAsync<T>(CancellationToken cancellation) where T : class
         {
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellation);
             var service = await GetServiceAsync(typeof(T)) as T;

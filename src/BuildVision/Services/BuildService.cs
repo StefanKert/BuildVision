@@ -3,21 +3,16 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using BuildVision.Common;
 using BuildVision.Contracts;
 using BuildVision.Contracts.Models;
-using BuildVision.Core;
 using BuildVision.Exports.Services;
 using BuildVision.Helpers;
 using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Models;
 using EnvDTE;
-using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 
@@ -29,8 +24,8 @@ namespace BuildVision.Tool.Building
     {
         private const string CancelBuildCommand = "Build.Cancel";
         private bool _buildCancelledInternally;
-        private bool _buildCancelled;
-        private IServiceProvider _serviceProvider;
+        private readonly bool _buildCancelled;
+        private readonly IServiceProvider _serviceProvider;
 
         [ImportingConstructor]
         public BuildService(
@@ -87,7 +82,7 @@ namespace BuildVision.Tool.Building
             try
             {
                 SelectProjectInSolutionExplorer(selectedProjectItem);
-                RaiseCommand((VSConstants.VSStd97CmdID) commandId);
+                RaiseCommand((VSConstants.VSStd97CmdID)commandId);
             }
             catch (Exception ex)
             {
@@ -198,7 +193,7 @@ namespace BuildVision.Tool.Building
                 object customIn = null;
                 object customOut = null;
                 var dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
-                dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), (int) command, ref customIn, ref customOut);
+                dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), (int)command, ref customIn, ref customOut);
             }
             catch (Exception ex)
             {

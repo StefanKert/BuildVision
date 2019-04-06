@@ -12,7 +12,6 @@ using BuildVision.UI.Models;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace BuildVision.Core
 {
@@ -40,7 +39,7 @@ namespace BuildVision.Core
 
             RefrehSolutionModel();
         }
-        
+
         public ISolutionModel GetSolutionModel()
         {
             return _solutionModel;
@@ -48,7 +47,7 @@ namespace BuildVision.Core
 
         private void RefrehSolutionModel()
         {
-            if(_solutionModel == null)
+            if (_solutionModel == null)
                 _solutionModel = new SolutionModel();
 
             try

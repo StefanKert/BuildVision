@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using BuildVision.Common;
 using BuildVision.Contracts;
 using BuildVision.Exports.Providers;
 using BuildVision.Helpers;
-using BuildVision.Services;
-using BuildVision.Tool.Building;
 using BuildVision.Tool.Models;
-using BuildVision.UI.Common.Logging;
-using BuildVision.UI.Contracts;
-using BuildVision.UI.Helpers;
-using BuildVision.UI.ViewModels;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -29,7 +18,7 @@ namespace BuildVision.Core
         private BuildActions _currentBuildAction;
 
         public SolutionBuildEvents(
-            ISolutionProvider solutionProvider, 
+            ISolutionProvider solutionProvider,
             IBuildInformationProvider buildInformationProvider,
             IServiceProvider serviceProvider)
         {

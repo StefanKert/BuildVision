@@ -111,7 +111,7 @@
                     </StackPanel>
 
                     <customButtons:BuildActionButton 
-                        Command="{Binding BuildSolutionAction}" 
+                        Command="{Binding CancelBuildSolutionAction}" 
                         HorizontalAlignment="Stretch" 
                         MinWidth="66" 
                         ToolTip="{x:Static res:Resources.CancelBuildSolutionButtonTooltip}"

@@ -27,7 +27,8 @@ using Window = EnvDTE.Window;
 namespace BuildVision.Core
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists)] // This will lead to a warning on startup
+    //[ProvideAutoLoad(UIContextGuids80.SolutionExists, flags: PackageAutoLoadFlags.BackgroundLoad)] // This will lead to a warning on startup
+    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionOpening_string, PackageAutoLoadFlags.BackgroundLoad)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(BuildVisionPane))]
     [Guid(PackageGuids.GuidBuildVisionPackageString)]
@@ -75,7 +76,7 @@ namespace BuildVision.Core
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
-            
+
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
             await ShowToolWindowCommand.InitializeAsync(this);
 

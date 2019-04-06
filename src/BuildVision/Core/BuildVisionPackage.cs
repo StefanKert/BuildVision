@@ -58,10 +58,12 @@ namespace BuildVision.Core
         private IVsSolutionBuildManager2 _solutionBuildManager;
         private IVsSolutionBuildManager5 _solutionBuildManager4;
         private IBuildInformationProvider _buildInformationProvider;
+        private uint _updateSolutionEventsCookie;
         private uint _updateSolutionEvents4Cookie;
         private SolutionBuildEvents _solutionBuildEvents;
         private ISolutionProvider _solutionProvider;
         private Window _activeProjectContext;
+
 
         public ControlSettings ControlSettings { get; set; }
 
@@ -128,7 +130,7 @@ namespace BuildVision.Core
             _buildInformationProvider.ResetBuildInformationModel();
 
             _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider);
-            _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
+            _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEventsCookie);
             _solutionBuildManager4.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
         }
 
@@ -140,7 +142,7 @@ namespace BuildVision.Core
             _buildInformationProvider.ResetCurrentProjects();
             _buildInformationProvider.ResetBuildInformationModel();
 
-            _solutionBuildManager.UnadviseUpdateSolutionEvents(_updateSolutionEvents4Cookie);
+            _solutionBuildManager.UnadviseUpdateSolutionEvents(_updateSolutionEventsCookie);
             _solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
         }
 

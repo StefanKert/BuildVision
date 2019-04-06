@@ -195,6 +195,15 @@
                         <Setter Property="Visibility" Value="Collapsed"/>
                     </MultiDataTrigger>
 
+
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Value="{x:Static contracts:ProjectState.Pending}" Binding="{Binding Path=State}"/>
+                            <Condition Binding="{Binding Path=DataContext.FillProjectListOnBuildBegin, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" Value="False"/>
+                        </MultiDataTrigger.Conditions>
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </MultiDataTrigger>
+
                     <DataTrigger Value="True">
                         <DataTrigger.Binding>
                             <MultiBinding Converter="{StaticResource ObjectsReferencesEqualsConverter}">

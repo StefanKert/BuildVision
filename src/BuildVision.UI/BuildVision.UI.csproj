@@ -73,6 +73,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Attributes\DisplayStringAttribute.cs" />
     <Compile Include="Components\ProjectGrid.xaml.cs">
       <DependentUpon>ProjectGrid.xaml</DependentUpon>
     </Compile>
@@ -129,7 +130,6 @@
     <Compile Include="Extensions\TextBlockUtils.cs" />
     <Compile Include="Extensions\VectorResources.cs" />
     <Compile Include="Extensions\VisualHelper.cs" />
-    <Compile Include="Attributes\DisplayStringAttribute.cs" />
     <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Helpers\StyleConverting.cs" />
     <Compile Include="MainWindow.xaml.cs">

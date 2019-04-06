@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,25 +9,25 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using BuildVision.Contracts;
-using BuildVision.UI.Modelss;
-using BuildVision.UI.Helpers;
-using BuildVision.UI.Extensions;
 using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Extensions;
+using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
+using BuildVision.UI.Modelss;
+using BuildVision.UI.Settings.Models;
 using BuildVision.UI.Settings.Models.Columns;
 using BuildVision.UI.Settings.Models.Sorting;
-using BuildVision.UI.Settings.Models;
 
 namespace BuildVision.UI.DataGrid
 {
     public static class ColumnsManager
     {
-        private static List<string> _nonSortableColumns = new List<string>
+        private static readonly List<string> _nonSortableColumns = new List<string>
         {
             nameof(ProjectItem.StateBitmap)
         };
 
-        private static List<string> _nonGroupableColumns = new List<string>
+        private static readonly List<string> _nonGroupableColumns = new List<string>
         {
             nameof(ProjectItem.StateBitmap),
             nameof(ProjectItem.BuildStartTime),
@@ -112,11 +112,11 @@ namespace BuildVision.UI.DataGrid
                     else
                     {
                         columnSettings = new GridColumnSettings(
-                            propertyName, 
-                            columnConfiguration.Header, 
-                            columnConfiguration.Visible, 
-                            columnConfiguration.DisplayIndex, 
-                            columnConfiguration.Width, 
+                            propertyName,
+                            columnConfiguration.Header,
+                            columnConfiguration.Visible,
+                            columnConfiguration.DisplayIndex,
+                            columnConfiguration.Width,
                             columnConfiguration.ValueStringFormat);
                         gridSettings.Columns.Add(columnSettings);
                     }
@@ -149,7 +149,7 @@ namespace BuildVision.UI.DataGrid
                 foreach (DataGridBoundColumn column in columns.OfType<DataGridBoundColumn>())
                 {
                     string propertyName = column.GetBindedProperty();
-                    GridColumnSettings columnSettings = gridSettings.Columns[propertyName];
+                    var columnSettings = gridSettings.Columns[propertyName];
                     if (columnSettings == null)
                         continue;
 

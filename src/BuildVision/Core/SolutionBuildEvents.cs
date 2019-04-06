@@ -25,21 +25,31 @@ namespace BuildVision.Core
     {
         private readonly ISolutionProvider _solutionProvider;
         private readonly IBuildInformationProvider _buildInformationProvider;
+        private readonly BuildEvents _buildEvents;
+        private BuildActions _currentBuildAction;
 
         public SolutionBuildEvents(
             ISolutionProvider solutionProvider, 
-            IBuildInformationProvider buildInformationProvider)
+            IBuildInformationProvider buildInformationProvider,
+            IServiceProvider serviceProvider)
         {
             _solutionProvider = solutionProvider;
             _buildInformationProvider = buildInformationProvider;
+            _buildEvents = (serviceProvider.GetService(typeof(DTE)) as DTE).Events.BuildEvents;
+            _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
         }
 
         public void UpdateSolution_BeginUpdateAction(uint dwAction)
         {
             _solutionProvider.ReloadSolution();
-            var buildAction = StateConverterHelper.ConvertSolutionBuildFlagsToBuildAction(dwAction, (VSSOLNBUILDUPDATEFLAGS)dwAction);
-            _buildInformationProvider.BuildStarted(buildAction);
+            _currentBuildAction = StateConverterHelper.ConvertSolutionBuildFlagsToBuildAction(dwAction, (VSSOLNBUILDUPDATEFLAGS)dwAction);
             _buildInformationProvider.ReloadCurrentProjects();
+        }
+
+        private void BuildEvents_OnBuildBegin(vsBuildScope scope, vsBuildAction action)
+        {
+            // We use the action from UpdateSolution_BeginUpdateAction here because it givs closer details on the current action
+            _buildInformationProvider.BuildStarted(_currentBuildAction, (BuildScopes)scope);
         }
 
         public int UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)

@@ -202,5 +202,22 @@ namespace BuildVision.UI.Models
                 return BuildResultState.Unknown;
             }
         }
+
+        public void ResetState()
+        {
+            ErrorCount = 0;
+            WarningsCount = 0;
+            MessagesCount = 0;
+            SucceededProjectsCount = 0;
+            UpToDateProjectsCount = 0;
+            FailedProjectsCount = 0;
+            WarnedProjectsCount = 0;
+            StateMessage = Resources.BuildDoneText_BuildNotStarted;
+            CurrentBuildState = BuildState.NotStarted;
+            BuildAction = BuildActions.Unknown;
+            BuildScope = BuildScopes.Unknown;
+            BuildStartTime = null;
+            BuildFinishTime = null;
+        }
     }
 }

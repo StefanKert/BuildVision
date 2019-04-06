@@ -60,6 +60,7 @@ namespace BuildVision.Core
         private SolutionBuildEvents _solutionBuildEvents;
         private ISolutionProvider _solutionProvider;
         private Window _activeProjectContext;
+        private ServiceProvider _serviceProvider;
 
         public static ToolWindowPane ToolWindowPane { get; set; }
 
@@ -101,6 +102,8 @@ namespace BuildVision.Core
             Assumes.Present(_buildInformationProvider);
             _solutionProvider = await GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
             Assumes.Present(_solutionProvider);
+            _serviceProvider = new ServiceProvider(Services.Dte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
+            Assumes.Present(_serviceProvider);
 
             _commandEvents = _dte.Events.CommandEvents;
             _commandEvents.AfterExecute += CommandEvents_AfterExecute;
@@ -128,7 +131,7 @@ namespace BuildVision.Core
             _buildInformationProvider.ResetCurrentProjects();
             _buildInformationProvider.ResetBuildInformationModel();
 
-            _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider);
+            _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider, _serviceProvider);
             _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEventsCookie);
             _solutionBuildManager4.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
         }

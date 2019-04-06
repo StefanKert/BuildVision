@@ -19,10 +19,7 @@ using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Contracts;
 using BuildVision.UI.Models;
 using BuildVision.Views.Settings;
-using EnvDTE;
-using EnvDTE80;
 using Microsoft.Build.Framework;
-using Microsoft.VisualStudio.Shell;
 using ErrorItem = BuildVision.Contracts.ErrorItem;
 
 namespace BuildVision.Core
@@ -40,23 +37,19 @@ namespace BuildVision.Core
         private readonly ISolutionProvider _solutionProvider;
         private readonly IBuildService _buildService;
         private readonly ITaskBarInfoService _taskBarInfoService;
-        private readonly ObservableCollection<IProjectItem> _projects;
 
-        private readonly BuildInformationModel _buildInformationModel;
-        private readonly BuildEvents _buildEvents;
-        private readonly DTE2 _dte;
         private string _origTextCurrentState;
-
         private const int BuildInProcessCountOfQuantumSleep = 5;
         private const int BuildInProcessQuantumSleep = 50;
         private readonly object _buildProcessLockObject;
         private CancellationTokenSource _buildProcessCancellationToken;
         private int _currentQueuePosOfBuildingProject = 0;
 
+        public IBuildInformationModel BuildInformationModel { get; } = new BuildInformationModel();
+        public ObservableCollection<IProjectItem> Projects { get; } = new ObservableCollection<IProjectItem>();
 
         [ImportingConstructor]
         public BuildInformationProvider(
-            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider,
             [Import(typeof(IBuildOutputLogger))] IBuildOutputLogger buildOutputLogger,
             [Import(typeof(IStatusBarNotificationService))] IStatusBarNotificationService statusBarNotificationService,
             [Import(typeof(IBuildMessagesFactory))] IBuildMessagesFactory buildMessagesFactory,
@@ -73,62 +66,26 @@ namespace BuildVision.Core
             _statusBarNotificationService = statusBarNotificationService;
             _buildMessagesFactory = buildMessagesFactory;
             _windowStateService = windowStateService;
-            _buildInformationModel = new BuildInformationModel();
-            _buildEvents = (serviceProvider.GetService(typeof(DTE)) as DTE).Events.BuildEvents;
-            _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
-            _projects = new ObservableCollection<IProjectItem>();
             _solutionProvider = solutionProvider;
             _buildService = buildService;
             _taskBarInfoService = taskBarInfoService;
             _buildOutputLogger.OnErrorRaised += BuildOutputLogger_OnErrorRaised;
         }
 
-        public IBuildInformationModel GetBuildInformationModel()
-        {
-            return _buildInformationModel;
-        }
-
-        public ObservableCollection<IProjectItem> GetBuildingProjects()
-        {
-            return _projects;
-        }
-
         public void ReloadCurrentProjects()
         {
-            _projects.Clear();
-            _projects.AddRange(_solutionProvider.GetProjects());
+            Projects.Clear();
+            Projects.AddRange(_solutionProvider.GetProjects());
         }
 
         public void ResetCurrentProjects()
         {
-            _projects.Clear();
+            Projects.Clear();
         }
 
         public void ResetBuildInformationModel()
         {
-            _buildInformationModel.ErrorCount = 0;
-            _buildInformationModel.WarningsCount = 0;
-            _buildInformationModel.MessagesCount = 0;
-            _buildInformationModel.SucceededProjectsCount = 0;
-            _buildInformationModel.UpToDateProjectsCount = 0;
-            _buildInformationModel.FailedProjectsCount = 0;
-            _buildInformationModel.WarnedProjectsCount = 0;
-            _buildInformationModel.StateMessage = Resources.BuildDoneText_BuildNotStarted;
-            _buildInformationModel.CurrentBuildState = BuildState.NotStarted;
-            _buildInformationModel.BuildAction = BuildActions.Unknown;
-            _buildInformationModel.BuildScope = BuildScopes.Unknown;
-            _buildInformationModel.BuildStartTime = null;
-            _buildInformationModel.BuildFinishTime = null;
-        }
-
-        private void BuildEvents_OnBuildBegin(vsBuildScope scope, vsBuildAction action)
-        {
-            _buildInformationModel.BuildScope = (BuildScopes)scope; // we need to set buildscope explictly because it is not possible to get this via the other api
-            string message = _buildMessagesFactory.GetBuildBeginMajorMessage(_buildInformationModel);
-            _statusBarNotificationService.ShowTextWithFreeze(message);
-            _origTextCurrentState = message;
-            _buildInformationModel.StateMessage = _origTextCurrentState;
-            _taskBarInfoService.UpdateTaskBarInfo(_buildInformationModel.CurrentBuildState, _buildInformationModel.BuildScope, _projects.Count, GetFinishedProjectsCount());
+            BuildInformationModel.ResetState();
         }
 
         private void BuildOutputLogger_OnErrorRaised(BuildProjectContextEntry projectEntry, object e, ErrorLevel errorLevel)
@@ -191,13 +148,13 @@ namespace BuildVision.Core
                 return false;
 
             var projectProperties = projectEntry.Properties;
-            var project = _projects.FirstOrDefault(x => x.FullName == projectFile);
+            var project = Projects.FirstOrDefault(x => x.FullName == projectFile);
 
             if (projectProperties.ContainsKey("Configuration") && projectProperties.ContainsKey("Platform"))
             {
                 string projectConfiguration = projectProperties["Configuration"];
                 string projectPlatform = projectProperties["Platform"];
-                projectItem = _projects.First(item => $"{item.FullName}-{item.Configuration}|{item.Platform.Replace(" ", "")}" == $"{projectFile}-{projectConfiguration}|{projectPlatform}");
+                projectItem = Projects.First(item => $"{item.FullName}-{item.Configuration}|{item.Platform.Replace(" ", "")}" == $"{projectFile}-{projectConfiguration}|{projectPlatform}");
                 if (projectItem == null)
                 {
                     TraceManager.Trace(
@@ -295,7 +252,7 @@ namespace BuildVision.Core
             }
         }
 
-        public void BuildStarted(BuildActions buildAction)
+        public void BuildStarted(BuildActions buildAction, BuildScopes buildScope)
         {
             _currentQueuePosOfBuildingProject = 0;
             ErrorNavigationService.BuildErrorNavigated = false;
@@ -304,45 +261,52 @@ namespace BuildVision.Core
             ResetBuildInformationModel();
             ResetCurrentProjects();
 
-            _buildInformationModel.BuildStartTime = DateTime.Now;
-            _buildInformationModel.BuildFinishTime = null;
-            _buildInformationModel.CurrentBuildState = BuildState.InProgress;
-            _buildInformationModel.BuildAction = buildAction;
+            BuildInformationModel.BuildStartTime = DateTime.Now;
+            BuildInformationModel.BuildFinishTime = null;
+            BuildInformationModel.CurrentBuildState = BuildState.InProgress;
+            BuildInformationModel.BuildAction = buildAction;
+            BuildInformationModel.BuildScope = buildScope;
 
             _buildProcessCancellationToken = new CancellationTokenSource();
             _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildBegin);
             System.Threading.Tasks.Task.Run(() => Run(_buildProcessCancellationToken.Token), _buildProcessCancellationToken.Token);
+
+            string message = _buildMessagesFactory.GetBuildBeginMajorMessage(BuildInformationModel);
+            _statusBarNotificationService.ShowTextWithFreeze(message);
+            _origTextCurrentState = message;
+            BuildInformationModel.StateMessage = _origTextCurrentState;
+            _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
         }
 
         public void ProjectBuildStarted(IProjectItem projectItem, BuildActions buildAction)
         {
-            if (_buildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
+            if (BuildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
             {
                 return;
             }
 
             try
             {
-                var projInCollection = _projects.FirstOrDefault(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == ProjectIdentifierGenerator.GetIdentifierForProjectItem(projectItem));
+                var projInCollection = Projects.FirstOrDefault(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == ProjectIdentifierGenerator.GetIdentifierForProjectItem(projectItem));
                 if (projInCollection == null)
                 {
-                    _projects.Add(projectItem);
+                    Projects.Add(projectItem);
                     projInCollection = projectItem;
                 }
-                projInCollection.State = GetProjectState(_buildInformationModel.BuildAction);
+                projInCollection.State = GetProjectState(BuildInformationModel.BuildAction);
                 projInCollection.BuildFinishTime = null;
                 projInCollection.BuildStartTime = DateTime.Now;
 
-                _taskBarInfoService.UpdateTaskBarInfo(_buildInformationModel.CurrentBuildState, _buildInformationModel.BuildScope, _projects.Count, GetFinishedProjectsCount());
+                _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
                 _currentQueuePosOfBuildingProject++;
 
-                if (_buildInformationModel.BuildScope == BuildScopes.BuildScopeSolution &&
-                    (_buildInformationModel.BuildAction == BuildActions.BuildActionBuild ||
-                     _buildInformationModel.BuildAction == BuildActions.BuildActionRebuildAll))
+                if (BuildInformationModel.BuildScope == BuildScopes.BuildScopeSolution &&
+                    (BuildInformationModel.BuildAction == BuildActions.BuildActionBuild ||
+                     BuildInformationModel.BuildAction == BuildActions.BuildActionRebuildAll))
                 {
                     projInCollection.BuildOrder = _currentQueuePosOfBuildingProject;
                 }
-                _buildInformationModel.CurrentProject = projInCollection;
+                BuildInformationModel.CurrentProject = projInCollection;
             }
             catch (Exception ex)
             {
@@ -352,19 +316,19 @@ namespace BuildVision.Core
 
         private int GetFinishedProjectsCount()
         {
-            return _buildInformationModel.SucceededProjectsCount + _buildInformationModel.UpToDateProjectsCount + _buildInformationModel.WarnedProjectsCount + _buildInformationModel.FailedProjectsCount;
+            return BuildInformationModel.SucceededProjectsCount + BuildInformationModel.UpToDateProjectsCount + BuildInformationModel.WarnedProjectsCount + BuildInformationModel.FailedProjectsCount;
         }
 
         public void ProjectBuildFinished(BuildActions buildAction, string projectIdentifier, bool success, bool canceled)
         {
-            if (_buildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
+            if (BuildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
             {
                 return;
             }
 
-            var currentProject = _projects.First(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == projectIdentifier);
+            var currentProject = Projects.First(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == projectIdentifier);
             ProjectState projectState;
-            switch (_buildInformationModel.BuildAction)
+            switch (BuildInformationModel.BuildAction)
             {
                 case BuildActions.BuildActionBuild:
                 case BuildActions.BuildActionRebuildAll:
@@ -406,43 +370,43 @@ namespace BuildVision.Core
                 _buildService.CancelBuildSolution();
             }
 
-            _buildInformationModel.SucceededProjectsCount = _projects.Count(x => x.State == ProjectState.BuildDone || x.State == ProjectState.CleanDone);
-            _buildInformationModel.FailedProjectsCount = _projects.Count(x => x.State == ProjectState.BuildError || x.State == ProjectState.CleanError);
-            _buildInformationModel.WarnedProjectsCount = _projects.Count(x => x.State == ProjectState.BuildWarning);
-            _buildInformationModel.UpToDateProjectsCount = _projects.Count(x => x.State == ProjectState.UpToDate);
-            _buildInformationModel.MessagesCount = _projects.Sum(x => x.MessagesCount);
-            _buildInformationModel.ErrorCount = _projects.Sum(x => x.ErrorsCount);
-            _buildInformationModel.WarningsCount = _projects.Sum(x => x.WarningsCount);
+            BuildInformationModel.SucceededProjectsCount = Projects.Count(x => x.State == ProjectState.BuildDone || x.State == ProjectState.CleanDone);
+            BuildInformationModel.FailedProjectsCount = Projects.Count(x => x.State == ProjectState.BuildError || x.State == ProjectState.CleanError);
+            BuildInformationModel.WarnedProjectsCount = Projects.Count(x => x.State == ProjectState.BuildWarning);
+            BuildInformationModel.UpToDateProjectsCount = Projects.Count(x => x.State == ProjectState.UpToDate);
+            BuildInformationModel.MessagesCount = Projects.Sum(x => x.MessagesCount);
+            BuildInformationModel.ErrorCount = Projects.Sum(x => x.ErrorsCount);
+            BuildInformationModel.WarningsCount = Projects.Sum(x => x.WarningsCount);
 
-            if (_buildInformationModel.CurrentProject == null)
+            if (BuildInformationModel.CurrentProject == null)
             {
-                _buildInformationModel.CurrentProject = GetBuildingProjects().Last();
+                BuildInformationModel.CurrentProject = Projects.Last();
             }
 
-            _taskBarInfoService.UpdateTaskBarInfo(_buildInformationModel.CurrentBuildState, _buildInformationModel.BuildScope, _projects.Count, GetFinishedProjectsCount());
+            _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
         }
 
         public void BuildUpdate()
         {
-            var message = _origTextCurrentState + _buildMessagesFactory.GetBuildBeginExtraMessage(_buildInformationModel);
-            _buildInformationModel.StateMessage = message;
+            var message = _origTextCurrentState + _buildMessagesFactory.GetBuildBeginExtraMessage(BuildInformationModel);
+            BuildInformationModel.StateMessage = message;
             _statusBarNotificationService.ShowTextWithFreeze(message);
-            /*
-             *             for (int i = 0; i < buildingProjects.Count; i++)
-                    buildingProjects[i].RaiseBuildElapsedTimeChanged();
-            */
+            foreach (var project in Projects)
+            {
+                project.RaiseBuildElapsedTimeChanged();
+            }
         }
 
         public void BuildFinished(bool success, bool canceled)
         {
-            if (_buildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
+            if (BuildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
             {
                 return;
             }
 
-            if (_buildInformationModel.BuildScope == BuildScopes.BuildScopeSolution)
+            if (BuildInformationModel.BuildScope == BuildScopes.BuildScopeSolution)
             {
-                foreach (var projectItem in _projects)
+                foreach (var projectItem in Projects)
                 {
                     if (projectItem.State == ProjectState.Pending)
                     {
@@ -453,30 +417,30 @@ namespace BuildVision.Core
 
             _buildProcessCancellationToken.Cancel();
 
-            _buildInformationModel.BuildFinishTime = DateTime.Now;
+            BuildInformationModel.BuildFinishTime = DateTime.Now;
             if (success)
             {
-                if (_buildInformationModel.ErrorCount > 0)
+                if (BuildInformationModel.ErrorCount > 0)
                 {
-                    _buildInformationModel.CurrentBuildState = BuildState.ErrorDone;
+                    BuildInformationModel.CurrentBuildState = BuildState.ErrorDone;
                 }
                 else
                 {
-                    _buildInformationModel.CurrentBuildState = BuildState.Done;
+                    BuildInformationModel.CurrentBuildState = BuildState.Done;
                 }
             }
             else if (canceled)
-                _buildInformationModel.CurrentBuildState = BuildState.Cancelled;
+                BuildInformationModel.CurrentBuildState = BuildState.Cancelled;
             else
-                _buildInformationModel.CurrentBuildState = BuildState.Failed;
+                BuildInformationModel.CurrentBuildState = BuildState.Failed;
 
 
-            var message = _buildMessagesFactory.GetBuildDoneMessage(_buildInformationModel);
+            var message = _buildMessagesFactory.GetBuildDoneMessage(BuildInformationModel);
             _statusBarNotificationService.ShowText(message);
-            _buildInformationModel.StateMessage = message;
-            _taskBarInfoService.UpdateTaskBarInfo(_buildInformationModel.CurrentBuildState, _buildInformationModel.BuildScope, _projects.Count, GetFinishedProjectsCount());
+            BuildInformationModel.StateMessage = message;
+            _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
 
-            if (_buildInformationModel.FailedProjectsCount > 0 || canceled)
+            if (BuildInformationModel.FailedProjectsCount > 0 || canceled)
             {
                 _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildError);
             }
@@ -486,11 +450,11 @@ namespace BuildVision.Core
             }
 
 
-            if (_buildInformationModel.FailedProjectsCount > 0)
+            if (BuildInformationModel.FailedProjectsCount > 0)
             {
                 if (_packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone)
                 {
-                    foreach (var project in _projects)
+                    foreach (var project in Projects)
                     {
                         if (ErrorNavigationService.BuildErrorNavigated)
                         {

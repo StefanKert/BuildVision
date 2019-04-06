@@ -106,7 +106,7 @@ namespace BuildVision.Core
                 var taskBarInfoService = await GetServiceAsync<ITaskBarInfoService>(cancellation);
                 var buildService = await GetServiceAsync<IBuildService>(cancellation);
                 var errorNavigationService = await GetServiceAsync<IErrorNavigationService>(cancellation);
-                return new BuildInformationProvider(sp, buildOutputLogger, statusBarNotificationService, buildMessagesFactory, windowStateService, packageSettingsProvider, errorNavigationService, solutionProvider, buildService, taskBarInfoService);
+                return new BuildInformationProvider(buildOutputLogger, statusBarNotificationService, buildMessagesFactory, windowStateService, packageSettingsProvider, errorNavigationService, solutionProvider, buildService, taskBarInfoService);
             }
             else
             {

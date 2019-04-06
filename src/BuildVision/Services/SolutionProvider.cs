@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using BuildVision.Contracts.Models;
+using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
 using BuildVision.Helpers;
 using BuildVision.UI;

@@ -22,7 +22,6 @@ using BuildVision.UI.DataGrid;
 using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models;
-using BuildVision.UI.Settings.Models.Columns;
 using BuildVision.Views.Settings;
 using Microsoft.VisualStudio;
 using Process = System.Diagnostics.Process;
@@ -204,10 +203,10 @@ namespace BuildVision.UI.ViewModels
             _buildService = buildService;
             _errorNavigationService = errorNavigationService;
             _taskBarInfoService = taskBarInfoService;
-            BuildInformationModel = _buildInformationProvider.GetBuildInformationModel();
+            BuildInformationModel = _buildInformationProvider.BuildInformationModel;
             SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
-            Projects = _buildInformationProvider.GetBuildingProjects();
+            Projects = _buildInformationProvider.Projects;
 
             _settingsProvider = settingsProvider;
             _settingsProvider.SettingsChanged += () =>

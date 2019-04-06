@@ -2,7 +2,7 @@
 using BuildVision.Contracts.Models;
 using BuildVision.UI.Models;
 
-namespace BuildVision.Core
+namespace BuildVision.Exports.Providers
 {
     public interface ISolutionProvider
     {

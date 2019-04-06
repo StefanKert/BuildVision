@@ -8,15 +8,16 @@ namespace BuildVision.Exports.Providers
 {
     public interface IBuildInformationProvider
     {
-        ObservableCollection<IProjectItem> GetBuildingProjects();
+        IBuildInformationModel BuildInformationModel { get; } 
+        ObservableCollection<IProjectItem> Projects { get; }
+
         void ProjectBuildStarted(IProjectItem projectItem, BuildActions buildAction);
         void ProjectBuildFinished(BuildActions buildAction, string projectIdentifier, bool succeess, bool canceled);
         void ReloadCurrentProjects();
         void ResetCurrentProjects();
         void BuildFinished(bool success, bool canceled);
-        void BuildStarted(BuildActions buildAction);
+        void BuildStarted(BuildActions currentBuildAction, BuildScopes scope);
         void BuildUpdate();
         void ResetBuildInformationModel();
-        IBuildInformationModel GetBuildInformationModel();
     }
 }

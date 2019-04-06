@@ -5,11 +5,10 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using BuildVision.Commands;
 using BuildVision.Common.Diagnostics;
 using BuildVision.Exports.Providers;
-using BuildVision.Exports.Services;
 using BuildVision.Helpers;
-using BuildVision.Services;
 using BuildVision.Tool;
 using BuildVision.Tool.Building;
 using BuildVision.UI;
@@ -28,6 +27,7 @@ using Window = EnvDTE.Window;
 namespace BuildVision.Core
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists)] // This will lead to a warning on startup
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(BuildVisionPane))]
     [Guid(PackageGuids.GuidBuildVisionPackageString)]
@@ -39,7 +39,7 @@ namespace BuildVision.Core
     [ProvideOptionPage(typeof(GridSettingsDialogPage), "BuildVision", "Projects Grid", 0, 0, true)]
     [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), "BuildVision", "Build Messages", 0, 0, true)]
     [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
-    public sealed partial class BuildVisionPackage : AsyncPackage
+    public sealed class BuildVisionPackage : AsyncPackage
     {
         private DTE _dte;
         private DTE2 _dte2;
@@ -75,16 +75,14 @@ namespace BuildVision.Core
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             await base.InitializeAsync(cancellationToken, progress);
-
+            
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
+            await ShowToolWindowCommand.InitializeAsync(this);
+
             _dte = await GetServiceAsync(typeof(DTE)) as DTE;
+            Assumes.Present(_dte);
             _dte2 = await GetServiceAsync(typeof(DTE)) as DTE2;
-            if (await GetServiceAsync(typeof(IMenuCommandService)) is OleMenuCommandService mcs)
-            {
-                var toolwndCommandId = new CommandID(PackageGuids.GuidBuildVisionCmdSet, (int) PackageIds.CmdIdBuildVisionToolWindow);
-                var menuToolWin = new OleMenuCommand(ShowToolWindowAsync, toolwndCommandId);
-                mcs.AddCommand(menuToolWin);
-            }
+            Assumes.Present(_dte2);
             _solutionBuildManager = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
             Assumes.Present(_solutionBuildManager);
             _solutionBuildManager4 = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager5;
@@ -108,6 +106,11 @@ namespace BuildVision.Core
             {
                 SolutionEvents_Opened();
             }
+
+            var toolWindow = GetWindowPane(typeof(BuildVisionPane));
+            var windowStateService = await GetServiceAsync(typeof(IWindowStateService)) as IWindowStateService;
+            Assumes.Present(windowStateService);
+            windowStateService.Initialize(toolWindow);
         }
 
         private void SolutionEvents_Opened()
@@ -117,7 +120,7 @@ namespace BuildVision.Core
             _solutionProvider.ReloadSolution();
             _buildInformationProvider.ResetCurrentProjects();
             _buildInformationProvider.ResetBuildInformationModel();
-            
+
             _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider);
             _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
             _solutionBuildManager4.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
@@ -169,56 +172,9 @@ namespace BuildVision.Core
             }
         }
 
-        private async void ShowToolWindowAsync(object sender, EventArgs e)
+        private ToolWindowPane GetWindowPane(Type windowType)
         {
-            try
-            {
-                var window = ShowToolWindow(Guid.Parse(PackageGuids.GuidBuildVisionToolWindowString));
-
-                // Get the instance number 0 of this tool window. This window is single instance so this instance
-                // is actually the only one.
-                // The last flag is set to true so that if the tool window does not exists it will be created.
-               // var window = FindToolWindow(typeof(BuildVisionPane), 0, true);
-                if (window == null || window.Frame == null)
-                    throw new InvalidOperationException(Resources.CanNotCreateWindow);
-
-                await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-                var windowFrame = (IVsWindowFrame)window.Frame;
-                ErrorHandler.ThrowOnFailure(windowFrame.Show());
-
-                var windowStateService = await GetServiceAsync(typeof(IWindowStateService)) as IWindowStateService;
-                Assumes.Present(windowStateService);
-                windowStateService.Initialize(window);
-            }
-            catch (Exception ex)
-            {
-                ex.TraceUnknownException();
-            }
-        }
-
-        ToolWindowPane ShowToolWindow(Guid windowGuid)
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-
-            var shell = GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
-            IVsWindowFrame frame;
-            if (ErrorHandler.Failed(shell.FindToolWindow((uint)__VSCREATETOOLWIN.CTW_fForceCreate,
-                ref windowGuid, out frame)))
-            {
-                return null;
-            }
-            if (ErrorHandler.Failed(frame.Show()))
-            {
-                return null;
-            }
-
-            object docView = null;
-            if (ErrorHandler.Failed(frame.GetProperty((int)__VSFPROPID.VSFPROPID_DocView, out docView)))
-            {
-                return null;
-            }
-            return docView as ToolWindowPane;
+            return FindToolWindow(windowType, 0, false) ?? FindToolWindow(windowType, 0, true);
         }
     }
 }

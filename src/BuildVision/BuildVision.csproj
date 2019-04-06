@@ -91,6 +91,7 @@
     <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ShowToolWindowCommand.cs" />
     <Compile Include="Constants\EnvDTECodeModelLanguageConstants2.cs" />
     <Compile Include="Extensions\IServiceProviderExtensions.cs" />
     <Compile Include="Services\BuildInformationProvider.cs" />

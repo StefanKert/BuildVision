@@ -68,7 +68,7 @@ namespace BuildVision.UI.Common.Logging
                 switch (type)
                 {
                     case EventLogEntryType.Error:
-                        ActivityLog.LogError(Resources.ProductName, message);
+                        //ActivityLog.LogError(Resources.ProductName, message);
 #if DEBUG
                         System.Diagnostics.Trace.TraceError(message);
                         MessageBox.Show(message, Resources.ProductName + " error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -77,7 +77,7 @@ namespace BuildVision.UI.Common.Logging
 
                     case EventLogEntryType.Warning:
                     case EventLogEntryType.FailureAudit:
-                        ActivityLog.LogWarning(Resources.ProductName, message);
+                        //ActivityLog.LogWarning(Resources.ProductName, message);
 #if DEBUG
                         System.Diagnostics.Trace.TraceWarning(message);
 #endif
@@ -85,7 +85,7 @@ namespace BuildVision.UI.Common.Logging
 
                     case EventLogEntryType.Information:
                     case EventLogEntryType.SuccessAudit:
-                        ActivityLog.LogInformation(Resources.ProductName, message);
+                        //ActivityLog.LogInformation(Resources.ProductName, message);
 #if DEBUG
                         System.Diagnostics.Trace.TraceInformation(message);
 #endif

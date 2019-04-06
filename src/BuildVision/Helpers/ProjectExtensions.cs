@@ -249,8 +249,7 @@ namespace BuildVision.Helpers
             var service = SolutionProjectsExtensions.GetService(proj.DTE, typeof(IVsSolution));
             var solution = (IVsSolution)service;
 
-            IVsHierarchy hierarchy;
-            int result = solution.GetProjectOfUniqueName(proj.UniqueName, out hierarchy);
+            int result = solution.GetProjectOfUniqueName(proj.UniqueName, out var hierarchy);
 
             if (!string.IsNullOrEmpty(proj.Kind))
             {
@@ -372,7 +371,7 @@ namespace BuildVision.Helpers
                     }
                 }
             }
-            catch(ArgumentException)
+            catch (ArgumentException)
             {
                 // We are catching this seperatly because in the current VS2017 Version
                 // there is a bug that makes it impossible for us to retrieve the extenders
@@ -449,7 +448,7 @@ namespace BuildVision.Helpers
                 }
 
                 TraceManager.Trace(
-                    string.Format("Project type is taken from the registry: Kind={0}, DTEVersion={1}, Type={2}", projectKind, version, type), 
+                    string.Format("Project type is taken from the registry: Kind={0}, DTEVersion={1}, Type={2}", projectKind, version, type),
                     EventLogEntryType.Warning);
 
                 if (string.IsNullOrWhiteSpace(type))
@@ -617,12 +616,6 @@ namespace BuildVision.Helpers
                 ex.TraceUnknownException();
                 return true;
             }
-        }
-
-        public static Microsoft.Build.Evaluation.Project GetMsBuildProject(this Project project)
-        {
-            var root = Microsoft.Build.Construction.ProjectRootElement.Open(project.FullName);          
-            return new Microsoft.Build.Evaluation.Project(root);
         }
     }
 }

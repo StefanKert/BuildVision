@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -15,18 +14,15 @@ using BuildVision.Exports.Services;
 using BuildVision.Helpers;
 using BuildVision.Services;
 using BuildVision.Tool.Building;
-using BuildVision.Tool.Models;
 using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Contracts;
-using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
 using BuildVision.Views.Settings;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.Build.Framework;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using ErrorItem = BuildVision.Contracts.ErrorItem;
 
 namespace BuildVision.Core
@@ -44,11 +40,11 @@ namespace BuildVision.Core
         private readonly ISolutionProvider _solutionProvider;
         private readonly IBuildService _buildService;
         private readonly ITaskBarInfoService _taskBarInfoService;
-        private ObservableCollection<IProjectItem> _projects;
+        private readonly ObservableCollection<IProjectItem> _projects;
 
-        private BuildInformationModel _buildInformationModel;
-        private BuildEvents _buildEvents;
-        private DTE2 _dte;
+        private readonly BuildInformationModel _buildInformationModel;
+        private readonly BuildEvents _buildEvents;
+        private readonly DTE2 _dte;
         private string _origTextCurrentState;
 
         private const int BuildInProcessCountOfQuantumSleep = 5;
@@ -87,9 +83,15 @@ namespace BuildVision.Core
             _buildOutputLogger.OnErrorRaised += BuildOutputLogger_OnErrorRaised;
         }
 
-        public IBuildInformationModel GetBuildInformationModel() =>  _buildInformationModel;
+        public IBuildInformationModel GetBuildInformationModel()
+        {
+            return _buildInformationModel;
+        }
 
-        public ObservableCollection<IProjectItem> GetBuildingProjects() => _projects;
+        public ObservableCollection<IProjectItem> GetBuildingProjects()
+        {
+            return _projects;
+        }
 
         public void ReloadCurrentProjects()
         {
@@ -167,7 +169,7 @@ namespace BuildVision.Core
                 }
 
                 bool navigateToBuildFailure = (args.ErrorLevel == ErrorLevel.Error && _packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnErrorRaised);
-                if (_packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnErrorRaised && !ErrorNavigationService.BuildErrorNavigated)
+                if (navigateToBuildFailure && !ErrorNavigationService.BuildErrorNavigated)
                 {
                     _errorNavigationService.NavigateToErrorItem(errorItem);
                 }
@@ -443,7 +445,9 @@ namespace BuildVision.Core
                 foreach (var projectItem in _projects)
                 {
                     if (projectItem.State == ProjectState.Pending)
+                    {
                         projectItem.State = ProjectState.Skipped;
+                    }
                 }
             }
 
@@ -489,7 +493,10 @@ namespace BuildVision.Core
                     foreach (var project in _projects)
                     {
                         if (ErrorNavigationService.BuildErrorNavigated)
+                        {
                             break;
+                        }
+
                         foreach (var error in project.Errors)
                         {
                             if (ErrorNavigationService.BuildErrorNavigated)

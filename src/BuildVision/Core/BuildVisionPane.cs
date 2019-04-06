@@ -1,7 +1,5 @@
-﻿using System.Globalization;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Markup;
 
 using Microsoft.VisualStudio.Shell;
 using BuildVision.UI;
@@ -12,10 +10,8 @@ using Microsoft.VisualStudio.Threading;
 using System.Threading.Tasks;
 using Microsoft;
 using BuildVision.Exports.Providers;
-using BuildVision.Tool.Building;
 using BuildVision.Exports.Services;
 using BuildVision.Views.Settings;
-using Microsoft.VisualStudio.Shell.Interop;
 using System.Windows.Controls;
 using BuildVision.UI.Settings.Models;
 using BuildVision.UI.Settings.Models.Columns;

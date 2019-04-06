@@ -29,14 +29,9 @@ using System.Threading.Tasks;
 namespace BuildVision.Core
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideAutoLoad(_loadContext, PackageAutoLoadFlags.BackgroundLoad)]
-    [ProvideUIContextRule(_loadContext,
-        name: "Auto load",
-        expression: "HasDot & FullyLoaded & (SingleProject | MultipleProjects)",
-        termNames: new[] { "HasDot", "FullyLoaded", "SingleProject", "MultipleProjects" },
-        termValues: new[] { "HierSingleSelectionName:\\.(.+)$", ui.SolutionExistsAndFullyLoaded_string, ui.SolutionHasSingleProject_string, ui.SolutionHasMultipleProjects_string })]
+    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(BuildVisionPane))]
+    [ProvideToolWindow(typeof(BuildVisionPane))]  
     [Guid(PackageGuids.GuidBuildVisionPackageString)]
     [ProvideBindingPath]
     [ProvideBindingPath(SubPath = "Lib")]

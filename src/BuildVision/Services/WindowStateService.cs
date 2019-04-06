@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using BuildVision.Core;
 using BuildVision.UI.Settings.Models.ToolWindow;
 using EnvDTE;
 using Microsoft;
@@ -11,7 +12,7 @@ using WindowState = BuildVision.UI.Models.WindowState;
 namespace BuildVision.Tool.Building
 {
     [Export(typeof(IWindowStateService))]
-    [PartCreationPolicy(CreationPolicy.Shared)]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
     public class WindowStateService : IWindowStateService
     {
         private DTE _dte;
@@ -127,6 +128,8 @@ namespace BuildVision.Tool.Building
 
         public void Initialize(ToolWindowPane toolWindowPane)
         {
+            if (toolWindowPane == null)
+                return;
             if (_window == null || _windowFrame == null)
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
@@ -141,6 +144,12 @@ namespace BuildVision.Tool.Building
 
         public void ApplyToolWindowStateAction(WindowStateAction windowStateAction)
         {
+            if(BuildVisionPackage.ToolWindowPane == null)
+            {
+                return;
+            }
+            Initialize(BuildVisionPackage.ToolWindowPane);
+
             ApplyToolWindowStateAction(windowStateAction.State); 
         }
     }

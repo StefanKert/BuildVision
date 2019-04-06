@@ -29,9 +29,11 @@ using System.Threading.Tasks;
 namespace BuildVision.Core
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
+    [ProvideAutoLoad(ui.SolutionOpening_string, flags: PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideToolWindow(typeof(BuildVisionPane))]
+    [ProvideToolWindow(typeof(BuildVisionPane), Transient = true, MultiInstances = false)]
+    [ProvideToolWindowVisibility(typeof(BuildVisionPane), ui.SolutionOpening_string)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(BuildVisionPane))]  
     [Guid(PackageGuids.GuidBuildVisionPackageString)]
     [ProvideBindingPath]
     [ProvideBindingPath(SubPath = "Lib")]
@@ -41,7 +43,7 @@ namespace BuildVision.Core
     [ProvideOptionPage(typeof(GridSettingsDialogPage), "BuildVision", "Projects Grid", 0, 0, true)]
     [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), "BuildVision", "Build Messages", 0, 0, true)]
     [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
-    public sealed class BuildVisionPackage : AsyncPackage
+    public sealed class BuildVisionPackage : AsyncPackage, IVsPackageDynamicToolOwnerEx
     {
         private const string _loadContext = "dec9f70a-b8b1-4050-ae96-08f89c6eccd1";
 
@@ -58,6 +60,8 @@ namespace BuildVision.Core
         private SolutionBuildEvents _solutionBuildEvents;
         private ISolutionProvider _solutionProvider;
         private Window _activeProjectContext;
+
+        public static ToolWindowPane ToolWindowPane { get; set; }
 
 
         public ControlSettings ControlSettings { get; set; }
@@ -113,7 +117,7 @@ namespace BuildVision.Core
                 SolutionEvents_Opened();
             }
 
-            InitToolWindow(this);
+            //InitToolWindow(this);
         }
 
         private void SolutionEvents_Opened()
@@ -175,15 +179,22 @@ namespace BuildVision.Core
             }
         }
 
-        public static void InitToolWindow(AsyncPackage package)
+        public int QueryShowTool(ref Guid rguidPersistenceSlot, uint dwId, out int pfShowTool)
         {
-            package.JoinableTaskFactory.RunAsync(async () =>
-            {
-                var window = package.FindToolWindow(typeof(BuildVisionPane), 0, false) ?? package.FindToolWindow(typeof(BuildVisionPane), 0, true);
-                var windowStateService = await package.GetServiceAsync(typeof(IWindowStateService)) as IWindowStateService;
-                Assumes.Present(windowStateService);
-                windowStateService.Initialize(window);
-            });
+            ToolWindowPane = FindToolWindow(typeof(BuildVisionPane), 0, false) ?? FindToolWindow(typeof(BuildVisionPane), 0, true);
+            pfShowTool = 1;
+            return 0;
         }
+
+        //public static void InitToolWindow(AsyncPackage package)
+        //{
+        //    package.JoinableTaskFactory.RunAsync(async () =>
+        //    {
+        //        var window = package.FindToolWindow(typeof(BuildVisionPane), 0, false) ?? package.FindToolWindow(typeof(BuildVisionPane), 0, true);
+        //        var windowStateService = await package.GetServiceAsync(typeof(IWindowStateService)) as IWindowStateService;
+        //        Assumes.Present(windowStateService);
+        //        windowStateService.Initialize(window);
+        //    });
+        //}
     }
 }

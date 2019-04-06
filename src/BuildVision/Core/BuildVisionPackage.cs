@@ -23,12 +23,18 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 using Window = EnvDTE.Window;
+using ui = Microsoft.VisualStudio.VSConstants.UICONTEXT;
+using System.Threading.Tasks;
 
 namespace BuildVision.Core
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    //[ProvideAutoLoad(UIContextGuids80.SolutionExists, flags: PackageAutoLoadFlags.BackgroundLoad)] // This will lead to a warning on startup
-    [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionOpening_string, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideAutoLoad(_loadContext, PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideUIContextRule(_loadContext,
+        name: "Auto load",
+        expression: "HasDot & FullyLoaded & (SingleProject | MultipleProjects)",
+        termNames: new[] { "HasDot", "FullyLoaded", "SingleProject", "MultipleProjects" },
+        termValues: new[] { "HierSingleSelectionName:\\.(.+)$", ui.SolutionExistsAndFullyLoaded_string, ui.SolutionHasSingleProject_string, ui.SolutionHasMultipleProjects_string })]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [ProvideToolWindow(typeof(BuildVisionPane))]
     [Guid(PackageGuids.GuidBuildVisionPackageString)]
@@ -42,6 +48,8 @@ namespace BuildVision.Core
     [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
     public sealed class BuildVisionPackage : AsyncPackage
     {
+        private const string _loadContext = "dec9f70a-b8b1-4050-ae96-08f89c6eccd1";
+
         private DTE _dte;
         private DTE2 _dte2;
         private CommandEvents _commandEvents;
@@ -108,10 +116,7 @@ namespace BuildVision.Core
                 SolutionEvents_Opened();
             }
 
-            var toolWindow = GetWindowPane(typeof(BuildVisionPane));
-            var windowStateService = await GetServiceAsync(typeof(IWindowStateService)) as IWindowStateService;
-            Assumes.Present(windowStateService);
-            windowStateService.Initialize(toolWindow);
+            InitToolWindow(this);
         }
 
         private void SolutionEvents_Opened()
@@ -173,9 +178,15 @@ namespace BuildVision.Core
             }
         }
 
-        private ToolWindowPane GetWindowPane(Type windowType)
+        public static void InitToolWindow(AsyncPackage package)
         {
-            return FindToolWindow(windowType, 0, false) ?? FindToolWindow(windowType, 0, true);
+            package.JoinableTaskFactory.RunAsync(async () =>
+            {
+                var window = package.FindToolWindow(typeof(BuildVisionPane), 0, false) ?? package.FindToolWindow(typeof(BuildVisionPane), 0, true);
+                var windowStateService = await package.GetServiceAsync(typeof(IWindowStateService)) as IWindowStateService;
+                Assumes.Present(windowStateService);
+                windowStateService.Initialize(window);
+            });
         }
     }
 }

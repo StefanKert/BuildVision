@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using BuildVision.UI.Settings.Models.ToolWindow;
 using EnvDTE;
+using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -130,8 +131,7 @@ namespace BuildVision.Tool.Building
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
                 _dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
-                if (_dte == null)
-                    throw new InvalidOperationException("Unable to get DTE instance.");
+                Assumes.Present(_dte);
                 _windowFrame = (IVsWindowFrame)toolWindowPane.Frame;
                 _window = GetWindowInstance(_dte, typeof(BuildVisionPane).GUID);
                 if (_window == null)

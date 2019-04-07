@@ -1,4 +1,4 @@
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 using BuildVision.Common;
 
 namespace BuildVision.UI.Settings.Models

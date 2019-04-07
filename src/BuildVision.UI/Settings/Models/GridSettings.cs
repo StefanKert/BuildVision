@@ -2,8 +2,8 @@
 using System.Linq;
 using BuildVision.Common;
 using BuildVision.UI.DataGrid;
-using BuildVision.UI.Settings.Models.Columns;
 using BuildVision.UI.Models;
+using BuildVision.UI.Settings.Models.Columns;
 using BuildVision.UI.Settings.Models.Sorting;
 
 namespace BuildVision.UI.Settings.Models

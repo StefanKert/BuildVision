@@ -1,5 +1,4 @@
 ﻿using BuildVision.UI.Models;
-using System.Runtime.Serialization;
 
 namespace BuildVision.UI.Settings.Models.BuildProgress
 {

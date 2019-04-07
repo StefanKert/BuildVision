@@ -1,6 +1,6 @@
+﻿using System.ComponentModel;
 using BuildVision.Common;
 using BuildVision.UI.Models;
-using System.ComponentModel;
 
 namespace BuildVision.UI.Helpers
 {

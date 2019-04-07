@@ -1,5 +1,4 @@
-﻿using BuildVision.UI;
-using BuildVision.UI.Helpers;
+﻿using BuildVision.UI.Helpers;
 
 namespace BuildVision.UI.Models
 {

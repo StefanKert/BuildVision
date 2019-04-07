@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -76,18 +77,17 @@ namespace BuildVision.UI.ViewModels
 
         private CompositeCollection CreateContextMenu()
         {
-            var collection = new CompositeCollection();
-            collection.Add(new MenuItem
+            var collection = new CompositeCollection
             {
-                Header = Resources.NoneMenuItem,
-                Tag = string.Empty
-            });
+                new MenuItem
+                {
+                    Header = Resources.NoneMenuItem,
+                    Tag = string.Empty
+                }
+            };
 
-            foreach (var column in ControlSettings.GridSettings.Columns)
+            foreach (var column in ControlSettings.GridSettings.Columns.Where(ColumnsManager.ColumnIsGroupable))
             {
-                if (!ColumnsManager.ColumnIsGroupable(column))
-                    continue;
-
                 string header = column.Header;
                 var menuItem = new MenuItem
                 {

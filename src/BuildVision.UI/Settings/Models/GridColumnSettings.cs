@@ -1,4 +1,4 @@
-using BuildVision.Contracts;
+﻿using BuildVision.Contracts;
 
 namespace BuildVision.UI.Settings.Models.Columns
 {

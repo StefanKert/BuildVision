@@ -1,4 +1,4 @@
-using BuildVision.Common;
+﻿using BuildVision.Common;
 using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models.BuildProgress;
 

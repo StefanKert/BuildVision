@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Linq;
 using BuildVision.Contracts;
-using BuildVision.UI.Models;
-using BuildVision.UI.Settings.Models;
-using BuildVision.Core;
-using BuildVision.Exports.Providers;
 using BuildVision.Contracts.Models;
 using BuildVision.Exports.Factories;
+using BuildVision.UI.Models;
 using BuildVision.Views.Settings;
 
 namespace BuildVision.UI.Helpers
@@ -71,7 +67,7 @@ namespace BuildVision.UI.Helpers
 
                 case BuildActions.BuildActionBuild:
                     return Resources.BuildActionBuild_BeginAtString;
-  
+
                 case BuildActions.BuildActionClean:
                     return Resources.BuildActionClean_BeginAtString;
                 default:
@@ -104,7 +100,7 @@ namespace BuildVision.UI.Helpers
                 case BuildScopes.BuildScopeSolution:
                     unitName = Resources.BuildScopeSolution_UnitName;
                     //if (_labelSettings.ShowSolutionName)
-                        //unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, solutionItem.Name);
+                    //unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, solutionItem.Name);
                     break;
 
                 case BuildScopes.BuildScopeBatch:
@@ -133,7 +129,7 @@ namespace BuildVision.UI.Helpers
             var timeSpan = DateTime.Now.Subtract(buildInformationModel.BuildStartTime.Value);
             if (timeSpan.TotalSeconds > _packageSettingsProvider.Settings.BuildMessagesSettings.ExtraMessageDelay)
             {
-                return GetExtraTimePartString( timeSpan);
+                return GetExtraTimePartString(timeSpan);
             }
 
             return string.Empty;
@@ -168,7 +164,7 @@ namespace BuildVision.UI.Helpers
                 case BuildScopes.BuildScopeSolution:
                     unitName = Resources.BuildScopeSolution_UnitName;
                     //if (_labelSettings.ShowSolutionName)
-                        //unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, solutionItem.Name);
+                    //unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, solutionItem.Name);
                     break;
 
                 case BuildScopes.BuildScopeBatch:
@@ -234,7 +230,7 @@ namespace BuildVision.UI.Helpers
                 case BuildResultState.Unknown: // Check if this is right
                     return Resources.BuildActionFinished_Clean;
                 default:
-                    return Resources.BuildActionFinished; 
+                    return Resources.BuildActionFinished;
             }
         }
 

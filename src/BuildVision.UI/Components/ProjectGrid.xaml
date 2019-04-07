@@ -118,7 +118,7 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
                   ScrollViewer.IsDeferredScrollingEnabled="False"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  SelectedItem="{Binding SelectedProjectItem}"
+                  SelectedItem="{Binding BuildInformationModel.CurrentProject}"
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
                   Sorting="GridOnSorting"
@@ -172,21 +172,13 @@
 
         <DataGrid.RowStyle>
             <Style TargetType="DataGridRow">
-
-                <Setter Property="Foreground"
-                            Value="{DynamicResource ToolWindowTextKey}" />
-                <Setter Property="BorderThickness"
-                            Value="0,1,0,1" />
-                <Setter Property="BorderBrush"
-                            Value="{Binding Background, RelativeSource={RelativeSource self}}" />
-
-                <Setter Property="DetailsVisibility"
-                            Value="{Binding ErrorsCount, Mode=OneWay, Converter={StaticResource PositiveNumberToVisibilityConverter}}" />
-                <EventSetter Event="PreviewMouseLeftButtonDown"
-                                 Handler="DataGridRowOnPreviewMouseLeftButtonDown" />
+                <Setter Property="Foreground" Value="{DynamicResource ToolWindowTextKey}" />
+                <Setter Property="BorderThickness" Value="0,1,0,1" />
+                <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource self}}" />
+                <Setter Property="DetailsVisibility" Value="{Binding ErrorsCount, Mode=OneWay, Converter={StaticResource PositiveNumberToVisibilityConverter}}" />
+                <EventSetter Event="PreviewMouseLeftButtonDown" Handler="DataGridRowOnPreviewMouseLeftButtonDown" />
 
                 <Style.Triggers>
-
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Value="{x:Static contracts:ProjectState.UpToDate}" Binding="{Binding Path=State}"/>
@@ -194,7 +186,6 @@
                         </MultiDataTrigger.Conditions>
                         <Setter Property="Visibility" Value="Collapsed"/>
                     </MultiDataTrigger>
-
 
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
@@ -207,24 +198,18 @@
                     <DataTrigger Value="True">
                         <DataTrigger.Binding>
                             <MultiBinding Converter="{StaticResource ObjectsReferencesEqualsConverter}">
-                                <Binding Path="DataContext.CurrentProject"
-                                             RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
+                                <Binding Path="DataContext.CurrentProject" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
                                 <Binding Path="." />
                             </MultiBinding>
                         </DataTrigger.Binding>
-                        <Setter Property="BorderBrush"
-                                    Value="CornflowerBlue" />
-                        <Setter Property="BorderThickness"
-                                    Value="0,1,0,1" />
+                        <Setter Property="BorderBrush" Value="CornflowerBlue" />
+                        <Setter Property="BorderThickness" Value="0,1,0,1" />
                     </DataTrigger>
 
                     <!-- TODO: Make Selected row style similar to style in VisualStudio.-->
-                    <Trigger Property="IsSelected"
-                                 Value="True">
-                        <Setter Property="BorderBrush"
-                                    Value="DodgerBlue" />
-                        <Setter Property="BorderThickness"
-                                    Value="0,1,0,1" />
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="BorderBrush" Value="DodgerBlue" />
+                        <Setter Property="BorderThickness" Value="0,1,0,1" />
                     </Trigger>
 
                 </Style.Triggers>
@@ -235,14 +220,11 @@
             <ContextMenu>
                 <MenuItem Header="{x:Static res:Resources.SelectedProjectItemMenuItems}"
                               ItemsSource="{Binding Source={StaticResource SelectedProjectMenuItems}}"
-                              Visibility="{Binding SelectedProjectItem,
-                                                   Converter={StaticResource NotNullToVisibilityConverter}}" />
-                <Separator Visibility="{Binding SelectedProjectItem,
-                                                   Converter={StaticResource NotNullToVisibilityConverter}}" />
+                              Visibility="{Binding SelectedProjectItem, Converter={StaticResource NotNullToVisibilityConverter}}" />
+                <Separator Visibility="{Binding SelectedProjectItem, Converter={StaticResource NotNullToVisibilityConverter}}" />
                 <MenuItem Header="{x:Static res:Resources.GridHeaderVisibleMenuItem}"
                               IsCheckable="True"
-                              IsChecked="{Binding GridHeadersVisibility,
-                                                  Converter={StaticResource ResourceKey=ColumnHeadersVisibilityToBool}}" />
+                              IsChecked="{Binding GridHeadersVisibility, Converter={StaticResource ResourceKey=ColumnHeadersVisibilityToBool}}" />
                 <MenuItem Header="{x:Static res:Resources.HideUpToDateTargetsMenuItem}"
                               IsCheckable="True"
                               IsChecked="{Binding HideUpToDateTargets}" />
@@ -250,8 +232,7 @@
                               ItemsSource="{Binding Source={StaticResource GridColumnsMenuItems}}">
                     <MenuItem.ItemContainerStyle>
                         <Style TargetType="{x:Type MenuItem}">
-                            <Setter Property="StaysOpenOnClick"
-                                        Value="True" />
+                            <Setter Property="StaysOpenOnClick" Value="True" />
                             <Setter Property="IsCheckable"
                                         Value="True" />
                             <Setter Property="IsChecked"
@@ -284,24 +265,18 @@
                                                   OverridesDefaultStyle="True"
                                                   Template="{StaticResource ExpanderTemplate}">
                                         <Expander.IsExpanded>
-                                            <MultiBinding Converter="{StaticResource ResourceKey=ExpanderIsExpandedConverter}"
-                                                              Mode="OneWay">
+                                            <MultiBinding Converter="{StaticResource ResourceKey=ExpanderIsExpandedConverter}" Mode="OneWay">
                                                 <Binding Mode="OneWay" />
-                                                <Binding Path="DataContext.ControlSettings.GridSettings.CollapsedGroups"
-                                                             Source="{x:Reference OwnerUserControl}" />
+                                                <Binding Path="DataContext.ControlSettings.GridSettings.CollapsedGroups" Source="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
                                             </MultiBinding>
                                         </Expander.IsExpanded>
                                         <Expander.Header>
-                                            <StackPanel VerticalAlignment="Center"
-                                                            Orientation="Horizontal">
+                                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                                                 <TextBlock Foreground="{DynamicResource GrayTextKey}">
                                                     <TextBlock.Text>
-                                                        <MultiBinding Converter="{StaticResource ResourceKey=MultiBindingStringFormatConverter}"
-                                                                          Mode="OneWay">
-                                                            <Binding Path="DataContext.ControlSettings.GridSettings.GroupHeaderRawFormat"
-                                                                         Source="{x:Reference OwnerUserControl}" />
-                                                            <Binding Path="DataContext.GridGroupHeaderName"
-                                                                         Source="{x:Reference OwnerUserControl}" />
+                                                        <MultiBinding Converter="{StaticResource ResourceKey=MultiBindingStringFormatConverter}" Mode="OneWay">
+                                                            <Binding Path="DataContext.ControlSettings.GridSettings.GroupHeaderRawFormat" Source="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
+                                                            <Binding Path="DataContext.GridGroupHeaderName" Source="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
                                                             <Binding Path="Name" />
                                                             <Binding Path="ItemCount" />
                                                         </MultiBinding>

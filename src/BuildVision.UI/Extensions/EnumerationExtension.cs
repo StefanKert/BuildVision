@@ -1,7 +1,7 @@
-﻿using BuildVision.UI.Helpers;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Markup;
+using BuildVision.UI.Helpers;
 
 namespace BuildVision.UI.Extensions
 {

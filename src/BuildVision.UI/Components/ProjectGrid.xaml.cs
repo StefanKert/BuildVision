@@ -1,28 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using BuildVision.UI.Converters;
+using BuildVision.UI.DataGrid;
+using BuildVision.UI.Helpers;
 using BuildVision.UI.ViewModels;
 
 namespace BuildVision.UI.Components
 {
-    /// <summary>
-    /// Interaction logic for ProjectGrid.xaml
-    /// </summary>
     public partial class ProjectGrid : UserControl
     {
         private BuildVisionPaneViewModel _viewModel;
@@ -42,20 +32,24 @@ namespace BuildVision.UI.Components
 
         private void RefreshSortDirectionInGrid()
         {
-            //DataGridColumn dataGridColumn = Grid.Columns.FirstOrDefault(col => col.GetBindedProperty() == _viewModel.GridSortDescription.Property);
-            //if (dataGridColumn != null)
-            //    dataGridColumn.SortDirection = _viewModel.GridSortDescription.Order.ToSystem();
+            DataGridColumn dataGridColumn = Grid.Columns.FirstOrDefault(col => col.GetBindedProperty() == _viewModel.GridSortDescription.Property);
+            if (dataGridColumn != null)
+            {
+                dataGridColumn.SortDirection = _viewModel.GridSortDescription.Order.ToSystem();
+            }
         }
 
         private void GridOnSorting(object sender, DataGridSortingEventArgs e)
         {
             if (_viewModel.GridSorting.CanExecute(e))
+            {
                 _viewModel.GridSorting.Execute(e);
+            }
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            _viewModel = (BuildVisionPaneViewModel) DataContext;
+            _viewModel = (BuildVisionPaneViewModel)DataContext;
             _viewModel.SetGridColumnsRef(Grid.Columns);
             _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
         }
@@ -63,20 +57,20 @@ namespace BuildVision.UI.Components
         private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //TODO implement logic for scrolling tu currentproject
-            //if (_viewModel.CurrentProject != null && e.PropertyName == "CurrentProject")
-            //{
-            //    // TODO: Remove SelectedIndex = -1 and implement Unselect row feature by clicking on selected row.
-            //    Grid.SelectedIndex = -1;
+            if (_viewModel.BuildInformationModel.CurrentProject != null && e.PropertyName == "CurrentProject")
+            {
+                // TODO: Remove SelectedIndex = -1 and implement Unselect row feature by clicking on selected row.
+                Grid.SelectedIndex = -1;
 
-            //    if (Grid.SelectedIndex == -1)
-            //        Grid.ScrollIntoView(_viewModel.CurrentProject);
-            //}
+                if (Grid.SelectedIndex == -1)
+                    Grid.ScrollIntoView(_viewModel.BuildInformationModel.CurrentProject);
+            }
         }
 
         private void DataGridExpanderOnExpanded(object sender, RoutedEventArgs e)
         {
             ExpanderIsExpandedConverter.SaveState(
-                (Expander) sender,
+                (Expander)sender,
                 false,
                 _viewModel.ControlSettings.GridSettings.CollapsedGroups);
             e.Handled = true;
@@ -85,7 +79,7 @@ namespace BuildVision.UI.Components
         private void DataGridExpanderOnCollapsed(object sender, RoutedEventArgs e)
         {
             ExpanderIsExpandedConverter.SaveState(
-                (Expander) sender,
+                (Expander)sender,
                 true,
                 _viewModel.ControlSettings.GridSettings.CollapsedGroups);
             e.Handled = true;
@@ -101,7 +95,7 @@ namespace BuildVision.UI.Components
                 Source = sender
             };
 
-            var parent = (UIElement) VisualTreeHelper.GetParent((DependencyObject) sender);
+            var parent = (UIElement)VisualTreeHelper.GetParent((DependencyObject)sender);
             parent.RaiseEvent(eventArg);
         }
 
@@ -115,7 +109,7 @@ namespace BuildVision.UI.Components
         // Autofocus for RowDetails (without extra mouse click).
         private void DataGridRowOnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var row = (DataGridRow) sender;
+            var row = (DataGridRow)sender;
             if (!row.IsSelected && e.Source is DataGridDetailsPresenter)
             {
                 row.Focusable = true;

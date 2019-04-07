@@ -17,6 +17,6 @@ namespace BuildVision.UI.Extensions
         public static void SetName(DependencyObject obj, string value)
         {
             obj.SetValue(NameProperty, value);
-        } 
+        }
     }
 }

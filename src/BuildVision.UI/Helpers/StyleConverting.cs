@@ -1,9 +1,9 @@
-using BuildVision.UI.Models;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using BuildVision.UI.Models;
 
 namespace BuildVision.UI.Helpers
 {

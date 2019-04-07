@@ -1,5 +1,5 @@
-﻿using BuildVision.Contracts;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
+using BuildVision.Contracts;
 
 namespace BuildVision.UI.Extensions
 {

@@ -1,21 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using BuildVision.Common;
+using BuildVision.Common.Logging;
 using BuildVision.Contracts;
 using BuildVision.Contracts.Exceptions;
 using BuildVision.Contracts.Models;
 using BuildVision.Exports.Services;
 using BuildVision.Helpers;
 using BuildVision.UI;
-using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Models;
+using BuildVision.Views.Settings;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Serilog;
 
 namespace BuildVision.Tool.Building
 {
@@ -23,16 +26,20 @@ namespace BuildVision.Tool.Building
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class BuildService : IBuildService
     {
+        private ILogger _logger = LogManager.ForContext<BuildService>();
         private const string CancelBuildCommand = "Build.Cancel";
         private bool _buildCancelledInternally;
         private readonly bool _buildCancelled;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IPackageSettingsProvider _packageSettingsProvider;
 
         [ImportingConstructor]
         public BuildService(
-            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
+            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider,
+            [Import(typeof(IPackageSettingsProvider))] IPackageSettingsProvider packageSettingsProvider)
         {
             _serviceProvider = serviceProvider;
+            _packageSettingsProvider = packageSettingsProvider;
         }
 
         public void CancelBuildSolution()
@@ -74,7 +81,7 @@ namespace BuildVision.Tool.Building
             }
             catch (Exception ex)
             {
-                ex.Trace("Cancel build failed.");
+                _logger.Error(ex, "Cancel build failed.");
             }
         }
 
@@ -87,7 +94,7 @@ namespace BuildVision.Tool.Building
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                _logger.Error(ex, "Raising command {CommandId} for project {UniqueName} failed.", selectedProjectItem.UniqueName, commandId);
             }
         }
 
@@ -106,54 +113,53 @@ namespace BuildVision.Tool.Building
         {
             try
             {
-                //Project project = Services.Dte.Solution.GetProject(x => x.UniqueName == projItem.UniqueName);
-                //BuildOutputFileTypes fileTypes = null; //_packageContext.ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard;
-                //if (fileTypes.IsEmpty)
-                //{
-                //    MessageBox.Show(@"Nothing to copy: all file types unchecked.", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
-                //    return;
-                //}
+                var project = Core.Services.Dte.Solution.GetProject(x => x.UniqueName == projItem.UniqueName);
+                var fileTypes = _packageSettingsProvider.Settings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard;
+                if (fileTypes.IsEmpty)
+                {
+                    MessageBox.Show(@"Nothing to copy: all file types unchecked.", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-                //string[] filePaths = project.GetBuildOutputFilePaths(fileTypes, projItem.Configuration, projItem.Platform).ToArray();
-                //if (filePaths.Length == 0)
-                //{
-                //    MessageBox.Show(@"Nothing copied: selected build output groups are empty.", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
-                //    return;
-                //}
+                string[] filePaths = project.GetBuildOutputFilePaths(fileTypes, projItem.Configuration, projItem.Platform).ToArray();
+                if (filePaths.Length == 0)
+                {
+                    MessageBox.Show(@"Nothing copied: selected build output groups are empty.", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
 
-                //string[] existFilePaths = filePaths.Where(File.Exists).ToArray();
-                //if (existFilePaths.Length == 0)
-                //{
-                //    string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Nothing copied. {0} wasn't found{1}", filePaths);
-                //    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
-                //    return;
-                //}
+                string[] existFilePaths = filePaths.Where(File.Exists).ToArray();
+                if (existFilePaths.Length == 0)
+                {
+                    string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Nothing copied. {0} wasn't found{1}", filePaths);
+                    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
 
-                //CopyFiles(existFilePaths);
+                CopyFiles(existFilePaths);
 
-                //if (existFilePaths.Length == filePaths.Length)
-                //{
-                //    string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
-                //    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
-                //}
-                //else
-                //{
-                //    string[] notExistFilePaths = filePaths.Except(existFilePaths).ToArray();
-                //    string copiedMsg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
-                //    string notFoundMsg = GetCopyBuildOutputFilesToClipboardActionMessage("{0} wasn't found{1}", notExistFilePaths);
-                //    string msg = string.Concat(copiedMsg, Environment.NewLine, Environment.NewLine, notFoundMsg);
-                //    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
-                //}
+                if (existFilePaths.Length == filePaths.Length)
+                {
+                    string msg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
+                    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                else
+                {
+                    string[] notExistFilePaths = filePaths.Except(existFilePaths).ToArray();
+                    string copiedMsg = GetCopyBuildOutputFilesToClipboardActionMessage("Copied {0}{1}", existFilePaths);
+                    string notFoundMsg = GetCopyBuildOutputFilesToClipboardActionMessage("{0} wasn't found{1}", notExistFilePaths);
+                    string msg = string.Concat(copiedMsg, Environment.NewLine, Environment.NewLine, notFoundMsg);
+                    MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Warning);
+                }
             }
             catch (Win32Exception ex)
             {
-                string msg = string.Format("Error copying files to the Clipboard: 0x{0:X} ({1})", ex.ErrorCode, ex.Message);
-                ex.Trace(msg);
-                MessageBox.Show(msg, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
+                _logger.Error(ex, "Error copying files to the Clipboard 0x{ErrorCode} ({Message})", ex.ErrorCode, ex.Message);
+                MessageBox.Show($"Error copying files to the Clipboard 0x{ex.ErrorCode} ({ex.Message})", Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                _logger.Error(ex, "Copy buildoutput for project {UniqueName} failed.", projItem.UniqueName);
                 MessageBox.Show(ex.Message, Resources.ProductName, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
@@ -175,7 +181,7 @@ namespace BuildVision.Tool.Building
             string filesListArg;
             if (filePaths.Length < MaxFilePathLinesInMessage)
             {
-                IEnumerable<string> shortenedFilePaths = FilePathHelper.ShortenPaths(filePaths, MaxFilePathLengthInMessage);
+                var shortenedFilePaths = FilePathHelper.ShortenPaths(filePaths, MaxFilePathLengthInMessage);
                 filesListArg = string.Concat(":", Environment.NewLine, string.Join(Environment.NewLine, shortenedFilePaths));
             }
             else
@@ -198,39 +204,8 @@ namespace BuildVision.Tool.Building
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                _logger.Error(ex, "Raising command {Command} failed.", command);
             }
-        }
-
-        public void ProjectCopyBuildOutputFilesToClipBoard()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void NavigateToBuildErrorIfNeeded(UI.Settings.Models.ControlSettings settings)
-        {
-            // How to get errors that  happend during build?
-            //bool navigateToBuildFailureReason = (!BuildedProjects.BuildWithoutErrors
-            //                                     && settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone);
-            //if (navigateToBuildFailureReason && BuildedProjects.Any(p => p.ErrorsBox.Errors.Any(NavigateToErrorItem)))
-            //{
-            //    _buildErrorIsNavigated = true;
-            //}
-        }
-
-        private async void OnErrorRaised(object sender, BuildErrorRaisedEventArgs args)
-        {
-            //bool buildNeedToCancel = (args.ErrorLevel == ErrorLevel.Error && _viewModel.ControlSettings.GeneralSettings.StopBuildAfterFirstError);
-            //if (buildNeedToCancel)
-            //    await CancelBuildAsync();
-
-            //bool navigateToBuildFailureReason = (!_buildErrorIsNavigated
-            //                                     && args.ErrorLevel == ErrorLevel.Error
-            //                                     && _viewModel.ControlSettings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnErrorRaised);
-            //if (navigateToBuildFailureReason && args.ProjectInfo.ErrorsBox.Errors.Any(NavigateToErrorItem))
-            //{
-            //    _buildErrorIsNavigated = true;
-            //}
         }
     }
 }

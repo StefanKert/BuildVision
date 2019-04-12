@@ -2,18 +2,20 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using BuildVision.Common.Logging;
 using BuildVision.Contracts;
 using BuildVision.Exports.Services;
 using BuildVision.Helpers;
-using BuildVision.UI.Common.Logging;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
+using Serilog;
 
 namespace BuildVision.Services
 {
     public class ErrorNavigationService : IErrorNavigationService
     {
         private readonly IServiceProvider _serviceProvider;
+        private ILogger _logger = LogManager.ForContext<ErrorNavigationService>();
 
         public static bool BuildErrorNavigated { get; set; }
 
@@ -76,13 +78,12 @@ namespace BuildVision.Services
                 }
                 catch (Exception ex)
                 {
-                    var msg = string.Format("Navigate to error item exception (fullPath='{0}').", fullPath);
-                    ex.Trace(msg);
+                    _logger.Error(ex, "Navigate to error item exception (fullPath='{FullPath}').", fullPath);
                 }
             }
             catch (Exception ex)
             {
-                ex.Trace("Navigate to error item exception.");
+                _logger.Error(ex, "Navigate to error item exception.");
             }
 
             BuildErrorNavigated = true;

@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using BuildVision.Common;
+using BuildVision.Common.Logging;
 using BuildVision.Contracts;
 using BuildVision.Contracts.Exceptions;
 using BuildVision.Contracts.Models;
@@ -19,13 +20,13 @@ using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
 using BuildVision.Exports.ViewModels;
 using BuildVision.Helpers;
-using BuildVision.UI.Common.Logging;
 using BuildVision.UI.DataGrid;
 using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models;
 using BuildVision.Views.Settings;
 using Microsoft.VisualStudio;
+using Serilog;
 using Process = System.Diagnostics.Process;
 using SortDescription = BuildVision.UI.Settings.Models.Sorting.SortDescription;
 
@@ -41,6 +42,8 @@ namespace BuildVision.UI.ViewModels
         private readonly ITaskBarInfoService _taskBarInfoService;
         private readonly IPackageSettingsProvider _settingsProvider;
         private ObservableCollection<DataGridColumn> _gridColumnsRef;
+
+        private ILogger _logger = LogManager.ForContext<BuildVisionPaneViewModel>();
 
         public ISolutionModel SolutionModel { get; set; }
 
@@ -232,10 +235,7 @@ namespace BuildVision.UI.ViewModels
             }
             catch (Exception ex)
             {
-                ex.Trace(string.Format(
-                    "Unable to open folder '{0}' containing the project '{1}'.",
-                    SelectedProjectItem.FullName,
-                    SelectedProjectItem.UniqueName));
+                _logger.Error(ex, "Unable to open folder '{FullName}' containing the project '{UniqueName}'.", SelectedProjectItem.FullName, SelectedProjectItem.UniqueName);
 
                 MessageBox.Show(
                     ex.Message + "\n\nSee log for details.",
@@ -272,7 +272,7 @@ namespace BuildVision.UI.ViewModels
             GridSortDescription = new SortDescription(newSortDirection.ToMedia(), e.Column.GetBindedProperty());
         }
 
-        private static ProjectItemColumnSorter GetProjectItemSorter(SortDescription sortDescription)
+        private ProjectItemColumnSorter GetProjectItemSorter(SortDescription sortDescription)
         {
             var sortOrder = sortDescription.Order;
             string sortPropertyName = sortDescription.Property;
@@ -288,7 +288,7 @@ namespace BuildVision.UI.ViewModels
                 }
                 catch (PropertyNotFoundException ex)
                 {
-                    ex.Trace("Trying to sort Project Items by nonexistent property.");
+                    _logger.Error(ex, "Trying to sort Project Items by nonexistent property.");
                     return null;
                 }
             }
@@ -335,7 +335,7 @@ namespace BuildVision.UI.ViewModels
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                _logger.Error(ex, "Unable to CopyErrorMessageToClipboard for project '{UniqueName}'.", projectItem.UniqueName);
             }
         }
 

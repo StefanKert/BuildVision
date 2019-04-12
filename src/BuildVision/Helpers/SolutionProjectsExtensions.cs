@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using BuildVision.Common.Logging;
 using BuildVision.Core;
 using BuildVision.UI;
-using BuildVision.UI.Common.Logging;
 using EnvDTE;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using ProjectItem = BuildVision.UI.Models.ProjectItem;
@@ -50,7 +50,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Solution>().Error(ex, "Failed to load solution {FullName}", solution?.FullName);
 
                 solutionItem.Name = Resources.GridCellNATextInBrackets;
                 solutionItem.FullName = Resources.GridCellNATextInBrackets;
@@ -64,7 +64,7 @@ namespace BuildVision.Helpers
             var list = new List<Project>();
             foreach (var proj in solution.Projects)
             {
-                Project project = proj as Project;
+                var project = proj as Project;
                 if (project == null)
                     continue;
 
@@ -78,17 +78,17 @@ namespace BuildVision.Helpers
 
         public static Project GetProject(this Solution solution, Func<Project, bool> cond)
         {
-            Projects projects = solution.Projects;
+            var projects = solution.Projects;
             var item = projects.GetEnumerator();
             while (item.MoveNext())
             {
-                Project project = item.Current as Project;
+                var project = item.Current as Project;
                 if (project == null)
                     continue;
 
                 if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
                 {
-                    Project sub = project.GetSubProject(cond);
+                    var sub = project.GetSubProject(cond);
                     if (sub != null)
                         return sub;
                 }
@@ -111,12 +111,12 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Solution>().Error(ex, "Failed to get projectitems for solution {FullName}", solution?.FullName);
             }
 
 
             var projectItems = new List<ProjectItem>(dteProjects.Count);
-            foreach (Project project in dteProjects)
+            foreach (var project in dteProjects)
             {
                 try
                 {
@@ -127,7 +127,7 @@ namespace BuildVision.Helpers
                 }
                 catch (Exception ex)
                 {
-                    ex.TraceUnknownException();
+                    LogManager.ForContext<Solution>().Error(ex, "Failed to update project properties for solution {FullName}", solution?.FullName);
                 }
             }
 
@@ -145,7 +145,7 @@ namespace BuildVision.Helpers
                 }
                 catch (Exception ex)
                 {
-                    ex.TraceUnknownException();
+                    LogManager.ForContext<Solution>().Error(ex, "Failed to load project.Object for project {UniqueName}", project?.UniqueName);
                     projObject = null;
                 }
 
@@ -164,7 +164,7 @@ namespace BuildVision.Helpers
                 }
                 catch (Exception ex)
                 {
-                    ex.TraceUnknownException();
+                    LogManager.ForContext<Solution>().Error(ex, "Failed to updatename properties project properties for project {UniqueName}", project?.UniqueName);
                 }
 
                 #region Set ActiveConfiguration (Configuration and Platform)
@@ -183,7 +183,7 @@ namespace BuildVision.Helpers
                     }
                     catch (Exception ex)
                     {
-                        ex.TraceUnknownException();
+                        LogManager.ForContext<Solution>().Error(ex, "Failed to get active configuration for {UniqueName}", project?.UniqueName);
                         config = null;
                     }
 
@@ -216,7 +216,7 @@ namespace BuildVision.Helpers
                 }
                 catch (Exception ex)
                 {
-                    ex.TraceUnknownException();
+                    LogManager.ForContext<Solution>().Error(ex, "Failed to load settings for project {UniqueName}", project?.UniqueName);
                 }
             }
         }
@@ -239,7 +239,7 @@ namespace BuildVision.Helpers
                 catch (SystemException ex)
                 {
                     // PathTooLongException, ArgumentException (invalid characters).
-                    ex.TraceUnknownException();
+                    LogManager.ForContext<Solution>().Error(ex, "Failed because path has been to long for {UniqueName}", project?.UniqueName);
                     projectItem.FullPath = null;
                 }
 
@@ -248,7 +248,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Solution>().Error(ex, "Failed to update name properties for {UniqueName}", project?.UniqueName);
             }
         }
 
@@ -274,10 +274,10 @@ namespace BuildVision.Helpers
         {
             object service = null;
 
-            Guid sidGuid = type.GUID;
-            Guid iidGuid = sidGuid;
+            var sidGuid = type.GUID;
+            var iidGuid = sidGuid;
             var serviceProvider = (IServiceProvider)serviceProviderObject;
-            int hr = serviceProvider.QueryService(ref sidGuid, ref iidGuid, out var serviceIntPtr);
+            var hr = serviceProvider.QueryService(ref sidGuid, ref iidGuid, out var serviceIntPtr);
 
             if (hr != 0)
             {

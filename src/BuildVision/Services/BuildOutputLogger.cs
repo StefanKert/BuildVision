@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using BuildVision.Common.Logging;
 using BuildVision.Contracts;
 using BuildVision.Exports;
 using BuildVision.Helpers;
-using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Contracts;
 using BuildVision.UI.Models;
 using Microsoft.Build.Framework;
@@ -17,7 +17,7 @@ namespace BuildVision.Tool.Building
     public class BuildOutputLogger : Logger, IBuildOutputLogger
     {
         private readonly Guid _loggerId;
-
+        private Serilog.ILogger _logger = LogManager.ForContext<BuildOutputLogger>();
         public RegisterLoggerResult LoggerState { get; set; }
 
         private List<BuildProjectContextEntry> _projects = new List<BuildProjectContextEntry>();
@@ -67,7 +67,7 @@ namespace BuildVision.Tool.Building
                 }
                 catch (TargetInvocationException ex)
                 {
-                    ex.Trace("Microsoft.Build.BackEnd.ILoggingService is not available.");
+                    _logger.Error(ex, "Microsoft.Build.BackEnd.ILoggingService is not available.");
                     LoggerState = RegisterLoggerResult.FatalError;
                     return;
                 }
@@ -88,7 +88,7 @@ namespace BuildVision.Tool.Building
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                _logger.Error(ex, "Error registering MSBuild Logger");
                 LoggerState = RegisterLoggerResult.FatalError;
             }
         }
@@ -112,7 +112,7 @@ namespace BuildVision.Tool.Building
                 var projectEntry = _projects.Find(t => t.InstanceId == projectInstanceId && t.ContextId == projectContextId);
                 if (projectEntry == null)
                 {
-                    TraceManager.Trace(string.Format("Project entry not found by ProjectInstanceId='{0}' and ProjectContextId='{1}'.", projectInstanceId, projectContextId), EventLogEntryType.Warning);
+                    _logger.Warning("Project entry not found by ProjectInstanceId='{ProjectInstanceId}' and ProjectContextId='{ProjectContextId}'.", projectInstanceId, projectContextId);
                     return;
                 }
                 if (projectEntry.IsInvalid)
@@ -122,7 +122,7 @@ namespace BuildVision.Tool.Building
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                _logger.Error(ex, "Error during eventsource_raised.");
             }
         }
 

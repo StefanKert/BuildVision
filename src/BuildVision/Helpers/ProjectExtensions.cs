@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using BuildVision.Common.Logging;
 using BuildVision.Contracts;
 using BuildVision.UI;
-using BuildVision.UI.Common.Logging;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
@@ -134,7 +134,7 @@ namespace BuildVision.Helpers
                 catch (ArgumentException ex)
                 {
                     var msg = $"Build Output Group \"{groupName}\" not found (Project Kind is \"{project.Kind}\").";
-                    ex.Trace(msg, EventLogEntryType.Warning);
+                    LogManager.ForContext<Project>().Warning(ex, "{Msg}", msg);
                 }
             }
 
@@ -220,7 +220,7 @@ namespace BuildVision.Helpers
                                 }
                                 catch (Exception ex)
                                 {
-                                    ex.TraceUnknownException();
+                                    LogManager.ForContext<Project>().Error(ex, "Error when trying to parse framework version (Hex).");
                                     return Resources.GridCellNAText;
                                 }
                             }
@@ -237,7 +237,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Error when trying to get framework string.");
                 return Resources.GridCellNAText;
             }
         }
@@ -284,7 +284,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Error when trying to get language name.");
                 return Resources.GridCellNAText;
             }
         }
@@ -315,7 +315,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Error when trying to get framework string.");
                 return Enumerable.Empty<string>();
             }
         }
@@ -371,16 +371,9 @@ namespace BuildVision.Helpers
                     }
                 }
             }
-            catch (ArgumentException)
-            {
-                // We are catching this seperatly because in the current VS2017 Version
-                // there is a bug that makes it impossible for us to retrieve the extenders
-                // for specific projects (https://github.com/dotnet/project-system/issues/2686)
-                return Resources.GridCellNAText;
-            }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Error when trying to get output type.");
                 return Resources.GridCellNAText;
             }
         }
@@ -395,13 +388,9 @@ namespace BuildVision.Helpers
 
                 return string.Join("; ", extenderNames);
             }
-            catch (ArgumentException)
-            {
-                return ""; // Leaving this in for now until visual studio team fixes the issue with extendernames
-            }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Error when trying to get extendernames.");
                 return Resources.GridCellNAText;
             }
         }
@@ -447,10 +436,7 @@ namespace BuildVision.Helpers
                     }
                 }
 
-                TraceManager.Trace(
-                    string.Format("Project type is taken from the registry: Kind={0}, DTEVersion={1}, Type={2}", projectKind, version, type),
-                    EventLogEntryType.Warning);
-
+                LogManager.ForContext<Project>().Warning("Project type is taken from the registry: Kind={ProjectKind}, DTEVersion={Version}, Type={Type}", projectKind, version, type);
                 if (string.IsNullOrWhiteSpace(type))
                     return null;
 
@@ -459,7 +445,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.Trace(string.Format("Unable to get project type from registry: (Kind={0}, DTEVersion={1})", projectKind, version));
+                LogManager.ForContext<Project>().Error(ex, "Unable to get project type from registry: (Kind ={ProjectKind}, DTEVersion ={Version})", projectKind, version);
                 return null;
             }
         }
@@ -509,7 +495,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Failed to get treepath for project {UniqueName}", project?.UniqueName);
             }
 
             return (path.Length != 0) ? path.ToString() : null;
@@ -524,7 +510,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Failed to load parent project for project {UniqueName}", project?.UniqueName);
                 return null;
             }
         }
@@ -533,14 +519,14 @@ namespace BuildVision.Helpers
         {
             for (int i = 1; i <= solutionFolder.ProjectItems.Count; i++)
             {
-                Project subProject = solutionFolder.ProjectItems.Item(i).SubProject;
+                var subProject = solutionFolder.ProjectItems.Item(i).SubProject;
                 if (subProject == null)
                     continue;
 
                 // If this is another solution folder, do a recursive call, otherwise add
                 if (subProject.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
                 {
-                    Project sub = GetSubProject(subProject, cond);
+                    var sub = GetSubProject(subProject, cond);
                     if (sub != null)
                         return sub;
                 }
@@ -594,7 +580,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Failed to check if project {UniqueName} is hidden.", project?.UniqueName);
                 return true;
             }
         }
@@ -613,7 +599,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Failed to check if project {ProjectFileName} is hidden.", projectFileName);
                 return true;
             }
         }

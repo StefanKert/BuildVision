@@ -103,8 +103,6 @@
     <Compile Include="Settings\Models\BaseGridColumnSettings.cs" />
     <Compile Include="Settings\Models\BuildMessagesSettings.cs" />
     <Compile Include="Settings\Models\BuildProgressSettings.cs" />
-    <Compile Include="Common\Logging\BindingErrorListener.cs" />
-    <Compile Include="Common\Logging\TraceManager.cs" />
     <Compile Include="Components\ErrorsGrid.xaml.cs">
       <DependentUpon>ErrorsGrid.xaml</DependentUpon>
     </Compile>
@@ -376,8 +374,6 @@
       <Version>14.3.81-pre</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

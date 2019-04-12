@@ -5,11 +5,12 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using BuildVision.Commands;
+using BuildVision.Common;
 using BuildVision.Common.Diagnostics;
+using BuildVision.Common.Logging;
 using BuildVision.Exports.Providers;
 using BuildVision.Tool;
 using BuildVision.UI;
-using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Settings.Models;
 using BuildVision.Views.Settings;
 using EnvDTE;
@@ -18,6 +19,7 @@ using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Serilog;
 using Task = System.Threading.Tasks.Task;
 using ui = Microsoft.VisualStudio.VSConstants.UICONTEXT;
 
@@ -40,12 +42,9 @@ namespace BuildVision.Core
     [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
     public sealed class BuildVisionPackage : AsyncPackage, IVsPackageDynamicToolOwnerEx
     {
-        private const string _loadContext = "dec9f70a-b8b1-4050-ae96-08f89c6eccd1";
-
         private DTE _dte;
         private DTE2 _dte2;
         private CommandEvents _commandEvents;
-        private readonly WindowEvents _windowEvents;
         private SolutionEvents _solutionEvents;
         private IVsSolutionBuildManager2 _solutionBuildManager;
         private IVsSolutionBuildManager5 _solutionBuildManager4;
@@ -55,7 +54,7 @@ namespace BuildVision.Core
         private SolutionBuildEvents _solutionBuildEvents;
         private ISolutionProvider _solutionProvider;
         private ServiceProvider _serviceProvider;
-
+        private ILogger _logger = LogManager.ForContext<BuildVisionPackage>();
         public static ToolWindowPane ToolWindowPane { get; set; }
 
 
@@ -63,8 +62,7 @@ namespace BuildVision.Core
 
         public BuildVisionPackage()
         {
-            string hello = string.Format("{0} {1}", Resources.ProductName, "BuildVisionVersion.PackageVersion");
-            TraceManager.Trace(hello, EventLogEntryType.Information);
+            _logger.Information("Starting {ProductName} with Version {PackageVersion}", Resources.ProductName, ApplicationInfo.GetPackageVersion(this));
 
             if (Application.Current != null)
             {
@@ -74,7 +72,7 @@ namespace BuildVision.Core
 
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            DiagnosticsClient.Notify(e.Exception);
+            _logger.Fatal(e.Exception, "Unhandled Exception");
         }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

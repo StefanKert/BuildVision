@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using BuildVision.Common.Logging;
 using BuildVision.Contracts.Models;
 using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
 using BuildVision.Helpers;
 using BuildVision.UI;
-using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Models;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Serilog;
 
 namespace BuildVision.Core
 {
@@ -19,6 +20,7 @@ namespace BuildVision.Core
     [PartCreationPolicy(CreationPolicy.Shared)]
     public class SolutionProvider : ISolutionProvider
     {
+        private ILogger _logger = LogManager.ForContext<SolutionProvider>();
         private readonly IServiceProvider _serviceProvider;
 
         private Solution _solution;
@@ -83,7 +85,7 @@ namespace BuildVision.Core
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                _logger.Error(ex, "Failed to refresh solutionmodel.");
                 _solutionModel.Name = Resources.GridCellNATextInBrackets;
                 _solutionModel.FullName = Resources.GridCellNATextInBrackets;
                 _solutionModel.IsEmpty = true;

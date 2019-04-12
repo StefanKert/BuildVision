@@ -60,7 +60,7 @@ namespace BuildVision.Helpers
                     // Nested item, e.g. Default.aspx or MainWindow.xaml.
                     if (item.ProjectItems.Count > 0)
                     {
-                        ProjectItem childItem = FindProjectItem(item.ProjectItems, fileName);
+                        var childItem = FindProjectItem(item.ProjectItems, fileName);
                         if (childItem != null)
                             return childItem;
                     }

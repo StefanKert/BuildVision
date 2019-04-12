@@ -4,8 +4,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using BuildVision.Common.Logging;
 using BuildVision.Contracts;
-using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Extensions;
 using BuildVision.UI.Models;
 
@@ -50,7 +50,7 @@ namespace BuildVision.UI
             }
             catch (Exception ex)
             {
-                ex.Trace("Navigate to error item exception.");
+                LogManager.ForContext<ErrorsGrid>().Error(ex, "Navigate to error item exception.");
             }
         }
 

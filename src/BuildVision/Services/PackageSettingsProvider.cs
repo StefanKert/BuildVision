@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using BuildVision.Common;
-using BuildVision.UI.Common.Logging;
+using BuildVision.Common.Logging;
 using BuildVision.UI.Settings.Models;
 using Microsoft.VisualStudio.Settings;
 using Microsoft.VisualStudio.Shell.Settings;
@@ -11,6 +11,7 @@ namespace BuildVision.Views.Settings
 {
     public class PackageSettingsProvider : BindableBase, IPackageSettingsProvider
     {
+        private Serilog.ILogger _logger = LogManager.ForContext<PackageSettingsProvider>();
         public const string settingsCategoryName = "BuildVision";
         public const string settingsPropertyName = "Settings";
 
@@ -59,7 +60,7 @@ namespace BuildVision.Views.Settings
             }
             catch (Exception ex)
             {
-                ex.Trace("Error when trying to load settings: " + ex.Message, EventLogEntryType.Error);
+                _logger.Error(ex, "Error when trying to load settings.");
                 MessageBox.Show("An error occurred when trying to load current settings. To make sure everything is still working the settings are set to default.");
             }
         }

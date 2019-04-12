@@ -8,8 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using BuildVision.Common.Logging;
 using BuildVision.Contracts.Exceptions;
-using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Extensions;
 using BuildVision.UI.Helpers;
 using BuildVision.UI.Models;
@@ -17,6 +17,7 @@ using BuildVision.UI.Modelss;
 using BuildVision.UI.Settings.Models;
 using BuildVision.UI.Settings.Models.Columns;
 using BuildVision.UI.Settings.Models.Sorting;
+using Serilog;
 
 namespace BuildVision.UI.DataGrid
 {
@@ -138,7 +139,7 @@ namespace BuildVision.UI.DataGrid
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext(typeof(ColumnsManager)).Error(ex, "Failed to sync generatecolumns.");
             }
         }
 
@@ -160,7 +161,7 @@ namespace BuildVision.UI.DataGrid
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext(typeof(ColumnsManager)).Error(ex, "Failed to sync columnsettings.");
             }
         }
 
@@ -189,7 +190,7 @@ namespace BuildVision.UI.DataGrid
             if (propertyInfo == null)
             {
                 var ex = new PropertyNotFoundException(propertyName, _itemRowType);
-                ex.Trace("Unable to find attribute by property.");
+                LogManager.ForContext(typeof(ColumnsManager)).Error(ex, "Failed to load data for property {PropertyName}.", propertyName);
                 throw ex;
             }
 

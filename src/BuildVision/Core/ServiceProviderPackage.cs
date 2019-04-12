@@ -75,7 +75,8 @@ namespace BuildVision.Core
             }
             else if (serviceType == typeof(IBuildService))
             {
-                return new BuildService(sp);
+                var packageSettingsProvider = await GetServiceAsync<IPackageSettingsProvider>(cancellation);
+                return new BuildService(sp, packageSettingsProvider);
             }
             else if (serviceType == typeof(IStatusBarNotificationService))
             {

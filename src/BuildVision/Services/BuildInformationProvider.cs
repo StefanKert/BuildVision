@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using BuildVision.Common;
+using BuildVision.Common.Logging;
 using BuildVision.Contracts;
 using BuildVision.Contracts.Models;
 using BuildVision.Exports;
@@ -14,7 +15,6 @@ using BuildVision.Exports.Services;
 using BuildVision.Helpers;
 using BuildVision.Services;
 using BuildVision.Tool.Building;
-using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Contracts;
 using BuildVision.UI.Models;
 using BuildVision.Views.Settings;
@@ -36,13 +36,13 @@ namespace BuildVision.Core
         private readonly ISolutionProvider _solutionProvider;
         private readonly IBuildService _buildService;
         private readonly ITaskBarInfoService _taskBarInfoService;
-
         private string _origTextCurrentState;
         private const int BuildInProcessCountOfQuantumSleep = 5;
         private const int BuildInProcessQuantumSleep = 50;
-        private readonly object _buildProcessLockObject;
         private CancellationTokenSource _buildProcessCancellationToken;
         private int _currentQueuePosOfBuildingProject = 0;
+        private Serilog.ILogger _logger = LogManager.ForContext<BuildInformationProvider>();
+
 
         public IBuildInformationModel BuildInformationModel { get; } = new BuildInformationModel();
         public ObservableCollection<IProjectItem> Projects { get; } = new ObservableCollection<IProjectItem>();
@@ -132,7 +132,7 @@ namespace BuildVision.Core
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                _logger.Error(ex, "Failed to fetch errormessage.");
             }
         }
 
@@ -140,11 +140,15 @@ namespace BuildVision.Core
         {
             projectItem = projectEntry.ProjectItem;
             if (projectItem != null)
+            {
                 return true;
+            }
 
             string projectFile = projectEntry.FileName;
             if (ProjectExtensions.IsProjectHidden(projectFile))
+            {
                 return false;
+            }
 
             var projectProperties = projectEntry.Properties;
             var project = Projects.FirstOrDefault(x => x.FullName == projectFile);
@@ -156,12 +160,7 @@ namespace BuildVision.Core
                 projectItem = Projects.First(item => $"{item.FullName}-{item.Configuration}|{item.Platform.Replace(" ", "")}" == $"{projectFile}-{projectConfiguration}|{projectPlatform}");
                 if (projectItem == null)
                 {
-                    TraceManager.Trace(
-                        string.Format("Project Item not found by: UniqueName='{0}', Configuration='{1}, Platform='{2}'.",
-                            project.UniqueName,
-                            projectConfiguration,
-                            projectPlatform),
-                        EventLogEntryType.Warning);
+                    _logger.Warning("Project Item not found by: UniqueName='{UniqueName}', Configuration='{ProjectConfiguration}, Platform='{ProjectPlatform}'.", project.UniqueName, projectConfiguration, projectPlatform);
                     return false;
                 }
             }
@@ -191,7 +190,9 @@ namespace BuildVision.Core
                     throw new ArgumentOutOfRangeException("errorLevel");
             }
             if (errorItem.Level != ErrorLevel.Error)
+            {
                 return;
+            }
 
             int errorNumber = projectItem.Errors.Count + projectItem.Warnings.Count + projectItem.Messages.Count + 1;
             errorItem.Number = errorNumber;
@@ -246,7 +247,7 @@ namespace BuildVision.Core
                         break;
                     }
 
-                    System.Threading.Thread.Sleep(BuildInProcessQuantumSleep);
+                    Thread.Sleep(BuildInProcessQuantumSleep);
                 }
             }
         }
@@ -309,7 +310,7 @@ namespace BuildVision.Core
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                _logger.Error(ex, "Failed during Project Build start.");
             }
         }
 
@@ -429,10 +430,13 @@ namespace BuildVision.Core
                 }
             }
             else if (canceled)
+            {
                 BuildInformationModel.CurrentBuildState = BuildState.Cancelled;
+            }
             else
+            {
                 BuildInformationModel.CurrentBuildState = BuildState.Failed;
-
+            }
 
             var message = _buildMessagesFactory.GetBuildDoneMessage(BuildInformationModel);
             _statusBarNotificationService.ShowText(message);
@@ -463,7 +467,10 @@ namespace BuildVision.Core
                         foreach (var error in project.Errors)
                         {
                             if (ErrorNavigationService.BuildErrorNavigated)
+                            {
                                 break;
+                            }
+
                             _errorNavigationService.NavigateToErrorItem(error);
                         }
                     }

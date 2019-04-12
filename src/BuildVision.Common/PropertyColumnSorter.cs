@@ -1,8 +1,8 @@
-using BuildVision.Contracts;
-using System;
+﻿using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Reflection;
+using BuildVision.Contracts.Exceptions;
 
 namespace BuildVision.Common
 {
@@ -23,7 +23,7 @@ namespace BuildVision.Common
 
         int IComparer.Compare(object x, object y)
         {
-            return Compare((T) x, (T) y);
+            return Compare((T)x, (T)y);
         }
 
         protected int Compare(T x, T y)

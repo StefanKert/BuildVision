@@ -4,10 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-
-using Microsoft.VisualStudio.Shell;
-using BuildVision.UI.Settings.Models.Columns;
 using BuildVision.UI.Extensions;
+using BuildVision.UI.Settings.Models.Columns;
+using Microsoft.VisualStudio.Shell;
 
 namespace BuildVision.UI.Settings
 {

@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using BuildVision.UI.Extensions;
 
 namespace BuildVision.UI.Controls.Indicators
 {

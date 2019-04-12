@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace BuildVision.Contracts
+﻿namespace BuildVision.Contracts
 {
     /// <remarks>
     /// See https://msdn.microsoft.com/en-us/library/Microsoft.VisualStudio.Shell.Interop.BuildOutputGroup.aspx
@@ -45,19 +43,13 @@ namespace BuildVision.Contracts
         /// <summary>
         /// Checks whether all properties is <c>false</c>.
         /// </summary>
-        public bool IsEmpty
-        {
-            get
-            {
-                return !(LocalizedResourceDlls
+        public bool IsEmpty => !(LocalizedResourceDlls
                             || XmlSerializer
                             || ContentFiles
                             || Built
                             || SourceFiles
                             || Symbols
                             || Documentation);
-            }
-        }
 
         public BuildOutputFileTypes()
         {

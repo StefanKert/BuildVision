@@ -4,8 +4,6 @@ using System.IO;
 using System.Text;
 using System.Windows;
 
-using Microsoft.VisualStudio.Shell;
-
 namespace BuildVision.UI.Common.Logging
 {
     public static class TraceManager
@@ -102,7 +100,7 @@ namespace BuildVision.UI.Common.Logging
             var msg = new StringBuilder();
             if (!string.IsNullOrEmpty(additionalMessage))
                 msg.AppendLine(additionalMessage);
-    
+
             if (ex == null)
                 return msg.ToString();
 

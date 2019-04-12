@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -8,9 +7,7 @@ using System.Windows.Threading;
 using BuildVision.Commands;
 using BuildVision.Common.Diagnostics;
 using BuildVision.Exports.Providers;
-using BuildVision.Helpers;
 using BuildVision.Tool;
-using BuildVision.Tool.Building;
 using BuildVision.UI;
 using BuildVision.UI.Common.Logging;
 using BuildVision.UI.Settings.Models;
@@ -22,9 +19,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
-using Window = EnvDTE.Window;
 using ui = Microsoft.VisualStudio.VSConstants.UICONTEXT;
-using System.Threading.Tasks;
 
 namespace BuildVision.Core
 {
@@ -50,7 +45,7 @@ namespace BuildVision.Core
         private DTE _dte;
         private DTE2 _dte2;
         private CommandEvents _commandEvents;
-        private WindowEvents _windowEvents;
+        private readonly WindowEvents _windowEvents;
         private SolutionEvents _solutionEvents;
         private IVsSolutionBuildManager2 _solutionBuildManager;
         private IVsSolutionBuildManager5 _solutionBuildManager4;

@@ -1,11 +1,10 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using BuildVision.Exports.Services;
+using BuildVision.Extensions;
 using BuildVision.Views.Settings;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using BuildVision.Extensions;
 
 namespace BuildVision.Core
 {

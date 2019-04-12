@@ -1,13 +1,13 @@
-﻿using BuildVision.Contracts;
-using BuildVision.UI.Common.Logging;
-using BuildVision.UI.Extensions;
-using BuildVision.UI.Models;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using BuildVision.Contracts;
+using BuildVision.UI.Common.Logging;
+using BuildVision.UI.Extensions;
+using BuildVision.UI.Models;
 
 namespace BuildVision.UI
 {

@@ -1,6 +1,5 @@
+﻿using System;
 using BuildVision.Contracts;
-using BuildVision.UI;
-using System;
 
 namespace BuildVision.UI.Modelss
 {
@@ -13,23 +12,23 @@ namespace BuildVision.UI.Modelss
 
         public string ImageDictionaryUri { get; set; }
 
-		public object ExampleValue { get; set; }
+        public object ExampleValue { get; set; }
 
-		public string TimeSpanExampleValue
+        public string TimeSpanExampleValue
         {
-            get { return ""; }
-            set { ExampleValue = TimeSpan.Parse(value); }
+            get => "";
+            set => ExampleValue = TimeSpan.Parse(value);
         }
 
         public string DateTimeExampleValue
         {
-            get { return ""; }
-            set { ExampleValue = DateTime.Parse(value); }
+            get => "";
+            set => ExampleValue = DateTime.Parse(value);
         }
 
         public GridColumnAttribute(
-            string headerResourceName, 
-            ColumnsOrder displayOrder, 
+            string headerResourceName,
+            ColumnsOrder displayOrder,
             bool visible)
         {
             Header = Resources.ResourceManager.GetString(headerResourceName, Resources.Culture);

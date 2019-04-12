@@ -11,7 +11,7 @@ namespace BuildVision.UI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var buildState = (BuildState) value;
+            var buildState = (BuildState)value;
             return buildState == BuildState.InProgress ? Visibility.Collapsed : Visibility.Visible;
         }
 

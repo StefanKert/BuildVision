@@ -18,12 +18,12 @@ namespace BuildVision.Tool.Building
         private DTE _dte;
         private IVsWindowFrame _windowFrame;
         private Window _window;
-        private IServiceProvider _serviceProvider;
-        private AsyncPackage _package;
+        private readonly IServiceProvider _serviceProvider;
+        private readonly AsyncPackage _package;
 
         [ImportingConstructor]
         public WindowStateService(
-            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider, 
+            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider,
             AsyncPackage package)
         {
             _serviceProvider = serviceProvider;
@@ -144,13 +144,13 @@ namespace BuildVision.Tool.Building
 
         public void ApplyToolWindowStateAction(WindowStateAction windowStateAction)
         {
-            if(BuildVisionPackage.ToolWindowPane == null)
+            if (BuildVisionPackage.ToolWindowPane == null)
             {
                 return;
             }
             Initialize(BuildVisionPackage.ToolWindowPane);
 
-            ApplyToolWindowStateAction(windowStateAction.State); 
+            ApplyToolWindowStateAction(windowStateAction.State);
         }
     }
 }

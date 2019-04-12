@@ -1,5 +1,4 @@
-using BuildVision.UI;
-using System;
+﻿using System;
 
 namespace BuildVision.UI.Helpers
 {
@@ -31,15 +30,15 @@ namespace BuildVision.UI.Helpers
         public static readonly DisplayStringAttribute Default = new DisplayStringAttribute();
         private string _resourceName;
 
-		/// <summary>
-		/// The value of this attribute.
-		/// </summary>
-		public string DisplayString { get; private set; }
+        /// <summary>
+        /// The value of this attribute.
+        /// </summary>
+        public string DisplayString { get; private set; }
 
-		public string ResourceName
+        public string ResourceName
         {
-            get { return _resourceName; }
-            set 
+            get => _resourceName;
+            set
             {
                 _resourceName = value;
                 DisplayString = Resources.ResourceManager.GetString(value, Resources.Culture);

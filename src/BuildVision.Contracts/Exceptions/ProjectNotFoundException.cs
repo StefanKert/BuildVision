@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace BuildVision.Contracts
+namespace BuildVision.Contracts.Exceptions
 {
     [Serializable]
     public class ProjectNotFoundException : Exception

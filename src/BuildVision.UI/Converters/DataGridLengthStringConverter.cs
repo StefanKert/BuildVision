@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,7 +13,7 @@ namespace BuildVision.UI.Converters
             var val = (DataGridLength)value;
 
             if (val.IsAuto)
-                return "auto";            
+                return "auto";
 
             if (val.IsStar)
                 return val.DisplayValue.ToString("0.0") + "*";

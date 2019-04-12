@@ -1,8 +1,6 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-
-using BuildVision.UI;
 using BuildVision.UI.DataGrid;
 using BuildVision.UI.Settings.Models.Columns;
 

@@ -1,10 +1,6 @@
-﻿using BuildVision.Common;
-using BuildVision.Helpers;
-using Microsoft.VisualStudio.Shell;
-using System;
-using System.Diagnostics;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Navigation;
+using BuildVision.Helpers;
 
 namespace BuildVision.UI.Settings
 {

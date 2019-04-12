@@ -2,9 +2,7 @@
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
-using BuildVision.Contracts;
 using BuildVision.UI.Extensions;
-using BuildVision.UI.Models;
 
 namespace BuildVision.UI.Converters
 {
@@ -16,7 +14,7 @@ namespace BuildVision.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stateIconKey = (string)value;
-            var vector =  VectorResources.TryGet(ResourcesUri, stateIconKey) ?? VectorResources.TryGet(ResourcesUri, "StandBy");
+            var vector = VectorResources.TryGet(ResourcesUri, stateIconKey) ?? VectorResources.TryGet(ResourcesUri, "StandBy");
             return vector;
         }
 

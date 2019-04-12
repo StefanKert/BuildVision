@@ -1,5 +1,4 @@
-using BuildVision.UI.Models;
-using System.Runtime.Serialization;
+﻿using BuildVision.UI.Models;
 
 namespace BuildVision.UI.Settings.Models.ToolWindow
 {

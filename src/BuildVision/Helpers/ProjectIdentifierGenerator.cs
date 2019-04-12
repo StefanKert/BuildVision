@@ -1,7 +1,4 @@
 ﻿using BuildVision.UI.Models;
-using EnvDTE;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace BuildVision.Helpers

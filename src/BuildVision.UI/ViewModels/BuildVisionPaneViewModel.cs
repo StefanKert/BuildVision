@@ -12,6 +12,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using BuildVision.Common;
 using BuildVision.Contracts;
+using BuildVision.Contracts.Exceptions;
 using BuildVision.Contracts.Models;
 using BuildVision.Core;
 using BuildVision.Exports.Providers;
@@ -61,7 +62,7 @@ namespace BuildVision.UI.ViewModels
 
         public string GridGroupPropertyName
         {
-            get { return ControlSettings.GridSettings.GroupName; }
+            get => ControlSettings.GridSettings.GroupName;
             set
             {
                 if (ControlSettings.GridSettings.GroupName != value)
@@ -104,7 +105,7 @@ namespace BuildVision.UI.ViewModels
             {
                 menuItem.IsCheckable = false;
                 menuItem.StaysOpenOnClick = false;
-                menuItem.IsChecked = (GridGroupPropertyName == (string) menuItem.Tag);
+                menuItem.IsChecked = (GridGroupPropertyName == (string)menuItem.Tag);
                 menuItem.Command = GridGroupPropertyMenuItemClicked;
                 menuItem.CommandParameter = menuItem.Tag;
             }
@@ -151,7 +152,7 @@ namespace BuildVision.UI.ViewModels
                 }
 
                 groupedList.CustomSort = GetProjectItemSorter(GridSortDescription);
-                groupedList.IsLiveGrouping  = true;
+                groupedList.IsLiveGrouping = true;
                 groupedList.IsLiveSorting = true;
                 return groupedList;
             }
@@ -159,12 +160,9 @@ namespace BuildVision.UI.ViewModels
 
         public DataGridHeadersVisibility GridHeadersVisibility
         {
-            get
-            {
-                return ControlSettings.GridSettings.ShowColumnsHeader
+            get => ControlSettings.GridSettings.ShowColumnsHeader
                     ? DataGridHeadersVisibility.Column
                     : DataGridHeadersVisibility.None;
-            }
             set
             {
                 bool showColumnsHeader = (value != DataGridHeadersVisibility.None);
@@ -178,7 +176,7 @@ namespace BuildVision.UI.ViewModels
 
         public ProjectItem SelectedProjectItem
         {
-            get => _selectedProjectItem; 
+            get => _selectedProjectItem;
             set => SetProperty(ref _selectedProjectItem, value);
         }
 
@@ -192,9 +190,9 @@ namespace BuildVision.UI.ViewModels
 
         [ImportingConstructor]
         public BuildVisionPaneViewModel(
-            IBuildInformationProvider buildInformationProvider, 
-            IPackageSettingsProvider settingsProvider, 
-            ISolutionProvider solutionProvider, 
+            IBuildInformationProvider buildInformationProvider,
+            IPackageSettingsProvider settingsProvider,
+            ISolutionProvider solutionProvider,
             IBuildService buildService,
             IErrorNavigationService errorNavigationService,
             ITaskBarInfoService taskBarInfoService)
@@ -233,7 +231,7 @@ namespace BuildVision.UI.ViewModels
                 Process.Start(dir);
             }
             catch (Exception ex)
-            {                
+            {
                 ex.Trace(string.Format(
                     "Unable to open folder '{0}' containing the project '{1}'.",
                     SelectedProjectItem.FullName,
@@ -371,7 +369,7 @@ namespace BuildVision.UI.ViewModels
 
         public ICommand CancelBuildSolutionAction => new RelayCommand(obj => _buildService.CancelBuildSolution());
 
-        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => ShowOptionPage?.Invoke(typeof(GridSettings))); 
+        public ICommand OpenGridColumnsSettingsAction => new RelayCommand(obj => ShowOptionPage?.Invoke(typeof(GridSettings)));
 
         public ICommand OpenGeneralSettingsAction => new RelayCommand(obj => ShowOptionPage?.Invoke(typeof(GeneralSettings)));
 

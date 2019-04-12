@@ -1,6 +1,6 @@
-using EnvDTE;
-using System;
+﻿using System;
 using System.Collections;
+using EnvDTE;
 
 namespace BuildVision.Helpers
 {

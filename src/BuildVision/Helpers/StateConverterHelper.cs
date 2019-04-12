@@ -1,6 +1,5 @@
-﻿using System;
+﻿using BuildVision.Contracts;
 using Microsoft.VisualStudio.Shell.Interop;
-using BuildVision.Contracts;
 
 namespace BuildVision.Tool.Models
 {

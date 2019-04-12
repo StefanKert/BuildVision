@@ -60,9 +60,9 @@ namespace BuildVision.Helpers
         }
 
         public static IList<Project> GetProjects(this Solution solution)
-        {            
+        {
             var list = new List<Project>();
-            foreach(var proj in solution.Projects)
+            foreach (var proj in solution.Projects)
             {
                 Project project = proj as Project;
                 if (project == null)
@@ -273,12 +273,11 @@ namespace BuildVision.Helpers
         public static object GetService(object serviceProviderObject, Type type)
         {
             object service = null;
-            IntPtr serviceIntPtr;
 
             Guid sidGuid = type.GUID;
             Guid iidGuid = sidGuid;
             var serviceProvider = (IServiceProvider)serviceProviderObject;
-            int hr = serviceProvider.QueryService(ref sidGuid, ref iidGuid, out serviceIntPtr);
+            int hr = serviceProvider.QueryService(ref sidGuid, ref iidGuid, out var serviceIntPtr);
 
             if (hr != 0)
             {

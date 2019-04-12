@@ -3,10 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shell;
-using BuildVision.UI.Models;
 using BuildVision.Contracts;
-using BuildVision.Views.Settings;
 using BuildVision.Exports.Services;
+using BuildVision.UI.Models;
+using BuildVision.Views.Settings;
 
 namespace BuildVision.UI.ViewModels
 {

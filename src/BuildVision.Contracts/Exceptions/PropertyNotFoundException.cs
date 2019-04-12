@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BuildVision.Contracts
+namespace BuildVision.Contracts.Exceptions
 {
     public class PropertyNotFoundException : Exception
     {
@@ -14,9 +14,6 @@ namespace BuildVision.Contracts
 
         public Type Type { get; }
 
-        public override string Message
-        {
-            get { return string.Format("Property '{0}' not found in '{1}' type.", PropertyName, Type); }
-        }
+        public override string Message => string.Format("Property '{0}' not found in '{1}' type.", PropertyName, Type);
     }
 }

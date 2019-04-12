@@ -10,7 +10,7 @@ namespace BuildVision.Helpers
         public static Project ToProject(this IVsHierarchy pHierProj)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
-            pHierProj.GetProperty(VSConstants.VSITEMID_ROOT, (int) __VSHPROPID.VSHPROPID_ExtObject, out var objProj);
+            pHierProj.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out var objProj);
             return objProj as Project;
         }
     }

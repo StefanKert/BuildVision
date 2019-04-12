@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 
 namespace BuildVision.UI.Controls.Indicators
 {

@@ -1,22 +1,21 @@
-﻿using System.Runtime.InteropServices;
-using System.Windows;
-
-using Microsoft.VisualStudio.Shell;
-using BuildVision.UI;
-using BuildVision.Core;
-using BuildVision.UI.ViewModels;
-using System;
-using Microsoft.VisualStudio.Threading;
+﻿using System;
+using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Microsoft;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Markup;
+using BuildVision.Core;
 using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
-using BuildVision.Views.Settings;
-using System.Windows.Controls;
+using BuildVision.UI;
 using BuildVision.UI.Settings.Models;
 using BuildVision.UI.Settings.Models.Columns;
-using System.Windows.Markup;
-using System.Globalization;
+using BuildVision.UI.ViewModels;
+using BuildVision.Views.Settings;
+using Microsoft;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Threading;
 
 namespace BuildVision.Tool
 {
@@ -35,7 +34,7 @@ namespace BuildVision.Tool
         private bool _controlCreatedSuccessfully;
 
         JoinableTask<BuildVisionPaneViewModel> viewModelTask;
-        private ContentPresenter _contentPresenter;
+        private readonly ContentPresenter _contentPresenter;
         private IPackageSettingsProvider _packageSettingsProvider;
 
         public JoinableTaskFactory JoinableTaskFactory { get; private set; }
@@ -46,7 +45,7 @@ namespace BuildVision.Tool
         }
 
         public BuildVisionPane()
-            :base(null)
+            : base(null)
         {
             Caption = Resources.ToolWindowTitle;
             BitmapResourceID = 301;
@@ -60,7 +59,7 @@ namespace BuildVision.Tool
         {
             // Using JoinableTaskFactory from parent AsyncPackage. That way if VS shuts down before this
             // work is done, we won't risk crashing due to arbitrary work going on in background threads.
-            var asyncPackage = (AsyncPackage) Package;
+            var asyncPackage = (AsyncPackage)Package;
             JoinableTaskFactory = asyncPackage.JoinableTaskFactory;
 
             viewModelTask = JoinableTaskFactory.RunAsync(() => InitializeAsync(asyncPackage));
@@ -68,7 +67,10 @@ namespace BuildVision.Tool
             base.Initialize();
         }
 
-        public Task<BuildVisionPaneViewModel> GetViewModelAsync() => viewModelTask.JoinAsync();
+        public Task<BuildVisionPaneViewModel> GetViewModelAsync()
+        {
+            return viewModelTask.JoinAsync();
+        }
 
         async Task<BuildVisionPaneViewModel> InitializeAsync(AsyncPackage asyncPackage)
         {
@@ -101,7 +103,7 @@ namespace BuildVision.Tool
             var asyncPackage = (AsyncPackage)Package;
             if (obj == typeof(GeneralSettings))
                 asyncPackage.ShowOptionPage(typeof(GeneralSettingsDialogPage));
-            if(obj == typeof(GridColumnSettings))
+            if (obj == typeof(GridColumnSettings))
                 asyncPackage.ShowOptionPage(typeof(GridSettingsDialogPage));
         }
 

@@ -6,6 +6,7 @@ using System.ComponentModel.Composition;
 using System.Windows;
 using BuildVision.Common;
 using BuildVision.Contracts;
+using BuildVision.Contracts.Exceptions;
 using BuildVision.Contracts.Models;
 using BuildVision.Exports.Services;
 using BuildVision.Helpers;

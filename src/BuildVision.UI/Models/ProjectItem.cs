@@ -1,12 +1,11 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using BuildVision.Common;
 using BuildVision.Common.Extensions;
 using BuildVision.Contracts;
-using BuildVision.UI.Modelss;
 using BuildVision.UI.Extensions;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using BuildVision.UI.Modelss;
 
 namespace BuildVision.UI.Models
 {

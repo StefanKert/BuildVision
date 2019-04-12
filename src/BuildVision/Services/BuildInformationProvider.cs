@@ -12,6 +12,7 @@ using BuildVision.Exports;
 using BuildVision.Exports.Factories;
 using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
+using BuildVision.Extensions;
 using BuildVision.Helpers;
 using BuildVision.Services;
 using BuildVision.Tool.Building;
@@ -27,6 +28,8 @@ namespace BuildVision.Core
     [PartCreationPolicy(CreationPolicy.Shared)]
     public class BuildInformationProvider : IBuildInformationProvider
     {
+        private readonly Serilog.ILogger _logger = LogManager.ForContext<BuildInformationProvider>();
+
         private readonly IPackageSettingsProvider _packageSettingsProvider;
         private readonly IErrorNavigationService _errorNavigationService;
         private readonly IBuildOutputLogger _buildOutputLogger;
@@ -41,8 +44,6 @@ namespace BuildVision.Core
         private const int BuildInProcessQuantumSleep = 50;
         private CancellationTokenSource _buildProcessCancellationToken;
         private int _currentQueuePosOfBuildingProject = 0;
-        private Serilog.ILogger _logger = LogManager.ForContext<BuildInformationProvider>();
-
 
         public IBuildInformationModel BuildInformationModel { get; } = new BuildInformationModel();
         public ObservableCollection<IProjectItem> Projects { get; } = new ObservableCollection<IProjectItem>();
@@ -115,7 +116,7 @@ namespace BuildVision.Core
                 }
 
                 errorItem.VerifyValues();
-                AddErrorItem(projectItem, errorItem);
+                projectItem.AddErrorItem(errorItem);
 
                 var args = new BuildErrorRaisedEventArgs(errorLevel, projectItem);
                 bool buildNeedCancel = (args.ErrorLevel == ErrorLevel.Error && _packageSettingsProvider.Settings.GeneralSettings.StopBuildAfterFirstError);
@@ -171,67 +172,6 @@ namespace BuildVision.Core
 
             projectEntry.ProjectItem = projectItem;
             return true;
-        }
-
-        private void AddErrorItem(IProjectItem projectItem, ErrorItem errorItem)
-        {
-            switch (errorItem.Level)
-            {
-                case ErrorLevel.Message:
-                    projectItem.MessagesCount++;
-                    break;
-                case ErrorLevel.Warning:
-                    projectItem.WarningsCount++;
-                    break;
-                case ErrorLevel.Error:
-                    projectItem.ErrorsCount++;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("errorLevel");
-            }
-            if (errorItem.Level != ErrorLevel.Error)
-            {
-                return;
-            }
-
-            int errorNumber = projectItem.Errors.Count + projectItem.Warnings.Count + projectItem.Messages.Count + 1;
-            errorItem.Number = errorNumber;
-            switch (errorItem.Level)
-            {
-                case ErrorLevel.Message:
-                    projectItem.Messages.Add(errorItem);
-                    break;
-
-                case ErrorLevel.Warning:
-                    projectItem.Warnings.Add(errorItem);
-                    break;
-
-                case ErrorLevel.Error:
-                    projectItem.Errors.Add(errorItem);
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException("errorLevel");
-            }
-        }
-
-        private ProjectState GetProjectState(BuildActions buildAction)
-        {
-            switch (buildAction)
-            {
-                case BuildActions.BuildActionBuild:
-                case BuildActions.BuildActionRebuildAll:
-                    return ProjectState.Building;
-
-                case BuildActions.BuildActionClean:
-                    return ProjectState.Cleaning;
-
-                case BuildActions.BuildActionDeploy:
-                    throw new InvalidOperationException("vsBuildActionDeploy not supported");
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(buildAction));
-            }
         }
 
         public void Run(CancellationToken cancellationToken)
@@ -293,7 +233,7 @@ namespace BuildVision.Core
                     Projects.Add(projectItem);
                     projInCollection = projectItem;
                 }
-                projInCollection.State = GetProjectState(BuildInformationModel.BuildAction);
+                projInCollection.State = BuildInformationModel.BuildAction.GetProjectState();
                 projInCollection.BuildFinishTime = null;
                 projInCollection.BuildStartTime = DateTime.Now;
 
@@ -429,13 +369,9 @@ namespace BuildVision.Core
                     BuildInformationModel.CurrentBuildState = BuildState.Done;
                 }
             }
-            else if (canceled)
-            {
-                BuildInformationModel.CurrentBuildState = BuildState.Cancelled;
-            }
             else
             {
-                BuildInformationModel.CurrentBuildState = BuildState.Failed;
+                BuildInformationModel.CurrentBuildState = canceled ? BuildState.Cancelled : BuildState.Failed;
             }
 
             var message = _buildMessagesFactory.GetBuildDoneMessage(BuildInformationModel);

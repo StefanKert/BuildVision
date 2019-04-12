@@ -245,10 +245,8 @@ namespace BuildVision.Helpers
         public static string GetProjectTypeGuids(this Project proj)
         {
             string projectTypeGuids = string.Empty;
-
-            var service = SolutionProjectsExtensions.GetService(proj.DTE, typeof(IVsSolution));
-            var solution = (IVsSolution)service;
-
+            var solution = Core.Services.GetSolution();
+ 
             int result = solution.GetProjectOfUniqueName(proj.UniqueName, out var hierarchy);
 
             if (!string.IsNullOrEmpty(proj.Kind))

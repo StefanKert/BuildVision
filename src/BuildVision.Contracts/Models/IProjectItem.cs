@@ -38,5 +38,6 @@ namespace BuildVision.UI.Models
         ObservableCollection<ErrorItem> Messages { get; set; }
 
         void RaiseBuildElapsedTimeChanged();
+        void AddErrorItem(ErrorItem errorItem);
     }
 }

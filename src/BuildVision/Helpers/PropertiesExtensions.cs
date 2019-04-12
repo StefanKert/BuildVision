@@ -6,7 +6,6 @@ namespace BuildVision.Helpers
 {
     public static class PropertiesExtensions
     {
-
         public static Property GetPropertyOrDefault(this Properties properties, string propertyName)
         {
             try

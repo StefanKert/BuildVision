@@ -73,6 +73,7 @@ namespace BuildVision.Core
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             _logger.Fatal(e.Exception, "Unhandled Exception");
+            DiagnosticsClient.Notify(e.Exception);
         }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

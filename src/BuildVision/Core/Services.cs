@@ -4,6 +4,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace BuildVision.Core
 {
@@ -29,5 +30,15 @@ namespace BuildVision.Core
         public static DTE Dte => GetGlobalService<DTE, DTE>();
 
         public static DTE2 Dte2 => Dte as DTE2;
+
+        public static IVsSolution GetSolution(this IServiceProvider provider)
+        {
+            return GetGlobalService<SVsSolution, IVsSolution>(provider);
+        }
+
+        public static IVsSolution GetSolution()
+        {
+            return GetGlobalService<SVsSolution, IVsSolution>();
+        }
     }
 }

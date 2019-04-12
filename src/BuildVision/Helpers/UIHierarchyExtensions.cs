@@ -4,19 +4,8 @@ using EnvDTE;
 
 namespace BuildVision.Helpers
 {
-    /// <summary>
-    /// Extends functionality for UIHierarchy classes, e.g:
-    /// VisualStudioServices.Dte.ToolWindows.SolutionExplorer
-    /// </summary>
     public static class UIHierarchyExtensions
     {
-        /// <summary>
-        /// Finds the hierarchy item for the given item.
-        /// </summary>
-        /// <param name="hierarchy">The hierarchy object</param>
-        /// <param name="item">The item.</param>
-        /// <returns>The found UIHierarchyItem, null if none found. For example, in case of the Solution explorer, it would be the item in the solution
-        /// explorer that represents the given project</returns>
         public static UIHierarchyItem FindHierarchyItem(this UIHierarchy hierarchy, Project item)
         {
             return FindHierarchyItem(hierarchy, (object)item);
@@ -25,15 +14,17 @@ namespace BuildVision.Helpers
         private static UIHierarchyItem FindHierarchyItem(UIHierarchy hierarchy, object item)
         {
             // This gets children of the root note in the hierarchy
-            UIHierarchyItems items = hierarchy.UIHierarchyItems.Item(1).UIHierarchyItems;
+            var items = hierarchy.UIHierarchyItems.Item(1).UIHierarchyItems;
 
             // Finds the given item in the hierarchy
-            UIHierarchyItem uiItem = FindHierarchyItem(items, item);
+            var uiItem = FindHierarchyItem(items, item);
 
             // uiItem would be null in most cases, however, for projects inside Solution Folders, there is a strange behavior in which the project byitself can't
             // be found in the hierarchy. Instead, in case of failure we'll search for the UIHierarchyItem
             if (uiItem == null && item is Project && ((Project)item).ParentProjectItem != null)
+            {
                 uiItem = FindHierarchyItem(items, ((Project)item).ParentProjectItem);
+            }
 
             return uiItem;
         }

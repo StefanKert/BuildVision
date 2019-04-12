@@ -24,6 +24,5 @@ namespace BuildVision.Tool.Models
                 return BuildActions.Unknown;
             }
         }
-
     }
 }

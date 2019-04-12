@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using BuildVision.Common.Logging;
 using BuildVision.Core;
 using BuildVision.UI;
 using EnvDTE;
-using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 using ProjectItem = BuildVision.UI.Models.ProjectItem;
 
 namespace BuildVision.Helpers
@@ -256,10 +254,7 @@ namespace BuildVision.Helpers
 
         private static bool IsIntegrationServicesProject(Project project, ProjectItem projectItem)
         {
-            if (project.Kind == _GUID_SQL_INTEGRATIONG_SERVICES_PROJECT_KIND)
-                return projectItem.UniqueName == projectItem.FullName;
-            else
-                return false;
+            return project.Kind == _GUID_SQL_INTEGRATIONG_SERVICES_PROJECT_KIND ? projectItem.UniqueName == projectItem.FullName : false;
         }
 
         private static void AdjustUniqueNameForExtensionProjects(Project project, ProjectItem projectItem)
@@ -268,28 +263,6 @@ namespace BuildVision.Helpers
             var directoryName = Path.GetFileName(directory);
             var csprojName = Path.GetFileName(project.UniqueName);
             projectItem.UniqueName = Path.Combine(directoryName, csprojName);
-        }
-
-        public static object GetService(object serviceProviderObject, Type type)
-        {
-            object service = null;
-
-            var sidGuid = type.GUID;
-            var iidGuid = sidGuid;
-            var serviceProvider = (IServiceProvider)serviceProviderObject;
-            var hr = serviceProvider.QueryService(ref sidGuid, ref iidGuid, out var serviceIntPtr);
-
-            if (hr != 0)
-            {
-                Marshal.ThrowExceptionForHR(hr);
-            }
-            else if (!serviceIntPtr.Equals(IntPtr.Zero))
-            {
-                service = Marshal.GetObjectForIUnknown(serviceIntPtr);
-                Marshal.Release(serviceIntPtr);
-            }
-
-            return service;
         }
     }
 }

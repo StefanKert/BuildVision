@@ -262,5 +262,47 @@ namespace BuildVision.UI.Models
         {
             OnPropertyChanged(nameof(BuildElapsedTime));
         }
+
+        public void AddErrorItem(ErrorItem errorItem)
+        {
+            switch (errorItem.Level)
+            {
+                case ErrorLevel.Message:
+                    MessagesCount++;
+                    break;
+                case ErrorLevel.Warning:
+                    WarningsCount++;
+                    break;
+                case ErrorLevel.Error:
+                    ErrorsCount++;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(errorItem));
+            }
+            if (errorItem.Level != ErrorLevel.Error)
+            {
+                return;
+            }
+
+            int errorNumber = Errors.Count + Warnings.Count + Messages.Count + 1;
+            errorItem.Number = errorNumber;
+            switch (errorItem.Level)
+            {
+                case ErrorLevel.Message:
+                    Messages.Add(errorItem);
+                    break;
+
+                case ErrorLevel.Warning:
+                    Warnings.Add(errorItem);
+                    break;
+
+                case ErrorLevel.Error:
+                    Errors.Add(errorItem);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(errorItem));
+            }
+        }
     }
 }

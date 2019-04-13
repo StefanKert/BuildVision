@@ -32,9 +32,9 @@ namespace BuildVision.Tool.Building
         {
             _projects = new List<BuildProjectContextEntry>();
             eventSource.ProjectStarted += OnProjectStarted;
-            eventSource.MessageRaised += (s, e) => EventSource_ErrorRaised(s, e, ErrorLevel.Message);
-            eventSource.WarningRaised += (s, e) => EventSource_ErrorRaised(s, e, ErrorLevel.Warning);
-            eventSource.ErrorRaised += (s, e) => EventSource_ErrorRaised(s, e, ErrorLevel.Error);
+            eventSource.MessageRaised += (s, e) => EventSource_ErrorRaised(e, ErrorLevel.Message);
+            eventSource.WarningRaised += (s, e) => EventSource_ErrorRaised(e, ErrorLevel.Warning);
+            eventSource.ErrorRaised += (s, e) => EventSource_ErrorRaised(e, ErrorLevel.Error);
         }
 
         private void OnProjectStarted(object sender, ProjectStartedEventArgs e)
@@ -98,12 +98,11 @@ namespace BuildVision.Tool.Building
             return !_projects.Exists(t => t.FileName == projectItem.FullName);
         }
 
-        private void EventSource_ErrorRaised(object sender, BuildEventArgs e, ErrorLevel errorLevel)
+        private void EventSource_ErrorRaised(BuildEventArgs e, ErrorLevel errorLevel)
         {
             try
             {
-                bool verified = VerifyLoggerBuildEvent(e, errorLevel);
-                if (!verified)
+                if (e.BuildEventContext.IsBuildEventContextInvalid())
                     return;
 
                 int projectInstanceId = e.BuildEventContext.ProjectInstanceId;
@@ -116,7 +115,9 @@ namespace BuildVision.Tool.Building
                     return;
                 }
                 if (projectEntry.IsInvalid)
+                {
                     return;
+                }
 
                 OnErrorRaised(projectEntry, e, errorLevel);
             }
@@ -124,26 +125,6 @@ namespace BuildVision.Tool.Building
             {
                 _logger.Error(ex, "Error during eventsource_raised.");
             }
-        }
-
-        private bool VerifyLoggerBuildEvent(BuildEventArgs eventArgs, ErrorLevel errorLevel)
-        {
-            if (eventArgs.BuildEventContext.IsBuildEventContextInvalid())
-                return false;
-
-            if (errorLevel == ErrorLevel.Message)
-            {
-                var messageEventArgs = (BuildMessageEventArgs)eventArgs;
-                if (!messageEventArgs.IsUserMessage(this))
-                    return false;
-            }
-
-            return true;
-        }
-
-        public void Reset()
-        {
-            _projects.Clear();
         }
 
         public event Action<BuildProjectContextEntry, object, ErrorLevel> OnErrorRaised;

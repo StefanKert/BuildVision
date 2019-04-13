@@ -199,7 +199,7 @@ namespace BuildVision.Core
             _buildOutputLogger.Attach();
 
             ResetBuildInformationModel();
-            ResetCurrentProjects();
+            ReloadCurrentProjects();
 
             BuildInformationModel.BuildStartTime = DateTime.Now;
             BuildInformationModel.BuildFinishTime = null;
@@ -267,42 +267,8 @@ namespace BuildVision.Core
             }
 
             var currentProject = Projects.First(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == projectIdentifier);
-            ProjectState projectState;
-            switch (BuildInformationModel.BuildAction)
-            {
-                case BuildActions.BuildActionBuild:
-                case BuildActions.BuildActionRebuildAll:
-                    if (success)
-                    {
-                        if (_packageSettingsProvider.Settings.GeneralSettings.ShowWarningSignForBuilds && currentProject.WarningsCount > 0)
-                        {
-                            projectState = ProjectState.BuildWarning;
-                        }
-                        else
-                        {
-                            projectState = _buildOutputLogger.IsProjectUpToDate(currentProject) ? ProjectState.UpToDate : ProjectState.BuildDone;
-                            if (projectState == ProjectState.UpToDate)
-                            {
-                                // do i have to set errorbox here?
-                            }
-                        }
-                    }
-                    else
-                    {
-                        bool buildCancelled = (canceled && currentProject.ErrorsCount == 0);
-                        projectState = buildCancelled ? ProjectState.BuildCancelled : ProjectState.BuildError;
-                    }
-                    break;
-
-                case BuildActions.BuildActionClean:
-                    projectState = success ? ProjectState.CleanDone : ProjectState.CleanError;
-                    break;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(buildAction));
-            }
             currentProject.Success = success;
-            currentProject.State = projectState;
+            currentProject.State = GetProjectState(success, canceled, currentProject); 
             currentProject.BuildFinishTime = DateTime.Now;
 
             if (currentProject.State == ProjectState.BuildError && _packageSettingsProvider.Settings.GeneralSettings.StopBuildAfterFirstError)
@@ -324,6 +290,42 @@ namespace BuildVision.Core
             }
 
             _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
+        }
+
+        private ProjectState GetProjectState(bool success, bool canceled, IProjectItem currentProject)
+        {
+            ProjectState projectState;
+            switch (BuildInformationModel.BuildAction)
+            {
+                case BuildActions.BuildActionBuild:
+                case BuildActions.BuildActionRebuildAll:
+                    if (success)
+                    {
+                        if (_packageSettingsProvider.Settings.GeneralSettings.ShowWarningSignForBuilds && currentProject.WarningsCount > 0)
+                        {
+                            projectState = ProjectState.BuildWarning;
+                        }
+                        else
+                        {
+                            projectState = _buildOutputLogger.IsProjectUpToDate(currentProject) ? ProjectState.UpToDate : ProjectState.BuildDone;
+                        }
+                    }
+                    else
+                    {
+                        bool buildCancelled = (canceled && currentProject.ErrorsCount == 0);
+                        projectState = buildCancelled ? ProjectState.BuildCancelled : ProjectState.BuildError;
+                    }
+                    break;
+
+                case BuildActions.BuildActionClean:
+                    projectState = success ? ProjectState.CleanDone : ProjectState.CleanError;
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(BuildInformationModel.BuildAction));
+            }
+
+            return projectState;
         }
 
         public void BuildUpdate()

@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Shell;
 using BuildVision.Contracts;
 using BuildVision.Exports.Services;
+using BuildVision.Extensions;
 using BuildVision.UI.Models;
 using BuildVision.Views.Settings;
 
@@ -30,21 +31,16 @@ namespace BuildVision.UI.ViewModels
         public void UpdateTaskBarInfo(BuildState buildState, BuildScopes buildScope, int projectsCount, int finishedProjects)
         {
             if (_resetTaskBarInfoCts != null && !_resetTaskBarInfoCts.IsCancellationRequested)
+            {
                 _resetTaskBarInfoCts.Cancel();
+            }
 
             if (!_packageSettingsProvider.Settings.GeneralSettings.BuildProgressSettings.TaskBarProgressEnabled)
+            {
                 return;
+            }
 
-            if (buildState == BuildState.Cancelled)
-                _taskbarItemInfo.Value.ProgressState = TaskbarItemProgressState.Paused;
-            else if (buildState == BuildState.Failed)
-                _taskbarItemInfo.Value.ProgressState = TaskbarItemProgressState.Error;
-            else if (buildState != BuildState.InProgress)
-                _taskbarItemInfo.Value.ProgressState = TaskbarItemProgressState.None;
-            else if (buildScope != BuildScopes.BuildScopeSolution)
-                _taskbarItemInfo.Value.ProgressState = TaskbarItemProgressState.Indeterminate;
-            else
-                _taskbarItemInfo.Value.ProgressState = TaskbarItemProgressState.Normal;
+            _taskbarItemInfo.Value.ProgressState = buildState.ToTaskBarItemProgressState(buildScope); ;
 
             if (projectsCount <= 0)
             {
@@ -80,7 +76,9 @@ namespace BuildVision.UI.ViewModels
         {
             var buildProgressSettings = _packageSettingsProvider.Settings.GeneralSettings.BuildProgressSettings;
             if (!buildProgressSettings.TaskBarProgressEnabled)
+            {
                 return;
+            }
 
             switch (buildProgressSettings.ResetTaskBarProgressAfterBuildDone)
             {

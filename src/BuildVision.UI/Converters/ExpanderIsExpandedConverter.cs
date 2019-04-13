@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Controls;
@@ -11,7 +11,7 @@ namespace BuildVision.UI.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             var collectionViewGroup = (CollectionViewGroup)values[0];
-            var collapsedGroups = (IList<string>)values[1];
+            var collapsedGroups = values[1] as IList<string>;
 
             if (collapsedGroups == null || collapsedGroups.Count == 0)
                 return true;

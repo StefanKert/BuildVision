@@ -10,14 +10,16 @@
              xmlns:helpers="clr-namespace:BuildVision.UI.Helpers"
              xmlns:contracts="clr-namespace:BuildVision.Contracts;assembly=BuildVision.Contracts"
              xmlns:local="clr-namespace:BuildVision.UI.Components"
+             xmlns:converters="clr-namespace:BuildVision.UI.Converters"
              mc:Ignorable="d" 
              Background="{DynamicResource ToolWindowBackgroundKey}"
              DataContextChanged="OnDataContextChanged"
              SnapsToDevicePixels="True"
              UseLayoutRounding="True"
+             x:Name="ProjectGridControl"
              d:DesignHeight="148"
              d:DesignWidth="697"
-             d:DataContext="{Binding Source={StaticResource DesignViewModel}}">
+             d:DataContext="{d:DesignInstance viewModels:BuildVisionPaneViewModel, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -31,13 +33,9 @@
 
             <CollectionViewSource x:Key="GridColumnsCollection" Source="{Binding ElementName=Grid, Path=Columns}" />
 
-            <viewModels:BuildVisionPaneViewModel x:Key="DesignViewModel"/>
-            <helpers:BindingProxy x:Key="proxy" Data="{Binding}" />
+            <converters:NumberToIsPositiveConverter x:Key="NumberToIsPositiveConverter" />
 
             <CompositeCollection x:Key="CopyBuildOutputFilesToClipboardMenuItems">
-                <MenuItem Command="{Binding SelectedProjectCopyBuildOutputFilesToClipboardAction}"
-                          Header="{x:Static res:Resources.SelectedProjectItem_CopyBuildOutputFilesToClipboard_CopyMenuItem}"/>
-                <Separator />
                 <MenuItem Header="{x:Static res:Resources.ProjectItemSettings_CopyBuildOutputFilesToClipboard_Type_BuiltAssemblies}"
                           IsCheckable="True"
                           StaysOpenOnClick="True"
@@ -63,8 +61,7 @@
                           StaysOpenOnClick="True"
                           IsChecked="{Binding ControlSettings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard.XmlSerializer}" />
                 <Separator />
-                <MenuItem Command="{Binding SelectedProjectCopyBuildOutputFilesToClipboardAction}"
-                          Header="{x:Static res:Resources.SelectedProjectItem_CopyBuildOutputFilesToClipboard_CopyMenuItem}"/>
+                <MenuItem Command="{Binding SelectedProjectCopyBuildOutputFilesToClipboardAction}" Header="{x:Static res:Resources.SelectedProjectItem_CopyBuildOutputFilesToClipboard_CopyMenuItem}"/>
             </CompositeCollection>
 
             <CompositeCollection x:Key="SelectedProjectMenuItems">
@@ -73,8 +70,7 @@
                 <MenuItem Command="{Binding SelectedProjectCleanAction}" Header="{x:Static res:Resources.BuildActionClean}" />
                 <Separator />
                 <MenuItem Command="{Binding SelectedProjectOpenContainingFolderAction}" Header="{x:Static res:Resources.SelectedProjectItem_OpenContainingFolder_MenuItem}" />
-                <MenuItem Header="{x:Static res:Resources.SelectedProjectItem_CopyBuildOutputFilesToClipboard_ParentMenuItem}" 
-                          ItemsSource="{Binding Source={StaticResource CopyBuildOutputFilesToClipboardMenuItems}}"/>
+                <MenuItem Header="{x:Static res:Resources.SelectedProjectItem_CopyBuildOutputFilesToClipboard_ParentMenuItem}" ItemsSource="{Binding Source={StaticResource CopyBuildOutputFilesToClipboardMenuItems}}"/>
                 <Separator />
                 <MenuItem Header="Copy Errors"  Command="{Binding SelectedProjectCopyErrorMessagesAction}"/>
             </CompositeCollection>
@@ -92,11 +88,9 @@
 
         </ResourceDictionary>
     </UserControl.Resources>
+
     <DataGrid Name="Grid"
-                  Grid.Row="1"
-                  AlternatingRowBackground="{Binding ElementName=Grid,
-                                                     Path=RowBackground,
-                                                     Converter={StaticResource AlternatingRowBackgroundConverter}}"
+                  AlternatingRowBackground="{Binding ElementName=Grid, Path=RowBackground, Converter={StaticResource AlternatingRowBackgroundConverter}}"
                   AlternationCount="2"
                   AreRowDetailsFrozen="True"
                   AutoGenerateColumns="False"
@@ -118,7 +112,7 @@
                   ScrollViewer.HorizontalScrollBarVisibility="Auto"
                   ScrollViewer.IsDeferredScrollingEnabled="False"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  SelectedItem="{Binding BuildInformationModel.CurrentProject}"
+                  SelectedItem="{Binding SelectedProjectItem}"
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
                   Sorting="GridOnSorting"
@@ -129,26 +123,19 @@
             <Style TargetType="DataGridCell">
                 <Style.Triggers>
 
-                    <Trigger Property="IsSelected"
-                                 Value="True">
-                        <Setter Property="Background"
-                                    Value="Transparent" />
-                        <Setter Property="Foreground"
-                                    Value="{DynamicResource ToolWindowTextKey}" />
+                    <Trigger Property="IsSelected" Value="True">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="Foreground" Value="{DynamicResource ToolWindowTextKey}" />
                     </Trigger>
 
-                    <!--
-                            <DataTrigger Binding="{Binding ErrorsCount, Converter={StaticResource NumberIsPositive}}" Value="True">
-                            <Setter Property="Background" Value="PaleVioletRed" />
-                            <Setter Property="Foreground" Value="Black" />
-                            </DataTrigger>
-                        -->
+                    <DataTrigger Binding="{Binding BuildInformationModel.ErrorsCount, Converter={StaticResource NumberToIsPositiveConverter}}" Value="True">
+                        <Setter Property="Background" Value="PaleVioletRed" />
+                        <Setter Property="Foreground" Value="Black" />
+                    </DataTrigger>
 
                 </Style.Triggers>
 
-
-                <Setter Property="FocusVisualStyle"
-                            Value="{x:Null}" />
+                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="DataGridCell">
@@ -156,7 +143,6 @@
                                         BorderBrush="{TemplateBinding Border.BorderBrush}"
                                         BorderThickness="0"
                                         SnapsToDevicePixels="True">
-                                <!--  BorderThickness="{TemplateBinding Border.BorderThickness}"  -->
                                 <ContentPresenter Margin="1,0,0,0"
                                                       VerticalAlignment="Center"
                                                       Content="{TemplateBinding ContentControl.Content}"
@@ -175,14 +161,14 @@
                 <Setter Property="Foreground" Value="{DynamicResource ToolWindowTextKey}" />
                 <Setter Property="BorderThickness" Value="0,1,0,1" />
                 <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource self}}" />
-                <Setter Property="DetailsVisibility" Value="{Binding ErrorsCount, Mode=OneWay, Converter={StaticResource PositiveNumberToVisibilityConverter}}" />
+                <Setter Property="DetailsVisibility" Value="{Binding BuildInformationModel.ErrorsCount, Mode=OneWay, Converter={StaticResource PositiveNumberToVisibilityConverter}}" />
                 <EventSetter Event="PreviewMouseLeftButtonDown" Handler="DataGridRowOnPreviewMouseLeftButtonDown" />
 
                 <Style.Triggers>
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Value="{x:Static contracts:ProjectState.UpToDate}" Binding="{Binding Path=State}"/>
-                            <Condition Binding="{Binding Path=DataContext.HideUpToDateTargets, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" Value="True"/>
+                            <Condition Binding="{Binding Path=DataContext.ControlSettings.GeneralSettings.HideUpToDateTargets, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ProjectGrid}}" Value="True"/>
                         </MultiDataTrigger.Conditions>
                         <Setter Property="Visibility" Value="Collapsed"/>
                     </MultiDataTrigger>
@@ -190,7 +176,7 @@
                     <MultiDataTrigger>
                         <MultiDataTrigger.Conditions>
                             <Condition Value="{x:Static contracts:ProjectState.Pending}" Binding="{Binding Path=State}"/>
-                            <Condition Binding="{Binding Path=DataContext.FillProjectListOnBuildBegin, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" Value="False"/>
+                            <Condition Binding="{Binding Path=DataContext.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ProjectGrid}}" Value="False"/>
                         </MultiDataTrigger.Conditions>
                         <Setter Property="Visibility" Value="Collapsed"/>
                     </MultiDataTrigger>
@@ -198,7 +184,7 @@
                     <DataTrigger Value="True">
                         <DataTrigger.Binding>
                             <MultiBinding Converter="{StaticResource ObjectsReferencesEqualsConverter}">
-                                <Binding Path="DataContext.CurrentProject" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
+                                <Binding Path="DataContext.BuildInformationModel.CurrentProject" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType=local:ProjectGrid}" />
                                 <Binding Path="." />
                             </MultiBinding>
                         </DataTrigger.Binding>
@@ -206,7 +192,6 @@
                         <Setter Property="BorderThickness" Value="0,1,0,1" />
                     </DataTrigger>
 
-                    <!-- TODO: Make Selected row style similar to style in VisualStudio.-->
                     <Trigger Property="IsSelected" Value="True">
                         <Setter Property="BorderBrush" Value="DodgerBlue" />
                         <Setter Property="BorderThickness" Value="0,1,0,1" />
@@ -218,37 +203,24 @@
 
         <DataGrid.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="{x:Static res:Resources.SelectedProjectItemMenuItems}"
-                              ItemsSource="{Binding Source={StaticResource SelectedProjectMenuItems}}"
-                              Visibility="{Binding SelectedProjectItem, Converter={StaticResource NotNullToVisibilityConverter}}" />
+                <MenuItem Header="{x:Static res:Resources.SelectedProjectItemMenuItems}" ItemsSource="{Binding Source={StaticResource SelectedProjectMenuItems}}" Visibility="{Binding SelectedProjectItem, Converter={StaticResource NotNullToVisibilityConverter}}" />
                 <Separator Visibility="{Binding SelectedProjectItem, Converter={StaticResource NotNullToVisibilityConverter}}" />
-                <MenuItem Header="{x:Static res:Resources.GridHeaderVisibleMenuItem}"
-                              IsCheckable="True"
-                              IsChecked="{Binding GridHeadersVisibility, Converter={StaticResource ResourceKey=ColumnHeadersVisibilityToBool}}" />
-                <MenuItem Header="{x:Static res:Resources.HideUpToDateTargetsMenuItem}"
-                              IsCheckable="True"
-                              IsChecked="{Binding HideUpToDateTargets}" />
-                <MenuItem Header="{x:Static res:Resources.GridColumnsMenuItems}"
-                              ItemsSource="{Binding Source={StaticResource GridColumnsMenuItems}}">
+                <MenuItem Header="{x:Static res:Resources.GridHeaderVisibleMenuItem}" IsCheckable="True" IsChecked="{Binding GridHeadersVisibility, Converter={StaticResource ResourceKey=ColumnHeadersVisibilityToBool}}" />
+                <MenuItem Header="{x:Static res:Resources.HideUpToDateTargetsMenuItem}" IsCheckable="True" IsChecked="{Binding HideUpToDateTargets}" />
+                <MenuItem Header="{x:Static res:Resources.GridColumnsMenuItems}" ItemsSource="{Binding Source={StaticResource GridColumnsMenuItems}}">
                     <MenuItem.ItemContainerStyle>
                         <Style TargetType="{x:Type MenuItem}">
                             <Setter Property="StaysOpenOnClick" Value="True" />
-                            <Setter Property="IsCheckable"
-                                        Value="True" />
-                            <Setter Property="IsChecked"
-                                        Value="{Binding Visibility, Converter={StaticResource ResourceKey=VisibilityToBoolConverter}}" />
-                            <Setter Property="Header"
-                                        Value="{Binding (extensions:DataGridColumnExtensions.Name)}" />
+                            <Setter Property="IsCheckable" Value="True" />
+                            <Setter Property="IsChecked" Value="{Binding Visibility, Converter={StaticResource ResourceKey=VisibilityToBoolConverter}}" />
+                            <Setter Property="Header" Value="{Binding (extensions:DataGridColumnExtensions.Name)}" />
                         </Style>
                     </MenuItem.ItemContainerStyle>
                 </MenuItem>
-                <MenuItem Header="{x:Static res:Resources.GridColumnsGroupMenuItems}"
-                              ItemsSource="{Binding GridColumnsGroupMenuItems}" />
-                <MenuItem Command="{Binding OpenGeneralSettingsAction}"
-                              Header="{x:Static res:Resources.OpenGeneralSettingsMenuItem}" />
+                <MenuItem Header="{x:Static res:Resources.GridColumnsGroupMenuItems}" ItemsSource="{Binding GridColumnsGroupMenuItems}" />
+                <MenuItem Command="{Binding OpenGeneralSettingsAction}" Header="{x:Static res:Resources.OpenGeneralSettingsMenuItem}" />
                 <Separator/>
-                <MenuItem Command="{Binding ReportIssues}"
-                              Header="{x:Static res:Resources.ReportIssues}" />
+                <MenuItem Command="{Binding ReportIssues}" Header="{x:Static res:Resources.ReportIssues}" />
             </ContextMenu>
         </DataGrid.ContextMenu>
 
@@ -267,7 +239,7 @@
                                         <Expander.IsExpanded>
                                             <MultiBinding Converter="{StaticResource ResourceKey=ExpanderIsExpandedConverter}" Mode="OneWay">
                                                 <Binding Mode="OneWay" />
-                                                <Binding Path="DataContext.ControlSettings.GridSettings.CollapsedGroups" Source="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
+                                                <Binding Path="DataContext.ControlSettings.GridSettings.CollapsedGroups" Source="{x:Reference ProjectGridControl}" />
                                             </MultiBinding>
                                         </Expander.IsExpanded>
                                         <Expander.Header>
@@ -275,8 +247,8 @@
                                                 <TextBlock Foreground="{DynamicResource GrayTextKey}">
                                                     <TextBlock.Text>
                                                         <MultiBinding Converter="{StaticResource ResourceKey=MultiBindingStringFormatConverter}" Mode="OneWay">
-                                                            <Binding Path="DataContext.ControlSettings.GridSettings.GroupHeaderRawFormat" Source="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
-                                                            <Binding Path="DataContext.GridGroupHeaderName" Source="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" />
+                                                            <Binding Path="DataContext.ControlSettings.GridSettings.GroupHeaderRawFormat" Source="{x:Reference ProjectGridControl}" />
+                                                            <Binding Path="DataContext.GridGroupHeaderName" Source="{x:Reference ProjectGridControl}" />
                                                             <Binding Path="Name" />
                                                             <Binding Path="ItemCount" />
                                                         </MultiBinding>
@@ -308,5 +280,7 @@
                                                   MaxHeight="100" />
             </DataTemplate>
         </DataGrid.RowDetailsTemplate>
+    
     </DataGrid>
+
 </UserControl>

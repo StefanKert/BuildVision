@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using BuildVision.UI.Converters;
 using BuildVision.UI.DataGrid;
@@ -15,73 +18,77 @@ namespace BuildVision.UI.Components
 {
     public partial class ProjectGrid : UserControl
     {
-        private BuildVisionPaneViewModel _viewModel;
+        public BuildVisionPaneViewModel ViewModel
+        {
+            get => (BuildVisionPaneViewModel)DataContext;
+            set => DataContext = value;
+        }
 
         public ProjectGrid()
         {
             InitializeComponent();
-
+            // Ensure the current culture passed into bindings is the OS culture.
+            // By default, WPF uses en-US as the culture, regardless of the system settings.
+            Language = XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag);
             Grid.TargetUpdated += GridOnTargetUpdated;
         }
 
         private void GridOnTargetUpdated(object sender, DataTransferEventArgs e)
         {
-            if (e.Property.Name == "ItemsSource")
+            if (e.Property.Name == nameof(Grid.ItemsSource))
+            {
                 RefreshSortDirectionInGrid();
+            }
         }
 
         private void RefreshSortDirectionInGrid()
         {
-            DataGridColumn dataGridColumn = Grid.Columns.FirstOrDefault(col => col.GetBindedProperty() == _viewModel.GridSortDescription.Property);
+            Debug.Assert(Grid.Columns != null);
+            var dataGridColumn = Grid.Columns.FirstOrDefault(col => col.GetBindedProperty() == ViewModel.GridSortDescription.Property);
             if (dataGridColumn != null)
             {
-                dataGridColumn.SortDirection = _viewModel.GridSortDescription.Order.ToSystem();
+                dataGridColumn.SortDirection = ViewModel.GridSortDescription.Order.ToSystem();
             }
         }
 
         private void GridOnSorting(object sender, DataGridSortingEventArgs e)
         {
-            if (_viewModel.GridSorting.CanExecute(e))
+            if (ViewModel.GridSorting.CanExecute(e))
             {
-                _viewModel.GridSorting.Execute(e);
+                ViewModel.GridSorting.Execute(e);
             }
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            _viewModel = (BuildVisionPaneViewModel)DataContext;
-            _viewModel.SetGridColumnsRef(Grid.Columns);
-            _viewModel.PropertyChanged += ViewModelOnPropertyChanged;
+            Debug.Assert(ViewModel != null);
+            ViewModel = (BuildVisionPaneViewModel)DataContext;
+            ViewModel.SetGridColumnsRef(Grid.Columns);
+            ViewModel.PropertyChanged += ViewModelOnPropertyChanged;
         }
 
         private void ViewModelOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             //TODO implement logic for scrolling tu currentproject
-            if (_viewModel.BuildInformationModel.CurrentProject != null && e.PropertyName == "CurrentProject")
+            if (ViewModel.BuildInformationModel.CurrentProject != null && e.PropertyName == "CurrentProject")
             {
                 // TODO: Remove SelectedIndex = -1 and implement Unselect row feature by clicking on selected row.
                 Grid.SelectedIndex = -1;
 
                 if (Grid.SelectedIndex == -1)
-                    Grid.ScrollIntoView(_viewModel.BuildInformationModel.CurrentProject);
+                    Grid.ScrollIntoView(ViewModel.BuildInformationModel.CurrentProject);
             }
         }
 
         private void DataGridExpanderOnExpanded(object sender, RoutedEventArgs e)
         {
-            ExpanderIsExpandedConverter.SaveState(
-                (Expander)sender,
-                false,
-                _viewModel.ControlSettings.GridSettings.CollapsedGroups);
+            ExpanderIsExpandedConverter.SaveState((Expander)sender, false, ViewModel.ControlSettings.GridSettings.CollapsedGroups);
             e.Handled = true;
         }
 
         private void DataGridExpanderOnCollapsed(object sender, RoutedEventArgs e)
         {
-            ExpanderIsExpandedConverter.SaveState(
-                (Expander)sender,
-                true,
-                _viewModel.ControlSettings.GridSettings.CollapsedGroups);
+            ExpanderIsExpandedConverter.SaveState((Expander)sender, true, ViewModel.ControlSettings.GridSettings.CollapsedGroups);
             e.Handled = true;
         }
 
@@ -114,12 +121,7 @@ namespace BuildVision.UI.Components
             {
                 row.Focusable = true;
                 row.Focus();
-
-                // Gets the element with keyboard focus.
-                var elementWithFocus = Keyboard.FocusedElement as UIElement;
-
-                // Change keyboard focus.
-                if (elementWithFocus != null)
+                if (Keyboard.FocusedElement is UIElement elementWithFocus)
                 {
                     var request = new TraversalRequest(FocusNavigationDirection.Next);
                     elementWithFocus.MoveFocus(request);

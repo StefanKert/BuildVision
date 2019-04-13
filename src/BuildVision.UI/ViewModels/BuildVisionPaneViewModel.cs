@@ -59,7 +59,7 @@ namespace BuildVision.UI.ViewModels
 
         public ControlSettings ControlSettings { get; }
 
-        public ObservableCollection<IProjectItem> Projects { get; set; }
+        public ObservableCollection<IProjectItem> Projects { get; }
 
         public IBuildInformationModel BuildInformationModel { get; set; }
 
@@ -146,14 +146,12 @@ namespace BuildVision.UI.ViewModels
         {
             get
             {
-                var groupedList = new ListCollectionView(Projects); // todo use projects here ProjectsList);
-
+                var groupedList = new ListCollectionView(Projects); 
                 if (!string.IsNullOrWhiteSpace(GridGroupPropertyName))
                 {
                     Debug.Assert(groupedList.GroupDescriptions != null);
                     groupedList.GroupDescriptions.Add(new PropertyGroupDescription(GridGroupPropertyName));
                 }
-
                 groupedList.CustomSort = GetProjectItemSorter(GridSortDescription);
                 groupedList.IsLiveGrouping = true;
                 groupedList.IsLiveSorting = true;
@@ -183,7 +181,7 @@ namespace BuildVision.UI.ViewModels
             set => SetProperty(ref _selectedProjectItem, value);
         }
 
-        internal BuildVisionPaneViewModel()
+        public BuildVisionPaneViewModel()
         {
             ControlSettings = new ControlSettings();
             BuildInformationModel = new BuildInformationModel();
@@ -347,7 +345,10 @@ namespace BuildVision.UI.ViewModels
 
         public ICommand GridSorting => new RelayCommand(obj => ReorderGrid(obj));
 
-        public ICommand GridGroupPropertyMenuItemClicked => new RelayCommand(obj => GridGroupPropertyName = (obj != null) ? obj.ToString() : string.Empty);
+        public ICommand GridGroupPropertyMenuItemClicked => new RelayCommand(obj =>
+        {
+            GridGroupPropertyName = (obj != null) ? obj.ToString() : string.Empty;
+        });
 
         public ICommand SelectedProjectOpenContainingFolderAction => new RelayCommand(obj => OpenContainingFolder(), canExecute: obj => (SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.FullName)));
 

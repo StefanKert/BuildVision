@@ -50,11 +50,6 @@ namespace BuildVision.UI.Settings.Models
             set => _groupName = value;
         }
 
-        /// <summary>
-        /// User-friendly header format for groups.
-        /// For example, "{title}: {value} - {count} items".
-        /// Available arguments see in <see cref="GroupHeaderFormatArgs"/>.
-        /// </summary>
         public string GroupHeaderFormat
         {
             get => _groupHeaderFormat ?? (_groupHeaderFormat = "{title}: {value}");
@@ -75,18 +70,18 @@ namespace BuildVision.UI.Settings.Models
 
         public List<string> CollapsedGroups => _collapsedGroups ?? (_collapsedGroups = new List<string>());
 
-        /// <summary>
-        /// Converts user-friendly string format with <see cref="GroupHeaderFormatArgs"/> arguments
-        /// into system format string (with {0},{1},... arguments).
-        /// </summary>
         private static string ConvertGroupHeaderToRawFormat(string userFriendlyFormatString)
         {
             if (string.IsNullOrEmpty(userFriendlyFormatString))
+            {
                 return string.Empty;
+            }
 
             string rawFormat = userFriendlyFormatString;
             for (int i = 0; i < GroupHeaderFormatArgs.Length; i++)
+            {
                 rawFormat = rawFormat.Replace("{" + GroupHeaderFormatArgs[i], "{" + i);
+            }
 
             return rawFormat;
         }

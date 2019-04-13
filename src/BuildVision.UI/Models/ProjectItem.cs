@@ -13,11 +13,6 @@ namespace BuildVision.UI.Models
     {
         private const string ResourcesUri = @"Resources/ProjectItem.Resources.xaml";
 
-        public ProjectItem()
-        {
-            State = ProjectState.Pending;
-        }
-
         public bool IsBatchBuildProject { get; set; }
 
         private string _uniqueName;
@@ -257,6 +252,11 @@ namespace BuildVision.UI.Models
             set => SetProperty(ref _solutionFolder, value);
         }
         public bool Success { get; set; }
+
+        public ProjectItem()
+        {
+            State = ProjectState.Pending;
+        }
 
         public void RaiseBuildElapsedTimeChanged()
         {

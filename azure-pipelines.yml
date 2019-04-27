@@ -20,13 +20,13 @@ jobs:
       matrix:
         Config_Release:
           BuildConfiguration: Release
-          BuildOutputDirectory: VSIX
+          BuildOutputDirectory: Vsix
         Config_Marketplace:
           BuildConfiguration: Marketplace
           BuildOutputDirectory: Marketplace
         Config_VSIXGallery:
-          BuildConfiguration: VSIXGallery
-          BuildOutputDirectory: VSIXGallery
+          BuildConfiguration: VsixGallery
+          BuildOutputDirectory: VsixGallery
 
     steps:
     - task: DotNetCoreCLI@2  

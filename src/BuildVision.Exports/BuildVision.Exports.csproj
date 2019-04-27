@@ -4,6 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+    <Configurations>Debug;Release;Marketplace;VsixGallery</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

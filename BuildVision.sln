@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.136
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Misc", "Misc", "{A8C25F90-8847-4EBE-A66B-02E5D1B42EC0}"
 	ProjectSection(SolutionItems) = preProject
@@ -19,9 +19,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{AE904AFF-1B2
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision", "src\BuildVision\BuildVision.csproj", "{9925A635-1827-4BB4-9C31-FE0FC87A6265}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.Common", "src\BuildVision.Common\BuildVision.Common.csproj", "{848412D1-95BF-4E56-A9EF-2926AF5C6D67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildVision.Common", "src\BuildVision.Common\BuildVision.Common.csproj", "{848412D1-95BF-4E56-A9EF-2926AF5C6D67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.Contracts", "src\BuildVision.Contracts\BuildVision.Contracts.csproj", "{13D64A57-5DB3-4CC7-AC2B-9034E767D754}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildVision.Contracts", "src\BuildVision.Contracts\BuildVision.Contracts.csproj", "{13D64A57-5DB3-4CC7-AC2B-9034E767D754}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.UI", "src\BuildVision.UI\BuildVision.UI.csproj", "{84E8BA65-9A4B-4C50-A115-6EF3208E4058}"
 EndProject
@@ -31,42 +31,72 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildVision.IntegrationTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildVision.UnitTests", "test\BuildVision.UnitTests\BuildVision.UnitTests.csproj", "{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuildVision.Exports", "src\BuildVision.Exports\BuildVision.Exports.csproj", "{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BuildVision.Exports", "src\BuildVision.Exports\BuildVision.Exports.csproj", "{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Marketplace|Any CPU = Marketplace|Any CPU
 		Release|Any CPU = Release|Any CPU
+		VsixGallery|Any CPU = VsixGallery|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{9925A635-1827-4BB4-9C31-FE0FC87A6265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9925A635-1827-4BB4-9C31-FE0FC87A6265}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9925A635-1827-4BB4-9C31-FE0FC87A6265}.Marketplace|Any CPU.ActiveCfg = Marketplace|Any CPU
+		{9925A635-1827-4BB4-9C31-FE0FC87A6265}.Marketplace|Any CPU.Build.0 = Marketplace|Any CPU
 		{9925A635-1827-4BB4-9C31-FE0FC87A6265}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9925A635-1827-4BB4-9C31-FE0FC87A6265}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9925A635-1827-4BB4-9C31-FE0FC87A6265}.VsixGallery|Any CPU.ActiveCfg = VsixGallery|Any CPU
+		{9925A635-1827-4BB4-9C31-FE0FC87A6265}.VsixGallery|Any CPU.Build.0 = VsixGallery|Any CPU
 		{848412D1-95BF-4E56-A9EF-2926AF5C6D67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{848412D1-95BF-4E56-A9EF-2926AF5C6D67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{848412D1-95BF-4E56-A9EF-2926AF5C6D67}.Marketplace|Any CPU.ActiveCfg = Marketplace|Any CPU
+		{848412D1-95BF-4E56-A9EF-2926AF5C6D67}.Marketplace|Any CPU.Build.0 = Marketplace|Any CPU
 		{848412D1-95BF-4E56-A9EF-2926AF5C6D67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{848412D1-95BF-4E56-A9EF-2926AF5C6D67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{848412D1-95BF-4E56-A9EF-2926AF5C6D67}.VsixGallery|Any CPU.ActiveCfg = VsixGallery|Any CPU
+		{848412D1-95BF-4E56-A9EF-2926AF5C6D67}.VsixGallery|Any CPU.Build.0 = VsixGallery|Any CPU
 		{13D64A57-5DB3-4CC7-AC2B-9034E767D754}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{13D64A57-5DB3-4CC7-AC2B-9034E767D754}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13D64A57-5DB3-4CC7-AC2B-9034E767D754}.Marketplace|Any CPU.ActiveCfg = Marketplace|Any CPU
+		{13D64A57-5DB3-4CC7-AC2B-9034E767D754}.Marketplace|Any CPU.Build.0 = Marketplace|Any CPU
 		{13D64A57-5DB3-4CC7-AC2B-9034E767D754}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13D64A57-5DB3-4CC7-AC2B-9034E767D754}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13D64A57-5DB3-4CC7-AC2B-9034E767D754}.VsixGallery|Any CPU.ActiveCfg = VsixGallery|Any CPU
+		{13D64A57-5DB3-4CC7-AC2B-9034E767D754}.VsixGallery|Any CPU.Build.0 = VsixGallery|Any CPU
 		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.Marketplace|Any CPU.ActiveCfg = Marketplace|Any CPU
+		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.Marketplace|Any CPU.Build.0 = Marketplace|Any CPU
 		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.VsixGallery|Any CPU.ActiveCfg = VsixGallery|Any CPU
+		{84E8BA65-9A4B-4C50-A115-6EF3208E4058}.VsixGallery|Any CPU.Build.0 = VsixGallery|Any CPU
 		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Marketplace|Any CPU.ActiveCfg = Marketplace|Any CPU
+		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Marketplace|Any CPU.Build.0 = Marketplace|Any CPU
 		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.VsixGallery|Any CPU.ActiveCfg = VsixGallery|Any CPU
+		{FBB4F3ED-B1B8-4401-8667-5180194BAA54}.VsixGallery|Any CPU.Build.0 = VsixGallery|Any CPU
 		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Marketplace|Any CPU.ActiveCfg = Marketplace|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Marketplace|Any CPU.Build.0 = Marketplace|Any CPU
 		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.VsixGallery|Any CPU.ActiveCfg = VsixGallery|Any CPU
+		{2A7DE186-A1FA-4BA8-B393-3CA9ECBF444F}.VsixGallery|Any CPU.Build.0 = VsixGallery|Any CPU
 		{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}.Marketplace|Any CPU.ActiveCfg = Marketplace|Any CPU
+		{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}.Marketplace|Any CPU.Build.0 = Marketplace|Any CPU
 		{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}.VsixGallery|Any CPU.ActiveCfg = VsixGallery|Any CPU
+		{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}.VsixGallery|Any CPU.Build.0 = VsixGallery|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

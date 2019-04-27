@@ -126,7 +126,14 @@ namespace BuildVision.UI.Models
             get => _currentProject;
             set => SetProperty(ref _currentProject, value);
         }
-   
+
+        private Guid _buildId = Guid.Empty;
+        public Guid BuildId
+        {
+            get => _buildId;
+            set => SetProperty(ref _buildId, value);
+        }
+
         private string GetStateIconKey()
         {
             var resultState = GetBuildResultState();

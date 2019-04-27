@@ -176,7 +176,7 @@
             <Run Text="on"/>
             <Run Text="{Binding BuildDateTime, StringFormat=F}"/>
             <LineBreak/>
-            <Run Text=" © 2017 by Stefan Kert, Tom Schmiedlechner and Aleksey Nagovitsyn"/>
+            <Run Text="© 2019 by Stefan Kert"/>
             <Hyperlink NavigateUri="https://twitter.com/StefanKert" 
                        ToolTip="https://twitter.com/StefanKert"
                        RequestNavigate="HyperlinkOnRequestNavigate">

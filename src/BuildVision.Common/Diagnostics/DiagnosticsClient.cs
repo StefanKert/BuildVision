@@ -26,7 +26,7 @@ namespace BuildVision.Common.Diagnostics
             }
         }
 
-        public static void OnExit()
+        public static void Flush()
         {
             if (!_initialized || !ParticipateInTelemetry)
             {

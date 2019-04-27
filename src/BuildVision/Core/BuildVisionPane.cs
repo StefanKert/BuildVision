@@ -101,7 +101,7 @@ namespace BuildVision.Tool
                 _controlCreatedSuccessfully = true;
 
                 DiagnosticsClient.TrackEvent("BuildVisionStarted");
-
+                DiagnosticsClient.Flush();
                 return viewModel;
             }
             catch (Exception e)

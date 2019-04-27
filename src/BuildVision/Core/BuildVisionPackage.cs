@@ -94,6 +94,7 @@ namespace BuildVision.Core
         {
             _logger.Fatal(e.Exception, "Unhandled Exception");
             DiagnosticsClient.TrackException(e.Exception);
+            DiagnosticsClient.Flush();
         }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
@@ -154,6 +155,8 @@ namespace BuildVision.Core
 
             _solutionBuildManager.UnadviseUpdateSolutionEvents(_updateSolutionEventsCookie);
             _solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
+
+            DiagnosticsClient.Flush();
         }
 
         private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)

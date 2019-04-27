@@ -7,4 +7,11 @@
     </PackageReference>
   </ItemGroup>
 
+  <PropertyGroup>
+    <DefineConstants Condition="'$(Configuration)' == 'VSIXGallery' ">$(DefineConstants);VSIXGallery</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)' == 'Marketplace' ">$(DefineConstants);MARKETPLACE</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)' == 'Release' ">$(DefineConstants);VSIX</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)' == 'Debug' ">$(DefineConstants);VSIX</DefineConstants>
+  </PropertyGroup>
+
 </Project>

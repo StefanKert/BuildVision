@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Microsoft.ApplicationInsights.Channel;
@@ -12,9 +13,10 @@ namespace BuildVision.Common.Diagnostics
 
         public VersionTelemetry()
         {
-            _appVersion = typeof(DiagnosticsClient).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
-                                                           .FirstOrDefault(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
-                                                           ?.Value;
+            var assembly = Assembly.GetExecutingAssembly();
+            var versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
+
+            _appVersion = versionInfo.ProductVersion.ToString();
         }
 
         public void Initialize(ITelemetry telemetry)

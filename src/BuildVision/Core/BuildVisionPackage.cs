@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
@@ -68,12 +69,31 @@ namespace BuildVision.Core
             {
                 Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
             }
+  
+            DiagnosticsClient.Initialize(GetEdition(), VisualStudioVersion.ToString(), "c437ad44-0c76-4006-968d-42d4369bc0ed");
+        }
+
+        public static Version VisualStudioVersion => GetGlobalService(typeof(DTE)) is DTE dte
+                    ? new Version(int.Parse(dte.Version.Split('.')[0], CultureInfo.InvariantCulture), 0)
+                    : new Version(0, 0, 0, 0);
+
+        private string GetEdition()
+        {
+            try
+            {
+                _dte2 = GetService(typeof(DTE)) as DTE2;
+                return _dte2.Edition;
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
         }
 
         private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             _logger.Fatal(e.Exception, "Unhandled Exception");
-            DiagnosticsClient.Notify(e.Exception);
+            DiagnosticsClient.TrackException(e.Exception);
         }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)

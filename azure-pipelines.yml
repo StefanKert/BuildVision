@@ -16,6 +16,18 @@ jobs:
   - job: Build
     pool:
       vmImage: vs2017-win2016
+    strategy:
+      matrix:
+        Config_Release:
+          BuildConfiguration: Release
+          BuildOutputDirectory: Zip
+        Config_Marketplace:
+          BuildConfiguration: Marketplace
+          BuildOutputDirectory: Marketplace
+        Config_VSIXGallery:
+          BuildConfiguration: VSIXGallery
+          BuildOutputDirectory: VSIXGallery
+
     steps:
     - task: DotNetCoreCLI@2  
       inputs:
@@ -24,6 +36,9 @@ jobs:
         arguments: install --tool-path . nbgv
       displayName: Install NBGV tool
       continueOnError: true
+
+    -  powershell: |
+       mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
 
     - script: nbgv cloud -a
       displayName: Set Version
@@ -47,7 +62,7 @@ jobs:
     - task: CopyFiles@2
       inputs:
         contents: '**/bin/$(BuildConfiguration)/*.vsix'
-        targetFolder: $(Build.ArtifactStagingDirectory)/artifacts
+        targetFolder: $(Build.ArtifactStagingDirectory)/$(BuildOutputDirectory)
         flattenFolders: true
 
     - task: DotNetCoreCLI@2
@@ -57,13 +72,8 @@ jobs:
         arguments: -c $(BuildConfiguration) --no-build --no-restore
       displayName: Run Unittests
 
-    - powershell: |
-        & "$env:userprofile/.nuget/packages/xunit.runner.console/2.4.1/tools/net472/xunit.console.x86.exe"  (Get-Childitem -Filter "BuildVision.IntegrationTests.dll" -Recurse | Where-Object {$_.FullName -like "*\bin\$(BuildConfiguration)\*" }).FullName
-      displayName: Execute Integration Tests
-      enabled: false
-
     - task: PublishBuildArtifacts@1
       inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)/artifacts
-        ArtifactName: artifacts
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/$(BuildOutputDirectory)
+        ArtifactName: $(BuildOutputDirectory)
         publishLocation: Container

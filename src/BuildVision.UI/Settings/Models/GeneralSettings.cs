@@ -20,11 +20,14 @@ namespace BuildVision.UI.Settings.Models
 
         public bool FillProjectListOnBuildBegin { get; set; }
 
+        public bool ParticipateInTelemetry { get; set; }
+
         public GeneralSettings()
         {
             BuildProgressSettings = new BuildProgressSettings();
             EnableStatusBarOutput = true;
             IndicatorsPanelVisible = true;
+            ParticipateInTelemetry = true;
         }
     }
 }

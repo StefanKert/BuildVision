@@ -130,6 +130,10 @@
                       Content="{x:Static res:Resources.BuildMessagesSettings_HideUpToDateTargets}"
                       IsChecked="{Binding HideUpToDateTargets}" />
 
+                <CheckBox Margin="8"
+                      Content="{x:Static res:Resources.GeneralSettings_ParticipateInTelemetry}"
+                      IsChecked="{Binding ParticipateInTelemetry}" />
+
                 <Grid Margin="4,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />

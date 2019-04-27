@@ -13,8 +13,20 @@ namespace BuildVision.Common.Diagnostics
         private readonly string _userName;
         private readonly string _operatingSystem = RuntimeInformation.OSDescription?.Replace("Microsoft ", ""); // Shorter description
         private readonly string _session = Guid.NewGuid().ToString();
+        private readonly string _vsVersion;
+        private readonly string _dteEdition;
 
-        public SessionTelemetry()
+#if VSIXGallery
+        private const string Channel = "vsixgallery";
+#elif MARKETPLACE
+        private const string Channel = "marketplace";
+#elif VSIX
+        private const string Channel = "vsix";
+#else
+        private const string Channel = "vsix";
+#endif
+
+        public SessionTelemetry(string vsVersion, string dteEdition)
         {
             try
             {
@@ -28,11 +40,14 @@ namespace BuildVision.Common.Diagnostics
             {
                 // No user id                
             }
+
+            _vsVersion = vsVersion;
+            _dteEdition = dteEdition;
         }
 
         public void Initialize(ITelemetry telemetry)
         {
-            telemetry.Context.GlobalProperties["Environment"] = "release";
+            telemetry.Context.GlobalProperties["Environment"] = Channel;
             // Always default to development if we're in the debugger
             if (Debugger.IsAttached)
             {
@@ -46,6 +61,8 @@ namespace BuildVision.Common.Diagnostics
 
             telemetry.Context.Session.Id = _session;
             telemetry.Context.Device.OperatingSystem = _operatingSystem;
+            telemetry.Context.Device.Model = _vsVersion;
+            telemetry.Context.Device.Type = _dteEdition;
         }
     }
 }

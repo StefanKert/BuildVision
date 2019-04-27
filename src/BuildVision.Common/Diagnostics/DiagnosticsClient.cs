@@ -11,25 +11,24 @@ namespace BuildVision.Common.Diagnostics
         private static bool _initialized;
         private static TelemetryClient _client;
 
+        public static bool ParticipateInTelemetry { get; set; } = true;
 
-        public static void Initialize(string apiKey)
+        public static void Initialize(string edition, string vsVersion, string apiKey)
         {
             if (!string.IsNullOrWhiteSpace(apiKey))
             {
-                TelemetryConfiguration.Active.InstrumentationKey = apiKey;
                 TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = Debugger.IsAttached;
                 TelemetryConfiguration.Active.TelemetryInitializers.Add(new VersionTelemetry());
-                TelemetryConfiguration.Active.TelemetryInitializers.Add(new SessionTelemetry());
+                TelemetryConfiguration.Active.TelemetryInitializers.Add(new SessionTelemetry(vsVersion, edition));
 
                 _initialized = true;
-
                 _client = new TelemetryClient();
             }
         }
 
         public static void OnExit()
         {
-            if (!_initialized)
+            if (!_initialized || !ParticipateInTelemetry)
             {
                 return;
             }
@@ -41,7 +40,7 @@ namespace BuildVision.Common.Diagnostics
 
         public static void TrackEvent(string eventName, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
         {
-            if (!_initialized)
+            if (!_initialized || !ParticipateInTelemetry)
             {
                 return;
             }
@@ -49,19 +48,19 @@ namespace BuildVision.Common.Diagnostics
             _client.TrackEvent(eventName, properties, metrics);
         }
 
-        public static void TrackTrace(string evt)
+        public static void TrackTrace(string trace)
         {
-            if (!_initialized)
+            if (!_initialized || !ParticipateInTelemetry)
             {
                 return;
             }
 
-            _client.TrackTrace(evt);
+            _client.TrackTrace(trace);
         }
 
-        public static void Notify(Exception exception)
+        public static void TrackException(Exception exception)
         {
-            if (!_initialized)
+            if (!_initialized || !ParticipateInTelemetry)
             {
                 return;
             }
@@ -71,7 +70,7 @@ namespace BuildVision.Common.Diagnostics
 
         public static void TrackPageView(string pageName)
         {
-            if (!_initialized)
+            if (!_initialized || !ParticipateInTelemetry)
             {
                 return;
             }

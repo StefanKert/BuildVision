@@ -37,7 +37,8 @@ jobs:
       displayName: Install NBGV tool
       continueOnError: true
 
-    -  powershell: | mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
+    -  powershell: |
+         mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
 
     - script: nbgv cloud -a
       displayName: Set Version

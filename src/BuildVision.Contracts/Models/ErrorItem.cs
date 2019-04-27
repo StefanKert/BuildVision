@@ -107,10 +107,14 @@ namespace BuildVision.Contracts
             }
 
             if (LineNumber < 1)
+            {
                 LineNumber = 1;
+            }
 
             if (ColumnNumber < 1)
+            {
                 ColumnNumber = 1;
+            }
 
             if (EndLineNumber == 0 && EndColumnNumber == 0)
             {

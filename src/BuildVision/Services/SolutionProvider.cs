@@ -50,7 +50,9 @@ namespace BuildVision.Core
         private void RefrehSolutionModel()
         {
             if (_solutionModel == null)
+            {
                 _solutionModel = new SolutionModel();
+            }
 
             try
             {
@@ -95,7 +97,10 @@ namespace BuildVision.Core
         public IEnumerable<IProjectItem> GetProjects()
         {
             if (_solution == null)
+            {
                 ReloadSolution();
+            }
+
             return _solution.GetProjectItems();
         }
     }

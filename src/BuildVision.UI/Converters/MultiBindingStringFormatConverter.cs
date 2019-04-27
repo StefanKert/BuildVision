@@ -16,7 +16,9 @@ namespace BuildVision.UI.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values == null || values.Length < 2)
+            {
                 return string.Empty;
+            }
 
             try
             {
@@ -25,7 +27,7 @@ namespace BuildVision.UI.Converters
             }
             catch (Exception ex)
             {
-                LogManager.ForContext< MultiBindingStringFormatConverter>().Error(ex, "Error during MultiBindingStringFormatConverter.");
+                LogManager.ForContext<MultiBindingStringFormatConverter>().Error(ex, "Error during MultiBindingStringFormatConverter.");
                 return string.Format("<Format error: {0}>", ex.Message);
             }
         }

@@ -18,7 +18,9 @@ namespace BuildVision.Common
             _propertyInfo = typeof(T).GetProperty(propertyName);
 
             if (_propertyInfo == null)
+            {
                 throw new PropertyNotFoundException(propertyName, typeof(T));
+            }
         }
 
         int IComparer.Compare(object x, object y)
@@ -32,10 +34,14 @@ namespace BuildVision.Common
             var y1 = _propertyInfo.GetValue(y, null) as IComparable;
 
             if (x1 != null && y1 != null)
+            {
                 return x1.CompareTo(y1) * _direction;
+            }
 
             if (x1 == null && y1 == null)
+            {
                 return 0;
+            }
 
             // Null values always in the bottom.
             return (x1 == null) ? 1 : -1;

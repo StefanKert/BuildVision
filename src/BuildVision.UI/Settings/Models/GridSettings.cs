@@ -30,7 +30,9 @@ namespace BuildVision.UI.Settings.Models
             {
                 yield return GridColumnSettings.Empty;
                 foreach (GridColumnSettings column in Columns.Where(x => ColumnsManager.ColumnIsSortable(x.PropertyNameId)))
+                {
                     yield return column;
+                }
             }
         }
 
@@ -40,7 +42,9 @@ namespace BuildVision.UI.Settings.Models
             {
                 yield return GridColumnSettings.Empty;
                 foreach (GridColumnSettings column in Columns.Where(ColumnsManager.ColumnIsGroupable))
+                {
                     yield return column;
+                }
             }
         }
 

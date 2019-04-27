@@ -40,7 +40,9 @@ namespace BuildVision.Common
             finally
             {
                 if (stream != null)
+                {
                     stream.Close();
+                }
             }
 
             int i = BitConverter.ToInt32(buffer, PeHeaderOffset);

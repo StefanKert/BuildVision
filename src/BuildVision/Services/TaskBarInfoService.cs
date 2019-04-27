@@ -28,7 +28,7 @@ namespace BuildVision.UI.ViewModels
             _packageSettingsProvider = packageSettingsProvider;
         }
 
-        public void UpdateTaskBarInfo(BuildState buildState, BuildScopes buildScope, int projectsCount, int finishedProjects)
+        public void UpdateTaskBarInfo(BuildState buildState, BuildScope buildScope, int projectsCount, int finishedProjects)
         {
             if (_resetTaskBarInfoCts != null && !_resetTaskBarInfoCts.IsCancellationRequested)
             {

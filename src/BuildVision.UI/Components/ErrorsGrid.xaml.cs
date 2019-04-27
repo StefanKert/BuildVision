@@ -58,7 +58,9 @@ namespace BuildVision.UI
         private void ErrorsGridOnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (_errorsGridScrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible)
+            {
                 return;
+            }
 
             e.Handled = true;
             var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)

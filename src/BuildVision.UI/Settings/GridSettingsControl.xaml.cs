@@ -31,7 +31,9 @@ namespace BuildVision.UI.Settings
         {
             // http://stackoverflow.com/questions/15025865/wpf-datagrid-not-exiting-edit-mode
             if (e.NewValue == null)
+            {
                 Grid.CommitEdit();
+            }
         }
 
         private void OnDialogKeyPendingEvent(object sender, RoutedEventArgs e)
@@ -56,20 +58,28 @@ namespace BuildVision.UI.Settings
         private void GridOnCellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
         {
             if (_displayIndexCommiting)
+            {
                 return;
+            }
 
             if (!ReferenceEquals(e.Column, ColumnDisplayIndex))
+            {
                 return;
+            }
 
             if (e.EditAction != DataGridEditAction.Commit)
+            {
                 return;
+            }
 
             _displayIndexCommiting = true;
             bool commited = Grid.CommitEdit(DataGridEditingUnit.Row, true);
             _displayIndexCommiting = false;
 
             if (!commited)
+            {
                 return;
+            }
 
             var editedItem = (GridColumnSettings)e.Row.Item;
             _newDisplayIndex = editedItem.DisplayIndex;
@@ -90,10 +100,14 @@ namespace BuildVision.UI.Settings
                 foreach (GridColumnSettings item in Grid.Items)
                 {
                     if (ReferenceEquals(item, editedItem))
+                    {
                         continue;
+                    }
 
                     if (item.DisplayIndex >= _oldDisplayIndex + 1 && item.DisplayIndex <= _newDisplayIndex)
+                    {
                         item.DisplayIndex -= 1;
+                    }
                 }
             }
             else
@@ -101,10 +115,14 @@ namespace BuildVision.UI.Settings
                 foreach (GridColumnSettings item in Grid.Items)
                 {
                     if (ReferenceEquals(item, editedItem))
+                    {
                         continue;
+                    }
 
                     if (item.DisplayIndex >= _newDisplayIndex && item.DisplayIndex <= _oldDisplayIndex - 1)
+                    {
                         item.DisplayIndex += 1;
+                    }
                 }
             }
 
@@ -117,7 +135,9 @@ namespace BuildVision.UI.Settings
             {
                 var grid = (System.Windows.Controls.DataGrid)sender;
                 if (grid.ItemsSource == null)
+                {
                     return;
+                }
 
                 grid.Items.SortDescriptions.Add(new SortDescription("DisplayIndex", ListSortDirection.Ascending));
 

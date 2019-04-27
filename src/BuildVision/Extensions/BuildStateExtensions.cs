@@ -5,7 +5,7 @@ namespace BuildVision.Extensions
 {
     public static class BuildStateExtensions
     {
-        public static TaskbarItemProgressState ToTaskBarItemProgressState(this BuildState buildState, BuildScopes buildScope)
+        public static TaskbarItemProgressState ToTaskBarItemProgressState(this BuildState buildState, BuildScope buildScope)
         {
             var progressState = TaskbarItemProgressState.Normal;
             if (buildState == BuildState.Cancelled)
@@ -20,7 +20,7 @@ namespace BuildVision.Extensions
             {
                 progressState = TaskbarItemProgressState.None;
             }
-            else if (buildScope != BuildScopes.BuildScopeSolution)
+            else if (buildScope != BuildScope.Solution)
             {
                 progressState = TaskbarItemProgressState.Indeterminate;
             }

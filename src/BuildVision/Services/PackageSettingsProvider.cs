@@ -36,7 +36,9 @@ namespace BuildVision.Views.Settings
         private void SaveSettings()
         {
             if (!_settingsStore.CollectionExists(settingsCategoryName))
+            {
                 _settingsStore.CreateCollection(settingsCategoryName);
+            }
 
             var legacySerializer = new LegacyConfigurationSerializer<ControlSettings>();
             var value = legacySerializer.Serialize(Settings);

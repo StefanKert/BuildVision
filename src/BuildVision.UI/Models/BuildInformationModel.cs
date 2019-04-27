@@ -78,8 +78,8 @@ namespace BuildVision.UI.Models
 
         public BuildResultState ResultState => GetBuildResultState();
 
-        private BuildActions _buildAction = BuildActions.Unknown;
-        public BuildActions BuildAction
+        private BuildAction _buildAction = BuildAction.Unknown;
+        public BuildAction BuildAction
         {
             get => _buildAction;
             set
@@ -89,8 +89,8 @@ namespace BuildVision.UI.Models
             }
         }
 
-        private BuildScopes _buildScope = BuildScopes.Unknown;
-        public BuildScopes BuildScope
+        private BuildScope _buildScope = BuildScope.Unknown;
+        public BuildScope BuildScope
         {
             get => _buildScope;
             set => SetProperty(ref _buildScope, value);
@@ -132,12 +132,20 @@ namespace BuildVision.UI.Models
             var resultState = GetBuildResultState();
             if (CurrentBuildState == BuildState.InProgress && resultState == BuildResultState.Unknown)
             {
-                if (BuildAction == BuildActions.BuildActionRebuildAll)
+                if (BuildAction == BuildAction.RebuildAll)
+                {
                     return "Rebuild";
-                if (BuildAction == BuildActions.BuildActionClean)
+                }
+
+                if (BuildAction == BuildAction.Clean)
+                {
                     return "Clean";
-                if (BuildAction == BuildActions.BuildActionBuild)
+                }
+
+                if (BuildAction == BuildAction.Build)
+                {
                     return "Build";
+                }
             }
 
             if (resultState == BuildResultState.Unknown)
@@ -155,47 +163,87 @@ namespace BuildVision.UI.Models
             }
             else if (CurrentBuildState == BuildState.Cancelled)
             {
-                if (BuildAction == BuildActions.BuildActionRebuildAll)
+                if (BuildAction == BuildAction.RebuildAll)
+                {
                     return BuildResultState.RebuildCancelled;
-                if (BuildAction == BuildActions.BuildActionClean)
+                }
+
+                if (BuildAction == BuildAction.Clean)
+                {
                     return BuildResultState.CleanCancelled;
-                if (BuildAction == BuildActions.BuildActionBuild)
+                }
+
+                if (BuildAction == BuildAction.Build)
+                {
                     return BuildResultState.BuildCancelled;
+                }
                 else
+                {
                     return BuildResultState.Unknown;
+                }
             }
             else if (CurrentBuildState == BuildState.Failed)
             {
-                if (BuildAction == BuildActions.BuildActionRebuildAll)
+                if (BuildAction == BuildAction.RebuildAll)
+                {
                     return BuildResultState.RebuildFailed;
-                if (BuildAction == BuildActions.BuildActionClean)
+                }
+
+                if (BuildAction == BuildAction.Clean)
+                {
                     return BuildResultState.CleanFailed;
-                if (BuildAction == BuildActions.BuildActionBuild)
+                }
+
+                if (BuildAction == BuildAction.Build)
+                {
                     return BuildResultState.BuildFailed;
+                }
                 else
+                {
                     return BuildResultState.Unknown;
+                }
             }
             else if (CurrentBuildState == BuildState.ErrorDone)
             {
-                if (BuildAction == BuildActions.BuildActionRebuildAll)
+                if (BuildAction == BuildAction.RebuildAll)
+                {
                     return BuildResultState.RebuildErrorDone;
-                if (BuildAction == BuildActions.BuildActionClean)
+                }
+
+                if (BuildAction == BuildAction.Clean)
+                {
                     return BuildResultState.CleanErrorDone;
-                if (BuildAction == BuildActions.BuildActionBuild)
+                }
+
+                if (BuildAction == BuildAction.Build)
+                {
                     return BuildResultState.BuildErrorDone;
+                }
                 else
+                {
                     return BuildResultState.Unknown;
+                }
             }
             else if (CurrentBuildState == BuildState.Done)
             {
-                if (BuildAction == BuildActions.BuildActionRebuildAll)
+                if (BuildAction == BuildAction.RebuildAll)
+                {
                     return BuildResultState.RebuildDone;
-                if (BuildAction == BuildActions.BuildActionClean)
+                }
+
+                if (BuildAction == BuildAction.Clean)
+                {
                     return BuildResultState.CleanDone;
-                if (BuildAction == BuildActions.BuildActionBuild)
+                }
+
+                if (BuildAction == BuildAction.Build)
+                {
                     return BuildResultState.BuildDone;
+                }
                 else
+                {
                     return BuildResultState.Unknown;
+                }
             }
             else
             {
@@ -214,8 +262,8 @@ namespace BuildVision.UI.Models
             WarnedProjectsCount = 0;
             StateMessage = Resources.BuildDoneText_BuildNotStarted;
             CurrentBuildState = BuildState.NotStarted;
-            BuildAction = BuildActions.Unknown;
-            BuildScope = BuildScopes.Unknown;
+            BuildAction = BuildAction.Unknown;
+            BuildScope = BuildScope.Unknown;
             BuildStartTime = null;
             BuildFinishTime = null;
         }

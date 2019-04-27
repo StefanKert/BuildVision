@@ -65,10 +65,15 @@ namespace BuildVision.Tool.Building
         public async System.Threading.Tasks.Task CancelBuildAsync(IBuildInformationModel buildInformationModel)
         {
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-            if (buildInformationModel.BuildAction == BuildActions.BuildActionClean)
+            if (buildInformationModel.BuildAction == BuildAction.Clean)
+            {
                 return;
+            }
+
             if (buildInformationModel.CurrentBuildState != BuildState.InProgress || _buildCancelled || _buildCancelledInternally)
+            {
                 return;
+            }
 
             try
             {
@@ -104,7 +109,10 @@ namespace BuildVision.Tool.Building
             var project = Core.Services.Dte2.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName);
             var item = solutionExplorer.FindHierarchyItem(project);
             if (item == null)
+            {
                 throw new ProjectNotFoundException($"Project '{projectItem.UniqueName}' not found in SolutionExplorer.");
+            }
+
             solutionExplorer.Parent.Activate();
             item.Select(vsUISelectionType.vsUISelectionTypeSelect);
         }
@@ -189,8 +197,7 @@ namespace BuildVision.Tool.Building
                 filesListArg = ".";
             }
 
-            string msg = string.Format(template, filesCountArg, filesListArg);
-            return msg;
+            return string.Format(template, filesCountArg, filesListArg);
         }
 
         private void RaiseCommand(VSConstants.VSStd97CmdID command)

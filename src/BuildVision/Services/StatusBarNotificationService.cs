@@ -27,7 +27,9 @@ namespace BuildVision.Core
         public void ShowText(string str)
         {
             if (!_packageSettingsProvider.Settings.GeneralSettings.EnableStatusBarOutput)
+            {
                 return;
+            }
 
             var statusBar = _serviceProvider.GetService(typeof(IVsStatusbar)) as IVsStatusbar;
             statusBar.FreezeOutput(0);
@@ -37,7 +39,9 @@ namespace BuildVision.Core
         public void ShowTextWithFreeze(string str)
         {
             if (!_packageSettingsProvider.Settings.GeneralSettings.EnableStatusBarOutput)
+            {
                 return;
+            }
 
             var statusBar = _serviceProvider.GetService<IVsStatusbar>();
             statusBar.FreezeOutput(0);

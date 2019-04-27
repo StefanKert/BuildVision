@@ -34,16 +34,24 @@ namespace BuildVision.Services
                 var project = dte.Solution.GetProject(x => x.FileName == errorItem.ProjectFile);
 
                 if (project == null)
+                {
                     throw new ArgumentNullException("project");
+                }
 
                 if (errorItem == null)
+                {
                     throw new ArgumentNullException("errorItem");
+                }
 
                 if (!errorItem.CanNavigateTo)
+                {
                     return;
+                }
 
                 if (string.IsNullOrEmpty(errorItem.File))
+                {
                     return;
+                }
 
                 string fullPath;
 
@@ -57,18 +65,24 @@ namespace BuildVision.Services
                 {
                     var projectItemFile = project.FindProjectItem(errorItem.File);
                     if (projectItemFile == null)
+                    {
                         return;
+                    }
 
                     fullPath = projectItemFile.Properties.GetPropertyOrDefault<string>("FullPath");
                     if (fullPath == null)
+                    {
                         throw new KeyNotFoundException("FullPath property not found.");
+                    }
                 }
 
                 try
                 {
                     var window = project.DTE.ItemOperations.OpenFile(fullPath, EnvDTE.Constants.vsViewKindAny);
                     if (window == null)
+                    {
                         throw new NullReferenceException("Associated window is null reference.");
+                    }
 
                     window.Activate();
 

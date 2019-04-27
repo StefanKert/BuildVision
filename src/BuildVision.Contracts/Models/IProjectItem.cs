@@ -33,9 +33,9 @@ namespace BuildVision.UI.Models
         int MessagesCount { get; set; }
         int ErrorsCount { get; set; }
         int WarningsCount { get; set; }
-        ObservableCollection<ErrorItem> Errors { get; set; }
-        ObservableCollection<ErrorItem> Warnings { get; set; } 
-        ObservableCollection<ErrorItem> Messages { get; set; }
+        ObservableCollection<ErrorItem> Errors { get; }
+        ObservableCollection<ErrorItem> Warnings { get; }
+        ObservableCollection<ErrorItem> Messages { get; }
 
         void RaiseBuildElapsedTimeChanged();
         void AddErrorItem(ErrorItem errorItem);

@@ -35,7 +35,9 @@ namespace BuildVision.Commands
             // The last flag is set to true so that if the tool window does not exists it will be created.
             var window = package.FindToolWindow(typeof(BuildVisionPane), 0, true);
             if (window == null || window.Frame == null)
+            {
                 throw new InvalidOperationException(Resources.CanNotCreateWindow);
+            }
 
             var windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandler.ThrowOnFailure(windowFrame.Show());

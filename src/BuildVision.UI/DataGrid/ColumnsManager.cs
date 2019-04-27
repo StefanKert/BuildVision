@@ -68,14 +68,20 @@ namespace BuildVision.UI.DataGrid
         public static bool ColumnIsSortable(string propertyName)
         {
             if (_nonSortableColumns.Contains(propertyName))
+            {
                 return false;
+            }
+
             return true;
         }
 
         public static bool ColumnIsGroupable(GridColumnSettings gridColumnSettings)
         {
             if (_nonGroupableColumns.Contains(gridColumnSettings.PropertyNameId))
+            {
                 return false;
+            }
+
             return true;
         }
 
@@ -101,7 +107,9 @@ namespace BuildVision.UI.DataGrid
                 {
                     GridColumnAttribute columnConfiguration = property.GetCustomAttribute<GridColumnAttribute>();
                     if (columnConfiguration == null)
+                    {
                         continue;
+                    }
 
                     string propertyName = property.Name;
                     GridColumnSettings columnSettings;
@@ -152,7 +160,9 @@ namespace BuildVision.UI.DataGrid
                     string propertyName = column.GetBindedProperty();
                     var columnSettings = gridSettings.Columns[propertyName];
                     if (columnSettings == null)
+                    {
                         continue;
+                    }
 
                     columnSettings.Visible = (column.Visibility == Visibility.Visible);
                     columnSettings.DisplayIndex = column.DisplayIndex;
@@ -169,11 +179,15 @@ namespace BuildVision.UI.DataGrid
         {
             var boundColumn = column as DataGridBoundColumn;
             if (boundColumn == null)
+            {
                 return string.Empty;
+            }
 
             var binding = boundColumn.Binding as Binding;
             if (binding == null)
+            {
                 return string.Empty;
+            }
 
             return binding.Path.Path;
         }
@@ -211,13 +225,22 @@ namespace BuildVision.UI.DataGrid
         {
             DataGridBoundColumn column;
             if (property.PropertyType == typeof(BitmapSource) || property.PropertyType == typeof(ImageSource))
+            {
                 column = new DataGridImageColumn();
+            }
             else if (property.PropertyType == typeof(ControlTemplate))
+            {
                 column = new DataGridContentControlColumn();
+            }
             else if (property.PropertyType == typeof(bool))
+            {
                 column = new DataGridCheckBoxColumn();
+            }
             else
+            {
                 column = new DataGridTextColumn();
+            }
+
             return column;
         }
 
@@ -266,20 +289,30 @@ namespace BuildVision.UI.DataGrid
             column.Visibility = columnSettings.Visible ? Visibility.Visible : Visibility.Collapsed;
 
             if (columnSettings.DisplayIndex != -1)
+            {
                 column.DisplayIndex = columnSettings.DisplayIndex;
+            }
 
             if (!double.IsNaN(columnSettings.Width))
+            {
                 column.Width = new DataGridLength(columnSettings.Width);
+            }
 
             if (columnSettings.ValueStringFormat != null)
+            {
                 column.Binding.StringFormat = columnSettings.ValueStringFormat;
+            }
 
             if (column.GetBindedProperty() == sortDescription.Property)
+            {
                 column.SortDirection = sortDescription.Order.ToSystem();
+            }
 
             string columnName = columnSettings.Header;
             if (string.IsNullOrEmpty(columnName))
+            {
                 columnName = columnConfiguration.Header;
+            }
 
             column.SetValue(DataGridColumnExtensions.NameProperty, columnName);
         }

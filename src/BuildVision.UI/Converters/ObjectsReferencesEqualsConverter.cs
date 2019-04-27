@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -12,7 +12,9 @@ namespace BuildVision.UI.Converters
             for (int i = 0; i < values.Length - 1; i++)
             {
                 if (!ReferenceEquals(values[i], values[i + 1]))
+                {
                     return false;
+                }
             }
 
             return true;

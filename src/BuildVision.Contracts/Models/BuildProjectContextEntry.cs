@@ -1,4 +1,4 @@
-using BuildVision.UI.Models;
+﻿using BuildVision.UI.Models;
 using System.Collections.Generic;
 
 namespace BuildVision.UI.Contracts
@@ -11,7 +11,7 @@ namespace BuildVision.UI.Contracts
 
         public string FileName { get; set; }
 
-        public IDictionary<string, string> Properties { get; set; }
+        public IDictionary<string, string> Properties { get; }
 
         public IProjectItem ProjectItem { get; set; }
 

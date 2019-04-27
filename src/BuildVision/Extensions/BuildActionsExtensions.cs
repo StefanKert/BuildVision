@@ -5,18 +5,18 @@ namespace BuildVision.Extensions
 {
     public static class BuildActionsExtensions
     {
-        public static ProjectState GetProjectState(this BuildActions buildAction)
+        public static ProjectState GetProjectState(this BuildAction buildAction)
         {
             switch (buildAction)
             {
-                case BuildActions.BuildActionBuild:
-                case BuildActions.BuildActionRebuildAll:
+                case BuildAction.Build:
+                case BuildAction.RebuildAll:
                     return ProjectState.Building;
 
-                case BuildActions.BuildActionClean:
+                case BuildAction.Clean:
                     return ProjectState.Cleaning;
 
-                case BuildActions.BuildActionDeploy:
+                case BuildAction.Deploy:
                     throw new InvalidOperationException("vsBuildActionDeploy not supported");
 
                 default:

@@ -16,11 +16,20 @@ namespace BuildVision.Core
         {
             Ret ret = null;
             if (provider != null)
+            {
                 ret = provider.GetService(typeof(T)) as Ret;
+            }
+
             if (ret != null)
+            {
                 return ret;
+            }
+
             if (UnitTestServiceProvider != null)
+            {
                 return UnitTestServiceProvider.GetService(typeof(T)) as Ret;
+            }
+
             return Package.GetGlobalService(typeof(T)) as Ret;
         }
 

@@ -192,7 +192,7 @@ namespace BuildVision.Core
             }
         }
 
-        public void BuildStarted(BuildActions buildAction, BuildScopes buildScope)
+        public void BuildStarted(BuildAction buildAction, BuildScope buildScope)
         {
             _currentQueuePosOfBuildingProject = 0;
             ErrorNavigationService.BuildErrorNavigated = false;
@@ -218,9 +218,9 @@ namespace BuildVision.Core
             _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
         }
 
-        public void ProjectBuildStarted(IProjectItem projectItem, BuildActions buildAction)
+        public void ProjectBuildStarted(IProjectItem projectItem, BuildAction buildAction)
         {
-            if (BuildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
+            if (BuildInformationModel.BuildAction == BuildAction.Deploy)
             {
                 return;
             }
@@ -240,9 +240,9 @@ namespace BuildVision.Core
                 _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
                 _currentQueuePosOfBuildingProject++;
 
-                if (BuildInformationModel.BuildScope == BuildScopes.BuildScopeSolution &&
-                    (BuildInformationModel.BuildAction == BuildActions.BuildActionBuild ||
-                     BuildInformationModel.BuildAction == BuildActions.BuildActionRebuildAll))
+                if (BuildInformationModel.BuildScope == BuildScope.Solution &&
+                    (BuildInformationModel.BuildAction == BuildAction.Build ||
+                     BuildInformationModel.BuildAction == BuildAction.RebuildAll))
                 {
                     projInCollection.BuildOrder = _currentQueuePosOfBuildingProject;
                 }
@@ -259,9 +259,9 @@ namespace BuildVision.Core
             return BuildInformationModel.SucceededProjectsCount + BuildInformationModel.UpToDateProjectsCount + BuildInformationModel.WarnedProjectsCount + BuildInformationModel.FailedProjectsCount;
         }
 
-        public void ProjectBuildFinished(BuildActions buildAction, string projectIdentifier, bool success, bool canceled)
+        public void ProjectBuildFinished(BuildAction buildAction, string projectIdentifier, bool success, bool canceled)
         {
-            if (BuildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
+            if (BuildInformationModel.BuildAction == BuildAction.Deploy)
             {
                 return;
             }
@@ -297,8 +297,8 @@ namespace BuildVision.Core
             ProjectState projectState;
             switch (BuildInformationModel.BuildAction)
             {
-                case BuildActions.BuildActionBuild:
-                case BuildActions.BuildActionRebuildAll:
+                case BuildAction.Build:
+                case BuildAction.RebuildAll:
                     if (success)
                     {
                         if (_packageSettingsProvider.Settings.GeneralSettings.ShowWarningSignForBuilds && currentProject.WarningsCount > 0)
@@ -317,7 +317,7 @@ namespace BuildVision.Core
                     }
                     break;
 
-                case BuildActions.BuildActionClean:
+                case BuildAction.Clean:
                     projectState = success ? ProjectState.CleanDone : ProjectState.CleanError;
                     break;
 
@@ -341,12 +341,12 @@ namespace BuildVision.Core
 
         public void BuildFinished(bool success, bool canceled)
         {
-            if (BuildInformationModel.BuildAction == BuildActions.BuildActionDeploy)
+            if (BuildInformationModel.BuildAction == BuildAction.Deploy)
             {
                 return;
             }
 
-            if (BuildInformationModel.BuildScope == BuildScopes.BuildScopeSolution)
+            if (BuildInformationModel.BuildScope == BuildScope.Solution)
             {
                 foreach (var projectItem in Projects)
                 {

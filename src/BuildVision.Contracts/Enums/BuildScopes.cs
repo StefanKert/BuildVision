@@ -1,10 +1,10 @@
 ﻿namespace BuildVision.Contracts
 {
-    public enum BuildScopes
+    public enum BuildScope
     {
-        BuildScopeSolution = 1,
-        BuildScopeBatch = 2,
-        BuildScopeProject = 3,
+        Solution = 1,
+        Batch = 2,
+        Project = 3,
         Unknown = 4
     }
 }

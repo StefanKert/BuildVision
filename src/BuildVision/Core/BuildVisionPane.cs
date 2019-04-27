@@ -102,15 +102,22 @@ namespace BuildVision.Tool
         {
             var asyncPackage = (AsyncPackage)Package;
             if (obj == typeof(GeneralSettings))
+            {
                 asyncPackage.ShowOptionPage(typeof(GeneralSettingsDialogPage));
+            }
+
             if (obj == typeof(GridColumnSettings))
+            {
                 asyncPackage.ShowOptionPage(typeof(GridSettingsDialogPage));
+            }
         }
 
         protected override void OnClose()
         {
             if (_controlCreatedSuccessfully)
+            {
                 _packageSettingsProvider.Save();
+            }
 
             base.OnClose();
         }

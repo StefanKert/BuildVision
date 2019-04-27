@@ -58,56 +58,56 @@ namespace BuildVision.UI.Helpers
             }
         }
 
-        private string GetBeginAtString(BuildActions? buildAction)
+        private string GetBeginAtString(BuildAction? buildAction)
         {
             switch (buildAction.Value)
             {
-                case BuildActions.BuildActionRebuildAll:
+                case BuildAction.RebuildAll:
                     return Resources.BuildActionRebuildAll_BeginAtString;
 
-                case BuildActions.BuildActionBuild:
+                case BuildAction.Build:
                     return Resources.BuildActionBuild_BeginAtString;
 
-                case BuildActions.BuildActionClean:
+                case BuildAction.Clean:
                     return Resources.BuildActionClean_BeginAtString;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buildAction));
             }
         }
 
-        private string GetActionName(BuildActions buildAction)
+        private string GetActionName(BuildAction buildAction)
         {
             switch (buildAction)
             {
-                case BuildActions.BuildActionRebuildAll:
+                case BuildAction.RebuildAll:
                     return Resources.BuildActionRebuildAll;
 
-                case BuildActions.BuildActionBuild:
+                case BuildAction.Build:
                     return Resources.BuildActionBuild;
 
-                case BuildActions.BuildActionClean:
+                case BuildAction.Clean:
                     return Resources.BuildActionClean;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(buildAction));
             }
         }
 
-        private string GetUnitName(BuildScopes buildScope)
+        private string GetUnitName(BuildScope buildScope)
         {
             string unitName = "";
             switch (buildScope)
             {
-                case BuildScopes.BuildScopeSolution:
+                case BuildScope.Solution:
                     unitName = Resources.BuildScopeSolution_UnitName;
                     //if (_labelSettings.ShowSolutionName)
                     //unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, solutionItem.Name);
                     break;
 
-                case BuildScopes.BuildScopeBatch:
+                case BuildScope.Batch:
                     unitName = Resources.BuildScopeBatch_UnitName;
                     break;
 
-                case BuildScopes.BuildScopeProject:
+                case BuildScope.Project:
                     unitName = Resources.BuildScopeProject_UnitName;
                     // TODO specify name for project?
                     break;
@@ -146,7 +146,9 @@ namespace BuildVision.UI.Helpers
             var buildScope = buildInformationModel.BuildScope;
 
             if (buildInformationModel.BuildFinishTime == null)
+            {
                 throw new InvalidOperationException();
+            }
 
             string timeString;
             try
@@ -161,17 +163,17 @@ namespace BuildVision.UI.Helpers
             string unitName;
             switch (buildScope)
             {
-                case BuildScopes.BuildScopeSolution:
+                case BuildScope.Solution:
                     unitName = Resources.BuildScopeSolution_UnitName;
                     //if (_labelSettings.ShowSolutionName)
                     //unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, solutionItem.Name);
                     break;
 
-                case BuildScopes.BuildScopeBatch:
+                case BuildScope.Batch:
                     unitName = Resources.BuildScopeBatch_UnitName;
                     break;
 
-                case BuildScopes.BuildScopeProject:
+                case BuildScope.Project:
                     unitName = Resources.BuildScopeProject_UnitName;
                     if (_packageSettingsProvider.Settings.BuildMessagesSettings.ShowProjectName)
                     {
@@ -237,7 +239,9 @@ namespace BuildVision.UI.Helpers
         private string GetBuildDoneExtraMessage(IBuildInformationModel buildInformationModel)
         {
             if (buildInformationModel.BuildStartTime == null || buildInformationModel.BuildFinishTime == null || !_packageSettingsProvider.Settings.BuildMessagesSettings.ShowExtraMessage)
+            {
                 return string.Empty;
+            }
 
             TimeSpan timeSpan = buildInformationModel.BuildFinishTime.Value.Subtract(buildInformationModel.BuildStartTime.Value);
             string extraTimePartString = GetExtraTimePartString(timeSpan);

@@ -102,25 +102,49 @@ namespace BuildVision.Helpers
         {
             Configuration targetConfig;
             if (configuration != null && platform != null)
+            {
                 targetConfig = project.ConfigurationManager.Item(configuration, platform);
+            }
             else
+            {
                 targetConfig = project.ConfigurationManager.ActiveConfiguration;
+            }
 
             var groups = new List<string>();
             if (fileTypes.LocalizedResourceDlls)
+            {
                 groups.Add(BuildOutputGroup.LocalizedResourceDlls);
+            }
+
             if (fileTypes.XmlSerializer)
+            {
                 groups.Add("XmlSerializer");
+            }
+
             if (fileTypes.ContentFiles)
+            {
                 groups.Add(BuildOutputGroup.ContentFiles);
+            }
+
             if (fileTypes.Built)
+            {
                 groups.Add(BuildOutputGroup.Built);
+            }
+
             if (fileTypes.SourceFiles)
+            {
                 groups.Add(BuildOutputGroup.SourceFiles);
+            }
+
             if (fileTypes.Symbols)
+            {
                 groups.Add(BuildOutputGroup.Symbols);
+            }
+
             if (fileTypes.Documentation)
+            {
                 groups.Add(BuildOutputGroup.Documentation);
+            }
 
             var filePaths = new List<string>();
             foreach (string groupName in groups)
@@ -161,7 +185,9 @@ namespace BuildVision.Helpers
                 {
                     var framMonikerValue = (string)framMonikerProperty.Value;
                     if (string.IsNullOrWhiteSpace(framMonikerValue))
+                    {
                         return Resources.GridCellNoneText;
+                    }
 
                     framMonikerValue = framMonikerValue.Replace(",Version=v", " ");
                     return framMonikerValue;
@@ -171,7 +197,9 @@ namespace BuildVision.Helpers
                     var framVersionProperty = project.GetPropertyOrDefault("TargetFrameworkVersion")
                                                 ?? project.GetPropertyOrDefault("TargetFramework");
                     if (framVersionProperty == null || framVersionProperty.Value == null)
+                    {
                         return Resources.GridCellNoneText;
+                    }
 
                     var version = Convert.ToInt32(framVersionProperty.Value);
                     string versionStr;
@@ -302,11 +330,15 @@ namespace BuildVision.Helpers
 
                 var myType = project.TryGetPropertyValueOrDefault("MyType"); // for VB.NET projects
                 if (myType != null && myType.ToString() != "Empty")
+                {
                     flavourTypes.Add(myType.ToString());
+                }
 
                 var keyword = project.TryGetPropertyValueOrDefault("keyword"); // for C++ projects
                 if (keyword != null)
+                {
                     flavourTypes.Add(keyword.ToString());
+                }
 
                 var filteredValues = flavourTypes.Where(str => !string.IsNullOrWhiteSpace(str)).Distinct();
                 return filteredValues;
@@ -350,7 +382,9 @@ namespace BuildVision.Helpers
                 {
                     var property = project.GetPropertyOrDefault("OutputType");
                     if (property == null || property.Value == null)
+                    {
                         return Resources.GridCellNoneText;
+                    }
 
                     if (!Enum.TryParse(property.Value.ToString(), out prjOutputType outputType))
                     {
@@ -382,7 +416,9 @@ namespace BuildVision.Helpers
             {
                 var extenderNames = (object[])project.ExtenderNames;
                 if (extenderNames == null || extenderNames.Length == 0)
+                {
                     return Resources.GridCellNoneText;
+                }
 
                 return string.Join("; ", extenderNames);
             }
@@ -436,7 +472,9 @@ namespace BuildVision.Helpers
 
                 LogManager.ForContext<Project>().Warning("Project type is taken from the registry: Kind={ProjectKind}, DTEVersion={Version}, Type={Type}", projectKind, version, type);
                 if (string.IsNullOrWhiteSpace(type))
+                {
                     return null;
+                }
 
                 _knownProjectTypes[projectKind] = type;
                 return type;
@@ -460,10 +498,14 @@ namespace BuildVision.Helpers
         public static bool IsDirty(this Project project)
         {
             if (project.IsDirty)
+            {
                 return true;
+            }
 
             if (project.ProjectItems != null && project.ProjectItems.Cast<ProjectItem>().Any(x => x.ProjectItemIsDirty()))
+            {
                 return true;
+            }
 
             return false;
         }
@@ -476,17 +518,23 @@ namespace BuildVision.Helpers
             try
             {
                 if (includeSelfProjectName)
+                {
                     path.Append(project.Name);
+                }
 
                 var parent = project;
                 while (true)
                 {
                     parent = TryGetParentProject(parent);
                     if (parent == null || parent == project)
+                    {
                         break;
+                    }
 
                     if (path.Length != 0)
+                    {
                         path.Insert(0, '\\');
+                    }
 
                     path.Insert(0, parent.Name);
                 }
@@ -519,19 +567,25 @@ namespace BuildVision.Helpers
             {
                 var subProject = solutionFolder.ProjectItems.Item(i).SubProject;
                 if (subProject == null)
+                {
                     continue;
+                }
 
                 // If this is another solution folder, do a recursive call, otherwise add
                 if (subProject.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
                 {
                     var sub = GetSubProject(subProject, cond);
                     if (sub != null)
+                    {
                         return sub;
+                    }
                 }
                 else if (!IsHidden(subProject))
                 {
                     if (cond(subProject))
+                    {
                         return subProject;
+                    }
                 }
             }
 
@@ -545,13 +599,19 @@ namespace BuildVision.Helpers
             {
                 Project subProject = solutionFolder.ProjectItems.Item(i).SubProject;
                 if (subProject == null)
+                {
                     continue;
+                }
 
                 // If this is another solution folder, do a recursive call, otherwise add
                 if (subProject.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
+                {
                     list.AddRange(GetSubProjects(subProject));
+                }
                 else if (!subProject.IsHidden())
+                {
                     list.Add(subProject);
+                }
             }
 
             return list;
@@ -562,17 +622,23 @@ namespace BuildVision.Helpers
             try
             {
                 if (_hiddenProjectsUniqueNames.Contains(project.UniqueName))
+                {
                     return true;
+                }
 
                 // Solution Folder.
                 if (project.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+                {
                     return true;
+                }
 
                 // If projectIsInitialized == false then NotImplementedException will be occured 
                 // in project.FullName or project.FileName getters.
                 bool projectIsInitialized = (project.Object != null);
                 if (projectIsInitialized && project.FullName.EndsWith(".tmp_proj"))
+                {
                     return true;
+                }
 
                 return false;
             }
@@ -588,10 +654,14 @@ namespace BuildVision.Helpers
             try
             {
                 if (_hiddenProjectsUniqueNames.Contains(projectFileName))
+                {
                     return true;
+                }
 
                 if (projectFileName.EndsWith(".tmp_proj"))
+                {
                     return true;
+                }
 
                 return false;
             }

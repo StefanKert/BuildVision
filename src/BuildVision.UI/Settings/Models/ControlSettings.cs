@@ -28,19 +28,29 @@ namespace BuildVision.UI.Settings.Models
         private void Init()
         {
             if (GeneralSettings == null)
+            {
                 GeneralSettings = new GeneralSettings();
+            }
 
             if (WindowSettings == null)
+            {
                 WindowSettings = new WindowSettings();
+            }
 
             if (GridSettings == null)
+            {
                 GridSettings = new GridSettings();
+            }
 
             if (BuildMessagesSettings == null)
+            {
                 BuildMessagesSettings = new BuildMessagesSettings();
+            }
 
             if (ProjectItemSettings == null)
+            {
                 ProjectItemSettings = new ProjectItemSettings();
+            }
         }
     }
 }

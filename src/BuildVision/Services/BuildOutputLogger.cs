@@ -103,7 +103,9 @@ namespace BuildVision.Tool.Building
             try
             {
                 if (e.BuildEventContext.IsBuildEventContextInvalid())
+                {
                     return;
+                }
 
                 int projectInstanceId = e.BuildEventContext.ProjectInstanceId;
                 int projectContextId = e.BuildEventContext.ProjectContextId;

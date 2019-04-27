@@ -15,7 +15,7 @@ namespace BuildVision.Core
         private readonly ISolutionProvider _solutionProvider;
         private readonly IBuildInformationProvider _buildInformationProvider;
         private readonly BuildEvents _buildEvents;
-        private BuildActions _currentBuildAction;
+        private BuildAction _currentBuildAction;
 
         public SolutionBuildEvents(
             ISolutionProvider solutionProvider,
@@ -38,7 +38,7 @@ namespace BuildVision.Core
         private void BuildEvents_OnBuildBegin(vsBuildScope scope, vsBuildAction action)
         {
             // We use the action from UpdateSolution_BeginUpdateAction here because it givs closer details on the current action
-            _buildInformationProvider.BuildStarted(_currentBuildAction, (BuildScopes)scope);
+            _buildInformationProvider.BuildStarted(_currentBuildAction, (BuildScope)scope);
         }
 
         public int UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)

@@ -36,10 +36,15 @@ namespace BuildVision.Views.Settings
             _packageSettingsProvider = Package.GetGlobalService(typeof(IPackageSettingsProvider)) as IPackageSettingsProvider;
             Assumes.Present(_packageSettingsProvider);
             if (_editSettings == null)
+            {
                 _editSettings = Settings.Clone<TSettings>();
+            }
 
             if (_ctrl.DataContext == null)
+            {
                 _ctrl.DataContext = _editSettings;
+            }
+
             base.OnActivate(e);
         }
 
@@ -59,7 +64,9 @@ namespace BuildVision.Views.Settings
         {
             _editSettings = null;
             if (_ctrl != null)
+            {
                 _ctrl.DataContext = null;
+            }
 
             if (_notifySettingsChangedOnce)
             {

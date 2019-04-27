@@ -14,7 +14,9 @@ namespace BuildVision.Common
         {
             PropertyInfo[] properties = typeof(T).GetProperties();
             foreach (var property in properties)
+            {
                 property.SetValue(this, property.GetValue(source, null), null);
+            }
         }
     }
 }

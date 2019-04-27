@@ -11,7 +11,9 @@ namespace BuildVision.Common
         public virtual bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             if (Equals(storage, value))
+            {
                 return false;
+            }
 
             storage = value;
             OnPropertyChanged(propertyName);
@@ -19,12 +21,14 @@ namespace BuildVision.Common
             return true;
         }
 
-        public virtual bool SetProperty<T>(Func<T> storage, Action<T> set, T value, [CallerMemberName] string propertyName = null)
+        public virtual bool SetProperty<T>(Func<T> storage, Action<T> setAction, T value, [CallerMemberName] string propertyName = null)
         {
             if (Equals(storage(), value))
+            {
                 return false;
+            }
 
-            set(value);
+            setAction(value);
             OnPropertyChanged(propertyName);
 
             return true;

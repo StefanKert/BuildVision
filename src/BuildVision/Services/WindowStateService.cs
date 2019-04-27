@@ -85,7 +85,9 @@ namespace BuildVision.Tool.Building
 
             var doc = _dte.ActiveDocument;
             if (doc != null)
+            {
                 doc.Activate();
+            }
         }
 
         private static Window GetWindowInstance(DTE dte, Guid windowGuid)
@@ -129,7 +131,10 @@ namespace BuildVision.Tool.Building
         public void Initialize(ToolWindowPane toolWindowPane)
         {
             if (toolWindowPane == null)
+            {
                 return;
+            }
+
             if (_window == null || _windowFrame == null)
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
@@ -138,7 +143,9 @@ namespace BuildVision.Tool.Building
                 _windowFrame = (IVsWindowFrame)toolWindowPane.Frame;
                 _window = GetWindowInstance(_dte, typeof(BuildVisionPane).GUID);
                 if (_window == null)
+                {
                     throw new InvalidOperationException("Unable to get Window instance.");
+                }
             }
         }
 

@@ -36,7 +36,9 @@ namespace BuildVision.Helpers
                             mVsVersion = new Version(verName);
                         }
                         else
+                        {
                             mVsVersion = new Version(0, 0); // Not running inside Visual Studio!
+                        }
                     }
                 }
 

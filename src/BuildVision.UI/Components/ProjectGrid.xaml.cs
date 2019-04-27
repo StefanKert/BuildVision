@@ -76,7 +76,9 @@ namespace BuildVision.UI.Components
                 Grid.SelectedIndex = -1;
 
                 if (Grid.SelectedIndex == -1)
+                {
                     Grid.ScrollIntoView(ViewModel.BuildInformationModel.CurrentProject);
+                }
             }
         }
 
@@ -110,7 +112,9 @@ namespace BuildVision.UI.Components
         {
             // http://stackoverflow.com/questions/6279724/mousedoubleclick-events-dont-bubble/6326181#6326181)
             if (e.ClickCount == 2)
+            {
                 e.Handled = true;
+            }
         }
 
         // Autofocus for RowDetails (without extra mouse click).

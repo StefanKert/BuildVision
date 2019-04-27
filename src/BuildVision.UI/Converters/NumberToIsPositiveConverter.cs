@@ -10,7 +10,9 @@ namespace BuildVision.UI.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value != null && double.TryParse(value.ToString(), out var val))
+            {
                 return val > 0;
+            }
 
             return false;
         }

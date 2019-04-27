@@ -9,20 +9,13 @@ namespace BuildVision.UI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double val = (double)value;
-
-            if (double.IsNaN(val))
-                return "auto";
-
-            return val;
+            var val = (double)value;
+            return double.IsNaN(val) ? "auto" : (object)val;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value as string == "auto")
-                return double.NaN;
-
-            return value;
+            return value as string == "auto" ? double.NaN : value;
         }
     }
 }

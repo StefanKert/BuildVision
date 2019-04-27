@@ -240,7 +240,9 @@ namespace BuildVision.UI.Components
         {
             var control = sender as SpinnerControl;
             if (control != null)
+            {
                 control.OnIncrease();
+            }
         }
 
         protected void OnIncrease()
@@ -256,7 +258,9 @@ namespace BuildVision.UI.Components
         {
             var control = sender as SpinnerControl;
             if (control != null)
+            {
                 control.OnDecrease();
+            }
         }
 
         protected void OnDecrease()

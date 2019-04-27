@@ -25,7 +25,9 @@ namespace BuildVision.UI.Extensions
         {
             var textBlock = obj as TextBlock;
             if (textBlock == null)
+            {
                 return;
+            }
 
             if (e.NewValue.Equals(true))
             {

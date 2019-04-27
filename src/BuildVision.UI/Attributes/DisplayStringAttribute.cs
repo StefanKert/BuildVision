@@ -66,7 +66,9 @@ namespace BuildVision.UI.Helpers
         {
             var dsaObj = obj as DisplayStringAttribute;
             if (dsaObj == null)
+            {
                 return false;
+            }
 
             return DisplayString.Equals(dsaObj.DisplayString);
         }

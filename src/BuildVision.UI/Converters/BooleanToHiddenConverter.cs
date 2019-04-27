@@ -17,19 +17,15 @@ namespace BuildVision.UI.Converters
             }
             else if (value is bool?)
             {
-                bool? nullable = (bool?)value;
-                flag = (nullable.HasValue && nullable.Value);
+                var nullable = (bool?)value;
+                flag = nullable.HasValue && nullable.Value;
             }
             return flag ? Visibility.Hidden : Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is Visibility)
-            {
-                return (Visibility)value == Visibility.Hidden;
-            }
-            return false;
+            return value is Visibility ? (Visibility)value == Visibility.Hidden : (object)false;
         }
     }
 }

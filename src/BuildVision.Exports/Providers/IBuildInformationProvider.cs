@@ -11,12 +11,12 @@ namespace BuildVision.Exports.Providers
         IBuildInformationModel BuildInformationModel { get; } 
         ObservableCollection<IProjectItem> Projects { get; }
 
-        void ProjectBuildStarted(IProjectItem projectItem, BuildActions buildAction);
-        void ProjectBuildFinished(BuildActions buildAction, string projectIdentifier, bool succeess, bool canceled);
+        void ProjectBuildStarted(IProjectItem projectItem, BuildAction buildAction);
+        void ProjectBuildFinished(BuildAction buildAction, string projectIdentifier, bool succeess, bool canceled);
         void ReloadCurrentProjects();
         void ResetCurrentProjects();
         void BuildFinished(bool success, bool canceled);
-        void BuildStarted(BuildActions currentBuildAction, BuildScopes scope);
+        void BuildStarted(BuildAction currentBuildAction, BuildScope scope);
         void BuildUpdate();
         void ResetBuildInformationModel();
     }

@@ -19,7 +19,9 @@ namespace BuildVision.Common
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
             if (arg == null)
+            {
                 return null;
+            }
 
             if (format != null && arg is string)
             {

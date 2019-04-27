@@ -5,6 +5,6 @@ namespace BuildVision.Exports.Services
     public interface ITaskBarInfoService
     {
         void ResetTaskBarInfo(bool ifTaskBarProgressEnabled = true);
-        void UpdateTaskBarInfo(BuildState buildState, BuildScopes buildScope, int projectsCount, int finishedProjects);
+        void UpdateTaskBarInfo(BuildState buildState, BuildScope buildScope, int projectsCount, int finishedProjects);
     }
 }

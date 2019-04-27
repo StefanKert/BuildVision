@@ -29,7 +29,10 @@ namespace BuildVision.Common.Diagnostics
 
         public static void OnExit()
         {
-            if (!_initialized) return;
+            if (!_initialized)
+            {
+                return;
+            }
 
             _client.Flush();
             // Allow time for flushing:
@@ -38,26 +41,40 @@ namespace BuildVision.Common.Diagnostics
 
         public static void TrackEvent(string eventName, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
         {
-            if (!_initialized) return;
+            if (!_initialized)
+            {
+                return;
+            }
+
             _client.TrackEvent(eventName, properties, metrics);
         }
 
         public static void TrackTrace(string evt)
         {
-            if (!_initialized) return;
+            if (!_initialized)
+            {
+                return;
+            }
+
             _client.TrackTrace(evt);
         }
 
         public static void Notify(Exception exception)
         {
-            if (!_initialized) return;
+            if (!_initialized)
+            {
+                return;
+            }
 
             _client.TrackException(exception);
         }
 
         public static void TrackPageView(string pageName)
         {
-            if (!_initialized) return;
+            if (!_initialized)
+            {
+                return;
+            }
 
             _client.TrackPageView(pageName);
         }

@@ -140,10 +140,14 @@ namespace BuildVision.UI.Models
             get
             {
                 if (_buildStartTime == null)
+                {
                     return null;
+                }
 
                 if (_buildFinishTime == null)
+                {
                     return DateTime.Now.Subtract(_buildStartTime.Value);
+                }
 
                 return _buildFinishTime.Value.Truncate(TimeSpan.FromSeconds(1))
                   .Subtract(_buildStartTime.Value.Truncate(TimeSpan.FromSeconds(1)));

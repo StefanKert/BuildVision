@@ -26,7 +26,7 @@ namespace BuildVision.UnitTests
             var sut = new BuildInformationModel();
             using (var monitoredSut = sut.Monitor())
             {
-                sut.BuildAction = BuildActions.BuildActionBuild;
+                sut.BuildAction = BuildAction.Build;
 
                 monitoredSut.Should().RaisePropertyChangeFor(x => x.BuildAction);
                 monitoredSut.Should().RaisePropertyChangeFor(x => x.StateIconKey);
@@ -54,11 +54,11 @@ namespace BuildVision.UnitTests
         }
 
         [Theory]
-        [InlineData(BuildActions.BuildActionRebuildAll, "Rebuild")]
-        [InlineData(BuildActions.BuildActionBuild, "Build")]
-        [InlineData(BuildActions.BuildActionClean, "Clean")]
-        [InlineData(BuildActions.BuildActionDeploy, "StandBy")]
-        public void StateIconKey_For_InProgressState_ShouldBe_RightStateDependingOnAction(BuildActions buildAction, string expectedStateKey)
+        [InlineData(BuildAction.RebuildAll, "Rebuild")]
+        [InlineData(BuildAction.Build, "Build")]
+        [InlineData(BuildAction.Clean, "Clean")]
+        [InlineData(BuildAction.Deploy, "StandBy")]
+        public void StateIconKey_For_InProgressState_ShouldBe_RightStateDependingOnAction(BuildAction buildAction, string expectedStateKey)
         {
             var buildInformationModel = new BuildInformationModel();
             buildInformationModel.CurrentBuildState = BuildState.InProgress;
@@ -67,11 +67,11 @@ namespace BuildVision.UnitTests
         }
 
         [Theory]
-        [InlineData(BuildActions.BuildActionRebuildAll, "RebuildDone")]
-        [InlineData(BuildActions.BuildActionBuild, "BuildDone")]
-        [InlineData(BuildActions.BuildActionClean, "CleanDone")]
-        [InlineData(BuildActions.BuildActionDeploy, "StandBy")]
-        public void StateIconKey_For_InDoneState_ShouldBe_RightStateDependingOnAction(BuildActions buildAction, string expectedStateKey)
+        [InlineData(BuildAction.RebuildAll, "RebuildDone")]
+        [InlineData(BuildAction.Build, "BuildDone")]
+        [InlineData(BuildAction.Clean, "CleanDone")]
+        [InlineData(BuildAction.Deploy, "StandBy")]
+        public void StateIconKey_For_InDoneState_ShouldBe_RightStateDependingOnAction(BuildAction buildAction, string expectedStateKey)
         {
             var buildInformationModel = new BuildInformationModel();
             buildInformationModel.CurrentBuildState = BuildState.Done;
@@ -80,11 +80,11 @@ namespace BuildVision.UnitTests
         }
 
         [Theory]
-        [InlineData(BuildActions.BuildActionRebuildAll, "RebuildFailed")]
-        [InlineData(BuildActions.BuildActionBuild, "BuildFailed")]
-        [InlineData(BuildActions.BuildActionClean, "CleanFailed")]
-        [InlineData(BuildActions.BuildActionDeploy, "StandBy")]
-        public void StateIconKey_For_InFailedState_ShouldBe_RightStateDependingOnAction(BuildActions buildAction, string expectedStateKey)
+        [InlineData(BuildAction.RebuildAll, "RebuildFailed")]
+        [InlineData(BuildAction.Build, "BuildFailed")]
+        [InlineData(BuildAction.Clean, "CleanFailed")]
+        [InlineData(BuildAction.Deploy, "StandBy")]
+        public void StateIconKey_For_InFailedState_ShouldBe_RightStateDependingOnAction(BuildAction buildAction, string expectedStateKey)
         {
             var buildInformationModel = new BuildInformationModel();
             buildInformationModel.CurrentBuildState = BuildState.Failed;
@@ -93,11 +93,11 @@ namespace BuildVision.UnitTests
         }
 
         [Theory]
-        [InlineData(BuildActions.BuildActionRebuildAll, "RebuildErrorDone")]
-        [InlineData(BuildActions.BuildActionBuild, "BuildErrorDone")]
-        [InlineData(BuildActions.BuildActionClean, "CleanErrorDone")]
-        [InlineData(BuildActions.BuildActionDeploy, "StandBy")]
-        public void StateIconKey_For_InErrorDoneState_ShouldBe_RightStateDependingOnAction(BuildActions buildAction, string expectedStateKey)
+        [InlineData(BuildAction.RebuildAll, "RebuildErrorDone")]
+        [InlineData(BuildAction.Build, "BuildErrorDone")]
+        [InlineData(BuildAction.Clean, "CleanErrorDone")]
+        [InlineData(BuildAction.Deploy, "StandBy")]
+        public void StateIconKey_For_InErrorDoneState_ShouldBe_RightStateDependingOnAction(BuildAction buildAction, string expectedStateKey)
         {
             var buildInformationModel = new BuildInformationModel();
             buildInformationModel.CurrentBuildState = BuildState.ErrorDone;
@@ -106,11 +106,11 @@ namespace BuildVision.UnitTests
         }
 
         [Theory]
-        [InlineData(BuildActions.BuildActionRebuildAll, "RebuildCancelled")]
-        [InlineData(BuildActions.BuildActionBuild, "BuildCancelled")]
-        [InlineData(BuildActions.BuildActionClean, "CleanCancelled")]
-        [InlineData(BuildActions.BuildActionDeploy, "StandBy")]
-        public void StateIconKey_For_InCancelledState_ShouldBe_RightStateDependingOnAction(BuildActions buildAction, string expectedStateKey)
+        [InlineData(BuildAction.RebuildAll, "RebuildCancelled")]
+        [InlineData(BuildAction.Build, "BuildCancelled")]
+        [InlineData(BuildAction.Clean, "CleanCancelled")]
+        [InlineData(BuildAction.Deploy, "StandBy")]
+        public void StateIconKey_For_InCancelledState_ShouldBe_RightStateDependingOnAction(BuildAction buildAction, string expectedStateKey)
         {
             var buildInformationModel = new BuildInformationModel();
             buildInformationModel.CurrentBuildState = BuildState.Cancelled;

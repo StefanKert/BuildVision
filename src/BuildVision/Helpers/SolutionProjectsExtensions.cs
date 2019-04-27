@@ -64,12 +64,18 @@ namespace BuildVision.Helpers
             {
                 var project = proj as Project;
                 if (project == null)
+                {
                     continue;
+                }
 
                 if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
+                {
                     list.AddRange(project.GetSubProjects());
+                }
                 else if (!project.IsHidden())
+                {
                     list.Add(project);
+                }
             }
             return list;
         }
@@ -82,18 +88,24 @@ namespace BuildVision.Helpers
             {
                 var project = item.Current as Project;
                 if (project == null)
+                {
                     continue;
+                }
 
                 if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
                 {
                     var sub = project.GetSubProject(cond);
                     if (sub != null)
+                    {
                         return sub;
+                    }
                 }
                 else if (!project.IsHidden())
                 {
                     if (cond(project))
+                    {
                         return project;
+                    }
                 }
             }
 
@@ -228,7 +240,9 @@ namespace BuildVision.Helpers
                 projectItem.FullName = project.FullName;
 
                 if (IsIntegrationServicesProject(project, projectItem))
+                {
                     AdjustUniqueNameForExtensionProjects(project, projectItem);
+                }
 
                 try
                 {

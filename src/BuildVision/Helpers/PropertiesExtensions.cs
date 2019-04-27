@@ -23,7 +23,9 @@ namespace BuildVision.Helpers
         {
             var property = GetPropertyOrDefault(properties, propertyName);
             if (property == null)
+            {
                 return null;
+            }
 
             return (T)property.Value;
         }

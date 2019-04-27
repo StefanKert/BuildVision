@@ -210,8 +210,9 @@ namespace BuildVision.UI.ViewModels
             _settingsProvider = settingsProvider;
             _settingsProvider.SettingsChanged += () =>
             {
-                SyncColumnSettings();
                 OnControlSettingsChanged();
+                SyncColumnSettings();
+          
             };
 
             if (settingsProvider.Settings.GeneralSettings.FillProjectListOnBuildBegin)

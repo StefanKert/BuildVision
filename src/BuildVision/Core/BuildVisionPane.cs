@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using BuildVision.Common;
 using BuildVision.Common.Diagnostics;
 using BuildVision.Core;
 using BuildVision.Exports.Providers;
@@ -48,7 +49,7 @@ namespace BuildVision.Tool
         public BuildVisionPane()
             : base(null)
         {
-            Caption = Resources.ToolWindowTitle;
+            Caption = string.Format("{0} - {1}", Resources.ToolWindowTitle, ApplicationInfo.GetProductVersion());
             BitmapResourceID = 301;
             BitmapIndex = 1;
 

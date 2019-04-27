@@ -61,6 +61,8 @@ namespace BuildVision.Common.Diagnostics
 
             telemetry.Context.Session.Id = _session;
             telemetry.Context.Device.OperatingSystem = _operatingSystem;
+            telemetry.Context.Cloud.RoleInstance = "";
+            telemetry.Context.Cloud.RoleName = "";
             telemetry.Context.Device.Model = _vsVersion;
             telemetry.Context.Device.Type = _dteEdition;
         }

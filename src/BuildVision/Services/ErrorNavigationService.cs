@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using BuildVision.Common.Logging;
 using BuildVision.Contracts;
+using BuildVision.Core;
 using BuildVision.Exports.Services;
 using BuildVision.Helpers;
 using EnvDTE;
@@ -30,19 +31,12 @@ namespace BuildVision.Services
         {
             try
             {
-                var dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
-                var project = dte.Solution.GetProject(x => x.FileName == errorItem.ProjectFile);
-
-                if (project == null)
-                {
-                    throw new ArgumentNullException("project");
-                }
-
                 if (errorItem == null)
                 {
-                    throw new ArgumentNullException("errorItem");
+                    throw new ArgumentNullException(nameof(errorItem));
                 }
 
+                var project = _serviceProvider.GetDteSolution().FirstProject(x => x.FileName == errorItem.ProjectFile);
                 if (!errorItem.CanNavigateTo)
                 {
                     return;
@@ -78,7 +72,7 @@ namespace BuildVision.Services
 
                 try
                 {
-                    var window = project.DTE.ItemOperations.OpenFile(fullPath, EnvDTE.Constants.vsViewKindAny);
+                    var window = project.DTE.ItemOperations.OpenFile(fullPath, Constants.vsViewKindAny);
                     if (window == null)
                     {
                         throw new NullReferenceException("Associated window is null reference.");

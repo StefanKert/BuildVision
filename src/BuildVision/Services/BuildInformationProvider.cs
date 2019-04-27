@@ -46,7 +46,9 @@ namespace BuildVision.Core
         private int _currentQueuePosOfBuildingProject = 0;
 
         public IBuildInformationModel BuildInformationModel { get; } = new BuildInformationModel();
-        public ObservableCollection<IProjectItem> Projects { get; } = new ObservableCollection<IProjectItem>();
+        public ObservableRangeCollection<IProjectItem> Projects { get; } = new ObservableRangeCollection<IProjectItem>();
+
+        ObservableCollection<IProjectItem> IBuildInformationProvider.Projects => throw new NotImplementedException();
 
         [ImportingConstructor]
         public BuildInformationProvider(
@@ -362,14 +364,7 @@ namespace BuildVision.Core
             BuildInformationModel.BuildFinishTime = DateTime.Now;
             if (success)
             {
-                if (BuildInformationModel.ErrorCount > 0)
-                {
-                    BuildInformationModel.CurrentBuildState = BuildState.ErrorDone;
-                }
-                else
-                {
-                    BuildInformationModel.CurrentBuildState = BuildState.Done;
-                }
+                BuildInformationModel.CurrentBuildState = BuildInformationModel.ErrorCount > 0 ? BuildState.ErrorDone : BuildState.Done;
             }
             else
             {

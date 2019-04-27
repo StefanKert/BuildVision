@@ -86,9 +86,10 @@
     <Compile Include="Extensions\BuildActionsExtensions.cs" />
     <Compile Include="Extensions\BuildStateExtensions.cs" />
     <Compile Include="Extensions\IServiceProviderExtensions.cs" />
+    <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="Services\BuildInformationProvider.cs" />
     <Compile Include="Services\ErrorNavigationService.cs" />
-    <Compile Include="Services\IWindowStateService.cs" />
+    <Compile Include="Interfaces\IWindowStateService.cs" />
     <Compile Include="Services\SolutionProvider.cs" />
     <Compile Include="Helpers\ProjectIdentifierGenerator.cs" />
     <Compile Include="Core\BuildVisionPackage.cs" />

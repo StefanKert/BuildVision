@@ -11,7 +11,7 @@ using BuildVision.Views.Settings;
 
 namespace BuildVision.UI.ViewModels
 {
-    public class TaskBarInfoService : ITaskBarInfoService
+    public class TaskBarInfoService : ITaskBarInfoService, IDisposable
     {
         private CancellationTokenSource _resetTaskBarInfoCts;
 
@@ -120,7 +120,7 @@ namespace BuildVision.UI.ViewModels
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(buildProgressSettings.ResetTaskBarProgressAfterBuildDone));
+                    throw new InvalidOperationException(nameof(buildProgressSettings.ResetTaskBarProgressAfterBuildDone));
             }
         }
 
@@ -132,6 +132,21 @@ namespace BuildVision.UI.ViewModels
             window.PreviewMouseDown -= OnMainWindowTouched;
             window.LocationChanged -= OnMainWindowTouched;
             window.SizeChanged -= OnMainWindowTouched;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _resetTaskBarInfoCts?.Dispose();
+                _resetTaskBarInfoCts = null;
+            }
         }
     }
 }

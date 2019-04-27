@@ -25,7 +25,6 @@ namespace BuildVision.Core
 
         private Solution _solution;
         private SolutionModel _solutionModel;
-        private DTE2 _dte;
 
         [ImportingConstructor]
         public SolutionProvider([Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
@@ -35,10 +34,7 @@ namespace BuildVision.Core
 
         public void ReloadSolution()
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            _dte = _serviceProvider.GetService(typeof(DTE)) as DTE2;
-            _solution = _dte.Solution;
-
+            _solution = _serviceProvider.GetDteSolution();
             RefrehSolutionModel();
         }
 
@@ -64,7 +60,7 @@ namespace BuildVision.Core
                 }
                 else if (string.IsNullOrEmpty(_solution.FileName))
                 {
-                    if (_solution.Count != 0 /* projects count */)
+                    if (_solution.Count != 0)
                     {
                         var project = _solution.Item(1);
                         _solutionModel.Name = Path.GetFileNameWithoutExtension(project.FileName);

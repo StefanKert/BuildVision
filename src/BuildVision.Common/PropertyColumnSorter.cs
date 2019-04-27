@@ -6,8 +6,7 @@ using BuildVision.Contracts.Exceptions;
 
 namespace BuildVision.Common
 {
-    public class PropertyColumnSorter<T> : IComparer
-        where T : class
+    public class PropertyColumnSorter<T> : IComparer where T : class
     {
         private readonly int _direction;
         private readonly PropertyInfo _propertyInfo;

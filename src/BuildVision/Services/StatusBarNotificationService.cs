@@ -26,17 +26,15 @@ namespace BuildVision.Core
 
         public void ShowText(string str)
         {
-            if (!_packageSettingsProvider.Settings.GeneralSettings.EnableStatusBarOutput)
-            {
-                return;
-            }
-
-            var statusBar = _serviceProvider.GetService(typeof(IVsStatusbar)) as IVsStatusbar;
-            statusBar.FreezeOutput(0);
-            statusBar.SetText(str);
+            SetText(str);
         }
 
         public void ShowTextWithFreeze(string str)
+        {
+            SetText(str, freezeOutput: true);
+        }
+
+        private void SetText(string str, bool freezeOutput = false)
         {
             if (!_packageSettingsProvider.Settings.GeneralSettings.EnableStatusBarOutput)
             {
@@ -46,7 +44,10 @@ namespace BuildVision.Core
             var statusBar = _serviceProvider.GetService<IVsStatusbar>();
             statusBar.FreezeOutput(0);
             statusBar.SetText(str);
-            statusBar.FreezeOutput(1);
+            if (freezeOutput)
+            {
+                statusBar.FreezeOutput(1);
+            }
         }
     }
 }

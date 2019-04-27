@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -12,12 +13,11 @@ namespace BuildVision.Common
 
         public AppVersionInfo()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            AssemblyName assemblyName = assembly.GetName();
-            Version version = assemblyName.Version;
+            var assembly = Assembly.GetExecutingAssembly();
+            var versionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
 
-            AppVersion = version.ToString(3);
-            BuildVersion = version.ToString(4);
+            AppVersion = new Version(versionInfo.ProductVersion).ToString();
+            BuildVersion = new Version(versionInfo.FileVersion).ToString();
             BuildDateTime = RetrieveLinkerTimestamp(assembly);
         }
 
@@ -26,7 +26,7 @@ namespace BuildVision.Common
         /// </summary>
         private static DateTime RetrieveLinkerTimestamp(Assembly assembly)
         {
-            string filePath = assembly.Location;
+            var filePath = assembly.Location;
             const int PeHeaderOffset = 60;
             const int LinkerTimestampOffset = 8;
             var buffer = new byte[2048];
@@ -45,8 +45,8 @@ namespace BuildVision.Common
                 }
             }
 
-            int i = BitConverter.ToInt32(buffer, PeHeaderOffset);
-            int secondsSince1970 = BitConverter.ToInt32(buffer, i + LinkerTimestampOffset);
+            var i = BitConverter.ToInt32(buffer, PeHeaderOffset);
+            var secondsSince1970 = BitConverter.ToInt32(buffer, i + LinkerTimestampOffset);
             var dt = new DateTime(1970, 1, 1, 0, 0, 0);
             dt = dt.AddSeconds(secondsSince1970);
             dt = dt.AddHours(TimeZone.CurrentTimeZone.GetUtcOffset(dt).Hours);

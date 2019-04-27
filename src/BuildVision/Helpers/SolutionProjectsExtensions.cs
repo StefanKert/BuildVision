@@ -80,36 +80,16 @@ namespace BuildVision.Helpers
             return list;
         }
 
-        public static Project GetProject(this Solution solution, Func<Project, bool> cond)
+        public static Project FirstOrDefaultProject(this Solution solution, Func<Project, bool> cond)
         {
-            var projects = solution.Projects;
-            var item = projects.GetEnumerator();
-            while (item.MoveNext())
-            {
-                var project = item.Current as Project;
-                if (project == null)
-                {
-                    continue;
-                }
+            var projects = solution.GetProjects();
+            return projects.FirstOrDefault(cond);
+        }
 
-                if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
-                {
-                    var sub = project.GetSubProject(cond);
-                    if (sub != null)
-                    {
-                        return sub;
-                    }
-                }
-                else if (!project.IsHidden())
-                {
-                    if (cond(project))
-                    {
-                        return project;
-                    }
-                }
-            }
-
-            return null;
+        public static Project FirstProject(this Solution solution, Func<Project, bool> cond)
+        {
+            var projects = solution.GetProjects();
+            return projects.First(cond);
         }
 
         public static IList<ProjectItem> GetProjectItems(this Solution solution)

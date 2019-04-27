@@ -1,4 +1,6 @@
 ﻿using System;
+using BuildVision.Common.Logging;
+using Serilog;
 
 namespace BuildVision.Extensions
 {

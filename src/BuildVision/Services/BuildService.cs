@@ -19,6 +19,8 @@ using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Serilog;
+using BuildVision.Extensions;
+using BuildVision.Core;
 
 namespace BuildVision.Tool.Building
 {
@@ -80,7 +82,7 @@ namespace BuildVision.Tool.Building
                 // We need to create a separate task here because of some weird things that are going on
                 // when calling ExecuteCommand directly. Directly calling it leads to a freeze. No need 
                 // for that!
-                var dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
+                var dte = _serviceProvider.GetService<DTE>();
                 dte.ExecuteCommand(CancelBuildCommand);
                 _buildCancelledInternally = true;
             }
@@ -103,10 +105,26 @@ namespace BuildVision.Tool.Building
             }
         }
 
+
+        private void RaiseCommand(VSConstants.VSStd97CmdID command)
+        {
+            try
+            {
+                object customIn = null;
+                object customOut = null;
+                var dte = _serviceProvider.GetService<DTE>();
+                dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), (int)command, ref customIn, ref customOut);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex, "Raising command {Command} failed.", command);
+            }
+        }
+
         private void SelectProjectInSolutionExplorer(IProjectItem projectItem)
         {
             var solutionExplorer = Core.Services.Dte2.ToolWindows.SolutionExplorer;
-            var project = Core.Services.Dte2.Solution.GetProject(x => x.UniqueName == projectItem.UniqueName);
+            var project = _serviceProvider.GetDteSolution().FirstOrDefaultProject(x => x.UniqueName == projectItem.UniqueName);
             var item = solutionExplorer.FindHierarchyItem(project);
             if (item == null)
             {
@@ -121,7 +139,7 @@ namespace BuildVision.Tool.Building
         {
             try
             {
-                var project = Core.Services.Dte.Solution.GetProject(x => x.UniqueName == projItem.UniqueName);
+                var project = _serviceProvider.GetDteSolution().FirstOrDefaultProject(x => x.UniqueName == projItem.UniqueName);
                 var fileTypes = _packageSettingsProvider.Settings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard;
                 if (fileTypes.IsEmpty)
                 {
@@ -198,21 +216,6 @@ namespace BuildVision.Tool.Building
             }
 
             return string.Format(template, filesCountArg, filesListArg);
-        }
-
-        private void RaiseCommand(VSConstants.VSStd97CmdID command)
-        {
-            try
-            {
-                object customIn = null;
-                object customOut = null;
-                var dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
-                dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), (int)command, ref customIn, ref customOut);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "Raising command {Command} failed.", command);
-            }
         }
     }
 }

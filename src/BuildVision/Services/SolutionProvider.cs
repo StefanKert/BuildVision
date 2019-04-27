@@ -34,7 +34,7 @@ namespace BuildVision.Core
 
         public void ReloadSolution()
         {
-            _solution = _serviceProvider.GetDteSolution();
+            _solution = Services.Dte2.Solution;
             RefrehSolutionModel();
         }
 

@@ -45,12 +45,6 @@ namespace BuildVision.Core
             return GetGlobalService<SVsSolution, IVsSolution>(provider);
         }
 
-        public static Solution GetDteSolution(this IServiceProvider provider)
-        {
-            var ret = provider.GetService(typeof(DTE)) as DTE2;
-            return ret.Solution;
-        }
-
         public static IVsSolution GetSolution()
         {
             return GetGlobalService<SVsSolution, IVsSolution>();

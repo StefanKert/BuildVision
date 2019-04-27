@@ -124,7 +124,7 @@ namespace BuildVision.Tool.Building
         private void SelectProjectInSolutionExplorer(IProjectItem projectItem)
         {
             var solutionExplorer = Core.Services.Dte2.ToolWindows.SolutionExplorer;
-            var project = _serviceProvider.GetDteSolution().FirstOrDefaultProject(x => x.UniqueName == projectItem.UniqueName);
+            var project = Core.Services.Dte2.Solution.FirstOrDefaultProject(x => x.UniqueName == projectItem.UniqueName);
             var item = solutionExplorer.FindHierarchyItem(project);
             if (item == null)
             {
@@ -139,7 +139,7 @@ namespace BuildVision.Tool.Building
         {
             try
             {
-                var project = _serviceProvider.GetDteSolution().FirstOrDefaultProject(x => x.UniqueName == projItem.UniqueName);
+                var project = Core.Services.Dte2.Solution.FirstOrDefaultProject(x => x.UniqueName == projItem.UniqueName);
                 var fileTypes = _packageSettingsProvider.Settings.ProjectItemSettings.CopyBuildOutputFileTypesToClipboard;
                 if (fileTypes.IsEmpty)
                 {

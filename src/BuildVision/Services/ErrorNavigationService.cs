@@ -36,7 +36,7 @@ namespace BuildVision.Services
                     throw new ArgumentNullException(nameof(errorItem));
                 }
 
-                var project = _serviceProvider.GetDteSolution().FirstProject(x => x.FileName == errorItem.ProjectFile);
+                var project = Core.Services.Dte2.Solution.FirstProject(x => x.FileName == errorItem.ProjectFile);
                 if (!errorItem.CanNavigateTo)
                 {
                     return;

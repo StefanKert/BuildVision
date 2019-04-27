@@ -20,7 +20,7 @@ jobs:
       matrix:
         Config_Release:
           BuildConfiguration: Release
-          BuildOutputDirectory: Zip
+          BuildOutputDirectory: VSIX
         Config_Marketplace:
           BuildConfiguration: Marketplace
           BuildOutputDirectory: Marketplace
@@ -37,8 +37,7 @@ jobs:
       displayName: Install NBGV tool
       continueOnError: true
 
-    -  powershell: |
-       mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
+    -  powershell: | mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
 
     - script: nbgv cloud -a
       displayName: Set Version

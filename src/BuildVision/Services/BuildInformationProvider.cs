@@ -46,9 +46,7 @@ namespace BuildVision.Core
         private int _currentQueuePosOfBuildingProject = 0;
 
         public IBuildInformationModel BuildInformationModel { get; } = new BuildInformationModel();
-        public ObservableRangeCollection<IProjectItem> Projects { get; } = new ObservableRangeCollection<IProjectItem>();
-
-        ObservableCollection<IProjectItem> IBuildInformationProvider.Projects => throw new NotImplementedException();
+        public ObservableCollection<IProjectItem> Projects { get; } = new ObservableRangeCollection<IProjectItem>();
 
         [ImportingConstructor]
         public BuildInformationProvider(
@@ -77,7 +75,7 @@ namespace BuildVision.Core
         public void ReloadCurrentProjects()
         {
             Projects.Clear();
-            Projects.AddRange(_solutionProvider.GetProjects());
+            ((ObservableRangeCollection< IProjectItem>)Projects).AddRange(_solutionProvider.GetProjects());
         }
 
         public void ResetCurrentProjects()

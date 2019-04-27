@@ -7,6 +7,7 @@ namespace BuildVision.Contracts.Models
 {
     public interface IBuildInformationModel : INotifyPropertyChanged
     {
+        Guid BuildId { get; set; }
         BuildAction BuildAction { get; set; }
         DateTime? BuildFinishTime { get; set; }
         BuildScope BuildScope { get; set; }

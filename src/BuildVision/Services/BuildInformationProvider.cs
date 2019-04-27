@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using BuildVision.Common;
+using BuildVision.Common.Diagnostics;
 using BuildVision.Common.Logging;
 using BuildVision.Contracts;
 using BuildVision.Contracts.Models;
@@ -206,6 +208,7 @@ namespace BuildVision.Core
             BuildInformationModel.CurrentBuildState = BuildState.InProgress;
             BuildInformationModel.BuildAction = buildAction;
             BuildInformationModel.BuildScope = buildScope;
+            BuildInformationModel.BuildId = Guid.NewGuid();
 
             _buildProcessCancellationToken = new CancellationTokenSource();
             _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildBegin);
@@ -216,6 +219,13 @@ namespace BuildVision.Core
             _origTextCurrentState = message;
             BuildInformationModel.StateMessage = _origTextCurrentState;
             _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
+
+            DiagnosticsClient.TrackEvent("BuildStarted", new Dictionary<string, string>
+            {
+                { "BuildId", BuildInformationModel.BuildId.ToString() },
+                { "BuildAction", buildAction.ToString() },
+                { "BuildScope", buildScope.ToString() }
+            });
         }
 
         public void ProjectBuildStarted(IProjectItem projectItem, BuildAction buildAction)
@@ -368,6 +378,17 @@ namespace BuildVision.Core
             {
                 BuildInformationModel.CurrentBuildState = canceled ? BuildState.Cancelled : BuildState.Failed;
             }
+
+            DiagnosticsClient.TrackEvent("BuildFinished", new Dictionary<string, string>
+            {
+                { "BuildId", BuildInformationModel.BuildId.ToString() },
+                { "BuildAction", BuildInformationModel.BuildAction.ToString() },
+                { "BuildScope", BuildInformationModel.BuildScope.ToString() },
+                { "BuildState", BuildInformationModel.CurrentBuildState.ToString() },
+                { "BuildStartTime", BuildInformationModel.BuildStartTime.ToString() },
+                { "BuildFinishTime", BuildInformationModel.BuildFinishTime.ToString() },
+                { "ProjectsCount", Projects.Count.ToString() },
+            });
 
             var message = _buildMessagesFactory.GetBuildDoneMessage(BuildInformationModel);
             _statusBarNotificationService.ShowText(message);

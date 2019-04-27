@@ -383,7 +383,6 @@ namespace BuildVision.Core
                 _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildSuccess);
             }
 
-
             if (BuildInformationModel.FailedProjectsCount > 0)
             {
                 if (_packageSettingsProvider.Settings.GeneralSettings.NavigateToBuildFailureReason == NavigateToBuildFailureReasonCondition.OnBuildDone)

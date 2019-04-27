@@ -17,6 +17,7 @@ namespace BuildVision.Common.Diagnostics
         {
             if (!string.IsNullOrWhiteSpace(apiKey))
             {
+                TelemetryConfiguration.Active.InstrumentationKey = apiKey;
                 TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = Debugger.IsAttached;
                 TelemetryConfiguration.Active.TelemetryInitializers.Add(new VersionTelemetry());
                 TelemetryConfiguration.Active.TelemetryInitializers.Add(new SessionTelemetry(vsVersion, edition));

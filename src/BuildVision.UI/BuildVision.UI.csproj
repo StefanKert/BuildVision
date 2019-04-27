@@ -368,10 +368,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AppInsights.WindowsDesktop">
-      <Version>2.10.17-preview</Version>
+      <Version>2.10.34-preview</Version>
     </PackageReference>
     <PackageReference Include="Madskristensen.VisualStudio.SDK">
       <Version>14.3.81-pre</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>2.9.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

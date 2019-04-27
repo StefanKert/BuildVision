@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\BuildVision.Contracts\BuildVision.Contracts.csproj" />
   </ItemGroup>
 

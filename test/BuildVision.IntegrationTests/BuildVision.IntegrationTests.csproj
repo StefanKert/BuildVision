@@ -7,6 +7,7 @@
    <ItemGroup>
     <PackageReference Include="EnvDTE" Version="8.0.2" />
     <PackageReference Include="EnvDTE80" Version="8.0.3" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.2" />
     <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" Version="15.0.27" />
     <PackageReference Include="Microsoft.VSSDK.UnitTestLibrary" Version="14.3.25407" />
     <PackageReference Include="stdole" Version="7.0.3303" />

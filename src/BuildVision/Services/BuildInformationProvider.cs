@@ -301,7 +301,7 @@ namespace BuildVision.Core
                 case BuildAction.RebuildAll:
                     if (success)
                     {
-                        if (_packageSettingsProvider.Settings.GeneralSettings.ShowWarningSignForBuilds && currentProject.WarningsCount > 0)
+                        if (currentProject.WarningsCount > 0)
                         {
                             projectState = ProjectState.BuildWarning;
                         }

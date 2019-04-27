@@ -127,10 +127,6 @@
                       IsChecked="{Binding EnableStatusBarOutput}" />
 
                 <CheckBox Margin="8"
-                      Content="{x:Static res:Resources.BuildMessagesSettings_DisplayWarningSignCheckBox}"
-                      IsChecked="{Binding ShowWarningSignForBuilds}" />
-
-                <CheckBox Margin="8"
                       Content="{x:Static res:Resources.BuildMessagesSettings_HideUpToDateTargets}"
                       IsChecked="{Binding HideUpToDateTargets}" />
 

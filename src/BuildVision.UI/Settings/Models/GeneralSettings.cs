@@ -14,8 +14,6 @@ namespace BuildVision.UI.Settings.Models
 
         public bool StopBuildAfterFirstError { get; set; }
 
-        public bool ShowWarningSignForBuilds { get; set; }
-
         public bool HideUpToDateTargets { get; set; }
 
         public NavigateToBuildFailureReasonCondition NavigateToBuildFailureReason { get; set; }
@@ -27,7 +25,6 @@ namespace BuildVision.UI.Settings.Models
             BuildProgressSettings = new BuildProgressSettings();
             EnableStatusBarOutput = true;
             IndicatorsPanelVisible = true;
-            ShowWarningSignForBuilds = true;
         }
     }
 }

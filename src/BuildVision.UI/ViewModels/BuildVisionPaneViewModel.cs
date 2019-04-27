@@ -43,7 +43,7 @@ namespace BuildVision.UI.ViewModels
         private readonly IPackageSettingsProvider _settingsProvider;
         private ObservableCollection<DataGridColumn> _gridColumnsRef;
 
-        private ILogger _logger = LogManager.ForContext<BuildVisionPaneViewModel>();
+        private readonly ILogger _logger = LogManager.ForContext<BuildVisionPaneViewModel>();
 
         public ISolutionModel SolutionModel { get; set; }
 
@@ -211,8 +211,7 @@ namespace BuildVision.UI.ViewModels
             _settingsProvider.SettingsChanged += () =>
             {
                 OnControlSettingsChanged();
-                SyncColumnSettings();
-          
+                SyncColumnSettings();  
             };
 
             if (settingsProvider.Settings.GeneralSettings.FillProjectListOnBuildBegin)

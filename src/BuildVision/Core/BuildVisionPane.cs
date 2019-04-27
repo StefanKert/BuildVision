@@ -38,9 +38,9 @@ namespace BuildVision.Tool
         private IPackageSettingsProvider _packageSettingsProvider;
 
         public JoinableTaskFactory JoinableTaskFactory { get; private set; }
-        public ControlView View
+        public FrameworkElement View
         {
-            get => _contentPresenter.Content as ControlView;
+            get => _contentPresenter.Content as FrameworkElement;
             set => _contentPresenter.Content = value;
         }
 
@@ -74,28 +74,45 @@ namespace BuildVision.Tool
 
         async Task<BuildVisionPaneViewModel> InitializeAsync(AsyncPackage asyncPackage)
         {
-            await JoinableTaskFactory.SwitchToMainThreadAsync();
+            try
+            {
+                await JoinableTaskFactory.SwitchToMainThreadAsync();
 
-            _packageSettingsProvider = await asyncPackage.GetServiceAsync(typeof(IPackageSettingsProvider)) as IPackageSettingsProvider;
-            Assumes.Present(_packageSettingsProvider);
-            var solutionProvider = await asyncPackage.GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
-            Assumes.Present(solutionProvider);
-            var buildInformationProvider = await asyncPackage.GetServiceAsync(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
-            Assumes.Present(buildInformationProvider);
-            var buildService = await asyncPackage.GetServiceAsync(typeof(IBuildService)) as IBuildService;
-            Assumes.Present(buildService);
-            var errorNavigationService = await asyncPackage.GetServiceAsync(typeof(IErrorNavigationService)) as IErrorNavigationService;
-            Assumes.Present(errorNavigationService);
-            var taskBarInfoService = await asyncPackage.GetServiceAsync(typeof(ITaskBarInfoService)) as ITaskBarInfoService;
-            Assumes.Present(taskBarInfoService);
+                _packageSettingsProvider = await asyncPackage.GetServiceAsync(typeof(IPackageSettingsProvider)) as IPackageSettingsProvider;
+                Assumes.Present(_packageSettingsProvider);
+                var solutionProvider = await asyncPackage.GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
+                Assumes.Present(solutionProvider);
+                var buildInformationProvider = await asyncPackage.GetServiceAsync(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
+                Assumes.Present(buildInformationProvider);
+                var buildService = await asyncPackage.GetServiceAsync(typeof(IBuildService)) as IBuildService;
+                Assumes.Present(buildService);
+                var errorNavigationService = await asyncPackage.GetServiceAsync(typeof(IErrorNavigationService)) as IErrorNavigationService;
+                Assumes.Present(errorNavigationService);
+                var taskBarInfoService = await asyncPackage.GetServiceAsync(typeof(ITaskBarInfoService)) as ITaskBarInfoService;
+                Assumes.Present(taskBarInfoService);
 
-            var viewModel = new BuildVisionPaneViewModel(buildInformationProvider, _packageSettingsProvider, solutionProvider, buildService, errorNavigationService, taskBarInfoService);
+                var viewModel = new BuildVisionPaneViewModel(buildInformationProvider, _packageSettingsProvider, solutionProvider, buildService, errorNavigationService, taskBarInfoService);
 
-            View = CreateControlView();
-            View.DataContext = viewModel;
-            viewModel.ShowOptionPage += ViewModel_ShowOptionPage;
-            _controlCreatedSuccessfully = true;
-            return viewModel;
+                View = CreateControlView();
+                View.DataContext = viewModel;
+                viewModel.ShowOptionPage += ViewModel_ShowOptionPage;
+                _controlCreatedSuccessfully = true;
+                return viewModel;
+            }
+            catch (Exception e)
+            {
+                ShowError(e);
+                throw;
+            }
+        }
+
+        void ShowError(Exception e)
+        {
+            View = new TextBox
+            {
+                Text = e.ToString(),
+                IsReadOnly = true,
+            };
         }
 
         private void ViewModel_ShowOptionPage(Type obj)

@@ -104,7 +104,6 @@ namespace BuildVision.Helpers
                 LogManager.ForContext<Solution>().Error(ex, "Failed to get projectitems for solution {FullName}", solution?.FullName);
             }
 
-
             var projectItems = new List<ProjectItem>(dteProjects.Count);
             foreach (var project in dteProjects)
             {

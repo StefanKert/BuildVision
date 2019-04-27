@@ -40,7 +40,7 @@ namespace BuildVision.UI.ViewModels
                 return;
             }
 
-            _taskbarItemInfo.Value.ProgressState = buildState.ToTaskBarItemProgressState(buildScope); ;
+            _taskbarItemInfo.Value.ProgressState = buildState.ToTaskBarItemProgressState(buildScope);
 
             if (projectsCount <= 0)
             {

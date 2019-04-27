@@ -58,7 +58,6 @@ namespace BuildVision.Core
         private ILogger _logger = LogManager.ForContext<BuildVisionPackage>();
         public static ToolWindowPane ToolWindowPane { get; set; }
 
-
         public ControlSettings ControlSettings { get; set; }
 
         public BuildVisionPackage()

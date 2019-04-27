@@ -1,13 +1,10 @@
-﻿
-// This file is used by Code Analysis to maintain SuppressMessage 
+﻿// This file is used by Code Analysis to maintain SuppressMessage 
 // attributes that are applied to this project.
 // Project-level suppressions either have no target or are given 
 // a specific target and scoped to a namespace, type, member, etc.
-
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~M:BuildVision.Helpers.ProjectExtensions.GetFrameworkString(EnvDTE.Project)~System.String")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~M:BuildVision.Helpers.ProjectExtensions.GetProjectTypeFromRegistry(System.String,System.String)~System.String")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~M:BuildVision.Tool.Building.BuildService.GetCopyBuildOutputFilesToClipboardActionMessage(System.String,System.String[])~System.String")]
-
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:BuildVision.Core.BuildInformationProvider.BuildOutputLogger_OnErrorRaised(BuildVision.UI.Contracts.BuildProjectContextEntry,System.Object,BuildVision.Contracts.ErrorLevel)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:BuildVision.Core.BuildInformationProvider.ProjectBuildStarted(BuildVision.UI.Models.IProjectItem,BuildVision.Contracts.BuildAction)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:BuildVision.Core.SolutionProvider.RefrehSolutionModel")]

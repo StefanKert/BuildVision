@@ -510,7 +510,6 @@ namespace BuildVision.Helpers
             return false;
         }
 
-
         public static string GetTreePath(this Project project, bool includeSelfProjectName = true)
         {
             var path = new StringBuilder();

@@ -25,4 +25,3 @@ namespace BuildVision.UI.Converters
         }
     }
 }
-

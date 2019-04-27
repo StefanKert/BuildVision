@@ -9,7 +9,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace BuildVision.Core
 {
-
     public class SolutionBuildEvents : IVsUpdateSolutionEvents2, IVsUpdateSolutionEvents4
     {
         private readonly ISolutionProvider _solutionProvider;

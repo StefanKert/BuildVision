@@ -2,7 +2,6 @@
 using BuildVision.UI.Settings.Models;
 using System.Runtime.InteropServices;
 
-
 namespace BuildVision.Views.Settings
 {
     [ClassInterface(ClassInterfaceType.AutoDual)]

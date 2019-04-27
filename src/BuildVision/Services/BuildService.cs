@@ -20,7 +20,6 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Serilog;
 using BuildVision.Extensions;
-using BuildVision.Core;
 
 namespace BuildVision.Tool.Building
 {
@@ -104,7 +103,6 @@ namespace BuildVision.Tool.Building
                 _logger.Error(ex, "Raising command {CommandId} for project {UniqueName} failed.", selectedProjectItem.UniqueName, commandId);
             }
         }
-
 
         private void RaiseCommand(VSConstants.VSStd97CmdID command)
         {

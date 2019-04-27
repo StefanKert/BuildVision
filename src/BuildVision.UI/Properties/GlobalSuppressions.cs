@@ -1,9 +1,7 @@
-﻿
-// This file is used by Code Analysis to maintain SuppressMessage 
+﻿// This file is used by Code Analysis to maintain SuppressMessage 
 // attributes that are applied to this project.
 // Project-level suppressions either have no target or are given 
 // a specific target and scoped to a namespace, type, member, etc.
-
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~F:BuildVision.UI.Components.SpinnerControl.FormattedValuePropertyKey")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~F:BuildVision.UI.Extensions.VectorResources._baseUri")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~M:BuildVision.UI.Converters.DataGridLengthStringConverter.Convert(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)~System.Object")]
@@ -25,7 +23,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~P:BuildVision.UI.Settings.Models.BuildMessagesSettings.DateTimeFormat")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~P:BuildVision.UI.Settings.Models.BuildMessagesSettings.ExtraMessageStringFormat")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1305:Specify IFormatProvider", Justification = "<Pending>", Scope = "member", Target = "~P:BuildVision.UI.Settings.Models.BuildMessagesSettings.TimeSpanFormat")]
-
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:BuildVision.UI.Converters.DataGridLengthStringConverter.ConvertBack(System.Object,System.Type,System.Object,System.Globalization.CultureInfo)~System.Object")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:BuildVision.UI.Converters.GridColumnSettingsToColumnExampleValueConverter.FormatExample(System.Object,System.String)~System.String")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:BuildVision.UI.Converters.MultiBindingStringFormatConverter.Convert(System.Object[],System.Type,System.Object,System.Globalization.CultureInfo)~System.Object")]

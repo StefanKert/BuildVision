@@ -45,6 +45,12 @@ namespace BuildVision.UI.ViewModels
 
         private readonly ILogger _logger = LogManager.ForContext<BuildVisionPaneViewModel>();
 
+#if MARKETPLACE
+        public const string PreviewVersion = "false";
+#else
+        public const string PreviewVersion = "true";
+#endif
+
         public ISolutionModel SolutionModel { get; set; }
 
         public string GridGroupHeaderName => string.IsNullOrEmpty(GridGroupPropertyName) ? string.Empty : ControlSettings.GridSettings.Columns[GridGroupPropertyName].Header;

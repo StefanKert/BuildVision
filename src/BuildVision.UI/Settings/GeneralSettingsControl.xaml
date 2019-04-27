@@ -173,8 +173,6 @@
             <Run Text="{Binding AppVersion, StringFormat={}{0};}"/>
             <Run Text="Build"/>
             <Run Text="{Binding BuildVersion}"/>
-            <Run Text="on"/>
-            <Run Text="{Binding BuildDateTime, StringFormat=F}"/>
             <LineBreak/>
             <Run Text="© 2019 by Stefan Kert"/>
             <Hyperlink NavigateUri="https://twitter.com/StefanKert" 

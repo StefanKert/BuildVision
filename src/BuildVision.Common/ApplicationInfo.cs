@@ -12,9 +12,10 @@ namespace BuildVision.Common
             return Process.GetCurrentProcess().MainModule.FileVersionInfo;
         }
 
-        public static Version GetPackageVersion(object package)
+        public static string GetPackageVersion(object package)
         {
-            return package.GetType().Assembly.GetName().Version;
+            var versionInfo = FileVersionInfo.GetVersionInfo(package.GetType().Assembly.Location);
+            return versionInfo.ProductVersion;
         }
     }
 }

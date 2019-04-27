@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
+using BuildVision.Common.Diagnostics;
 using BuildVision.Core;
 using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
@@ -97,10 +98,14 @@ namespace BuildVision.Tool
                 View.DataContext = viewModel;
                 viewModel.ShowOptionPage += ViewModel_ShowOptionPage;
                 _controlCreatedSuccessfully = true;
+
+                DiagnosticsClient.TrackEvent("BuildVisionStarted");
+
                 return viewModel;
             }
             catch (Exception e)
             {
+                DiagnosticsClient.TrackException(e);
                 ShowError(e);
                 throw;
             }

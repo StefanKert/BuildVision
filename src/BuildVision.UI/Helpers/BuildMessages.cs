@@ -277,8 +277,7 @@ namespace BuildVision.UI.Helpers
                 return string.Empty;
 
             TimeSpan timeSpan = buildInfo.BuildFinishTime.Value.Subtract(buildInfo.BuildStartTime.Value);
-            string extraTimePartString = GetExtraTimePartString(labelsSettings, timeSpan);
-            return string.Format(labelsSettings.ExtraMessageStringFormat, extraTimePartString);
+            return GetExtraTimePartString(labelsSettings, timeSpan);
         }
 
         private static string GetExtraTimePartString(BuildMessagesSettings labelsSettings, TimeSpan timeSpan)

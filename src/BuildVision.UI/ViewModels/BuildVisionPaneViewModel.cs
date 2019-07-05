@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 using BuildVision.Common;
 using BuildVision.Common.Logging;
 using BuildVision.Contracts;
@@ -26,6 +27,7 @@ using BuildVision.UI.Models;
 using BuildVision.UI.Settings.Models;
 using BuildVision.Views.Settings;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Threading;
 using Serilog;
 using Process = System.Diagnostics.Process;
 using SortDescription = BuildVision.UI.Settings.Models.Sorting.SortDescription;
@@ -212,6 +214,11 @@ namespace BuildVision.UI.ViewModels
             SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
             Projects = _buildInformationProvider.Projects;
+            
+            _buildInformationProvider.BuildUpdated += () =>
+            {
+                Application.Current.Dispatcher.BeginInvoke(new Action(() => OnPropertyChanged(nameof(GroupedProjectsList))));
+            };
 
             _settingsProvider = settingsProvider;
             _settingsProvider.SettingsChanged += () =>

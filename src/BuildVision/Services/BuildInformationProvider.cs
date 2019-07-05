@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using BuildVision.Common;
 using BuildVision.Common.Diagnostics;
 using BuildVision.Common.Logging;
@@ -212,7 +213,7 @@ namespace BuildVision.Core
 
             _buildProcessCancellationToken = new CancellationTokenSource();
             _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildBegin);
-            System.Threading.Tasks.Task.Run(() => Run(_buildProcessCancellationToken.Token), _buildProcessCancellationToken.Token);
+            Task.Run(() => Run(_buildProcessCancellationToken.Token), _buildProcessCancellationToken.Token);
 
             string message = _buildMessagesFactory.GetBuildBeginMajorMessage(BuildInformationModel);
             _statusBarNotificationService.ShowTextWithFreeze(message);
@@ -347,6 +348,7 @@ namespace BuildVision.Core
             {
                 project.RaiseBuildElapsedTimeChanged();
             }
+            BuildUpdated?.Invoke();
         }
 
         public void BuildFinished(bool success, bool canceled)
@@ -428,5 +430,7 @@ namespace BuildVision.Core
                 }
             }
         }
+
+        public event Action BuildUpdated;
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using BuildVision.Contracts;
 using BuildVision.Contracts.Models;
@@ -19,5 +20,7 @@ namespace BuildVision.Exports.Providers
         void BuildStarted(BuildAction currentBuildAction, BuildScope scope);
         void BuildUpdate();
         void ResetBuildInformationModel();
+
+        event Action BuildUpdated;
     }
 }

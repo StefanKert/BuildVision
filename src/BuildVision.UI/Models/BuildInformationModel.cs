@@ -53,7 +53,7 @@ namespace BuildVision.UI.Models
         private int _warnedProjectsCount = 0;
         public int WarnedProjectsCount
         {
-            get => _warningsCount;
+            get => _warnedProjectsCount;
             set => SetProperty(ref _warnedProjectsCount, value);
         }
 

@@ -227,6 +227,12 @@ namespace BuildVision.UI.ViewModels
                 SyncColumnSettings();  
             };
 
+            ControlSettings.PropertyChanged += (sender, e) =>
+            {
+                OnControlSettingsChanged();
+                SyncColumnSettings();
+            };
+
             if (settingsProvider.Settings.GeneralSettings.FillProjectListOnBuildBegin)
             {
                 Projects.CollectionChanged += (sender, e) =>

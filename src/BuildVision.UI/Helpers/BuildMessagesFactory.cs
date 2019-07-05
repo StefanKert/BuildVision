@@ -58,7 +58,7 @@ namespace BuildVision.UI.Helpers
             }
         }
 
-        private string GetBeginAtString(BuildAction? buildAction)
+        private static string GetBeginAtString(BuildAction? buildAction)
         {
             switch (buildAction.Value)
             {
@@ -75,7 +75,7 @@ namespace BuildVision.UI.Helpers
             }
         }
 
-        private string GetActionName(BuildAction buildAction)
+        private static string GetActionName(BuildAction buildAction)
         {
             switch (buildAction)
             {
@@ -92,7 +92,7 @@ namespace BuildVision.UI.Helpers
             }
         }
 
-        private string GetUnitName(BuildScope buildScope)
+        private static string GetUnitName(BuildScope buildScope)
         {
             string unitName = "";
             switch (buildScope)
@@ -210,7 +210,7 @@ namespace BuildVision.UI.Helpers
             return resultMainString;
         }
 
-        private string GetResultName(BuildResultState resultState)
+        private static string GetResultName(BuildResultState resultState)
         {
             switch (resultState)
             {
@@ -243,9 +243,8 @@ namespace BuildVision.UI.Helpers
                 return string.Empty;
             }
 
-            TimeSpan timeSpan = buildInformationModel.BuildFinishTime.Value.Subtract(buildInformationModel.BuildStartTime.Value);
-            string extraTimePartString = GetExtraTimePartString(timeSpan);
-            return string.Format(_packageSettingsProvider.Settings.BuildMessagesSettings.ExtraMessageStringFormat, extraTimePartString);
+            var timeSpan = buildInformationModel.BuildFinishTime.Value.Subtract(buildInformationModel.BuildStartTime.Value);
+            return GetExtraTimePartString(timeSpan);
         }
 
         private string GetExtraTimePartString(TimeSpan timeSpan)

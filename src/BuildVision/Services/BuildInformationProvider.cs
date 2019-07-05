@@ -50,7 +50,7 @@ namespace BuildVision.Core
 
         public IBuildInformationModel BuildInformationModel { get; } = new BuildInformationModel();
         public ObservableCollection<IProjectItem> Projects { get; } = new ObservableRangeCollection<IProjectItem>();
-
+        
         [ImportingConstructor]
         public BuildInformationProvider(
             [Import(typeof(IBuildOutputLogger))] IBuildOutputLogger buildOutputLogger,

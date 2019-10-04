@@ -215,11 +215,6 @@ namespace BuildVision.UI.ViewModels
             ControlSettings = settingsProvider.Settings;
             Projects = _buildInformationProvider.Projects;
             
-            _buildInformationProvider.BuildUpdated += () =>
-            {
-                Application.Current.Dispatcher.BeginInvoke(new Action(() => OnPropertyChanged(nameof(GroupedProjectsList))));
-            };
-
             _settingsProvider = settingsProvider;
             _settingsProvider.SettingsChanged += () =>
             {

@@ -12,6 +12,8 @@ namespace BuildVision.Helpers
 {
     public static class SolutionProjectsExtensions
     {
+        private static IList<Project> _cachedProjects;
+
         public static SolutionModel ToSolutionBuildState(this Solution solution)
         {
             var solutionItem = new SolutionModel();
@@ -57,40 +59,9 @@ namespace BuildVision.Helpers
             return solutionItem;
         }
 
-        public static IList<Project> GetProjects(this Solution solution)
-        {
-            var list = new List<Project>();
-            foreach (var proj in solution.Projects)
-            {
-                var project = proj as Project;
-                if (project == null)
-                {
-                    continue;
-                }
+        public static Project FirstOrDefaultProject(this Solution solution, Func<Project, bool> cond) => _cachedProjects.FirstOrDefault(cond);
 
-                if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
-                {
-                    list.AddRange(project.GetSubProjects());
-                }
-                else if (!project.IsHidden())
-                {
-                    list.Add(project);
-                }
-            }
-            return list;
-        }
-
-        public static Project FirstOrDefaultProject(this Solution solution, Func<Project, bool> cond)
-        {
-            var projects = solution.GetProjects();
-            return projects.FirstOrDefault(cond);
-        }
-
-        public static Project FirstProject(this Solution solution, Func<Project, bool> cond)
-        {
-            var projects = solution.GetProjects();
-            return projects.First(cond);
-        }
+        public static Project FirstProject(this Solution solution, Func<Project, bool> cond) => _cachedProjects.First(cond);
 
         public static IList<ProjectItem> GetProjectItems(this Solution solution)
         {
@@ -98,6 +69,7 @@ namespace BuildVision.Helpers
             try
             {
                 dteProjects = solution.GetProjects();
+                _cachedProjects = dteProjects;
             }
             catch (Exception ex)
             {
@@ -121,6 +93,29 @@ namespace BuildVision.Helpers
             }
 
             return projectItems;
+        }
+
+        public static IList<Project> GetProjects(this Solution solution)
+        {
+            var list = new List<Project>();
+            foreach (var proj in solution.Projects)
+            {
+                var project = proj as Project;
+                if (project == null)
+                {
+                    continue;
+                }
+
+                if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
+                {
+                    list.AddRange(project.GetSubProjects());
+                }
+                else if (!project.IsHidden())
+                {
+                    list.Add(project);
+                }
+            }
+            return list;
         }
 
         public static void UpdateProperties(Project project, ProjectItem projectItem, string configuration = null, string platform = null)

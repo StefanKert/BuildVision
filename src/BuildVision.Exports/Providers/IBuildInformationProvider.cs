@@ -20,7 +20,5 @@ namespace BuildVision.Exports.Providers
         void BuildStarted(BuildAction currentBuildAction, BuildScope scope);
         void BuildUpdate();
         void ResetBuildInformationModel();
-
-        event Action BuildUpdated;
     }
 }

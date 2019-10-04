@@ -43,10 +43,9 @@ namespace BuildVision.Core
         private readonly IBuildService _buildService;
         private readonly ITaskBarInfoService _taskBarInfoService;
         private string _origTextCurrentState;
-        private const int BuildInProcessCountOfQuantumSleep = 5;
-        private const int BuildInProcessQuantumSleep = 50;
-        private CancellationTokenSource _buildProcessCancellationToken;
+        private const int BuildInProcessQuantumSleep = 250;
         private int _currentQueuePosOfBuildingProject = 0;
+        private Timer _timer;
 
         public IBuildInformationModel BuildInformationModel { get; } = new BuildInformationModel();
         public ObservableCollection<IProjectItem> Projects { get; } = new ObservableRangeCollection<IProjectItem>();
@@ -78,7 +77,7 @@ namespace BuildVision.Core
         public void ReloadCurrentProjects()
         {
             Projects.Clear();
-            ((ObservableRangeCollection< IProjectItem>)Projects).AddRange(_solutionProvider.GetProjects());
+            ((ObservableRangeCollection<IProjectItem>)Projects).AddRange(_solutionProvider.GetProjects());
         }
 
         public void ResetCurrentProjects() => Projects.Clear();
@@ -171,24 +170,6 @@ namespace BuildVision.Core
             return true;
         }
 
-        public void Run(CancellationToken cancellationToken)
-        {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                BuildUpdate();
-
-                for (int i = 0; i < BuildInProcessQuantumSleep * BuildInProcessCountOfQuantumSleep; i += BuildInProcessQuantumSleep)
-                {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    Thread.Sleep(BuildInProcessQuantumSleep);
-                }
-            }
-        }
-
         public void BuildStarted(BuildAction buildAction, BuildScope buildScope)
         {
             _currentQueuePosOfBuildingProject = 0;
@@ -205,10 +186,9 @@ namespace BuildVision.Core
             BuildInformationModel.BuildScope = buildScope;
             BuildInformationModel.BuildId = Guid.NewGuid();
 
-            _buildProcessCancellationToken = new CancellationTokenSource();
             _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildBegin);
-            Task.Run(() => Run(_buildProcessCancellationToken.Token), _buildProcessCancellationToken.Token);
-
+            _timer = new Timer(state => BuildUpdate(), null, BuildInProcessQuantumSleep, BuildInProcessQuantumSleep);
+            
             string message = _buildMessagesFactory.GetBuildBeginMajorMessage(BuildInformationModel);
             _statusBarNotificationService.ShowTextWithFreeze(message);
             _origTextCurrentState = message;
@@ -335,14 +315,17 @@ namespace BuildVision.Core
 
         public void BuildUpdate()
         {
+            if(BuildInformationModel.CurrentBuildState != BuildState.InProgress)
+            {
+                _logger.Error("Build is finished but thread still running.");
+            }
             var message = _origTextCurrentState + _buildMessagesFactory.GetBuildBeginExtraMessage(BuildInformationModel);
             BuildInformationModel.StateMessage = message;
             _statusBarNotificationService.ShowTextWithFreeze(message);
-            foreach (var project in Projects)
+            foreach (var project in Projects.Where(x => x.BuildStartTime.HasValue && !x.BuildFinishTime.HasValue))
             {
                 project.RaiseBuildElapsedTimeChanged();
             }
-            BuildUpdated?.Invoke();
         }
 
         public void BuildFinished(bool success, bool canceled)
@@ -363,8 +346,8 @@ namespace BuildVision.Core
                 }
             }
 
-            _buildProcessCancellationToken.Cancel();
-
+            _timer.Dispose();
+            _logger.Information("Canceled build");
             BuildInformationModel.BuildFinishTime = DateTime.Now;
             if (success)
             {
@@ -424,7 +407,5 @@ namespace BuildVision.Core
                 }
             }
         }
-
-        public event Action BuildUpdated;
     }
 }

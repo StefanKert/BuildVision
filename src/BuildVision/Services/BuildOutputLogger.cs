@@ -20,7 +20,7 @@ namespace BuildVision.Tool.Building
         private Serilog.ILogger _logger = LogManager.ForContext<BuildOutputLogger>();
         public RegisterLoggerResult LoggerState { get; set; }
 
-        private List<BuildProjectContextEntry> _projects = new List<BuildProjectContextEntry>();
+        private Dictionary<string ,BuildProjectContextEntry> _projects = new Dictionary<string, BuildProjectContextEntry>();
 
         public BuildOutputLogger(Guid loggerId, LoggerVerbosity loggerVerbosity)
         {
@@ -30,7 +30,7 @@ namespace BuildVision.Tool.Building
 
         public override void Initialize(IEventSource eventSource)
         {
-            _projects = new List<BuildProjectContextEntry>();
+            _projects = new Dictionary<string, BuildProjectContextEntry>();
             eventSource.ProjectStarted += OnProjectStarted;
             eventSource.MessageRaised += (s, e) => EventSource_ErrorRaised(e, ErrorLevel.Message);
             eventSource.WarningRaised += (s, e) => EventSource_ErrorRaised(e, ErrorLevel.Warning);
@@ -39,7 +39,8 @@ namespace BuildVision.Tool.Building
 
         private void OnProjectStarted(object sender, ProjectStartedEventArgs e)
         {
-            _projects.Add(new BuildProjectContextEntry(
+            var identifier = $"{e.BuildEventContext.ProjectInstanceId}{e.BuildEventContext.ProjectContextId}";
+            _projects.Add(identifier, new BuildProjectContextEntry(
                 e.BuildEventContext.ProjectInstanceId,
                 e.BuildEventContext.ProjectContextId,
                 e.ProjectFile,
@@ -95,7 +96,7 @@ namespace BuildVision.Tool.Building
 
         public bool IsProjectUpToDate(IProjectItem projectItem)
         {
-            return !_projects.Exists(t => t.FileName == projectItem.FullName);
+            return !_projects.Any(x => x.Value.FileName == projectItem.FullName);
         }
 
         private void EventSource_ErrorRaised(BuildEventArgs e, ErrorLevel errorLevel)
@@ -109,9 +110,8 @@ namespace BuildVision.Tool.Building
 
                 int projectInstanceId = e.BuildEventContext.ProjectInstanceId;
                 int projectContextId = e.BuildEventContext.ProjectContextId;
-
-                var projectEntry = _projects.Find(t => t.InstanceId == projectInstanceId && t.ContextId == projectContextId);
-                if (projectEntry == null)
+                var identifier = $"{projectInstanceId}{projectContextId}";
+                if (!_projects.TryGetValue(identifier, out var projectEntry))
                 {
                     _logger.Warning("Project entry not found by ProjectInstanceId='{ProjectInstanceId}' and ProjectContextId='{ProjectContextId}'.", projectInstanceId, projectContextId);
                     return;

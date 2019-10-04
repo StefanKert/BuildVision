@@ -81,15 +81,9 @@ namespace BuildVision.Core
             ((ObservableRangeCollection< IProjectItem>)Projects).AddRange(_solutionProvider.GetProjects());
         }
 
-        public void ResetCurrentProjects()
-        {
-            Projects.Clear();
-        }
+        public void ResetCurrentProjects() => Projects.Clear();
 
-        public void ResetBuildInformationModel()
-        {
-            BuildInformationModel.ResetState();
-        }
+        public void ResetBuildInformationModel() => BuildInformationModel.ResetState();
 
         private void BuildOutputLogger_OnErrorRaised(BuildProjectContextEntry projectEntry, object e, ErrorLevel errorLevel)
         {

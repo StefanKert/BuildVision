@@ -64,51 +64,16 @@ namespace BuildVision.Core
         }
 
         #region Interface Implementation
-
-        public int UpdateSolution_Begin(ref int pfCancelUpdate)
-        {
-            return VSConstants.S_OK;
-        }
-
-        public int UpdateSolution_StartUpdate(ref int pfCancelUpdate)
-        {
-            return VSConstants.S_OK;
-        }
-
-        public int UpdateSolution_Cancel()
-        {
-            return VSConstants.S_OK;
-        }
-
-        public int OnActiveProjectCfgChange(IVsHierarchy pIVsHierarchy)
-        {
-            return VSConstants.S_OK;
-        }
-
-        public void UpdateSolution_EndUpdateAction(uint dwAction)
-        {
-        }
-
-        public void OnActiveProjectCfgChangeBatchBegin()
-        {
-        }
-
-        public void OnActiveProjectCfgChangeBatchEnd()
-        {
-        }
-
-        public void UpdateSolution_QueryDelayFirstUpdateAction(out int pfDelay)
-        {
-            pfDelay = 0;
-        }
-
-        public void UpdateSolution_BeginFirstUpdateAction()
-        {
-        }
-
-        public void UpdateSolution_EndLastUpdateAction()
-        {
-        }
+        public int UpdateSolution_Begin(ref int pfCancelUpdate) => VSConstants.S_OK;
+        public int UpdateSolution_StartUpdate(ref int pfCancelUpdate) => VSConstants.S_OK;
+        public int UpdateSolution_Cancel() => VSConstants.S_OK;
+        public int OnActiveProjectCfgChange(IVsHierarchy pIVsHierarchy) => VSConstants.S_OK;
+        public void UpdateSolution_QueryDelayFirstUpdateAction(out int pfDelay) => pfDelay = 0;
+        public void UpdateSolution_EndUpdateAction(uint dwAction) { }
+        public void OnActiveProjectCfgChangeBatchBegin() { }
+        public void OnActiveProjectCfgChangeBatchEnd() { }
+        public void UpdateSolution_BeginFirstUpdateAction() { }
+        public void UpdateSolution_EndLastUpdateAction() { }
         #endregion
     }
 }

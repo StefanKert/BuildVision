@@ -40,14 +40,8 @@ namespace BuildVision.Core
 
         public static DTE2 Dte2 => Dte as DTE2;
 
-        public static IVsSolution GetSolution(this IServiceProvider provider)
-        {
-            return GetGlobalService<SVsSolution, IVsSolution>(provider);
-        }
+        public static IVsSolution GetSolution(this IServiceProvider provider) => GetGlobalService<SVsSolution, IVsSolution>(provider);
 
-        public static IVsSolution GetSolution()
-        {
-            return GetGlobalService<SVsSolution, IVsSolution>();
-        }
+        public static IVsSolution GetSolution() => GetGlobalService<SVsSolution, IVsSolution>();
     }
 }

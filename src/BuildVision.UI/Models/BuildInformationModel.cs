@@ -258,6 +258,8 @@ namespace BuildVision.UI.Models
             }
         }
 
+        public int GetFinishedProjectsCount() => SucceededProjectsCount + UpToDateProjectsCount + WarnedProjectsCount + FailedProjectsCount;
+
         public void ResetState()
         {
             ErrorCount = 0;

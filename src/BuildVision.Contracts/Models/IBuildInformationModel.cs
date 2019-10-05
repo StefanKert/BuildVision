@@ -26,6 +26,7 @@ namespace BuildVision.Contracts.Models
         string StateIconKey { get; }
         IProjectItem CurrentProject { get; set; }
 
+        int GetFinishedProjectsCount();
         void ResetState();
     }
 }

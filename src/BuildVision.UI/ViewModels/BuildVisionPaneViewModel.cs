@@ -214,7 +214,9 @@ namespace BuildVision.UI.ViewModels
             SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
             Projects = _buildInformationProvider.Projects;
-            
+
+            _buildInformationProvider.BuildStateChanged += () => OnPropertyChanged(nameof(GroupedProjectsList));
+
             _settingsProvider = settingsProvider;
             _settingsProvider.SettingsChanged += () =>
             {

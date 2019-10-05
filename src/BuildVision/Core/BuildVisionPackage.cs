@@ -139,7 +139,7 @@ namespace BuildVision.Core
             _buildInformationProvider.ResetCurrentProjects();
             _buildInformationProvider.ResetBuildInformationModel();
 
-            _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider, _serviceProvider);
+            _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider, _serviceProvider, LogManager.ForContext<SolutionBuildEvents>());
             _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEventsCookie);
             _solutionBuildManager4.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
         }

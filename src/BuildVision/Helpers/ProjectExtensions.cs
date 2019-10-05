@@ -27,10 +27,11 @@ namespace BuildVision.Helpers
 
         private static readonly Dictionary<string, string> _knownProjectTypes = new Dictionary<string, string>
             {
-                {"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", "Windows"}, // C#
-                {"{F184B08F-C81C-45F6-A57F-5ABD9991F28F}", "Windows"}, // VB.NET
-                {"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}", "Windows"}, // C++
-                {"{F2A71F9B-5D33-465A-A702-920D77279786}", "Windows"}, // F#
+                {"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", "Windows C#"}, // C#
+                {"{F184B08F-C81C-45F6-A57F-5ABD9991F28F}", "Windows VB.NET"}, // VB.NET
+                {"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}", "Windows C++"}, // C++
+                {"{F2A71F9B-5D33-465A-A702-920D77279786}", "Windows F#"}, // F#
+                {"{D954291E-2A0B-460D-934E-DC6B0785DB48}", "Shared Project" },
                 {"{349C5851-65DF-11DA-9384-00065B846F21}", "Web Application"},
                 {"{E24C65DC-7377-472B-9ABA-BC803B73C61A}", "Web Site"},
                 {"{603c0e0b-db56-11dc-be95-000d561079b0}", "ASP.NET MVC1"},

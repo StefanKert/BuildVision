@@ -88,7 +88,7 @@ namespace BuildVision.UI.Helpers
                 case BuildAction.Clean:
                     return Resources.BuildActionClean;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(buildAction));
+                    throw new ArgumentOutOfRangeException(nameof(buildAction), $"Actual: {buildAction}");
             }
         }
 

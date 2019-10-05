@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using BuildVision.Common.Logging;
@@ -20,7 +19,7 @@ namespace BuildVision.Tool.Building
         private Serilog.ILogger _logger = LogManager.ForContext<BuildOutputLogger>();
         public RegisterLoggerResult LoggerState { get; set; }
 
-        private Dictionary<string ,BuildProjectContextEntry> _projects = new Dictionary<string, BuildProjectContextEntry>();
+        private Dictionary<string ,BuildProjectContextEntry> _projectsLookup = new Dictionary<string, BuildProjectContextEntry>();
 
         public BuildOutputLogger(Guid loggerId, LoggerVerbosity loggerVerbosity)
         {
@@ -30,28 +29,29 @@ namespace BuildVision.Tool.Building
 
         public override void Initialize(IEventSource eventSource)
         {
-            _projects = new Dictionary<string, BuildProjectContextEntry>();
+            _projectsLookup = new Dictionary<string, BuildProjectContextEntry>();
             eventSource.ProjectStarted += OnProjectStarted;
-            eventSource.MessageRaised += (s, e) => EventSource_ErrorRaised(e, ErrorLevel.Message);
-            eventSource.WarningRaised += (s, e) => EventSource_ErrorRaised(e, ErrorLevel.Warning);
-            eventSource.ErrorRaised += (s, e) => EventSource_ErrorRaised(e, ErrorLevel.Error);
+            eventSource.MessageRaised += (sender, e) => EventSource_Event(e.ProjectFile, e, ErrorLevel.Message); 
+            eventSource.WarningRaised += (sender, e) => EventSource_Event(e.ProjectFile, e, ErrorLevel.Warning);
+            eventSource.ErrorRaised += (sender, e) => EventSource_Event(e.ProjectFile, e, ErrorLevel.Error);
         }
 
         private void OnProjectStarted(object sender, ProjectStartedEventArgs e)
         {
-            var identifier = $"{e.BuildEventContext.ProjectInstanceId}{e.BuildEventContext.ProjectContextId}";
-            _projects.Add(identifier, new BuildProjectContextEntry(
-                e.BuildEventContext.ProjectInstanceId,
-                e.BuildEventContext.ProjectContextId,
-                e.ProjectFile,
-                e.GlobalProperties));
+            var entry = new BuildProjectContextEntry(e.ProjectFile, e.GlobalProperties);
+            if (!_projectsLookup.ContainsKey(entry.ProjectFile))
+            {
+                _projectsLookup.Add(entry.ProjectFile, entry);
+            }
+
+            _logger.Information("Currently there are {Count} projects listed.", _projectsLookup.Count);
         }
 
         public void Attach()
         {
             try
             {
-                _projects.Clear();
+                _projectsLookup.Clear();
 
                 const BindingFlags InterfacePropertyFlags = BindingFlags.GetProperty
                                                             | BindingFlags.Public
@@ -76,12 +76,16 @@ namespace BuildVision.Tool.Building
                 var loggersProperty = loggingServiceObj.GetType().GetProperty("Loggers", InterfacePropertyFlags);
                 var loggers = (ICollection<ILogger>)loggersProperty.GetValue(loggingServiceObj, null);
 
+
+
+
                 var logger = loggers.FirstOrDefault(x => x is BuildOutputLogger && ((BuildOutputLogger)x)._loggerId.Equals(_loggerId));
                 if (logger != null)
                 {
                     LoggerState = RegisterLoggerResult.AlreadyExists;
                     return;
                 }
+
 
                 var registerLoggerMethod = loggingServiceObj.GetType().GetMethod("RegisterLogger");
                 var registerResult = (bool)registerLoggerMethod.Invoke(loggingServiceObj, new object[] { this });
@@ -94,12 +98,9 @@ namespace BuildVision.Tool.Building
             }
         }
 
-        public bool IsProjectUpToDate(IProjectItem projectItem)
-        {
-            return !_projects.Any(x => x.Value.FileName == projectItem.FullName);
-        }
+        public bool IsProjectUpToDate(IProjectItem projectItem) => !_projectsLookup.ContainsKey(projectItem.FullName);
 
-        private void EventSource_ErrorRaised(BuildEventArgs e, ErrorLevel errorLevel)
+        private void EventSource_Event(string projectFile, BuildEventArgs e, ErrorLevel errorLevel)
         {
             try
             {
@@ -107,13 +108,14 @@ namespace BuildVision.Tool.Building
                 {
                     return;
                 }
-
-                int projectInstanceId = e.BuildEventContext.ProjectInstanceId;
-                int projectContextId = e.BuildEventContext.ProjectContextId;
-                var identifier = $"{projectInstanceId}{projectContextId}";
-                if (!_projects.TryGetValue(identifier, out var projectEntry))
+                if(projectFile == null)
                 {
-                    _logger.Warning("Project entry not found by ProjectInstanceId='{ProjectInstanceId}' and ProjectContextId='{ProjectContextId}'.", projectInstanceId, projectContextId);
+                    return;
+                }
+
+                if (!_projectsLookup.TryGetValue(projectFile, out var projectEntry))
+                {
+                    _logger.Warning("Project entry not found by ProjectFile='{ProjectFile}'.", projectFile);
                     return;
                 }
                 if (projectEntry.IsInvalid)

@@ -5,11 +5,7 @@ namespace BuildVision.UI.Contracts
 {
     public class BuildProjectContextEntry
     {
-        public int InstanceId { get; set; }
-
-        public int ContextId { get; set; }
-
-        public string FileName { get; set; }
+        public string ProjectFile { get; set; }
 
         public IDictionary<string, string> Properties { get; }
 
@@ -17,11 +13,9 @@ namespace BuildVision.UI.Contracts
 
         public bool IsInvalid { get; set; }
 
-        public BuildProjectContextEntry(int instanceId, int contextId, string fileName, IDictionary<string, string> properties)
+        public BuildProjectContextEntry(string fileName, IDictionary<string, string> properties)
         {
-            InstanceId = instanceId;
-            ContextId = contextId;
-            FileName = fileName;
+            ProjectFile = fileName;
             Properties = properties;
         }
     }

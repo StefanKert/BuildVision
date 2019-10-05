@@ -18,7 +18,8 @@ namespace BuildVision.Exports.Providers
         void ResetCurrentProjects();
         void BuildFinished(bool success, bool canceled);
         void BuildStarted(BuildAction currentBuildAction, BuildScope scope);
-        void BuildUpdate();
         void ResetBuildInformationModel();
+
+        event Action BuildStateChanged;
     }
 }

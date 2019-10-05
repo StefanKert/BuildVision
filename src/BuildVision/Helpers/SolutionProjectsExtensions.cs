@@ -106,6 +106,11 @@ namespace BuildVision.Helpers
                     continue;
                 }
 
+                if (project.FileName.EndsWith(".shproj")) // Shared Projects shouldn´t be displayed in BuildVision
+                {
+                    continue;
+                }
+
                 if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
                 {
                     list.AddRange(project.GetSubProjects());
@@ -163,7 +168,7 @@ namespace BuildVision.Helpers
                     Configuration config;
                     try
                     {
-                        config = project.ConfigurationManager.ActiveConfiguration;
+                        config = project.ConfigurationManager?.ActiveConfiguration;
                     }
                     catch (Exception ex)
                     {
@@ -178,6 +183,14 @@ namespace BuildVision.Helpers
                     }
                     else
                     {
+                        if (project.ConfigurationManager == null)
+                        {
+                            LogManager.ForContext<Solution>().Warning("ConfigurationManager for project {UniqueName} was null.", project?.UniqueName);
+                        }
+                        else if (project.ConfigurationManager.ActiveConfiguration == null)
+                        {
+                            LogManager.ForContext<Solution>().Warning("ActiveConfiguration for project {UniqueName} was null.", project?.UniqueName);
+                        }
                         projectItem.Configuration = @"N\A";
                         projectItem.Platform = @"N\A";
                     }
@@ -188,14 +201,11 @@ namespace BuildVision.Helpers
                 try
                 {
                     projectItem.Framework = project.GetFrameworkString();
-
                     var flavourTypes = project.GetFlavourTypes().ToList();
                     projectItem.FlavourType = string.Join("; ", flavourTypes);
                     projectItem.MainFlavourType = flavourTypes.FirstOrDefault();
-
                     projectItem.OutputType = project.GetOutputType();
                     projectItem.ExtenderNames = project.GetExtenderNames();
-
                     projectItem.RootNamespace = project.GetRootNamespace();
                 }
                 catch (Exception ex)

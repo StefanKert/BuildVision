@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using BuildVision.Common;
 using BuildVision.Common.Diagnostics;
 using BuildVision.Common.Logging;
@@ -88,10 +86,14 @@ namespace BuildVision.Core
         {
             try
             {
-                if (!TryGetProjectItem(projectEntry, out var projectItem))
+                var projectItem = projectEntry.ProjectItem;
+                if (projectItem == null)
                 {
-                    projectEntry.IsInvalid = true;
-                    return;
+                    if (!TryGetProjectItem(projectEntry, out projectItem))
+                    {
+                        projectEntry.IsInvalid = true;
+                        return;
+                    }
                 }
 
                 var errorItem = new ErrorItem(errorLevel);
@@ -135,29 +137,36 @@ namespace BuildVision.Core
 
         private bool TryGetProjectItem(BuildProjectContextEntry projectEntry, out IProjectItem projectItem)
         {
-            projectItem = projectEntry.ProjectItem;
+            projectItem = projectEntry?.ProjectItem;
             if (projectItem != null)
             {
                 return true;
             }
 
-            string projectFile = projectEntry.FileName;
+            string projectFile = projectEntry.ProjectFile;
             if (ProjectExtensions.IsProjectHidden(projectFile))
             {
                 return false;
             }
 
             var projectProperties = projectEntry.Properties;
-            var project = Projects.FirstOrDefault(x => x.FullName == projectFile);
-
             if (projectProperties.ContainsKey("Configuration") && projectProperties.ContainsKey("Platform"))
             {
                 string projectConfiguration = projectProperties["Configuration"];
                 string projectPlatform = projectProperties["Platform"];
-                projectItem = Projects.First(item => $"{item.FullName}-{item.Configuration}|{item.Platform.Replace(" ", "")}" == $"{projectFile}-{projectConfiguration}|{projectPlatform}");
+                _logger.Information("Lookup ProjectItem for ProjectFile='{ProjectFile}', Configuration='{ProjectConfiguration}, Platform='{ProjectPlatform}'.", projectFile, projectConfiguration, projectPlatform);
+                projectItem = Projects.FirstOrDefault(item => $"{item.FullName}-{item.Configuration}|{item.Platform.Replace(" ", "")}" == $"{projectFile}-{projectConfiguration}|{projectPlatform}");
                 if (projectItem == null)
                 {
-                    _logger.Warning("Project Item not found by: UniqueName='{UniqueName}', Configuration='{ProjectConfiguration}, Platform='{ProjectPlatform}'.", project.UniqueName, projectConfiguration, projectPlatform);
+                    var project = Projects.FirstOrDefault(x => x.FullName == projectFile);
+                    if (project == null)
+                    {
+                        _logger.Error("Project Item and Project were not found by: ProjectFile='{ProjectFile}', Configuration='{ProjectConfiguration}, Platform='{ProjectPlatform}'.", projectFile, projectConfiguration, projectPlatform);
+                    }
+                    else
+                    {
+                        _logger.Warning("Project Item not found by: UniqueName='{UniqueName}', Configuration='{ProjectConfiguration}, Platform='{ProjectPlatform}'.", project.UniqueName, projectConfiguration, projectPlatform);
+                    }
                     return false;
                 }
             }
@@ -188,12 +197,13 @@ namespace BuildVision.Core
 
             _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildBegin);
             _timer = new Timer(state => BuildUpdate(), null, BuildInProcessQuantumSleep, BuildInProcessQuantumSleep);
-            
+
             string message = _buildMessagesFactory.GetBuildBeginMajorMessage(BuildInformationModel);
             _statusBarNotificationService.ShowTextWithFreeze(message);
             _origTextCurrentState = message;
             BuildInformationModel.StateMessage = _origTextCurrentState;
-            _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
+            UpdateTaskBar();
+            BuildStateChanged();
 
             DiagnosticsClient.TrackEvent("BuildStarted", new Dictionary<string, string>
             {
@@ -210,38 +220,28 @@ namespace BuildVision.Core
                 return;
             }
 
-            try
+            var projInCollection = Projects.FirstOrDefault(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == ProjectIdentifierGenerator.GetIdentifierForProjectItem(projectItem));
+            if (projInCollection == null)
             {
-                var projInCollection = Projects.FirstOrDefault(item => ProjectIdentifierGenerator.GetIdentifierForProjectItem(item) == ProjectIdentifierGenerator.GetIdentifierForProjectItem(projectItem));
-                if (projInCollection == null)
-                {
-                    Projects.Add(projectItem);
-                    projInCollection = projectItem;
-                }
-                projInCollection.State = BuildInformationModel.BuildAction.GetProjectState();
-                projInCollection.BuildFinishTime = null;
-                projInCollection.BuildStartTime = DateTime.Now;
-
-                _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
-                _currentQueuePosOfBuildingProject++;
-
-                if (BuildInformationModel.BuildScope == BuildScope.Solution &&
-                    (BuildInformationModel.BuildAction == BuildAction.Build ||
-                     BuildInformationModel.BuildAction == BuildAction.RebuildAll))
-                {
-                    projInCollection.BuildOrder = _currentQueuePosOfBuildingProject;
-                }
-                BuildInformationModel.CurrentProject = projInCollection;
+                Projects.Add(projectItem);
+                projInCollection = projectItem;
             }
-            catch (Exception ex)
+            projInCollection.State = BuildInformationModel.BuildAction.GetProjectState();
+            projInCollection.BuildFinishTime = null;
+            projInCollection.BuildStartTime = DateTime.Now;
+
+            UpdateTaskBar();
+
+            _currentQueuePosOfBuildingProject++;
+
+            if (BuildInformationModel.BuildScope == BuildScope.Solution &&
+                (BuildInformationModel.BuildAction == BuildAction.Build ||
+                 BuildInformationModel.BuildAction == BuildAction.RebuildAll))
             {
-                _logger.Error(ex, "Failed during Project Build start.");
+                projInCollection.BuildOrder = _currentQueuePosOfBuildingProject;
             }
-        }
-
-        private int GetFinishedProjectsCount()
-        {
-            return BuildInformationModel.SucceededProjectsCount + BuildInformationModel.UpToDateProjectsCount + BuildInformationModel.WarnedProjectsCount + BuildInformationModel.FailedProjectsCount;
+            BuildInformationModel.CurrentProject = projInCollection;
+            BuildStateChanged();
         }
 
         public void ProjectBuildFinished(BuildAction buildAction, string projectIdentifier, bool success, bool canceled)
@@ -274,7 +274,8 @@ namespace BuildVision.Core
                 BuildInformationModel.CurrentProject = Projects.Last();
             }
 
-            _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
+            UpdateTaskBar();
+            BuildStateChanged();
         }
 
         private ProjectState GetProjectState(bool success, bool canceled, IProjectItem currentProject)
@@ -313,7 +314,7 @@ namespace BuildVision.Core
             return projectState;
         }
 
-        public void BuildUpdate()
+        private void BuildUpdate()
         {
             if(BuildInformationModel.CurrentBuildState != BuildState.InProgress)
             {
@@ -322,7 +323,7 @@ namespace BuildVision.Core
             var message = _origTextCurrentState + _buildMessagesFactory.GetBuildBeginExtraMessage(BuildInformationModel);
             BuildInformationModel.StateMessage = message;
             _statusBarNotificationService.ShowTextWithFreeze(message);
-            foreach (var project in Projects.Where(x => x.BuildStartTime.HasValue && !x.BuildFinishTime.HasValue))
+            foreach (var project in Projects.Where(x => x.State != ProjectState.Cleaning && x.State != ProjectState.Building))
             {
                 project.RaiseBuildElapsedTimeChanged();
             }
@@ -372,8 +373,8 @@ namespace BuildVision.Core
             var message = _buildMessagesFactory.GetBuildDoneMessage(BuildInformationModel);
             _statusBarNotificationService.ShowText(message);
             BuildInformationModel.StateMessage = message;
-            _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, GetFinishedProjectsCount());
-
+            UpdateTaskBar();
+            BuildStateChanged();
             if (BuildInformationModel.FailedProjectsCount > 0 || canceled)
             {
                 _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildError);
@@ -407,5 +408,13 @@ namespace BuildVision.Core
                 }
             }
         }
+
+        private void UpdateTaskBar()
+        {
+            _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, BuildInformationModel.GetFinishedProjectsCount());
+        }
+
+
+        public event Action BuildStateChanged;
     }
 }

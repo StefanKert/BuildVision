@@ -133,7 +133,6 @@ namespace BuildVision.UI.ViewModels
                 {
                     ControlSettings.GridSettings.Sort = value;
                     OnPropertyChanged(nameof(GridSortDescription));
-                    OnPropertyChanged(nameof(GroupedProjectsList));
                 }
             }
         }
@@ -154,13 +153,12 @@ namespace BuildVision.UI.ViewModels
         {
             get
             {
-                var groupedList = new ListCollectionView(Projects); 
+                var groupedList = CollectionViewSource.GetDefaultView(Projects) as ListCollectionView;
                 if (!string.IsNullOrWhiteSpace(GridGroupPropertyName))
                 {
-                    Debug.Assert(groupedList.GroupDescriptions != null);
                     groupedList.GroupDescriptions.Add(new PropertyGroupDescription(GridGroupPropertyName));
                 }
-                groupedList.CustomSort = GetProjectItemSorter(GridSortDescription);
+                groupedList.CustomSort = SortOrderFactory.GetProjectItemSorter(GridSortDescription);
                 groupedList.IsLiveGrouping = true;
                 groupedList.IsLiveSorting = true;
                 return groupedList;
@@ -215,13 +213,13 @@ namespace BuildVision.UI.ViewModels
             ControlSettings = settingsProvider.Settings;
             Projects = _buildInformationProvider.Projects;
 
-            _buildInformationProvider.BuildStateChanged += () => OnPropertyChanged(nameof(GroupedProjectsList));
+            _buildInformationProvider.BuildStateChanged += () => { };
 
             _settingsProvider = settingsProvider;
             _settingsProvider.SettingsChanged += () =>
             {
                 OnControlSettingsChanged();
-                SyncColumnSettings();  
+                SyncColumnSettings();
             };
 
             ControlSettings.PropertyChanged += (sender, e) =>
@@ -282,32 +280,8 @@ namespace BuildVision.UI.ViewModels
 
             e.Handled = true;
             e.Column.SortDirection = newSortDirection;
-
             GridSortDescription = new SortDescription(newSortDirection.ToMedia(), e.Column.GetBindedProperty());
-        }
-
-        private ProjectItemColumnSorter GetProjectItemSorter(SortDescription sortDescription)
-        {
-            var sortOrder = sortDescription.Order;
-            string sortPropertyName = sortDescription.Property;
-
-            if (sortOrder != SortOrder.None && !string.IsNullOrEmpty(sortPropertyName))
-            {
-                ListSortDirection? sortDirection = sortOrder.ToSystem();
-                Debug.Assert(sortDirection != null);
-
-                try
-                {
-                    return new ProjectItemColumnSorter(sortDirection.Value, sortPropertyName);
-                }
-                catch (PropertyNotFoundException ex)
-                {
-                    _logger.Error(ex, "Trying to sort Project Items by nonexistent property.");
-                    return null;
-                }
-            }
-
-            return null;
+            GroupedProjectsList.CustomSort = SortOrderFactory.GetProjectItemSorter(GridSortDescription);
         }
 
         public void GenerateColumns()
@@ -393,5 +367,72 @@ namespace BuildVision.UI.ViewModels
         #endregion
 
         public event Action<Type> ShowOptionPage;
+    }
+
+    public class SortOrderFactory
+    {
+        public static ProjectItemColumnSorter GetProjectItemSorter(SortDescription sortDescription)
+        {
+            var sortOrder = sortDescription.Order;
+            string sortPropertyName = sortDescription.Property;
+            if (sortOrder != SortOrder.None && !string.IsNullOrEmpty(sortPropertyName))
+            {
+                ListSortDirection? sortDirection = sortOrder.ToSystem();
+                Debug.Assert(sortDirection != null);
+
+                switch (sortPropertyName)
+                {
+                    case nameof(ProjectItem.BuildElapsedTime):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.BuildElapsedTime);
+                    case nameof(ProjectItem.BuildFinishTime):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.BuildFinishTime);
+                    case nameof(ProjectItem.BuildOrder):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.BuildOrder);
+                    case nameof(ProjectItem.CommonType):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.CommonType);
+                    case nameof(ProjectItem.Configuration):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.Configuration);
+                    case nameof(ProjectItem.ErrorsCount):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.ErrorsCount);
+                    case nameof(ProjectItem.ExtenderNames):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.ExtenderNames);
+                    case nameof(ProjectItem.FlavourType):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.FlavourType);
+                    case nameof(ProjectItem.Framework):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.Framework);
+                    case nameof(ProjectItem.FullName):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.FullName);
+                    case nameof(ProjectItem.FullPath):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.FullPath);
+                    case nameof(ProjectItem.IsBatchBuildProject):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.IsBatchBuildProject);
+                    case nameof(ProjectItem.Language):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.Language);
+                    case nameof(ProjectItem.MainFlavourType):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.MainFlavourType);
+                    case nameof(ProjectItem.MessagesCount):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.MessagesCount);
+                    case nameof(ProjectItem.Name):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.Name);
+                    case nameof(ProjectItem.OutputType):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.OutputType);
+                    case nameof(ProjectItem.Platform):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.Platform);
+                    case nameof(ProjectItem.RootNamespace):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.RootNamespace);
+                    case nameof(ProjectItem.SolutionFolder):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.SolutionFolder);
+                    case nameof(ProjectItem.State):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.State);
+                    case nameof(ProjectItem.Success):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.Success);
+                    case nameof(ProjectItem.UniqueName):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.UniqueName);
+                    case nameof(ProjectItem.WarningsCount):
+                        return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.WarningsCount);
+                }
+            }
+            return null;
+        }
     }
 }

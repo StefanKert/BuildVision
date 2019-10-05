@@ -413,7 +413,6 @@ namespace BuildVision.Core
             _taskBarInfoService.UpdateTaskBarInfo(BuildInformationModel.CurrentBuildState, BuildInformationModel.BuildScope, Projects.Count, BuildInformationModel.GetFinishedProjectsCount());
         }
 
-
         public event Action BuildStateChanged;
     }
 }

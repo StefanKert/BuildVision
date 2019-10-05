@@ -43,8 +43,6 @@ namespace BuildVision.Tool.Building
             {
                 _projectsLookup.Add(entry.ProjectFile, entry);
             }
-
-            _logger.Information("Currently there are {Count} projects listed.", _projectsLookup.Count);
         }
 
         public void Attach()

@@ -154,7 +154,6 @@ namespace BuildVision.Core
             {
                 string projectConfiguration = projectProperties["Configuration"];
                 string projectPlatform = projectProperties["Platform"];
-                _logger.Information("Lookup ProjectItem for ProjectFile='{ProjectFile}', Configuration='{ProjectConfiguration}, Platform='{ProjectPlatform}'.", projectFile, projectConfiguration, projectPlatform);
                 projectItem = Projects.FirstOrDefault(item => $"{item.FullName}-{item.Configuration}|{item.Platform.Replace(" ", "")}" == $"{projectFile}-{projectConfiguration}|{projectPlatform}");
                 if (projectItem == null)
                 {

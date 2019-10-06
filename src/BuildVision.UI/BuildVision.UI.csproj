@@ -189,6 +189,7 @@
     <Compile Include="Models\SolutionModel.cs" />
     <Compile Include="ViewModels\BuildVisionPaneViewModel.cs" />
     <Compile Include="Settings\Models\WindowSettings.cs" />
+    <Compile Include="ViewModels\SortOrderFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\AlternatingRowBackgroundConverter.cs" />

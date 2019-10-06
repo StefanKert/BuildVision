@@ -14,84 +14,59 @@ namespace BuildVision.UI.Models
         private const string ResourcesUri = @"Resources/ProjectItem.Resources.xaml";
 
         public bool IsBatchBuildProject { get; set; }
-
-        private string _uniqueName;
+        public bool Success { get; set; }
 
         [GridColumn("ProjectItemHeader_UniqueName", ColumnsOrder.UniqueName, false, ExampleValue = @"ConsoleApplication1\ConsoleApplication1.csproj")]
-        public string UniqueName
-        {
-            get => _uniqueName;
-            set => SetProperty(ref _uniqueName, value);
-        }
-
-        private string _name;
-
+        public string UniqueName { get; set; }
         [GridColumn("ProjectItemHeader_Name", ColumnsOrder.Name, true, ExampleValue = @"ConsoleApplication1")]
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
-
-        private string _fullName;
-
+        public string Name { get; set; }
         [GridColumn("ProjectItemHeader_FullName", ColumnsOrder.FullName, false, ExampleValue = @"D:\Projects\ConsoleApplication1\ConsoleApplication1.csproj")]
-        public string FullName
-        {
-            get => _fullName;
-            set => SetProperty(ref _fullName, value);
-        }
-
-        private string _fullPath;
-
+        public string FullName { get; set; }
         [GridColumn("ProjectItemHeader_FullPath", ColumnsOrder.FullPath, false, ExampleValue = @"D:\Projects\ConsoleApplication1")]
-        public string FullPath
-        {
-            get => _fullPath;
-            set => SetProperty(ref _fullPath, value);
-        }
-
-        private string _language;
-
+        public string FullPath { get; set; }
         [GridColumn("ProjectItemHeader_Language", ColumnsOrder.Language, true, ExampleValue = @"C#")]
-        public string Language
-        {
-            get => _language;
-            set => SetProperty(ref _language, value);
-        }
-
-        private string _commonType;
-
-        /// <remarks>
-        /// See registered types in HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\[Version "11.0"]\Projects.
-        /// </remarks>
+        public string Language { get; set; }
         [GridColumn("ProjectItemHeader_CommonType", ColumnsOrder.CommonType, false, ExampleValue = @"Windows")]
-        public string CommonType
-        {
-            get => _commonType;
-            set => SetProperty(ref _commonType, value);
-        }
-
-        private string _configuration;
-
+        public string CommonType { get; set; }
         [GridColumn("ProjectItemHeader_Configuration", ColumnsOrder.Configuration, true, ExampleValue = @"Debug")]
-        public string Configuration
-        {
-            get => _configuration;
-            set => SetProperty(ref _configuration, value);
-        }
-
-        private string _platform;
-
+        public string Configuration { get; set; }
         [GridColumn("ProjectItemHeader_Platform", ColumnsOrder.Platform, true, ExampleValue = @"x86")]
-        public string Platform
+        public string Platform { get; set; }
+        [GridColumn("ProjectItemHeader_Framework", ColumnsOrder.Framework, false, ExampleValue = @"3.5")]
+        public string Framework { get; set; }
+        [GridColumn("ProjectItemHeader_FlavourType", ColumnsOrder.FlavourType, true, ExampleValue = @"Windows; VSTA")]
+        public string FlavourType { get; set; }
+        [GridColumn("ProjectItemHeader_MainFlavourType", ColumnsOrder.MainFlavourType, false, ExampleValue = @"VSTA")]
+        public string MainFlavourType { get; set; }
+        [GridColumn("ProjectItemHeader_OutputType", ColumnsOrder.OutputType, false, ExampleValue = @"Library")]
+        public string OutputType { get; set; }
+        [GridColumn("ProjectItemHeader_ExtenderNames", ColumnsOrder.ExtenderNames, false, ExampleValue = @"VST")]
+        public string ExtenderNames { get; set; }
+        [GridColumn("ProjectItemHeader_RootNamespace", ColumnsOrder.RootNamespace, false, ExampleValue = @"MyApplication")]
+        public string RootNamespace { get; set; }
+        [GridColumn("ProjectItemHeader_SolutionFolder", ColumnsOrder.SolutionFolder, false, ExampleValue = @"SolutionFolder1\SolutionFolder2")]
+        public string SolutionFolder { get; set; }
+
+        [GridColumn("ProjectItemHeader_StateBitmap", ColumnsOrder.StateBitmap, true, ImageKey = GridColumnAttribute.EmptyHeaderImageKey)]
+        public ControlTemplate StateBitmap => _state.GetAssociatedContent();
+        [GridColumn("ProjectItemHeader_BuildElapsedTime", ColumnsOrder.BuildElapsedTime, true, ValueStringFormat = @"mm\:ss", TimeSpanExampleValue = @"00:09:21.60")]
+        public TimeSpan? BuildElapsedTime
         {
-            get => _platform;
-            set => SetProperty(ref _platform, value);
+            get
+            {
+                if (_buildStartTime == null)
+                {
+                    return null;
+                }
+                if (_buildFinishTime == null)
+                {
+                    return DateTime.Now.Subtract(_buildStartTime.Value);
+                }
+                return _buildFinishTime.Value.Truncate(TimeSpan.FromSeconds(1)).Subtract(_buildStartTime.Value.Truncate(TimeSpan.FromSeconds(1)));
+            }
         }
 
         private ProjectState _state;
-
         [GridColumn("ProjectItemHeader_State", ColumnsOrder.State, true, ExampleValue = @"BuildDone")]
         public ProjectState State
         {
@@ -102,12 +77,7 @@ namespace BuildVision.UI.Models
                 OnPropertyChanged(nameof(StateBitmap));
             }
         }
-
-        [GridColumn("ProjectItemHeader_StateBitmap", ColumnsOrder.StateBitmap, true, ImageKey = GridColumnAttribute.EmptyHeaderImageKey)]
-        public ControlTemplate StateBitmap => _state.GetAssociatedContent();
-
         private DateTime? _buildStartTime;
-
         [GridColumn("ProjectItemHeader_BuildStartTime", ColumnsOrder.BuildStartTime, true, ValueStringFormat = @"HH:mm:ss", DateTimeExampleValue = @"2012-07-27T20:06:12.3691406+06:00")]
         public DateTime? BuildStartTime
         {
@@ -119,9 +89,7 @@ namespace BuildVision.UI.Models
                 OnPropertyChanged(nameof(BuildElapsedTime));
             }
         }
-
         private DateTime? _buildFinishTime;
-
         [GridColumn("ProjectItemHeader_BuildFinishTime", ColumnsOrder.BuildFinishTime, true, ValueStringFormat = @"HH:mm:ss", DateTimeExampleValue = @"2012-07-27T20:06:12.3691406+06:00")]
         public DateTime? BuildFinishTime
         {
@@ -131,26 +99,6 @@ namespace BuildVision.UI.Models
                 SetProperty(ref _buildFinishTime, value);
                 OnPropertyChanged(nameof(BuildFinishTime));
                 OnPropertyChanged(nameof(BuildElapsedTime));
-            }
-        }
-
-        [GridColumn("ProjectItemHeader_BuildElapsedTime", ColumnsOrder.BuildElapsedTime, true, ValueStringFormat = @"mm\:ss", TimeSpanExampleValue = @"00:09:21.60")]
-        public TimeSpan? BuildElapsedTime
-        {
-            get
-            {
-                if (_buildStartTime == null)
-                {
-                    return null;
-                }
-
-                if (_buildFinishTime == null)
-                {
-                    return DateTime.Now.Subtract(_buildStartTime.Value);
-                }
-
-                return _buildFinishTime.Value.Truncate(TimeSpan.FromSeconds(1))
-                  .Subtract(_buildStartTime.Value.Truncate(TimeSpan.FromSeconds(1)));
             }
         }
 
@@ -184,53 +132,7 @@ namespace BuildVision.UI.Models
             set => SetProperty(ref _messagesCount, value);
         }
 
-        private string _framework;
-
-        [GridColumn("ProjectItemHeader_Framework", ColumnsOrder.Framework, false, ExampleValue = @"3.5")]
-        public string Framework
-        {
-            get => _framework;
-            set => SetProperty(ref _framework, value);
-        }
-
-        private string _flavourType;
-
-        [GridColumn("ProjectItemHeader_FlavourType", ColumnsOrder.FlavourType, true, ExampleValue = @"Windows; VSTA")]
-        public string FlavourType
-        {
-            get => _flavourType;
-            set => SetProperty(ref _flavourType, value);
-        }
-
-        private string _mainFlavourType;
-
-        [GridColumn("ProjectItemHeader_MainFlavourType", ColumnsOrder.MainFlavourType, false, ExampleValue = @"VSTA")]
-        public string MainFlavourType
-        {
-            get => _mainFlavourType;
-            set => SetProperty(ref _mainFlavourType, value);
-        }
-
-        private string _outputType;
-
-        [GridColumn("ProjectItemHeader_OutputType", ColumnsOrder.OutputType, false, ExampleValue = @"Library")]
-        public string OutputType
-        {
-            get => _outputType;
-            set => SetProperty(ref _outputType, value);
-        }
-
-        private string _extenderNames;
-
-        [GridColumn("ProjectItemHeader_ExtenderNames", ColumnsOrder.ExtenderNames, false, ExampleValue = @"VST")]
-        public string ExtenderNames
-        {
-            get => _extenderNames;
-            set => SetProperty(ref _extenderNames, value);
-        }
-
         private int? _buildOrder;
-
         [GridColumn("ProjectItemHeader_BuildOrder", ColumnsOrder.BuildOrder, false, ImageDictionaryUri = ResourcesUri, ImageKey = "BuildOrder", Width = 23, ExampleValue = 4)]
         public int? BuildOrder
         {
@@ -238,34 +140,9 @@ namespace BuildVision.UI.Models
             set => SetProperty(ref _buildOrder, value);
         }
 
-        private string _rootNamespace;
+        public ProjectItem() => State = ProjectState.Pending;
 
-        [GridColumn("ProjectItemHeader_RootNamespace", ColumnsOrder.RootNamespace, false, ExampleValue = @"MyApplication")]
-        public string RootNamespace
-        {
-            get => _rootNamespace;
-            set => SetProperty(ref _rootNamespace, value);
-        }
-
-        private string _solutionFolder;
-
-        [GridColumn("ProjectItemHeader_SolutionFolder", ColumnsOrder.SolutionFolder, false, ExampleValue = @"SolutionFolder1\SolutionFolder2")]
-        public string SolutionFolder
-        {
-            get => _solutionFolder;
-            set => SetProperty(ref _solutionFolder, value);
-        }
-        public bool Success { get; set; }
-
-        public ProjectItem()
-        {
-            State = ProjectState.Pending;
-        }
-
-        public void RaiseBuildElapsedTimeChanged()
-        {
-            OnPropertyChanged(nameof(BuildElapsedTime));
-        }
+        public void RaiseBuildElapsedTimeChanged() => OnPropertyChanged(nameof(BuildElapsedTime));
 
         public void AddErrorItem(ErrorItem errorItem)
         {

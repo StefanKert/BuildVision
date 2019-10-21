@@ -21,6 +21,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Serilog;
+using SerilogTraceListener;
 using Task = System.Threading.Tasks.Task;
 using ui = Microsoft.VisualStudio.VSConstants.UICONTEXT;
 
@@ -63,6 +64,10 @@ namespace BuildVision.Core
         public BuildVisionPackage()
         {
             _logger.Information("Starting {ProductName} with Version {PackageVersion}", Resources.ProductName, ApplicationInfo.GetPackageVersion(this));
+
+            PresentationTraceSources.Refresh();
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new SerilogTraceListener.SerilogTraceListener(_logger));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error | SourceLevels.Critical | SourceLevels.Warning;
 
             if (Application.Current != null)
             {

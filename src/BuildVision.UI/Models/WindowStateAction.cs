@@ -6,11 +6,11 @@ namespace BuildVision.UI.Settings.Models.ToolWindow
     {
         public WindowState State { get; set; }
 
+        public WindowStateAction() { }
+
         public WindowStateAction(WindowState state)
         {
             State = state;
         }
-
-        public WindowStateAction() { }
     }
 }

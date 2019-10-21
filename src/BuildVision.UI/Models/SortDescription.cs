@@ -8,12 +8,12 @@ namespace BuildVision.UI.Settings.Models.Sorting
 
         public string Property { get; set; }
 
+        public SortDescription() { }
+
         public SortDescription(SortOrder order, string property)
         {
             Order = order;
             Property = property;
         }
-
-        public SortDescription() { }
     }
 }

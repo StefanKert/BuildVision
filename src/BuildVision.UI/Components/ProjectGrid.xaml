@@ -128,7 +128,7 @@
                         <Setter Property="Foreground" Value="{DynamicResource ToolWindowTextKey}" />
                     </Trigger>
 
-                    <DataTrigger Binding="{Binding BuildInformationModel.ErrorsCount, Converter={StaticResource NumberToIsPositiveConverter}}" Value="True">
+                    <DataTrigger Binding="{Binding ErrorsCount, Converter={StaticResource NumberToIsPositiveConverter}}" Value="True">
                         <Setter Property="Background" Value="PaleVioletRed" />
                         <Setter Property="Foreground" Value="Black" />
                     </DataTrigger>
@@ -161,7 +161,7 @@
                 <Setter Property="Foreground" Value="{DynamicResource ToolWindowTextKey}" />
                 <Setter Property="BorderThickness" Value="0,1,0,1" />
                 <Setter Property="BorderBrush" Value="{Binding Background, RelativeSource={RelativeSource self}}" />
-                <Setter Property="DetailsVisibility" Value="{Binding BuildInformationModel.ErrorsCount, Mode=OneWay, Converter={StaticResource PositiveNumberToVisibilityConverter}}" />
+                <Setter Property="DetailsVisibility" Value="{Binding ErrorsCount, Mode=OneWay, Converter={StaticResource PositiveNumberToVisibilityConverter}}" />
                 <EventSetter Event="PreviewMouseLeftButtonDown" Handler="DataGridRowOnPreviewMouseLeftButtonDown" />
 
                 <Style.Triggers>

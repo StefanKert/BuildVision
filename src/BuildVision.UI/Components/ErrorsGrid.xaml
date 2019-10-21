@@ -7,6 +7,7 @@
              xmlns:contracts="clr-namespace:BuildVision.Contracts;assembly=BuildVision.Contracts"
              xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:models="clr-namespace:BuildVision.UI.Models"
+             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
              mc:Ignorable="d" 
              d:DesignHeight="300" 
              d:DesignWidth="300" 
@@ -53,8 +54,8 @@
                 <DataGrid.Resources>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"  Color="{Binding ElementName=ToolWindowTextKey, Path=Color}" />
-                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{Binding ElementName=ToolWindowTextKey, Path=Color}" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"  Color="{DynamicResource vsfx.VsColors.ToolWindowTextKey}" />
+                    <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="{DynamicResource vsfx.VsColors.ToolWindowTextKey}" />
                     <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
                 </DataGrid.Resources>
                 <DataGrid.Columns>

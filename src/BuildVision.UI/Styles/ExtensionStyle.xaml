@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:environment="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.12.0">
+                    xmlns:environment="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0">
 
   <SolidColorBrush x:Key="ToolWindowBackgroundKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.ToolWindowBackgroundColorKey}}"/>
   <SolidColorBrush x:Key="ToolboxBackgroundKey" Color="{DynamicResource {x:Static environment:EnvironmentColors.ToolboxBackgroundColorKey}}"/>

@@ -127,12 +127,12 @@
                       IsChecked="{Binding EnableStatusBarOutput}" />
 
                 <CheckBox Margin="8"
-                      Content="{x:Static res:Resources.BuildMessagesSettings_DisplayWarningSignCheckBox}"
-                      IsChecked="{Binding ShowWarningSignForBuilds}" />
-
-                <CheckBox Margin="8"
                       Content="{x:Static res:Resources.BuildMessagesSettings_HideUpToDateTargets}"
                       IsChecked="{Binding HideUpToDateTargets}" />
+
+                <CheckBox Margin="8"
+                      Content="{x:Static res:Resources.GeneralSettings_ParticipateInTelemetry}"
+                      IsChecked="{Binding ParticipateInTelemetry}" />
 
                 <Grid Margin="4,0,0,0">
                     <Grid.ColumnDefinitions>
@@ -173,10 +173,8 @@
             <Run Text="{Binding AppVersion, StringFormat={}{0};}"/>
             <Run Text="Build"/>
             <Run Text="{Binding BuildVersion}"/>
-            <Run Text="on"/>
-            <Run Text="{Binding BuildDateTime, StringFormat=F}"/>
             <LineBreak/>
-            <Run Text=" © 2017 by Stefan Kert, Tom Schmiedlechner and Aleksey Nagovitsyn"/>
+            <Run Text="© 2019 by Stefan Kert"/>
             <Hyperlink NavigateUri="https://twitter.com/StefanKert" 
                        ToolTip="https://twitter.com/StefanKert"
                        RequestNavigate="HyperlinkOnRequestNavigate">

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Controls;
@@ -11,10 +11,11 @@ namespace BuildVision.UI.Converters
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             var collectionViewGroup = (CollectionViewGroup)values[0];
-            var collapsedGroups = (IList<string>)values[1];
 
-            if (collapsedGroups == null || collapsedGroups.Count == 0)
+            if (!(values[1] is IList<string> collapsedGroups) || collapsedGroups.Count == 0)
+            {
                 return true;
+            }
 
             string groupId = GetGroupIdentifier(collectionViewGroup);
             bool collapsed = collapsedGroups.Contains(groupId);
@@ -28,15 +29,18 @@ namespace BuildVision.UI.Converters
 
         public static void SaveState(Expander exp, bool collapsed, IList<string> collapsedGroups)
         {
-            var collectionViewGroup = exp.DataContext as CollectionViewGroup;
-            if (collectionViewGroup == null)
+            if (!(exp.DataContext is CollectionViewGroup collectionViewGroup))
+            {
                 return;
+            }
 
             string groupId = GetGroupIdentifier(collectionViewGroup);
             if (collapsed)
             {
                 if (!collapsedGroups.Contains(groupId))
+                {
                     collapsedGroups.Add(groupId);
+                }
             }
             else
             {
@@ -48,12 +52,11 @@ namespace BuildVision.UI.Converters
         {
             object groupId = collectionViewGroup.Name;
             if (groupId == null)
+            {
                 return null;
+            }
 
-            if (groupId is string)
-                return (string)groupId;
-
-            return groupId.ToString();
+            return groupId is string ? (string)groupId : groupId.ToString();
         }
     }
 }

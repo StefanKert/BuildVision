@@ -1,13 +1,13 @@
-﻿using BuildVision.Contracts;
-using BuildVision.UI.Common.Logging;
-using BuildVision.UI.Extensions;
-using BuildVision.UI.Models;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using BuildVision.Common.Logging;
+using BuildVision.Contracts;
+using BuildVision.UI.Extensions;
+using BuildVision.UI.Models;
 
 namespace BuildVision.UI
 {
@@ -16,6 +16,9 @@ namespace BuildVision.UI
     /// </summary>
     public partial class ErrorsGrid : UserControl
     {
+        public static readonly DependencyProperty ProjectItemProperty = DependencyProperty.Register(nameof(ProjectItem), typeof(ProjectItem), typeof(ErrorsGrid));
+        public static DependencyProperty NavigateToErrorCommandProperty = DependencyProperty.Register(nameof(NavigateToErrorCommand), typeof(ICommand), typeof(ErrorsGrid));
+
         private ScrollViewer _errorsGridScrollViewer;
 
         public ErrorsGrid()
@@ -23,12 +26,17 @@ namespace BuildVision.UI
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty ProjectItemProperty = DependencyProperty.Register(nameof(ProjectItem), typeof(ProjectItem), typeof(ErrorsGrid));
 
         public ProjectItem ProjectItem
         {
             get => (ProjectItem)GetValue(ProjectItemProperty);
             set => SetValue(ProjectItemProperty, value);
+        }
+
+        public ICommand NavigateToErrorCommand
+        {
+            get => (ICommand)GetValue(NavigateToErrorCommandProperty);
+            set => SetValue(NavigateToErrorCommandProperty, value);
         }
 
         private void ErrorsGridRowOnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -37,12 +45,12 @@ namespace BuildVision.UI
             {
                 var row = (DataGridRow)sender;
                 var errorItem = (ErrorItem)row.Item;
-                errorItem.GoToError();
+                NavigateToErrorCommand.Execute(errorItem);
                 e.Handled = true;
             }
             catch (Exception ex)
             {
-                ex.Trace("Navigate to error item exception.");
+                LogManager.ForContext<ErrorsGrid>().Error(ex, "Navigate to error item exception.");
             }
         }
 
@@ -50,7 +58,9 @@ namespace BuildVision.UI
         private void ErrorsGridOnPreviewMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (_errorsGridScrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible)
+            {
                 return;
+            }
 
             e.Handled = true;
             var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
@@ -61,7 +71,6 @@ namespace BuildVision.UI
             var parent = (UIElement)VisualTreeHelper.GetParent((DependencyObject)sender);
             parent.RaiseEvent(eventArg);
         }
-
 
         private void ErrorsGridLoaded(object sender, RoutedEventArgs e)
         {

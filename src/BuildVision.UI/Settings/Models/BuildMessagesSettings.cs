@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using BuildVision.Common;
 using BuildVision.UI.Models;
 
@@ -65,7 +65,9 @@ namespace BuildVision.UI.Settings.Models
                     OnPropertyChanged(nameof(BuildBeginMajorMessageStringFormat));
 
                     if (!value.Contains("{0}"))
+                    {
                         throw new FormatException("Format must contain '{0}' argument.");
+                    }
 
                     string tmp = string.Format(value, "test");
                 }
@@ -83,7 +85,9 @@ namespace BuildVision.UI.Settings.Models
                     OnPropertyChanged(nameof(BuildDoneMajorMessageStringFormat));
 
                     if (!value.Contains("{0}"))
+                    {
                         throw new FormatException("Format must contain '{0}' argument.");
+                    }
 
                     string tmp = string.Format(value, "test");
                 }
@@ -131,7 +135,9 @@ namespace BuildVision.UI.Settings.Models
                     OnPropertyChanged(nameof(ExtraMessageStringFormat));
 
                     if (!value.Contains("{0}"))
+                    {
                         throw new FormatException("Format must contain '{0}' argument.");
+                    }
 
                     var tmp = string.Format(value, "test");
                 }

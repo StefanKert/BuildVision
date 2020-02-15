@@ -2,6 +2,7 @@
 {
     public enum ProjectState
     {
+        None,
         Pending,
         Skipped,
         BuildCancelled,

@@ -1,8 +1,6 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-
-using BuildVision.UI;
 using BuildVision.UI.DataGrid;
 using BuildVision.UI.Settings.Models.Columns;
 
@@ -23,18 +21,26 @@ namespace BuildVision.UI.Converters
         private static string FormatExample(object example, string stringFormat)
         {
             if (example == null)
+            {
                 return Resources.GridCellNoneTextInBrackets;
+            }
 
             try
             {
                 if (string.IsNullOrWhiteSpace(stringFormat))
+                {
                     return example.ToString();
+                }
 
                 if (example is DateTime)
+                {
                     return ((DateTime)example).ToString(stringFormat);
+                }
 
                 if (example is TimeSpan)
+                {
                     return ((TimeSpan)example).ToString(stringFormat);
+                }
 
                 return string.Format(stringFormat, example);
             }

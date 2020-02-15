@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BuildVision.Contracts
+﻿namespace BuildVision.Contracts
 {
-    public enum BuildActions
+    public enum BuildAction
     {
-        BuildActionBuild = 1,
-        BuildActionRebuildAll = 2,
-        BuildActionClean = 3,
-        BuildActionDeploy = 4
+        Build = 1,
+        RebuildAll = 2,
+        Clean = 3,
+        Deploy = 4,
+        Unknown = 5
     }
 }

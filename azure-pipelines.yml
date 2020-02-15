@@ -2,60 +2,78 @@ trigger:
   branches:
     include:
       - master
-      - develop
 
 pr:
   branches:
     include:
     - master
-    - develop
-
-pool:
-  vmImage: 'VS2017-Win2016'
 
 variables:
   BuildPlatform: 'Any CPU'
   BuildConfiguration: 'Release'
 
-steps:
-- task: DotNetCoreCLI@2  
-  inputs:
-    command: custom
-    custom: tool
-    arguments: install --tool-path . nbgv
-  displayName: Install NBGV tool
+jobs:
+  - job: Build
+    pool:
+      vmImage: vs2017-win2016
+    strategy:
+      matrix:
+        Config_Release:
+          BuildConfiguration: Release
+          BuildOutputDirectory: Vsix
+        Config_Marketplace:
+          BuildConfiguration: Marketplace
+          BuildOutputDirectory: Marketplace
+        Config_VSIXGallery:
+          BuildConfiguration: VsixGallery
+          BuildOutputDirectory: VsixGallery
 
-- script: nbgv cloud -a
-  displayName: Set Version
+    steps:
+    - task: DotNetCoreCLI@2  
+      inputs:
+        command: custom
+        custom: tool
+        arguments: install --tool-path . nbgv
+      displayName: Install NBGV tool
+      continueOnError: true
 
-- task: NuGetToolInstaller@0
+    -  powershell: |
+         mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: BuildVision.sln
+    - script: nbgv cloud -a
+      displayName: Set Version
 
-- task: MSBuild@1
-  displayName: Build BuildVision.sln
-  inputs:
-    solution: BuildVision.sln
-    platform: $(BuildPlatform)
-    configuration: $(BuildConfiguration)
+    - task: VisualStudioTestPlatformInstaller@1
+      displayName: VsTest Platform Installer
 
-- task: CopyFiles@2
-  inputs:
-    contents: '**/bin/$(BuildConfiguration)/*.vsix'
-    targetFolder: $(Build.ArtifactStagingDirectory)/artifacts
-    flattenFolders: true
+    - task: NuGetToolInstaller@0
 
-- task: DotNetCoreCLI@2
-  inputs:
-    command: test
-    projects: 'test/**/*.csproj'
-    arguments: -c $(BuildConfiguration) --no-build --no-restore
-  displayName: Run Tests
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: BuildVision.sln
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: $(Build.ArtifactStagingDirectory)/artifacts
-    ArtifactName: artifacts
-    publishLocation: Container
+    - task: MSBuild@1
+      displayName: Build BuildVision.sln
+      inputs:
+        solution: BuildVision.sln
+        platform: $(BuildPlatform)
+        configuration: $(BuildConfiguration)
+
+    - task: CopyFiles@2
+      inputs:
+        contents: '**/bin/$(BuildConfiguration)/*.vsix'
+        targetFolder: $(Build.ArtifactStagingDirectory)/$(BuildOutputDirectory)
+        flattenFolders: true
+
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: test
+        projects: 'test/**/BuildVision.UnitTests.csproj'
+        arguments: -c $(BuildConfiguration) --no-build --no-restore
+      displayName: Run Unittests
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)/$(BuildOutputDirectory)
+        ArtifactName: $(BuildOutputDirectory)
+        publishLocation: Container

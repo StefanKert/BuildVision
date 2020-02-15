@@ -19,11 +19,15 @@ namespace BuildVision.UI.Extensions
             {
                 DependencyObject child = VisualTreeHelper.GetChild(obj, i);
                 if (child is T)
+                {
                     return (T)child;
+                }
 
                 var childOfChild = FindVisualChild<T>(child);
                 if (childOfChild != null)
+                {
                     return childOfChild;
+                }
             }
 
             return null;
@@ -41,10 +45,14 @@ namespace BuildVision.UI.Extensions
             {
                 DependencyObject child = VisualTreeHelper.GetChild(obj, i);
                 if (child is T)
+                {
                     yield return (T)child;
+                }
 
                 foreach (T childOfChild in FindVisualChildren<T>(child))
+                {
                     yield return childOfChild;
+                }
             }
         }
     }

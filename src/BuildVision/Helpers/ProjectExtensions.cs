@@ -1,20 +1,16 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
-
+using System.Text;
+using BuildVision.Common.Logging;
+using BuildVision.Contracts;
+using BuildVision.UI;
 using EnvDTE;
-using EnvDTE80;
-
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.Win32;
 using VSLangProj;
-using System.Globalization;
-using Microsoft.VisualStudio.Shell.Interop;
-using System.IO;
-using System.Text;
-using BuildVision.UI;
-using BuildVision.UI.Common.Logging;
-using BuildVision.Contracts;
 
 namespace BuildVision.Helpers
 {
@@ -31,10 +27,11 @@ namespace BuildVision.Helpers
 
         private static readonly Dictionary<string, string> _knownProjectTypes = new Dictionary<string, string>
             {
-                {"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", "Windows"}, // C#
-                {"{F184B08F-C81C-45F6-A57F-5ABD9991F28F}", "Windows"}, // VB.NET
-                {"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}", "Windows"}, // C++
-                {"{F2A71F9B-5D33-465A-A702-920D77279786}", "Windows"}, // F#
+                {"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", "Windows C#"}, // C#
+                {"{F184B08F-C81C-45F6-A57F-5ABD9991F28F}", "Windows VB.NET"}, // VB.NET
+                {"{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}", "Windows C++"}, // C++
+                {"{F2A71F9B-5D33-465A-A702-920D77279786}", "Windows F#"}, // F#
+                {"{D954291E-2A0B-460D-934E-DC6B0785DB48}", "Shared Project" },
                 {"{349C5851-65DF-11DA-9384-00065B846F21}", "Web Application"},
                 {"{E24C65DC-7377-472B-9ABA-BC803B73C61A}", "Web Site"},
                 {"{603c0e0b-db56-11dc-be95-000d561079b0}", "ASP.NET MVC1"},
@@ -84,7 +81,7 @@ namespace BuildVision.Helpers
                 { CodeModelLanguageConstants.vsCMLanguageMC, "MC++" }, // Managed C++
                 { CodeModelLanguageConstants.vsCMLanguageVB, "VB.NET" },
                 { CodeModelLanguageConstants.vsCMLanguageVC, "VC++" }, // Visual C++
-                { CodeModelLanguageConstants2.vsCMLanguageJSharp, "J#" },
+                { EnvDTECodeModelLanguageConstants2.CMLanguageJSharp, "J#" },
                 { "{F2A71F9B-5D33-465A-A702-920D77279786}", "F#" },
             };
 
@@ -106,25 +103,49 @@ namespace BuildVision.Helpers
         {
             Configuration targetConfig;
             if (configuration != null && platform != null)
+            {
                 targetConfig = project.ConfigurationManager.Item(configuration, platform);
+            }
             else
+            {
                 targetConfig = project.ConfigurationManager.ActiveConfiguration;
+            }
 
             var groups = new List<string>();
             if (fileTypes.LocalizedResourceDlls)
+            {
                 groups.Add(BuildOutputGroup.LocalizedResourceDlls);
+            }
+
             if (fileTypes.XmlSerializer)
+            {
                 groups.Add("XmlSerializer");
+            }
+
             if (fileTypes.ContentFiles)
+            {
                 groups.Add(BuildOutputGroup.ContentFiles);
+            }
+
             if (fileTypes.Built)
+            {
                 groups.Add(BuildOutputGroup.Built);
+            }
+
             if (fileTypes.SourceFiles)
+            {
                 groups.Add(BuildOutputGroup.SourceFiles);
+            }
+
             if (fileTypes.Symbols)
+            {
                 groups.Add(BuildOutputGroup.Symbols);
+            }
+
             if (fileTypes.Documentation)
+            {
                 groups.Add(BuildOutputGroup.Documentation);
+            }
 
             var filePaths = new List<string>();
             foreach (string groupName in groups)
@@ -138,7 +159,7 @@ namespace BuildVision.Helpers
                 catch (ArgumentException ex)
                 {
                     var msg = $"Build Output Group \"{groupName}\" not found (Project Kind is \"{project.Kind}\").";
-                    ex.Trace(msg, EventLogEntryType.Warning);
+                    LogManager.ForContext<Project>().Warning(ex, "{Msg}", msg);
                 }
             }
 
@@ -151,7 +172,7 @@ namespace BuildVision.Helpers
         /// <param name="project">The project.</param>
         /// <param name="filePath">File path, relative to the <paramref name="project"/> root.</param>
         /// <returns>The found file or <c>null</c>.</returns>
-        private static ProjectItem FindProjectItem(this Project project, string filePath)
+        public static ProjectItem FindProjectItem(this Project project, string filePath)
         {
             return project.ProjectItems.FindProjectItem(filePath);
         }
@@ -165,7 +186,9 @@ namespace BuildVision.Helpers
                 {
                     var framMonikerValue = (string)framMonikerProperty.Value;
                     if (string.IsNullOrWhiteSpace(framMonikerValue))
+                    {
                         return Resources.GridCellNoneText;
+                    }
 
                     framMonikerValue = framMonikerValue.Replace(",Version=v", " ");
                     return framMonikerValue;
@@ -175,7 +198,9 @@ namespace BuildVision.Helpers
                     var framVersionProperty = project.GetPropertyOrDefault("TargetFrameworkVersion")
                                                 ?? project.GetPropertyOrDefault("TargetFramework");
                     if (framVersionProperty == null || framVersionProperty.Value == null)
+                    {
                         return Resources.GridCellNoneText;
+                    }
 
                     var version = Convert.ToInt32(framVersionProperty.Value);
                     string versionStr;
@@ -224,7 +249,7 @@ namespace BuildVision.Helpers
                                 }
                                 catch (Exception ex)
                                 {
-                                    ex.TraceUnknownException();
+                                    LogManager.ForContext<Project>().Error(ex, "Error when trying to parse framework version (Hex).");
                                     return Resources.GridCellNAText;
                                 }
                             }
@@ -241,7 +266,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Error when trying to get framework string.");
                 return Resources.GridCellNAText;
             }
         }
@@ -249,12 +274,9 @@ namespace BuildVision.Helpers
         public static string GetProjectTypeGuids(this Project proj)
         {
             string projectTypeGuids = string.Empty;
-
-            var service = SolutionProjectsExtensions.GetService(proj.DTE, typeof(IVsSolution));
-            var solution = (IVsSolution)service;
-
-            IVsHierarchy hierarchy;
-            int result = solution.GetProjectOfUniqueName(proj.UniqueName, out hierarchy);
+            var solution = Core.Services.GetSolution();
+ 
+            int result = solution.GetProjectOfUniqueName(proj.UniqueName, out var hierarchy);
 
             if (!string.IsNullOrEmpty(proj.Kind))
             {
@@ -289,7 +311,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Error when trying to get language name.");
                 return Resources.GridCellNAText;
             }
         }
@@ -309,18 +331,22 @@ namespace BuildVision.Helpers
 
                 var myType = project.TryGetPropertyValueOrDefault("MyType"); // for VB.NET projects
                 if (myType != null && myType.ToString() != "Empty")
+                {
                     flavourTypes.Add(myType.ToString());
+                }
 
                 var keyword = project.TryGetPropertyValueOrDefault("keyword"); // for C++ projects
                 if (keyword != null)
+                {
                     flavourTypes.Add(keyword.ToString());
+                }
 
                 var filteredValues = flavourTypes.Where(str => !string.IsNullOrWhiteSpace(str)).Distinct();
                 return filteredValues;
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Error when trying to get framework string.");
                 return Enumerable.Empty<string>();
             }
         }
@@ -357,7 +383,9 @@ namespace BuildVision.Helpers
                 {
                     var property = project.GetPropertyOrDefault("OutputType");
                     if (property == null || property.Value == null)
+                    {
                         return Resources.GridCellNoneText;
+                    }
 
                     if (!Enum.TryParse(property.Value.ToString(), out prjOutputType outputType))
                     {
@@ -376,16 +404,9 @@ namespace BuildVision.Helpers
                     }
                 }
             }
-            catch(ArgumentException)
-            {
-                // We are catching this seperatly because in the current VS2017 Version
-                // there is a bug that makes it impossible for us to retrieve the extenders
-                // for specific projects (https://github.com/dotnet/project-system/issues/2686)
-                return Resources.GridCellNAText;
-            }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Error when trying to get output type.");
                 return Resources.GridCellNAText;
             }
         }
@@ -396,17 +417,15 @@ namespace BuildVision.Helpers
             {
                 var extenderNames = (object[])project.ExtenderNames;
                 if (extenderNames == null || extenderNames.Length == 0)
+                {
                     return Resources.GridCellNoneText;
+                }
 
                 return string.Join("; ", extenderNames);
             }
-            catch (ArgumentException)
-            {
-                return ""; // Leaving this in for now until visual studio team fixes the issue with extendernames
-            }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Error when trying to get extendernames.");
                 return Resources.GridCellNAText;
             }
         }
@@ -452,19 +471,18 @@ namespace BuildVision.Helpers
                     }
                 }
 
-                TraceManager.Trace(
-                    string.Format("Project type is taken from the registry: Kind={0}, DTEVersion={1}, Type={2}", projectKind, version, type), 
-                    EventLogEntryType.Warning);
-
+                LogManager.ForContext<Project>().Warning("Project type is taken from the registry: Kind={ProjectKind}, DTEVersion={Version}, Type={Type}", projectKind, version, type);
                 if (string.IsNullOrWhiteSpace(type))
+                {
                     return null;
+                }
 
                 _knownProjectTypes[projectKind] = type;
                 return type;
             }
             catch (Exception ex)
             {
-                ex.Trace(string.Format("Unable to get project type from registry: (Kind={0}, DTEVersion={1})", projectKind, version));
+                LogManager.ForContext<Project>().Error(ex, "Unable to get project type from registry: (Kind ={ProjectKind}, DTEVersion ={Version})", projectKind, version);
                 return null;
             }
         }
@@ -481,78 +499,16 @@ namespace BuildVision.Helpers
         public static bool IsDirty(this Project project)
         {
             if (project.IsDirty)
+            {
                 return true;
+            }
 
             if (project.ProjectItems != null && project.ProjectItems.Cast<ProjectItem>().Any(x => x.ProjectItemIsDirty()))
+            {
                 return true;
+            }
 
             return false;
-        }
-
-        /// <summary>
-        /// Navigate to the Error Item in the Visual Studio Editor.
-        /// </summary>
-        /// <param name="project">The project - owner of the Error Item.</param>
-        /// <param name="errorItem">The Error Item.</param>
-        public static bool NavigateToErrorItem(this Project project, BuildVision.Contracts.ErrorItem errorItem)
-        {
-            try
-            {
-                if (project == null)
-                    throw new ArgumentNullException("project");
-
-                if (errorItem == null)
-                    throw new ArgumentNullException("errorItem");
-
-                if (!errorItem.CanNavigateTo)
-                    return false;
-
-                if (string.IsNullOrEmpty(errorItem.File))
-                    return false;
-
-                string fullPath;
-
-                // Check if path is absolute.
-                if (Path.IsPathRooted(errorItem.File))
-                {
-                    // Foo VC++ projects errorItem.File contains full path.
-                    fullPath = errorItem.File;
-                }
-                else
-                {
-                    var projectItemFile = project.FindProjectItem(errorItem.File);
-                    if (projectItemFile == null)
-                        return false;
-
-                    fullPath = projectItemFile.Properties.GetPropertyOrDefault<string>("FullPath");
-                    if (fullPath == null)
-                        throw new KeyNotFoundException("FullPath property not found.");
-                }
-
-                try
-                {
-                    var window = project.DTE.ItemOperations.OpenFile(fullPath, EnvDTE.Constants.vsViewKindAny);
-                    if (window == null)
-                        throw new NullReferenceException("Associated window is null reference.");
-
-                    window.Activate();
-
-                    var selection = (TextSelection)window.Selection;
-                    selection.MoveToLineAndOffset(errorItem.LineNumber, errorItem.ColumnNumber);
-                    selection.MoveToLineAndOffset(errorItem.EndLineNumber, errorItem.EndColumnNumber, true /*select text*/);
-                }
-                catch (Exception ex)
-                {
-                    var msg = string.Format("Navigate to error item exception (fullPath='{0}').", fullPath);
-                    ex.Trace(msg);
-                }
-            }
-            catch (Exception ex)
-            {
-                ex.Trace("Navigate to error item exception.");
-            }
-
-            return true;
         }
 
         public static string GetTreePath(this Project project, bool includeSelfProjectName = true)
@@ -562,24 +518,30 @@ namespace BuildVision.Helpers
             try
             {
                 if (includeSelfProjectName)
+                {
                     path.Append(project.Name);
+                }
 
                 var parent = project;
                 while (true)
                 {
                     parent = TryGetParentProject(parent);
                     if (parent == null || parent == project)
+                    {
                         break;
+                    }
 
                     if (path.Length != 0)
+                    {
                         path.Insert(0, '\\');
+                    }
 
                     path.Insert(0, parent.Name);
                 }
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Failed to get treepath for project {UniqueName}", project?.UniqueName);
             }
 
             return (path.Length != 0) ? path.ToString() : null;
@@ -594,7 +556,7 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Failed to load parent project for project {UniqueName}", project?.UniqueName);
                 return null;
             }
         }
@@ -603,21 +565,27 @@ namespace BuildVision.Helpers
         {
             for (int i = 1; i <= solutionFolder.ProjectItems.Count; i++)
             {
-                Project subProject = solutionFolder.ProjectItems.Item(i).SubProject;
+                var subProject = solutionFolder.ProjectItems.Item(i).SubProject;
                 if (subProject == null)
+                {
                     continue;
+                }
 
                 // If this is another solution folder, do a recursive call, otherwise add
-                if (subProject.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+                if (subProject.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
                 {
-                    Project sub = GetSubProject(subProject, cond);
+                    var sub = GetSubProject(subProject, cond);
                     if (sub != null)
+                    {
                         return sub;
+                    }
                 }
                 else if (!IsHidden(subProject))
                 {
                     if (cond(subProject))
+                    {
                         return subProject;
+                    }
                 }
             }
 
@@ -631,13 +599,19 @@ namespace BuildVision.Helpers
             {
                 Project subProject = solutionFolder.ProjectItems.Item(i).SubProject;
                 if (subProject == null)
+                {
                     continue;
+                }
 
                 // If this is another solution folder, do a recursive call, otherwise add
-                if (subProject.Kind == ProjectKinds.vsProjectKindSolutionFolder)
+                if (subProject.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
+                {
                     list.AddRange(GetSubProjects(subProject));
+                }
                 else if (!subProject.IsHidden())
+                {
                     list.Add(subProject);
+                }
             }
 
             return list;
@@ -648,23 +622,29 @@ namespace BuildVision.Helpers
             try
             {
                 if (_hiddenProjectsUniqueNames.Contains(project.UniqueName))
+                {
                     return true;
+                }
 
                 // Solution Folder.
                 if (project.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
+                {
                     return true;
+                }
 
                 // If projectIsInitialized == false then NotImplementedException will be occured 
                 // in project.FullName or project.FileName getters.
                 bool projectIsInitialized = (project.Object != null);
                 if (projectIsInitialized && project.FullName.EndsWith(".tmp_proj"))
+                {
                     return true;
+                }
 
                 return false;
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Failed to check if project {UniqueName} is hidden.", project?.UniqueName);
                 return true;
             }
         }
@@ -674,24 +654,22 @@ namespace BuildVision.Helpers
             try
             {
                 if (_hiddenProjectsUniqueNames.Contains(projectFileName))
+                {
                     return true;
+                }
 
                 if (projectFileName.EndsWith(".tmp_proj"))
+                {
                     return true;
+                }
 
                 return false;
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                LogManager.ForContext<Project>().Error(ex, "Failed to check if project {ProjectFileName} is hidden.", projectFileName);
                 return true;
             }
-        }
-
-        public static Microsoft.Build.Evaluation.Project GetMsBuildProject(this Project project)
-        {
-            var root = Microsoft.Build.Construction.ProjectRootElement.Open(project.FullName);          
-            return new Microsoft.Build.Evaluation.Project(root);
         }
     }
 }

@@ -1,7 +1,7 @@
-using BuildVision.UI.Helpers;
-using System;
+﻿using System;
 using System.Linq;
 using System.Windows.Markup;
+using BuildVision.UI.Helpers;
 
 namespace BuildVision.UI.Extensions
 {
@@ -12,7 +12,9 @@ namespace BuildVision.UI.Extensions
         public EnumerationExtension(Type enumType)
         {
             if (enumType == null)
+            {
                 throw new ArgumentNullException("enumType");
+            }
 
             SetEnumType(enumType);
         }
@@ -20,12 +22,16 @@ namespace BuildVision.UI.Extensions
         private void SetEnumType(Type value)
         {
             if (_enumType == value)
+            {
                 return;
+            }
 
             var enumType = Nullable.GetUnderlyingType(value) ?? value;
 
             if (enumType.IsEnum == false)
+            {
                 throw new ArgumentException("Type must be an Enum.");
+            }
 
             _enumType = value;
         }

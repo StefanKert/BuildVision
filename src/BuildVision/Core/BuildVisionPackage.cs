@@ -1,114 +1,184 @@
 ﻿using System;
-
+using System.Diagnostics;
+using System.Globalization;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows;
+using System.Windows.Threading;
+using BuildVision.Commands;
+using BuildVision.Common;
+using BuildVision.Common.Diagnostics;
+using BuildVision.Common.Logging;
+using BuildVision.Exports.Providers;
+using BuildVision.Tool;
+using BuildVision.UI;
+using BuildVision.UI.Settings.Models;
+using BuildVision.Views.Settings;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.Settings;
+using Microsoft;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Shell.Settings;
-using BuildVision.Common;
-using BuildVision.Tool.Building;
-using BuildVision.UI.Settings.Models;
-using BuildVision.UI.ViewModels;
-using BuildVision.Tool;
-using BuildVision.UI.Common.Logging;
-using System.Windows;
+using Serilog;
+using SerilogTraceListener;
+using Task = System.Threading.Tasks.Task;
+using ui = Microsoft.VisualStudio.VSConstants.UICONTEXT;
 
 namespace BuildVision.Core
 {
-    public partial class BuildVisionPackage : IPackageContext
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [ProvideAutoLoad(ui.SolutionOpening_string, flags: PackageAutoLoadFlags.BackgroundLoad)]
+    [ProvideToolWindow(typeof(BuildVisionPane))]
+    [ProvideToolWindow(typeof(BuildVisionPane), Transient = true, MultiInstances = false)]
+    [ProvideToolWindowVisibility(typeof(BuildVisionPane), ui.SolutionOpening_string)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
+    [Guid(PackageGuids.GuidBuildVisionPackageString)]
+    [ProvideBindingPath]
+    [ProvideBindingPath(SubPath = "Lib")]
+    [ProvideProfile(typeof(GeneralSettingsDialogPage), PackageSettingsProvider.settingsCategoryName, "General Options", 0, 0, true)]
+    [ProvideOptionPage(typeof(GeneralSettingsDialogPage), "BuildVision", "General", 0, 0, true)]
+    [ProvideOptionPage(typeof(WindowSettingsDialogPage), "BuildVision", "Tool Window", 0, 0, true)]
+    [ProvideOptionPage(typeof(GridSettingsDialogPage), "BuildVision", "Projects Grid", 0, 0, true)]
+    [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), "BuildVision", "Build Messages", 0, 0, true)]
+    [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
+    public sealed class BuildVisionPackage : AsyncPackage, IVsPackageDynamicToolOwnerEx
     {
-        private const string settingsCategoryName = "BuildVision";
-        private const string settingsPropertyName = "Settings";
+        private DTE _dte;
+        private DTE2 _dte2;
+        private CommandEvents _commandEvents;
+        private SolutionEvents _solutionEvents;
+        private IVsSolutionBuildManager2 _solutionBuildManager;
+        private IVsSolutionBuildManager5 _solutionBuildManager4;
+        private IBuildInformationProvider _buildInformationProvider;
+        private uint _updateSolutionEventsCookie;
+        private uint _updateSolutionEvents4Cookie;
+        private SolutionBuildEvents _solutionBuildEvents;
+        private ISolutionProvider _solutionProvider;
+        private ServiceProvider _serviceProvider;
+        private ILogger _logger = LogManager.ForContext<BuildVisionPackage>();
+        public static ToolWindowPane ToolWindowPane { get; set; }
 
         public ControlSettings ControlSettings { get; set; }
 
-        public DTE2 GetDTE2() => (DTE2)GetService(typeof(DTE));
+        public BuildVisionPackage()
+        {
+            _logger.Information("Starting {ProductName} with Version {PackageVersion}", Resources.ProductName, ApplicationInfo.GetPackageVersion(this));
 
-        public DTE GetDTE() => (DTE)GetService(typeof(DTE));
+            PresentationTraceSources.Refresh();
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new SerilogTraceListener.SerilogTraceListener(_logger));
+            PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Error | SourceLevels.Critical | SourceLevels.Warning;
 
-        public IVsUIShell GetUIShell() => (IVsUIShell)GetService(typeof(IVsUIShell));
+            if (Application.Current != null)
+            {
+                Application.Current.DispatcherUnhandledException += Current_DispatcherUnhandledException;
+            }
+  
+            DiagnosticsClient.Initialize(GetEdition(), VisualStudioVersion.ToString(), "c437ad44-0c76-4006-968d-42d4369bc0ed");
+        }
 
-        public IVsSolution GetSolution() => (IVsSolution)GetService(typeof(IVsSolution));
+        public static Version VisualStudioVersion => GetGlobalService(typeof(DTE)) is DTE dte
+                    ? new Version(int.Parse(dte.Version.Split('.')[0], CultureInfo.InvariantCulture), 0)
+                    : new Version(0, 0, 0, 0);
 
-        public IVsStatusbar GetStatusBar() => (IVsStatusbar)GetService(typeof(SVsStatusbar));
-
-        public ToolWindowPane GetToolWindow() => GetWindowPane(typeof(ToolWindow));
-
-        private void ToolInitialize()
+        private string GetEdition()
         {
             try
             {
-                ControlSettings = LoadSettings(this);
-                var toolWindow = GetToolWindow();
-                IPackageContext packageContext = this;
-                var viewModel = ToolWindow.GetViewModel(toolWindow);
-                var buildContext = new BuildContext(packageContext, viewModel);
-                var tool = new Tool.Tool(packageContext, buildContext, buildContext, viewModel);
+                _dte2 = GetService(typeof(DTE)) as DTE2;
+                return _dte2.Edition;
             }
             catch (Exception ex)
             {
-                ex.TraceUnknownException();
+                return "";
             }
         }
 
-        public void SaveSettings()
+        private void Current_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            SaveSettings(ControlSettings, this);
+            _logger.Fatal(e.Exception, "Unhandled Exception");
+            DiagnosticsClient.TrackException(e.Exception);
+            DiagnosticsClient.Flush();
         }
 
-        public void NotifyControlSettingsChanged()
+        protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            ControlSettingsChanged(ControlSettings);
-        }
+            await base.InitializeAsync(cancellationToken, progress);
 
-        private ToolWindowPane GetWindowPane(Type windowType)
-        {
-            return FindToolWindow(windowType, 0, false) ?? FindToolWindow(windowType, 0, true);
-        }
+            await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
+            await ShowToolWindowCommand.InitializeAsync(this);
 
-        private static ControlSettings LoadSettings(IServiceProvider serviceProvider)
-        {
-            try
+            _dte = await GetServiceAsync(typeof(DTE)) as DTE;
+            Assumes.Present(_dte);
+            _dte2 = await GetServiceAsync(typeof(DTE)) as DTE2;
+            Assumes.Present(_dte2);
+            _solutionBuildManager = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
+            Assumes.Present(_solutionBuildManager);
+            _solutionBuildManager4 = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager5;
+            Assumes.Present(_solutionBuildManager4);
+            _buildInformationProvider = await GetServiceAsync(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
+            Assumes.Present(_buildInformationProvider);
+            _solutionProvider = await GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
+            Assumes.Present(_solutionProvider);
+            _serviceProvider = new ServiceProvider(Services.Dte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
+            Assumes.Present(_serviceProvider);
+
+            _commandEvents = _dte.Events.CommandEvents;
+            _commandEvents.AfterExecute += CommandEvents_AfterExecute;
+
+            _solutionEvents = _dte.Events.SolutionEvents;
+            _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
+            _solutionEvents.Opened += SolutionEvents_Opened;
+
+            if (_dte2.Solution?.IsOpen == true)
             {
-                var store = GetWritableSettingsStore(serviceProvider);
-                if (store.PropertyExists(settingsCategoryName, settingsPropertyName))
-                {
-                    var legacySerialized = new LegacyConfigurationSerializer<ControlSettings>();
-                    var value = store.GetString(settingsCategoryName, settingsPropertyName);
-                    return legacySerialized.Deserialize(value);
-                }
+                SolutionEvents_Opened();
             }
-            catch (Exception ex)
+        }
+
+        private void SolutionEvents_Opened()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            _solutionProvider.ReloadSolution();
+            _buildInformationProvider.ResetCurrentProjects();
+            _buildInformationProvider.ResetBuildInformationModel();
+
+            _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider, _serviceProvider, LogManager.ForContext<SolutionBuildEvents>());
+            _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEventsCookie);
+            _solutionBuildManager4.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
+        }
+
+        private void SolutionEvents_AfterClosing()
+        {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            _solutionProvider.ReloadSolution();
+            _buildInformationProvider.ResetCurrentProjects();
+            _buildInformationProvider.ResetBuildInformationModel();
+
+            _solutionBuildManager.UnadviseUpdateSolutionEvents(_updateSolutionEventsCookie);
+            _solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
+
+            DiagnosticsClient.Flush();
+        }
+
+        private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)
+        {
+            if (id == (int)VSConstants.VSStd97CmdID.CancelBuild
+                && Guid.Parse(guid) == VSConstants.GUID_VSStandardCommandSet97)
             {
-                ex.Trace("Error when trying to load settings: " + ex.Message, System.Diagnostics.EventLogEntryType.Error);
-                MessageBox.Show("An error occurred when trying to load current settings. To make sure everything is still working the settings are set to default.");
+                //_buildCancelled = true;
+                //if (!_buildCancelledInternally)
+                //    OnBuildCancelled();
             }
-
-            return new ControlSettings();
         }
 
-        /// <remarks>
-        /// Settings are stored under "HKEY_CURRENT_USER\Software\Microsoft\VisualStudio\[12.0Exp]\BuildVision\".
-        /// </remarks>
-        private static void SaveSettings(ControlSettings settings, IServiceProvider serviceProvider)
+        public int QueryShowTool(ref Guid rguidPersistenceSlot, uint dwId, out int pfShowTool)
         {
-            var store = GetWritableSettingsStore(serviceProvider);
-            if (!store.CollectionExists(settingsCategoryName))
-                store.CreateCollection(settingsCategoryName);
-
-            var legacySerializer = new LegacyConfigurationSerializer<ControlSettings>();
-            var value = legacySerializer.Serialize(settings);
-            store.SetString(settingsCategoryName, settingsPropertyName, value);
+            ToolWindowPane = FindToolWindow(typeof(BuildVisionPane), 0, false) ?? FindToolWindow(typeof(BuildVisionPane), 0, true);
+            pfShowTool = 1;
+            return 0;
         }
-
-        private static WritableSettingsStore GetWritableSettingsStore(IServiceProvider serviceProvider)
-        {
-            var shellSettingsManager = new ShellSettingsManager(serviceProvider);
-            var writableSettingsStore = shellSettingsManager.GetWritableSettingsStore(SettingsScope.UserSettings);
-            return writableSettingsStore;
-        }
-
-        public event Action<ControlSettings> ControlSettingsChanged = delegate { };
     }
 }

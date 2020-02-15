@@ -6,7 +6,6 @@ namespace BuildVision.Helpers
 {
     public static class PropertiesExtensions
     {
-
         public static Property GetPropertyOrDefault(this Properties properties, string propertyName)
         {
             try
@@ -15,7 +14,6 @@ namespace BuildVision.Helpers
             }
             catch (ArgumentException)
             {
-                // not found.
                 return null;
             }
         }
@@ -25,7 +23,9 @@ namespace BuildVision.Helpers
         {
             var property = GetPropertyOrDefault(properties, propertyName);
             if (property == null)
+            {
                 return null;
+            }
 
             return (T)property.Value;
         }

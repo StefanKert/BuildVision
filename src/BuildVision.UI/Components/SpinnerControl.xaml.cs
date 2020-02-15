@@ -1,11 +1,11 @@
-﻿using BuildVision.UI.Extensions;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using BuildVision.UI.Extensions;
 
 namespace BuildVision.UI.Components
 {
@@ -48,13 +48,7 @@ namespace BuildVision.UI.Components
         /// Returns the formatted version of the value, with the specified
         /// number of DecimalPlaces.
         /// </summary>
-        public string FormattedValue
-        {
-            get
-            {
-                return (string)GetValue(FormattedValueProperty);
-            }
-        }
+        public string FormattedValue => (string)GetValue(FormattedValueProperty);
 
         /// <summary>
         /// Update the formatted value.
@@ -80,8 +74,8 @@ namespace BuildVision.UI.Components
         [Category("SpinnerControl")]
         public decimal Value
         {
-            get { return (decimal)GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
+            get => (decimal)GetValue(ValueProperty);
+            set => SetValue(ValueProperty, value);
         }
 
         private static readonly DependencyProperty ValueProperty =
@@ -156,8 +150,8 @@ namespace BuildVision.UI.Components
         [Category("SpinnerControl")]
         public decimal Minimum
         {
-            get { return (decimal)GetValue(MinimumValueProperty); }
-            set { SetValue(MinimumValueProperty, value); }
+            get => (decimal)GetValue(MinimumValueProperty);
+            set => SetValue(MinimumValueProperty, value);
         }
 
         private static readonly DependencyProperty MinimumValueProperty =
@@ -173,8 +167,8 @@ namespace BuildVision.UI.Components
         [Category("SpinnerControl")]
         public decimal Maximum
         {
-            get { return (decimal)GetValue(MaximumValueProperty); }
-            set { SetValue(MaximumValueProperty, value); }
+            get => (decimal)GetValue(MaximumValueProperty);
+            set => SetValue(MaximumValueProperty, value);
         }
 
         private static readonly DependencyProperty MaximumValueProperty =
@@ -191,8 +185,8 @@ namespace BuildVision.UI.Components
         [Category("SpinnerControl")]
         public int DecimalPlaces
         {
-            get { return (int)GetValue(DecimalPlacesProperty); }
-            set { SetValue(DecimalPlacesProperty, value); }
+            get => (int)GetValue(DecimalPlacesProperty);
+            set => SetValue(DecimalPlacesProperty, value);
         }
 
         private static readonly DependencyProperty DecimalPlacesProperty =
@@ -209,8 +203,8 @@ namespace BuildVision.UI.Components
         [Category("SpinnerControl")]
         public decimal Change
         {
-            get { return (decimal)GetValue(ChangeProperty); }
-            set { SetValue(ChangeProperty, value); }
+            get => (decimal)GetValue(ChangeProperty);
+            set => SetValue(ChangeProperty, value);
         }
 
         private static readonly DependencyProperty ChangeProperty =
@@ -246,7 +240,9 @@ namespace BuildVision.UI.Components
         {
             var control = sender as SpinnerControl;
             if (control != null)
+            {
                 control.OnIncrease();
+            }
         }
 
         protected void OnIncrease()
@@ -262,7 +258,9 @@ namespace BuildVision.UI.Components
         {
             var control = sender as SpinnerControl;
             if (control != null)
+            {
                 control.OnDecrease();
+            }
         }
 
         protected void OnDecrease()
@@ -320,8 +318,7 @@ namespace BuildVision.UI.Components
         {
             var textBox = (TextBox)sender;
 
-            decimal val;
-            if (!string.IsNullOrEmpty(textBox.Text) && decimal.TryParse(textBox.Text, out val))
+            if (!string.IsNullOrEmpty(textBox.Text) && decimal.TryParse(textBox.Text, out var val))
             {
                 Value = val;
                 BorderBrush = _defaultBorderBrush;

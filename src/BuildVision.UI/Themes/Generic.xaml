@@ -1,0 +1,77 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ui="clr-namespace:BuildVision.UI.Controls.Buttons"
+                    xmlns:indicators="clr-namespace:BuildVision.UI.Controls.Indicators"
+                    xmlns:res="clr-namespace:BuildVision.UI"
+                    xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/BuildVision.UI;component/Resources/CommonResources.xaml" />
+        <ResourceDictionary Source="/BuildVision.UI;component/Resources/BuildAction.Resources.xaml" />
+        <ResourceDictionary Source="/BuildVision.UI;component/Resources/ValueIndicator.Resources.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="{x:Type ui:BuildActionButton}" BasedOn="{StaticResource {x:Type Button}}">
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ui:BuildActionButton}">
+
+                    <Border x:Name="Border"
+                            Background="{x:Null}"
+                            BorderBrush="Transparent"
+                            BorderThickness="1">
+                        <ContentPresenter Margin="2"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          RecognizesAccessKey="True" />
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMouseOverBackgroundGradientKey}}" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarSelectedBorderKey}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="Border" Property="Opacity" Value="0.5" />
+                            <Setter TargetName="Border" Property="Background" Value="{x:Null}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMouseDownBackgroundGradientKey}}" />
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource {x:Static vsfx:VsBrushes.CommandBarMouseDownBorderKey}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ValueIndicator" TargetType="{x:Type indicators:ValueIndicator}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type indicators:ValueIndicator}">
+                    <StackPanel Orientation="Vertical" ToolTipService.ShowOnDisabled="True" ToolTipService.ToolTip="{TemplateBinding Header}">
+                        <ContentControl 
+                                Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                SnapsToDevicePixels="True"
+                                ClipToBounds="True"
+                                UseLayoutRounding="False"
+                                Template="{TemplateBinding Icon}" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:SuccessProjectsIndicator}" />
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:UpToDateProjectsIndicator}" />
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:WarningProjectsIndicator}" />
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:ErrorProjectsIndicator}" />
+
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:ErrorsIndicator}" />
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:WarningsIndicator}" />
+    <Style BasedOn="{StaticResource ValueIndicator}" TargetType="{x:Type indicators:MessagesIndicator}" />
+
+</ResourceDictionary>

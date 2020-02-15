@@ -60,30 +60,11 @@
     <DeployExtension>False</DeployExtension>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="envdte100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="envdte80, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="envdte90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.Build" />
-    <Reference Include="Microsoft.Build.Engine" />
-    <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Microsoft.Build.Utilities.v4.0" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.11.0, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.12.0, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop.10.0" />
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
@@ -96,63 +77,64 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="UIAutomationTypes" />
-    <Reference Include="VSLangProj, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
-    <Reference Include="VSLangProj2, Version=7.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="System.Xaml" />
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="stdole">
-      <Guid>{00020430-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Core\BuildVisionPackage.Package.cs" />
-    <Compile Include="Helpers\ProjectItemExtensions.cs" />
+    <Compile Include="Commands\ShowToolWindowCommand.cs" />
+    <Compile Include="Constants\EnvDTECodeModelLanguageConstants2.cs" />
+    <Compile Include="Extensions\BuildActionsExtensions.cs" />
+    <Compile Include="Extensions\BuildStateExtensions.cs" />
+    <Compile Include="Extensions\IServiceProviderExtensions.cs" />
+    <Compile Include="Properties\GlobalSuppressions.cs" />
+    <Compile Include="Services\BuildInformationProvider.cs" />
+    <Compile Include="Services\ErrorNavigationService.cs" />
+    <Compile Include="Interfaces\IWindowStateService.cs" />
+    <Compile Include="Services\SolutionProvider.cs" />
+    <Compile Include="Helpers\ProjectIdentifierGenerator.cs" />
+    <Compile Include="Core\BuildVisionPackage.cs" />
+    <Compile Include="Core\ServiceProviderPackage.cs" />
+    <Compile Include="Core\Services.cs" />
+    <Compile Include="Core\SolutionBuildEvents.cs" />
+    <Compile Include="Services\StatusBarNotificationService.cs" />
+    <Compile Include="Helpers\BuildEventContextExtensions.cs" />
+    <Compile Include="Helpers\BuildMessageEventArgsExtensions.cs" />
+    <Compile Include="Constants\EnvDTEProjectKinds.cs" />
     <Compile Include="Helpers\SolutionProjectsExtensions.cs" />
     <Compile Include="Helpers\ProjectExtensions.cs" />
-    <Compile Include="Helpers\ProjectItemsExtensions.cs" />
+    <Compile Include="Helpers\ProjectItemExtensions.cs" />
     <Compile Include="Helpers\PropertiesExtensions.cs" />
+    <Compile Include="Helpers\StateConverterHelper.cs" />
     <Compile Include="Helpers\UIHierarchyExtensions.cs" />
-    <Compile Include="Tool\Building\BuildContext.cs" />
-    <Compile Include="Tool\Building\BuildOutputLogger.cs" />
-    <Compile Include="Core\IPackageContext.cs" />
-    <Compile Include="Tool\Views\Settings\BuildMessagesSettingsDialogPage.cs">
+    <Compile Include="Helpers\VsCfgExtensions.cs" />
+    <Compile Include="Helpers\VsHierarchyExtensions.cs" />
+    <Compile Include="Services\BuildService.cs" />
+    <Compile Include="Services\BuildOutputLogger.cs" />
+    <Compile Include="Services\TaskBarInfoService.cs" />
+    <Compile Include="Services\WindowStateService.cs" />
+    <Compile Include="Views\Settings\BuildMessagesSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Settings\GeneralSettingsDialogPage.cs">
+    <Compile Include="Views\Settings\GeneralSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Settings\GridSettingsDialogPage.cs">
+    <Compile Include="Views\Settings\GridSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Settings\ProjectItemSettingsDialogPage.cs">
+    <Compile Include="Services\PackageSettingsProvider.cs" />
+    <Compile Include="Views\Settings\ProjectItemSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Settings\SettingsDialogPage.cs">
+    <Compile Include="Views\Settings\SettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Views\Settings\WindowSettingsDialogPage.cs">
+    <Compile Include="Views\Settings\WindowSettingsDialogPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Tool\Tool.cs" />
-    <Compile Include="Tool\ToolWindow.cs" />
-    <Compile Include="Core\PackageGuids.cs" />
-    <Compile Include="Core\BuildVisionPackage.cs" />
+    <Compile Include="Core\BuildVisionPane.cs" />
+    <Compile Include="Constants\PackageGuids.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\PackageIds.cs" />
-    <Compile Include="Helpers\ToolWindowManager.cs" />
-    <Compile Include="Helpers\ViewModelHelper.cs" />
+    <Compile Include="Constants\PackageIds.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VSPackage.resx">
@@ -162,6 +144,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -223,71 +208,47 @@
       <Project>{13d64a57-5db3-4cc7-ac2b-9034e767d754}</Project>
       <Name>BuildVision.Contracts</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BuildVision.Exports\BuildVision.Exports.csproj">
+      <Project>{F16E6593-DDF9-4E9E-A2F8-56A3C43A643E}</Project>
+      <Name>BuildVision.Exports</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BuildVision.UI\BuildVision.UI.csproj">
       <Project>{84e8ba65-9a4b-4c50-a115-6ef3208e4058}</Project>
       <Name>BuildVision.UI</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="VSSDK.DTE">
-      <Version>7.0.4</Version>
+    <PackageReference Include="AppInsights.WindowsDesktop">
+      <Version>2.10.34-preview</Version>
     </PackageReference>
-    <PackageReference Include="VSSDK.GraphModel">
-      <Version>12.0.4</Version>
+    <PackageReference Include="Madskristensen.VisualStudio.SDK">
+      <Version>14.3.81-pre</Version>
     </PackageReference>
-    <PackageReference Include="VSSDK.IDE">
-      <Version>7.0.4</Version>
+    <PackageReference Include="Microsoft.Build">
+      <Version>16.0.461</Version>
     </PackageReference>
-    <PackageReference Include="VSSDK.IDE.10">
-      <Version>10.0.4</Version>
+    <PackageReference Include="Microsoft.Build.Engine">
+      <Version>16.0.461</Version>
     </PackageReference>
-    <PackageReference Include="VSSDK.IDE.11">
-      <Version>11.0.4</Version>
+    <PackageReference Include="Microsoft.Build.Framework">
+      <Version>16.0.461</Version>
     </PackageReference>
-    <PackageReference Include="VSSDK.IDE.12">
-      <Version>12.0.4</Version>
+    <PackageReference Include="Microsoft.Build.Utilities.Core">
+      <Version>16.0.461</Version>
     </PackageReference>
-    <PackageReference Include="VSSDK.IDE.8">
-      <Version>8.0.4</Version>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
+      <Version>2.9.2</Version>
     </PackageReference>
-    <PackageReference Include="VSSDK.IDE.9">
-      <Version>9.0.4</Version>
+    <PackageReference Include="Microsoft.VisualStudio.SDK.Analyzers">
+      <Version>15.8.36</Version>
     </PackageReference>
-    <PackageReference Include="VSSDK.OLE.Interop">
-      <Version>7.0.4</Version>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools">
+      <Version>16.1.46</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="VSSDK.Shell.12">
-      <Version>12.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.Shell.Immutable.10">
-      <Version>10.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.Shell.Immutable.11">
-      <Version>11.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.Shell.Immutable.12">
-      <Version>12.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.Shell.Interop">
-      <Version>7.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.Shell.Interop.8">
-      <Version>8.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.Shell.Interop.9">
-      <Version>9.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.TextManager.Interop">
-      <Version>7.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.TextManager.Interop.8">
-      <Version>8.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.Threading">
-      <Version>12.0.4</Version>
-    </PackageReference>
-    <PackageReference Include="VSSDK.Threading.12">
-      <Version>12.0.4</Version>
+    <PackageReference Include="SerilogTraceListener">
+      <Version>3.2.0</Version>
     </PackageReference>
   </ItemGroup>
   <PropertyGroup>
@@ -299,6 +260,26 @@
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Marketplace|AnyCPU'">
+    <OutputPath>bin\Marketplace\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'VsixGallery|AnyCPU'">
+    <OutputPath>bin\VsixGallery\</OutputPath>
+    <DefineConstants>CODE_ANALYSIS;TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

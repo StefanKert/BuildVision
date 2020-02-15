@@ -1,5 +1,4 @@
-using BuildVision.UI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Management.Instrumentation;
 using System.Windows;
@@ -15,8 +14,7 @@ namespace BuildVision.UI.Extensions
 
         private static object GetResource(string resourceDictionaryRelativeUri, string resourceKey)
         {
-            ResourceDictionary dict;
-            if (_cachedResources.TryGetValue(resourceDictionaryRelativeUri, out dict))
+            if (_cachedResources.TryGetValue(resourceDictionaryRelativeUri, out var dict))
             {
                 return dict[resourceKey];
             }

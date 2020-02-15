@@ -9,20 +9,14 @@ namespace BuildVision.UI.Extensions
             typeof(string),
             typeof(DataGridColumnExtensions));
 
-        /// <summary>
-        /// Gets the value of the <see cref="NameProperty"/> dependency property.
-        /// </summary>
         public static string GetName(DependencyObject obj)
         {
             return (string)obj.GetValue(NameProperty);
         }
 
-        /// <summary>
-        /// Sets the value of the <see cref="NameProperty"/> dependency property.
-        /// </summary>
         public static void SetName(DependencyObject obj, string value)
         {
             obj.SetValue(NameProperty, value);
-        } 
+        }
     }
 }

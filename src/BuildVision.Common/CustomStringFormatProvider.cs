@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 
 namespace BuildVision.Common
 {
@@ -19,11 +19,13 @@ namespace BuildVision.Common
         public string Format(string format, object arg, IFormatProvider formatProvider)
         {
             if (arg == null)
+            {
                 return null;
+            }
 
             if (format != null && arg is string)
             {
-                var strArg = (string) arg;
+                var strArg = (string)arg;
                 switch (format.ToUpper())
                 {
                     case "U":
@@ -34,7 +36,7 @@ namespace BuildVision.Common
             }
 
             return arg is IFormattable
-                       ? ((IFormattable) arg).ToString(format, formatProvider)
+                       ? ((IFormattable)arg).ToString(format, formatProvider)
                        : arg.ToString();
         }
     }

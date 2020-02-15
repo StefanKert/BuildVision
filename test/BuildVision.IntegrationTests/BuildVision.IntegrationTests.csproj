@@ -1,82 +1,40 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FBB4F3ED-B1B8-4401-8667-5180194BAA54}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BuildVision.IntegrationTests</RootNamespace>
-    <AssemblyName>BuildVision.IntegrationTests</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">15.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <ReferencePath>$(ProgramFiles)\Common Files\microsoft shared\VSTT\$(VisualStudioVersion)\UITestExtensionPackages</ReferencePath>
-    <IsCodedUITest>False</IsCodedUITest>
-    <TestProjectType>UnitTest</TestProjectType>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
-    <TargetFrameworkProfile />
+    <TargetFramework>net472</TargetFramework>
+    <IsTestProject>true</IsTestProject>
+    <Configurations>Debug;Release;Marketplace;VsixGallery</Configurations>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.Shell.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-    <Reference Include="Microsoft.VisualStudio.TestTools.UITesting, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VSSDK.TestHostFramework, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="PackageTests.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="vstesthost.exp.testsettings" />
-    <None Include="vstesthost.testsettings" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\BuildVision\BuildVision.csproj">
-      <Project>{9925a635-1827-4bb4-9c31-fe0fc87a6265}</Project>
-      <Name>BuildVision</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="EnvDTE">
-      <Version>8.0.2</Version>
+  
+   <ItemGroup>
+    <PackageReference Include="EnvDTE" Version="8.0.2" />
+    <PackageReference Include="EnvDTE80" Version="8.0.3" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.2" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" Version="15.0.27" />
+    <PackageReference Include="Microsoft.VSSDK.UnitTestLibrary" Version="14.3.25407" />
+    <PackageReference Include="stdole" Version="7.0.3303" />
+    <PackageReference Include="xunit.runner.console" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="EnvDTE80">
-      <Version>8.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes">
-      <Version>15.0.27</Version>
-    </PackageReference>
-    <PackageReference Include="MSTest.TestAdapter">
-      <Version>1.4.0</Version>
-    </PackageReference>
-    <PackageReference Include="stdole">
-      <Version>7.0.3303</Version>
-    </PackageReference>
+    <PackageReference Include="xunit.vsix" Version="0.4.0-alpha.17" />
+    <PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" PrivateAssets="all" Version="1.16.30" />
   </ItemGroup>
-  <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+
+   <ItemGroup>
+     <ProjectReference Include="..\..\src\BuildVision.Common\BuildVision.Common.csproj" />
+     <ProjectReference Include="..\..\src\BuildVision.Contracts\BuildVision.Contracts.csproj" />
+     <ProjectReference Include="..\..\src\BuildVision.UI\BuildVision.UI.csproj" />
+     <ProjectReference Include="..\..\src\BuildVision\BuildVision.csproj" />
+   </ItemGroup>
+
+   <ItemGroup>
+     <Reference Include="Microsoft.CSharp" />
+     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+       <HintPath>..\..\libs\2017\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
+     </Reference>
+     <Reference Include="Microsoft.VSSDK.TestHostFramework">
+       <HintPath>..\..\libs\2017\Microsoft.VSSDK.TestHostFramework.dll</HintPath>
+     </Reference>
+   </ItemGroup>
+
 </Project>

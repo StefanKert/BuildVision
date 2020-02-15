@@ -6,7 +6,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="BuildState.Resources.xaml" />
+                <ResourceDictionary Source="BuildAction.Resources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -23,8 +23,8 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource BuildError}" />
-            
+                            Template="{StaticResource RebuildSolutionIcon}" />
+
             <Separator Width="10"/>
 
             <ContentControl Width="32"
@@ -32,8 +32,8 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource BuildDone}" />
-            
+                            Template="{StaticResource BuildSolutionIcon}" />
+
             <Separator Width="10"/>
 
             <ContentControl Width="32"
@@ -41,17 +41,16 @@
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource BuildCancelled}" />
+                            Template="{StaticResource CancelBuildSolutionIcon}" />
 
             <Separator Width="10"/>
-            
+
             <ContentControl Width="32"
                             Height="32"
                             SnapsToDevicePixels="True"
                             ClipToBounds="True"
                             UseLayoutRounding="False"
-                            Template="{StaticResource BuildErrorDone}" />
-            <Separator Width="10"/>
+                            Template="{StaticResource CleanSolutionIcon}" />
         </StackPanel>
     </Grid>
 </UserControl>

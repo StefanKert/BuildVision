@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -13,12 +13,11 @@ namespace BuildVision.UI.Converters
             var val = (DataGridLength)value;
 
             if (val.IsAuto)
-                return "auto";            
+            {
+                return "auto";
+            }
 
-            if (val.IsStar)
-                return val.DisplayValue.ToString("0.0") + "*";
-
-            return val.Value.ToString("0.0");
+            return val.IsStar ? val.DisplayValue.ToString("0.0") + "*" : val.Value.ToString("0.0");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -28,10 +27,14 @@ namespace BuildVision.UI.Converters
                 var val = ((string)value).Trim().ToLower();
 
                 if (val == "auto")
+                {
                     return new DataGridLength(1.0, DataGridLengthUnitType.Auto);
+                }
 
-                if (val.EndsWith("*"))
+                if (val.EndsWith("*", StringComparison.InvariantCulture))
+                {
                     return new DataGridLength(double.Parse(val.TrimEnd('*')), DataGridLengthUnitType.Star);
+                }
 
                 return new DataGridLength(double.Parse(val));
             }

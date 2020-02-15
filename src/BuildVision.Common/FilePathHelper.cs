@@ -120,7 +120,7 @@ namespace BuildVision.Common
                 }
             }
 
-            if (lastPart == "")
+            if (string.IsNullOrEmpty(lastPart))
             {
                 //the filename (and root path) in itself was longer than maxLength, shorten it
                 lastPart = pathParts[pathParts.Length - 1];//"pathParts[pathParts.Length -1]" is the equivalent of "Path.GetFileName(pathToShorten)"

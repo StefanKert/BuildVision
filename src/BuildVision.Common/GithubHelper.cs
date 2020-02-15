@@ -1,15 +1,12 @@
-﻿using BuildVision.Common;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
+using System.Globalization;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+using BuildVision.Common;
 
 namespace BuildVision.Helpers
 {
-    public class GithubHelper
+    public static class GithubHelper
     {
         const string ASSIGNEE = "stefankert";
         const string URL_TEMPLATE = "https://github.com/StefanKert/BuildVision/issues/new?labels={0}&title={1}&assignee={2}&body={3}";
@@ -28,13 +25,13 @@ Steps to Reproduce:
         {
             var appVersion = new AppVersionInfo();
 
-            var url = GetUrlForNewBug(string.Format(template, VsVersion.FullVersion, appVersion.BuildVersion, Environment.OSVersion));
-            Process.Start(new ProcessStartInfo(url));
+            var url = GetUrlForNewBug(string.Format(CultureInfo.CurrentCulture, template, VsVersion.FullVersion, appVersion.BuildVersion, Environment.OSVersion));
+            Process.Start(new ProcessStartInfo(url.ToString()));
         }
 
-        public static string GetUrlForNewBug(string body)
+        public static Uri GetUrlForNewBug(string body)
         {
-            return string.Format(URL_TEMPLATE, "Bug", "", ASSIGNEE, WebUtility.UrlEncode(body));
+            return new Uri(string.Format(CultureInfo.CurrentCulture, URL_TEMPLATE, "Bug", "", ASSIGNEE, WebUtility.UrlEncode(body)));
         }
     }
 }

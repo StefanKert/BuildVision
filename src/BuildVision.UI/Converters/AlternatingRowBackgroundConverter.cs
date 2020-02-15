@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
@@ -13,11 +13,12 @@ namespace BuildVision.UI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var backg = value as SolidColorBrush;
-            if (backg == null)
+            if (!(value is SolidColorBrush backg))
+            {
                 return value;
+            }
 
-            Color color = backg.Color;
+            var color = backg.Color;
 
             int darkerDelta = -15;
             int r = color.R + darkerDelta;
@@ -51,9 +52,20 @@ namespace BuildVision.UI.Converters
                 g = color.G + lighterDelta;
                 b = color.B + lighterDelta;
 
-                if (r > 255) r = 255;
-                if (g > 255) g = 255;
-                if (b > 255) b = 255;
+                if (r > 255)
+                {
+                    r = 255;
+                }
+
+                if (g > 255)
+                {
+                    g = 255;
+                }
+
+                if (b > 255)
+                {
+                    b = 255;
+                }
             }
 
             var newColor = Color.FromArgb(255, (byte)r, (byte)g, (byte)b);

@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.12.0">
+                    xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0">
 
-    <ControlTemplate x:Key="ErrorsIndicator">
+    <ControlTemplate x:Key="ErrorsIndicatorIcon">
         <Viewbox Stretch="Uniform">
             <Canvas Width="32" Height="32">
                 <Ellipse Canvas.Left="0"
@@ -34,7 +34,7 @@
         </Viewbox>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="WarningsIndicator">
+    <ControlTemplate x:Key="WarningsIndicatorIcon">
         <Viewbox Stretch="Uniform">
             <Canvas Width="64" Height="64">
                 <Path Fill="#FFFFC700"
@@ -63,7 +63,7 @@
         </Viewbox>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="MessagesIndicator">
+    <ControlTemplate x:Key="MessagesIndicatorIcon">
         <Viewbox Stretch="Uniform">
             <Canvas Width="32" Height="32">
                 <Ellipse Stroke="WhiteSmoke"
@@ -85,7 +85,7 @@
         </Viewbox>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="SuccessProjectsIndicator">
+    <ControlTemplate x:Key="SuccessProjectsIndicatorIcon">
         <Viewbox Stretch="Uniform">
             <Canvas Width="256" Height="256" 
                     Background="Transparent">
@@ -110,7 +110,7 @@
         </Viewbox>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="UpToDateProjectsIndicator">
+    <ControlTemplate x:Key="UpToDateProjectsIndicatorIcon">
         <Viewbox Stretch="Uniform">
             <Canvas Width="256" Height="256" 
                     Background="Transparent">
@@ -135,7 +135,7 @@
         </Viewbox>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="ErrorProjectsIndicator">
+    <ControlTemplate x:Key="ErrorProjectsIndicatorIcon">
         <Viewbox Stretch="Uniform">
             <Canvas Width="256" Height="256" 
                     Background="Transparent">
@@ -160,7 +160,7 @@
         </Viewbox>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="WarningProjectsIndicator">
+    <ControlTemplate x:Key="WarningProjectsIndicatorIcon">
         <Viewbox Stretch="Uniform">
             <Canvas Width="256" Height="256" 
                     Background="Transparent">

@@ -19,7 +19,6 @@ namespace BuildVision.Tool.Building
         private IVsWindowFrame _windowFrame;
         private Window _window;
         private Window _currentActiveWindow;
-        private Document _currentActiveDocument;
         private readonly IServiceProvider _serviceProvider;
 
         [ImportingConstructor]
@@ -76,16 +75,13 @@ namespace BuildVision.Tool.Building
             _window.AutoHides = true;
 
             var win = _currentActiveWindow;
-            if (win != null && win != _window)
+            if (_dte.ActiveWindow == _window)
             {
-                win.Activate();
-                return;
-            }
-
-            var doc = _currentActiveDocument;
-            if (doc != null)
-            {
-                doc.Activate();
+                if (win != null && win != _window)
+                {
+                    win.Activate();
+                    return;
+                }
             }
         }
 
@@ -112,12 +108,10 @@ namespace BuildVision.Tool.Building
                     break;
                 case WindowState.Show:
                     _currentActiveWindow = _dte.ActiveWindow;
-                    _currentActiveDocument = _dte.ActiveDocument;
                     _windowFrame.Show();
                     break;
                 case WindowState.ShowNoActivate:
                     _currentActiveWindow = _dte.ActiveWindow;
-                    _currentActiveDocument = _dte.ActiveDocument;
                     _windowFrame.ShowNoActivate();
                     break;
                 case WindowState.Hide:

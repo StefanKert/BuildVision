@@ -10,6 +10,7 @@ using BuildVision.Common;
 using BuildVision.Common.Diagnostics;
 using BuildVision.Common.Logging;
 using BuildVision.Exports.Providers;
+using BuildVision.Helpers;
 using BuildVision.Tool;
 using BuildVision.UI;
 using BuildVision.UI.Settings.Models;
@@ -23,6 +24,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Serilog;
 using Task = System.Threading.Tasks.Task;
 using ui = Microsoft.VisualStudio.VSConstants.UICONTEXT;
+using Window = EnvDTE.Window;
 
 namespace BuildVision.Core
 {
@@ -45,6 +47,7 @@ namespace BuildVision.Core
         private DTE2 _dte2;
         private CommandEvents _commandEvents;
         private SolutionEvents _solutionEvents;
+        private WindowEvents _windowEvents;
         private IVsSolutionBuildManager2 _solutionBuildManager;
         private IVsSolutionBuildManager5 _solutionBuildManager4;
         private IBuildInformationProvider _buildInformationProvider;
@@ -54,6 +57,7 @@ namespace BuildVision.Core
         private ISolutionProvider _solutionProvider;
         private ServiceProvider _serviceProvider;
         private ILogger _logger = LogManager.ForContext<BuildVisionPackage>();
+        private Window _activeProjectContext;
 
         public static BuildVisionPackage BuildVisionPackageInstance { get; set; }
 
@@ -129,9 +133,36 @@ namespace BuildVision.Core
             _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
             _solutionEvents.Opened += SolutionEvents_Opened;
 
+            _windowEvents = _dte.Events.WindowEvents;
+            _windowEvents.WindowActivated += WindowEvents_WindowActivated;
+
             if (_dte2.Solution?.IsOpen == true)
             {
                 SolutionEvents_Opened();
+            }
+        }
+
+
+        private void WindowEvents_WindowActivated(Window gotFocus, Window lostFocus)
+        {
+            if (gotFocus == null)
+                return;
+
+            switch (gotFocus.Type)
+            {
+                case vsWindowType.vsWindowTypeSolutionExplorer:
+                    _activeProjectContext = gotFocus;
+                    break;
+
+                case vsWindowType.vsWindowTypeDocument:
+                case vsWindowType.vsWindowTypeDesigner:
+                case vsWindowType.vsWindowTypeCodeWindow:
+                    if (gotFocus.Project != null && !gotFocus.Project.IsHidden())
+                        _activeProjectContext = gotFocus;
+                    break;
+
+                default:
+                    return;
             }
         }
 

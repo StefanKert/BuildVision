@@ -209,7 +209,10 @@ namespace BuildVision.UI.ViewModels
             GroupedProjectsList.IsLiveGrouping = true;
             GroupedProjectsList.IsLiveSorting = true;
 
-            _buildInformationProvider.BuildStateChanged += () => { };
+            _buildInformationProvider.BuildStateChanged += () =>
+            {
+                GroupedProjectsList.Refresh();
+            };
 
             _settingsProvider = settingsProvider;
             _settingsProvider.SettingsChanged += () =>

@@ -11,7 +11,7 @@ namespace BuildVision.UI.ViewModels
         public static ProjectItemColumnSorter GetProjectItemSorter(SortDescription sortDescription)
         {
             var sortOrder = sortDescription.Order;
-            string sortPropertyName = sortDescription.Property;
+            var sortPropertyName = sortDescription.Property;
             if (sortOrder != SortOrder.None && !string.IsNullOrEmpty(sortPropertyName))
             {
                 ListSortDirection? sortDirection = sortOrder.ToSystem();
@@ -69,7 +69,7 @@ namespace BuildVision.UI.ViewModels
                         return new ProjectItemColumnSorter(sortDirection.Value, prop => prop.WarningsCount);
                 }
             }
-            return null;
+            return new ProjectItemColumnSorter(ListSortDirection.Ascending, prop => prop.BuildOrder);
         }
     }
 }

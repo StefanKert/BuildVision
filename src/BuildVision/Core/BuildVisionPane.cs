@@ -139,6 +139,7 @@ namespace BuildVision.Tool
         {
             if (_controlCreatedSuccessfully)
             {
+                ((BuildVisionPaneViewModel)View.DataContext).SyncColumnSettings();
                 _packageSettingsProvider.Save();
             }
 

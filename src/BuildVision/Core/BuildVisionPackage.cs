@@ -142,7 +142,6 @@ namespace BuildVision.Core
             }
         }
 
-
         private void WindowEvents_WindowActivated(Window gotFocus, Window lostFocus)
         {
             if (gotFocus == null)

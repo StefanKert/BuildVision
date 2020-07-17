@@ -165,22 +165,7 @@
                 <EventSetter Event="PreviewMouseLeftButtonDown" Handler="DataGridRowOnPreviewMouseLeftButtonDown" />
 
                 <Style.Triggers>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition Value="{x:Static contracts:ProjectState.UpToDate}" Binding="{Binding Path=State}"/>
-                            <Condition Binding="{Binding Path=DataContext.ControlSettings.GeneralSettings.HideUpToDateTargets, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ProjectGrid}}" Value="True"/>
-                        </MultiDataTrigger.Conditions>
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                    </MultiDataTrigger>
-
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition Value="{x:Static contracts:ProjectState.Pending}" Binding="{Binding Path=State}"/>
-                            <Condition Binding="{Binding Path=DataContext.ControlSettings.GeneralSettings.FillProjectListOnBuildBegin, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:ProjectGrid}}" Value="False"/>
-                        </MultiDataTrigger.Conditions>
-                        <Setter Property="Visibility" Value="Collapsed"/>
-                    </MultiDataTrigger>
-
+                    
                     <DataTrigger Value="True">
                         <DataTrigger.Binding>
                             <MultiBinding Converter="{StaticResource ObjectsReferencesEqualsConverter}">

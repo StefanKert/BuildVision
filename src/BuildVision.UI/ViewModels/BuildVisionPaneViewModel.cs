@@ -62,7 +62,35 @@ namespace BuildVision.UI.ViewModels
         public bool HideUpToDateTargets
         {
             get => ControlSettings.GeneralSettings.HideUpToDateTargets;
-            set => SetProperty(() => ControlSettings.GeneralSettings.HideUpToDateTargets, val => ControlSettings.GeneralSettings.HideUpToDateTargets = val, value);
+            set
+            {
+                SetProperty(() => ControlSettings.GeneralSettings.HideUpToDateTargets, val => ControlSettings.GeneralSettings.HideUpToDateTargets = val, value);
+                ResetProjectListFilter();
+            }
+        }
+
+        private void ResetProjectListFilter()
+        {
+            if (ControlSettings.GeneralSettings.HideUpToDateTargets || !ControlSettings.GeneralSettings.FillProjectListOnBuildBegin)
+            {
+                GroupedProjectsList.Filter = x =>
+                {
+                    var projectItem = x as ProjectItem;
+                    if (ControlSettings.GeneralSettings.HideUpToDateTargets && projectItem.State == ProjectState.UpToDate)
+                    {
+                        return false;
+                    }
+                    if (!ControlSettings.GeneralSettings.FillProjectListOnBuildBegin && projectItem.State == ProjectState.Pending)
+                    {
+                        return false;
+                    }
+                    return true;
+                };
+            }
+            else
+            {
+                GroupedProjectsList.Filter = null;
+            }
         }
 
         public ControlSettings ControlSettings { get; }
@@ -80,7 +108,10 @@ namespace BuildVision.UI.ViewModels
                 {
                     ControlSettings.GridSettings.GroupName = value;
                     GroupedProjectsList.GroupDescriptions.Clear();
-                    GroupedProjectsList.GroupDescriptions.Add(new PropertyGroupDescription(value));
+                    if (!string.IsNullOrEmpty(value))
+                    {
+                        GroupedProjectsList.GroupDescriptions.Add(new PropertyGroupDescription(value));
+                    }
                     OnPropertyChanged(nameof(GridGroupPropertyName));
                     OnPropertyChanged(nameof(GridColumnsGroupMenuItems));
                     OnPropertyChanged(nameof(GridGroupHeaderName));
@@ -199,8 +230,8 @@ namespace BuildVision.UI.ViewModels
             SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
             Projects = _buildInformationProvider.Projects;
-
             GroupedProjectsList = CollectionViewSource.GetDefaultView(Projects) as ListCollectionView;
+            ResetProjectListFilter();
             if (!string.IsNullOrWhiteSpace(GridGroupPropertyName))
             {
                 GroupedProjectsList.GroupDescriptions.Add(new PropertyGroupDescription(GridGroupPropertyName));
@@ -288,6 +319,7 @@ namespace BuildVision.UI.ViewModels
             // Raise all properties have changed.
             OnPropertyChanged(null);
             _taskBarInfoService.ResetTaskBarInfo(false);
+            ResetProjectListFilter();
         }
 
         private bool IsProjectItemEnabledForActions() => SelectedProjectItem != null && !string.IsNullOrEmpty(SelectedProjectItem.UniqueName) && !SelectedProjectItem.IsBatchBuildProject;

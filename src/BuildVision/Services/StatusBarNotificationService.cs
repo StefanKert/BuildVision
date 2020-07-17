@@ -42,11 +42,11 @@ namespace BuildVision.Core
             }
 
             var statusBar = _serviceProvider.GetService<IVsStatusbar>();
-            statusBar.FreezeOutput(0);
-            statusBar.SetText(str);
+            statusBar?.FreezeOutput(0);
+            statusBar?.SetText(str);
             if (freezeOutput)
             {
-                statusBar.FreezeOutput(1);
+                statusBar?.FreezeOutput(1);
             }
         }
     }

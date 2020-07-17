@@ -100,24 +100,29 @@ namespace BuildVision.Helpers
             var list = new List<Project>();
             foreach (var proj in solution.Projects)
             {
-                var project = proj as Project;
-                if (project == null)
+                if (!(proj is Project project))
                 {
                     continue;
                 }
+                try
+                {
+                    if (project.FileName.EndsWith(".shproj")) // Shared Projects shouldn´t be displayed in BuildVision
+                    {
+                        continue;
+                    }
 
-                if (project.FileName.EndsWith(".shproj")) // Shared Projects shouldn´t be displayed in BuildVision
-                {
-                    continue;
+                    if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
+                    {
+                        list.AddRange(project.GetSubProjects());
+                    }
+                    else if (!project.IsHidden())
+                    {
+                        list.Add(project);
+                    }
                 }
-
-                if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
+                catch (Exception ex)
                 {
-                    list.AddRange(project.GetSubProjects());
-                }
-                else if (!project.IsHidden())
-                {
-                    list.Add(project);
+                    LogManager.ForContext<Solution>().Error(ex, "Failed to load project with name {UniqueName} for solution {FullName}", project.UniqueName, solution?.FullName);
                 }
             }
             return list;

@@ -4,19 +4,10 @@
     <TargetFramework>net472</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <Configurations>Debug;Release;Marketplace;VsixGallery</Configurations>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.2" />
-  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BuildVision.Contracts\BuildVision.Contracts.csproj" />
   </ItemGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' == 'Marketplace'">
-    <DefineConstants>MARKETPLACE</DefineConstants>
-  </PropertyGroup>
 
 </Project>

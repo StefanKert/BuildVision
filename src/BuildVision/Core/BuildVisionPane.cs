@@ -129,7 +129,7 @@ namespace BuildVision.Tool
                 asyncPackage.ShowOptionPage(typeof(GeneralSettingsDialogPage));
             }
 
-            if (obj == typeof(GridColumnSettings))
+            if (obj == typeof(GridSettings))
             {
                 asyncPackage.ShowOptionPage(typeof(GridSettingsDialogPage));
             }

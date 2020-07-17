@@ -21,7 +21,6 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Serilog;
-using SerilogTraceListener;
 using Task = System.Threading.Tasks.Task;
 using ui = Microsoft.VisualStudio.VSConstants.UICONTEXT;
 

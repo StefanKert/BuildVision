@@ -29,54 +29,74 @@ namespace BuildVision.Common.Diagnostics
 
         public static void Flush()
         {
-            if (!_initialized || !ParticipateInTelemetry)
+            try
             {
-                return;
-            }
+                if (!_initialized || !ParticipateInTelemetry)
+                {
+                    return;
+                }
 
-            _client.Flush();
-            // Allow time for flushing:
-            System.Threading.Thread.Sleep(1000);
+                _client.Flush();
+                // Allow time for flushing:
+                System.Threading.Thread.Sleep(1000);
+            }
+            catch { }
         }
 
         public static void TrackEvent(string eventName, IDictionary<string, string> properties = null, IDictionary<string, double> metrics = null)
         {
-            if (!_initialized || !ParticipateInTelemetry)
+            try
             {
-                return;
-            }
+                if (!_initialized || !ParticipateInTelemetry)
+                {
+                    return;
+                }
 
-            _client.TrackEvent(eventName, properties, metrics);
+                _client.TrackEvent(eventName, properties, metrics);
+            }
+            catch { }
         }
 
         public static void TrackTrace(string trace)
         {
-            if (!_initialized || !ParticipateInTelemetry)
+            try
             {
-                return;
-            }
+                if (!_initialized || !ParticipateInTelemetry)
+                {
+                    return;
+                }
 
-            _client.TrackTrace(trace);
+                _client.TrackTrace(trace);
+            }
+            catch { }
         }
 
         public static void TrackException(Exception exception)
         {
-            if (!_initialized || !ParticipateInTelemetry)
+            try
             {
-                return;
-            }
+                if (!_initialized || !ParticipateInTelemetry)
+                {
+                    return;
+                }
 
-            _client.TrackException(exception);
+                _client.TrackException(exception);
+            }
+            catch { }
         }
 
         public static void TrackPageView(string pageName)
         {
-            if (!_initialized || !ParticipateInTelemetry)
+            try
             {
-                return;
-            }
+                if (!_initialized || !ParticipateInTelemetry)
+                {
+                    return;
+                }
 
-            _client.TrackPageView(pageName);
+                _client.TrackPageView(pageName);
+            }
+            catch { }
         }
     }
 }

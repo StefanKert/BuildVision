@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using BuildVision.Common.Diagnostics;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
@@ -26,15 +27,28 @@ namespace BuildVision.Common.Logging
             const string outputTemplate =
                 "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{ProcessId:00000}] {Level:u4} [{ThreadId:00}] {ShortSourceContext,-25} {Message:lj}{NewLine}{Exception}";
 
-            return new LoggerConfiguration()
-                .Enrich.WithProcessId()
-                .Enrich.WithThreadId()
-                .MinimumLevel.ControlledBy(LoggingLevelSwitch)
-                .WriteTo.File(logPath,
-                    fileSizeLimitBytes: null,
-                    outputTemplate: outputTemplate,
-                    shared: true)
-                .CreateLogger();
+            try
+            {
+                return new LoggerConfiguration()
+                    .Enrich.WithProcessId()
+                    .Enrich.WithThreadId()
+                    .MinimumLevel.ControlledBy(LoggingLevelSwitch)
+                    .WriteTo.File(logPath,
+                        fileSizeLimitBytes: null,
+                        outputTemplate: outputTemplate,
+                        shared: true)
+                    .CreateLogger();
+            }
+            catch(Exception ex)
+            {
+                DiagnosticsClient.TrackException(ex);
+                // In case of a failure we just don´t log to a file to make sure we at least can start BuildVision
+                return new LoggerConfiguration()
+                    .Enrich.WithProcessId()
+                    .Enrich.WithThreadId()
+                    .MinimumLevel.ControlledBy(LoggingLevelSwitch)
+                    .CreateLogger();
+            }
         }
 
         public static void EnableTraceLogging(bool enable)

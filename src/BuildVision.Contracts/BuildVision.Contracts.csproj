@@ -22,4 +22,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Marketplace'">
+    <DefineConstants>MARKETPLACE</DefineConstants>
+  </PropertyGroup>
+
 </Project>

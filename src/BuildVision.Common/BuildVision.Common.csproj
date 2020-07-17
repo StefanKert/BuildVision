@@ -32,4 +32,8 @@
     <ProjectReference Include="..\BuildVision.Contracts\BuildVision.Contracts.csproj" />
   </ItemGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' == 'Marketplace'">
+    <DefineConstants>MARKETPLACE</DefineConstants>
+  </PropertyGroup>
+
 </Project>

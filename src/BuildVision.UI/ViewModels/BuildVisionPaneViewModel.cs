@@ -48,9 +48,9 @@ namespace BuildVision.UI.ViewModels
         private readonly ILogger _logger = LogManager.ForContext<BuildVisionPaneViewModel>();
 
 #if MARKETPLACE
-        public const string PreviewVersion = "false";
+        public const bool PreviewVersion = false;
 #else
-        public const string PreviewVersion = "true";
+        public const bool PreviewVersion = true;
 #endif
 
         public ISolutionModel SolutionModel { get; set; }

@@ -40,7 +40,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
-        <Border ClipToBounds="True" SnapsToDevicePixels="True"  Panel.ZIndex="1000" Height="Auto" VerticalAlignment="Top" Margin="0,0" Padding="5,0,5,1" Background="#D63F26" CornerRadius="2" Visibility="{Binding PreviewVersion, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Left">
+        <Border ClipToBounds="True" SnapsToDevicePixels="True"  Panel.ZIndex="1000" Height="Auto" VerticalAlignment="Top" Margin="0,0" Padding="5,0,5,1" Background="#D63F26" CornerRadius="2" Visibility="{Binding Source={x:Static viewModels:BuildVisionPaneViewModel.PreviewVersion}, Converter={StaticResource BoolToVisibilityConverter}}" HorizontalAlignment="Left">
             <Border.LayoutTransform>
                 <RotateTransform Angle="-50"/>
             </Border.LayoutTransform>

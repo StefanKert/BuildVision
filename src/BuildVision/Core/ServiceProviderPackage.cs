@@ -59,7 +59,7 @@ namespace BuildVision.Core
             }
             else if (serviceType == typeof(IWindowStateService))
             {
-                return new WindowStateService(sp, this);
+                return new WindowStateService(sp);
             }
             else if (serviceType == typeof(ISolutionProvider))
             {

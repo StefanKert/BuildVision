@@ -28,12 +28,10 @@ namespace BuildVision.Core
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(ui.SolutionOpening_string, flags: PackageAutoLoadFlags.BackgroundLoad)]
-    [ProvideToolWindow(typeof(BuildVisionPane))]
     [ProvideToolWindow(typeof(BuildVisionPane), Transient = true, MultiInstances = false)]
     [ProvideToolWindowVisibility(typeof(BuildVisionPane), ui.SolutionOpening_string)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuids.GuidBuildVisionPackageString)]
-    [ProvideBindingPath]
     [ProvideBindingPath(SubPath = "Lib")]
     [ProvideProfile(typeof(GeneralSettingsDialogPage), PackageSettingsProvider.settingsCategoryName, "General Options", 0, 0, true)]
     [ProvideOptionPage(typeof(GeneralSettingsDialogPage), "BuildVision", "General", 0, 0, true)]
@@ -41,7 +39,7 @@ namespace BuildVision.Core
     [ProvideOptionPage(typeof(GridSettingsDialogPage), "BuildVision", "Projects Grid", 0, 0, true)]
     [ProvideOptionPage(typeof(BuildMessagesSettingsDialogPage), "BuildVision", "Build Messages", 0, 0, true)]
     [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
-    public sealed class BuildVisionPackage : AsyncPackage, IVsPackageDynamicToolOwnerEx
+    public sealed class BuildVisionPackage : AsyncPackage
     {
         private DTE _dte;
         private DTE2 _dte2;
@@ -56,7 +54,8 @@ namespace BuildVision.Core
         private ISolutionProvider _solutionProvider;
         private ServiceProvider _serviceProvider;
         private ILogger _logger = LogManager.ForContext<BuildVisionPackage>();
-        public static ToolWindowPane ToolWindowPane { get; set; }
+
+        public static BuildVisionPackage BuildVisionPackageInstance { get; set; }
 
         public ControlSettings ControlSettings { get; set; }
 
@@ -74,6 +73,7 @@ namespace BuildVision.Core
             }
   
             DiagnosticsClient.Initialize(GetEdition(), VisualStudioVersion.ToString(), "c437ad44-0c76-4006-968d-42d4369bc0ed");
+            BuildVisionPackageInstance = this;
         }
 
         public static Version VisualStudioVersion => GetGlobalService(typeof(DTE)) is DTE dte
@@ -171,13 +171,6 @@ namespace BuildVision.Core
                 //if (!_buildCancelledInternally)
                 //    OnBuildCancelled();
             }
-        }
-
-        public int QueryShowTool(ref Guid rguidPersistenceSlot, uint dwId, out int pfShowTool)
-        {
-            ToolWindowPane = FindToolWindow(typeof(BuildVisionPane), 0, false) ?? FindToolWindow(typeof(BuildVisionPane), 0, true);
-            pfShowTool = 1;
-            return 0;
         }
     }
 }

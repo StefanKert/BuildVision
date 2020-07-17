@@ -47,7 +47,6 @@ namespace BuildVision.Tool
         }
 
         public BuildVisionPane()
-            : base(null)
         {
             Caption = string.Format("{0} - {1}", Resources.ToolWindowTitle, ApplicationInfo.GetProductVersion());
             BitmapResourceID = 301;

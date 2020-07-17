@@ -18,16 +18,15 @@ namespace BuildVision.Tool.Building
         private DTE _dte;
         private IVsWindowFrame _windowFrame;
         private Window _window;
+        private Window _currentActiveWindow;
+        private Document _currentActiveDocument;
         private readonly IServiceProvider _serviceProvider;
-        private readonly AsyncPackage _package;
 
         [ImportingConstructor]
         public WindowStateService(
-            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider,
-            AsyncPackage package)
+            [Import(typeof(SVsServiceProvider))] IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
-            _package = package;
         }
 
         private bool IsVisible()
@@ -76,14 +75,14 @@ namespace BuildVision.Tool.Building
             // or _window.IsFloating.
             _window.AutoHides = true;
 
-            var win = _dte.ActiveWindow;
-            if (win != _window)
+            var win = _currentActiveWindow;
+            if (win != null && win != _window)
             {
                 win.Activate();
                 return;
             }
 
-            var doc = _dte.ActiveDocument;
+            var doc = _currentActiveDocument;
             if (doc != null)
             {
                 doc.Activate();
@@ -112,9 +111,13 @@ namespace BuildVision.Tool.Building
                 case WindowState.Nothing:
                     break;
                 case WindowState.Show:
+                    _currentActiveWindow = _dte.ActiveWindow;
+                    _currentActiveDocument = _dte.ActiveDocument;
                     _windowFrame.Show();
                     break;
                 case WindowState.ShowNoActivate:
+                    _currentActiveWindow = _dte.ActiveWindow;
+                    _currentActiveDocument = _dte.ActiveDocument;
                     _windowFrame.ShowNoActivate();
                     break;
                 case WindowState.Hide:
@@ -151,12 +154,13 @@ namespace BuildVision.Tool.Building
 
         public void ApplyToolWindowStateAction(WindowStateAction windowStateAction)
         {
-            if (BuildVisionPackage.ToolWindowPane == null)
+            var toolWindow = BuildVisionPackage.BuildVisionPackageInstance.FindToolWindow(typeof(BuildVisionPane), 0, false);
+            if (toolWindow == null)
             {
                 return;
             }
-            Initialize(BuildVisionPackage.ToolWindowPane);
 
+            Initialize(toolWindow);
             ApplyToolWindowStateAction(windowStateAction.State);
         }
     }

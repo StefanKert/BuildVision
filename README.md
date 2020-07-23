@@ -5,7 +5,7 @@ You can grab the extension from [the Visual Studio Gallery](https://visualstudio
 
 All releases and pre-releases are available in [Releases](../../releases "BuildVision Releases on GitHub").
 
-Supports Visual Studio 2013, 2015, 2017, 2019.
+Supports Visual Studio 2015, 2017, 2019.
 
 ### Installation and startup
 1. Install the VSIX package and restart Visual Studio.

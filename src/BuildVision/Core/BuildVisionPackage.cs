@@ -30,7 +30,7 @@ namespace BuildVision.Core
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideAutoLoad(ui.SolutionOpening_string, flags: PackageAutoLoadFlags.BackgroundLoad)]
-    [ProvideToolWindow(typeof(BuildVisionPane), Transient = true, MultiInstances = false)]
+    [ProvideToolWindow(typeof(BuildVisionPane), MultiInstances = false)]
     [ProvideToolWindowVisibility(typeof(BuildVisionPane), ui.SolutionOpening_string)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuids.GuidBuildVisionPackageString)]

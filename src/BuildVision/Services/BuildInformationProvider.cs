@@ -195,7 +195,7 @@ namespace BuildVision.Core
             BuildInformationModel.BuildId = Guid.NewGuid();
 
             _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildBegin);
-            _timer = new Timer(state => BuildUpdate(), null, BuildInProcessQuantumSleep, BuildInProcessQuantumSleep);
+            _timer = new Timer(state => BuildUpdate(), null, BuildInProcessQuantumSleep, Timeout.Infinite);
 
             string message = _buildMessagesFactory.GetBuildBeginMajorMessage(BuildInformationModel);
             _statusBarNotificationService.ShowTextWithFreeze(message);
@@ -315,16 +315,30 @@ namespace BuildVision.Core
 
         private void BuildUpdate()
         {
-            if(BuildInformationModel.CurrentBuildState != BuildState.InProgress)
+            try
             {
-                _logger.Error("Build is finished but thread still running.");
+                if(BuildInformationModel.CurrentBuildState != BuildState.InProgress)
+                {
+                    _logger.Error("Build is finished but thread still running.");
+                }
+                var message = _origTextCurrentState + _buildMessagesFactory.GetBuildBeginExtraMessage(BuildInformationModel);
+                BuildInformationModel.StateMessage = message;
+                _statusBarNotificationService.ShowTextWithFreeze(message);
+                foreach (var project in Projects.Where(x => x.State != ProjectState.Cleaning && x.State != ProjectState.Building))
+                {
+                    project.RaiseBuildElapsedTimeChanged();
+                }
             }
-            var message = _origTextCurrentState + _buildMessagesFactory.GetBuildBeginExtraMessage(BuildInformationModel);
-            BuildInformationModel.StateMessage = message;
-            _statusBarNotificationService.ShowTextWithFreeze(message);
-            foreach (var project in Projects.Where(x => x.State != ProjectState.Cleaning && x.State != ProjectState.Building))
+            finally
             {
-                project.RaiseBuildElapsedTimeChanged();
+                try
+                {
+                    // Only now fire off next event to avoid overlapping timers
+                    _timer.Change(BuildInProcessQuantumSleep, Timeout.Infinite);
+                }
+                catch (ObjectDisposedException)
+                {   // Can be disposed underneath us
+                }
             }
         }
 

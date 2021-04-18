@@ -106,7 +106,7 @@
                   GridLinesVisibility="None"
                   HeadersVisibility="{Binding GridHeadersVisibility}"
                   IsReadOnly="True"
-                  ItemsSource="{Binding GroupedProjectsList, NotifyOnTargetUpdated=True}"
+                  ItemsSource="{Binding GroupedProjectsList, Mode=OneWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"
                   RowBackground="{DynamicResource ToolboxBackgroundKey}"
                   ScrollViewer.CanContentScroll="{Binding GridGroupPropertyName, Converter={StaticResource StringIsNullOrEmptyConverter}}"
                   ScrollViewer.HorizontalScrollBarVisibility="Auto"

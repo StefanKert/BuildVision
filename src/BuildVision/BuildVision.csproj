@@ -249,6 +249,11 @@
     <PackageReference Include="Microsoft.VisualStudio.SDK">
       <Version>16.0.206</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools">
+      <Version>17.0.5232</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Serilog">
       <Version>2.9.0</Version>
     </PackageReference>

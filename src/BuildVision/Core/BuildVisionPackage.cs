@@ -50,7 +50,6 @@ namespace BuildVision.Core
         private uint _updateSolutionEvents4Cookie;
         private SolutionBuildEvents _solutionBuildEvents;
         private ISolutionProvider _solutionProvider;
-        private ServiceProvider _serviceProvider;
         private ILogger _logger = LogManager.ForContext<BuildVisionPackage>();
         private IVsWindowFrame _activeProjectContext;
 
@@ -116,9 +115,6 @@ namespace BuildVision.Core
             Assumes.Present(_buildInformationProvider);
             _solutionProvider = await GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
             Assumes.Present(_solutionProvider);
-            _serviceProvider = new ServiceProvider(Services.Dte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
-            Assumes.Present(_serviceProvider);
-
 
             Community.VisualStudio.Toolkit.VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_Opened;
             Community.VisualStudio.Toolkit.VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_AfterClosing;

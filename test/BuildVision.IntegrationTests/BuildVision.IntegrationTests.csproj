@@ -13,7 +13,7 @@
         </PackageReference>
         <PackageReference Include="xunit.vsix" Version="0.4.0-alpha.17" />
         <PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" PrivateAssets="all" Version="1.16.30" />
-        <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.10.31321.278"/>
+        <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.206" />
     </ItemGroup>
 
     <ItemGroup>

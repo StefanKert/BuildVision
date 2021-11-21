@@ -3,7 +3,6 @@ using BuildVision.Contracts;
 using BuildVision.Exports.Providers;
 using BuildVision.Helpers;
 using BuildVision.Tool.Models;
-using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using Serilog;
@@ -15,20 +14,16 @@ namespace BuildVision.Core
         private readonly ISolutionProvider _solutionProvider;
         private readonly IBuildInformationProvider _buildInformationProvider;
         private readonly ILogger _logger;
-        private readonly BuildEvents _buildEvents;
         private BuildAction _currentBuildAction;
 
         public SolutionBuildEvents(
             ISolutionProvider solutionProvider,
             IBuildInformationProvider buildInformationProvider,
-            IServiceProvider serviceProvider,
             ILogger logger)
         {
             _solutionProvider = solutionProvider;
             _buildInformationProvider = buildInformationProvider;
             _logger = logger;
-            _buildEvents = (serviceProvider.GetService(typeof(DTE)) as DTE).Events.BuildEvents;
-            _buildEvents.OnBuildBegin += BuildEvents_OnBuildBegin;
         }
 
         public void UpdateSolution_BeginUpdateAction(uint dwAction)
@@ -37,6 +32,7 @@ namespace BuildVision.Core
             {
                 _solutionProvider.ReloadSolution();
                 _currentBuildAction = StateConverterHelper.ConvertSolutionBuildFlagsToBuildAction(dwAction, (VSSOLNBUILDUPDATEFLAGS)dwAction);
+                _buildInformationProvider.BuildStarted(_currentBuildAction, BuildScope.Solution);
                 _buildInformationProvider.ReloadCurrentProjects();
             }
             catch (Exception ex)
@@ -46,19 +42,7 @@ namespace BuildVision.Core
             }
         }
 
-        private void BuildEvents_OnBuildBegin(vsBuildScope scope, vsBuildAction action)
-        {
-            try
-            {
-                // We use the action from UpdateSolution_BeginUpdateAction here because it givs closer details on the current action
-                _buildInformationProvider.BuildStarted(_currentBuildAction, (BuildScope)scope);
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "");
-                throw;
-            }
-        }
+        public int UpdateSolution_Begin(ref int pfCancelUpdate) => VSConstants.S_OK;
 
         public int UpdateProjectCfg_Begin(IVsHierarchy pHierProj, IVsCfg pCfgProj, IVsCfg pCfgSln, uint dwAction, ref int pfCancel)
         {
@@ -108,7 +92,6 @@ namespace BuildVision.Core
         }
 
         #region Interface Implementation
-        public int UpdateSolution_Begin(ref int pfCancelUpdate) => VSConstants.S_OK;
         public int UpdateSolution_StartUpdate(ref int pfCancelUpdate) => VSConstants.S_OK;
         public int UpdateSolution_Cancel() => VSConstants.S_OK;
         public int OnActiveProjectCfgChange(IVsHierarchy pIVsHierarchy) => VSConstants.S_OK;

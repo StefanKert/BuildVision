@@ -10,7 +10,6 @@ using BuildVision.Common;
 using BuildVision.Common.Diagnostics;
 using BuildVision.Common.Logging;
 using BuildVision.Exports.Providers;
-using BuildVision.Helpers;
 using BuildVision.Tool;
 using BuildVision.UI;
 using BuildVision.UI.Settings.Models;
@@ -43,11 +42,7 @@ namespace BuildVision.Core
     [ProvideOptionPage(typeof(ProjectItemSettingsDialogPage), "BuildVision", "Project Item", 0, 0, true)]
     public sealed class BuildVisionPackage : AsyncPackage
     {
-        private DTE _dte;
-        private DTE2 _dte2;
-        private CommandEvents _commandEvents;
-        private SolutionEvents _solutionEvents;
-        private WindowEvents _windowEvents;
+        private DTE2 _dte;
         private IVsSolutionBuildManager2 _solutionBuildManager;
         private IVsSolutionBuildManager5 _solutionBuildManager4;
         private IBuildInformationProvider _buildInformationProvider;
@@ -57,7 +52,7 @@ namespace BuildVision.Core
         private ISolutionProvider _solutionProvider;
         private ServiceProvider _serviceProvider;
         private ILogger _logger = LogManager.ForContext<BuildVisionPackage>();
-        private Window _activeProjectContext;
+        private IVsWindowFrame _activeProjectContext;
 
         public static BuildVisionPackage BuildVisionPackageInstance { get; set; }
 
@@ -80,7 +75,7 @@ namespace BuildVision.Core
             BuildVisionPackageInstance = this;
         }
 
-        public static Version VisualStudioVersion => GetGlobalService(typeof(DTE)) is DTE dte
+        public static Version VisualStudioVersion => GetGlobalService(typeof(DTE2)) is DTE2 dte
                     ? new Version(int.Parse(dte.Version.Split('.')[0], CultureInfo.InvariantCulture), 0)
                     : new Version(0, 0, 0, 0);
 
@@ -88,8 +83,8 @@ namespace BuildVision.Core
         {
             try
             {
-                _dte2 = GetService(typeof(DTE)) as DTE2;
-                return _dte2.Edition;
+                _dte = GetService(typeof(DTE)) as DTE2;
+                return _dte.Edition;
             }
             catch (Exception ex)
             {
@@ -111,10 +106,8 @@ namespace BuildVision.Core
             await JoinableTaskFactory.SwitchToMainThreadAsync(DisposalToken);
             await ShowToolWindowCommand.InitializeAsync(this);
 
-            _dte = await GetServiceAsync(typeof(DTE)) as DTE;
+            _dte = await GetServiceAsync(typeof(DTE)) as DTE2;
             Assumes.Present(_dte);
-            _dte2 = await GetServiceAsync(typeof(DTE)) as DTE2;
-            Assumes.Present(_dte2);
             _solutionBuildManager = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
             Assumes.Present(_solutionBuildManager);
             _solutionBuildManager4 = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager5;
@@ -126,46 +119,44 @@ namespace BuildVision.Core
             _serviceProvider = new ServiceProvider(Services.Dte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
             Assumes.Present(_serviceProvider);
 
-            _commandEvents = _dte.Events.CommandEvents;
-            _commandEvents.AfterExecute += CommandEvents_AfterExecute;
 
-            _solutionEvents = _dte.Events.SolutionEvents;
-            _solutionEvents.AfterClosing += SolutionEvents_AfterClosing;
-            _solutionEvents.Opened += SolutionEvents_Opened;
+            Community.VisualStudio.Toolkit.VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_Opened;
+            Community.VisualStudio.Toolkit.VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_AfterClosing;
 
-            _windowEvents = _dte.Events.WindowEvents;
-            _windowEvents.WindowActivated += WindowEvents_WindowActivated;
+            //_commandEvents = _dte.Events.CommandEvents;
+            //_commandEvents.AfterExecute += CommandEvents_AfterExecute;
 
-            if (_dte2.Solution?.IsOpen == true)
+            //Community.VisualStudio.Toolkit.VS.Events.WindowEvents.ActiveFrameChanged += WindowEvents_WindowActivated;
+            if (_dte.Solution?.IsOpen == true)
             {
                 SolutionEvents_Opened();
             }
         }
 
-        private void WindowEvents_WindowActivated(Window gotFocus, Window lostFocus)
-        {
-            if (gotFocus == null)
-                return;
+        //private void WindowEvents_WindowActivated(Community.VisualStudio.Toolkit.ActiveFrameChangeEventArgs args)
+        //{
+        //    if (args.NewFrame == null)
+        //        return;
 
-            switch (gotFocus.Type)
-            {
-                case vsWindowType.vsWindowTypeSolutionExplorer:
-                    _activeProjectContext = gotFocus;
-                    break;
+        //    switch (args.NewFrame.)
+        //    {
+        //        case vsWindowType.vsWindowTypeSolutionExplorer:
+        //            _activeProjectContext = args.NewFrame;
+        //            break;
 
-                case vsWindowType.vsWindowTypeDocument:
-                case vsWindowType.vsWindowTypeDesigner:
-                case vsWindowType.vsWindowTypeCodeWindow:
-                    if (gotFocus.Project != null && !gotFocus.Project.IsHidden())
-                        _activeProjectContext = gotFocus;
-                    break;
+        //        case vsWindowType.vsWindowTypeDocument:
+        //        case vsWindowType.vsWindowTypeDesigner:
+        //        case vsWindowType.vsWindowTypeCodeWindow:
+        //            if (args.NewFrame.Project != null && !args.NewFrame.Project.IsHidden())
+        //                _activeProjectContext = args.NewFrame;
+        //            break;
 
-                default:
-                    return;
-            }
-        }
+        //        default:
+        //            return;
+        //    }
+        //}
 
-        private void SolutionEvents_Opened()
+        private void SolutionEvents_Opened(string solutionFileName = "")
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -173,7 +164,7 @@ namespace BuildVision.Core
             _buildInformationProvider.ResetCurrentProjects();
             _buildInformationProvider.ResetBuildInformationModel();
 
-            _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider, _serviceProvider, LogManager.ForContext<SolutionBuildEvents>());
+            _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider, LogManager.ForContext<SolutionBuildEvents>());
             _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEventsCookie);
             _solutionBuildManager4.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
         }

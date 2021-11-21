@@ -6,6 +6,7 @@ using BuildVision.Common.Logging;
 using BuildVision.Core;
 using BuildVision.UI;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell.Interop;
 using ProjectItem = BuildVision.UI.Models.ProjectItem;
 
 namespace BuildVision.Helpers
@@ -63,7 +64,7 @@ namespace BuildVision.Helpers
 
         public static Project FirstProject(this Solution solution, Func<Project, bool> cond) => _cachedProjects.First(cond);
 
-        public static IList<ProjectItem> GetProjectItems(this Solution solution)
+        public static IList<ProjectItem> GetProjectItems(this IVsSolution solution)
         {
             IList<Project> dteProjects = new List<Project>();
             try
@@ -73,7 +74,8 @@ namespace BuildVision.Helpers
             }
             catch (Exception ex)
             {
-                LogManager.ForContext<Solution>().Error(ex, "Failed to get projectitems for solution {FullName}", solution?.FullName);
+                solution.GetProperty((int)__VSPROPID.VSPROPID_SolutionBaseName, out object fullName);
+                LogManager.ForContext<IVsSolution>().Error(ex, "Failed to get projectitems for solution {FullName}", fullName);
             }
 
             var projectItems = new List<ProjectItem>(dteProjects.Count);
@@ -88,19 +90,21 @@ namespace BuildVision.Helpers
                 }
                 catch (Exception ex)
                 {
-                    LogManager.ForContext<Solution>().Error(ex, "Failed to update project properties for solution {FullName}", solution?.FullName);
+                    solution.GetProperty((int)__VSPROPID.VSPROPID_SolutionBaseName, out object fullName);
+                    LogManager.ForContext<IVsSolution>().Error(ex, "Failed to update project properties for solution {FullName}", fullName);
                 }
             }
 
             return projectItems;
         }
 
-        public static IList<Project> GetProjects(this Solution solution)
+        public static IList<Project> GetProjects(this IVsSolution solution)
         {
             var list = new List<Project>();
-            foreach (var proj in solution.Projects)
+            foreach (var proj in solution.GetAllProjectHierarchies())
             {
-                if (!(proj is Project project))
+                var s = proj.ToProject();
+                if (!(s is Project project))
                 {
                     continue;
                 }
@@ -111,18 +115,15 @@ namespace BuildVision.Helpers
                         continue;
                     }
 
-                    if (project.Kind == EnvDTEProjectKinds.ProjectKindSolutionFolder)
-                    {
-                        list.AddRange(project.GetSubProjects());
-                    }
-                    else if (!project.IsHidden())
+                    if (!project.IsHidden())
                     {
                         list.Add(project);
                     }
                 }
                 catch (Exception ex)
                 {
-                    LogManager.ForContext<Solution>().Error(ex, "Failed to load project with name {UniqueName} for solution {FullName}", project.UniqueName, solution?.FullName);
+                    solution.GetProperty((int)__VSPROPID.VSPROPID_SolutionBaseName, out object fullName);
+                    LogManager.ForContext<IVsSolution>().Error(ex, "Failed to load project with name {UniqueName} for solution {FullName}", project.UniqueName, fullName);
                 }
             }
             return list;
@@ -154,7 +155,7 @@ namespace BuildVision.Helpers
 
                     UpdateNameProperties(project, projectItem);
                     projectItem.Language = project.GetLanguageName();
-                    projectItem.CommonType = ProjectExtensions.GetProjectType(project.Kind, project.DTE.Version /* "12.0" */);
+                    projectItem.CommonType = ProjectExtensions.GetProjectType(project.Kind, Community.VisualStudio.Toolkit.VS.Shell.GetVsVersionAsync().Result.ToString()/* "12.0" */);
                 }
                 catch (Exception ex)
                 {

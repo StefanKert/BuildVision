@@ -20,6 +20,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Serilog;
 using BuildVision.Extensions;
+using EnvDTE80;
 
 namespace BuildVision.Tool.Building
 {
@@ -81,7 +82,7 @@ namespace BuildVision.Tool.Building
                 // We need to create a separate task here because of some weird things that are going on
                 // when calling ExecuteCommand directly. Directly calling it leads to a freeze. No need 
                 // for that!
-                var dte = _serviceProvider.GetService<DTE>();
+                var dte = (_serviceProvider.GetService<DTE>() as DTE2);
                 dte.ExecuteCommand(CancelBuildCommand);
                 _buildCancelledInternally = true;
             }
@@ -110,7 +111,7 @@ namespace BuildVision.Tool.Building
             {
                 object customIn = null;
                 object customOut = null;
-                var dte = _serviceProvider.GetService<DTE>();
+                var dte = (_serviceProvider.GetService<DTE>() as DTE2);
                 dte.Commands.Raise(VSConstants.GUID_VSStandardCommandSet97.ToString(), (int)command, ref customIn, ref customOut);
             }
             catch (Exception ex)

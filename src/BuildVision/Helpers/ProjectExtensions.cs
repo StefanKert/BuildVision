@@ -326,7 +326,7 @@ namespace BuildVision.Helpers
                 if (!string.IsNullOrWhiteSpace(guidsStr))
                 {
                     string[] typeGuids = guidsStr.Trim(';').Split(';');
-                    flavourTypes.AddRange(typeGuids.Select(prjKind => GetProjectType(prjKind, project.DTE.Version)));
+                    flavourTypes.AddRange(typeGuids.Select(prjKind => GetProjectType(prjKind, Community.VisualStudio.Toolkit.VS.Shell.GetVsVersionAsync().Result.ToString())));
                 }
 
                 var myType = project.TryGetPropertyValueOrDefault("MyType"); // for VB.NET projects

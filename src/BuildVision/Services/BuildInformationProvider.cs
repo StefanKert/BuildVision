@@ -69,7 +69,7 @@ namespace BuildVision.Core
             _solutionProvider = solutionProvider;
             _buildService = buildService;
             _taskBarInfoService = taskBarInfoService;
-            _buildOutputLogger.OnErrorRaised += BuildOutputLogger_OnErrorRaised;
+            BuildLoggerProvider.OnErrorRaised += BuildOutputLogger_OnErrorRaised;
         }
 
         public void ReloadCurrentProjects()
@@ -182,7 +182,7 @@ namespace BuildVision.Core
         {
             _currentQueuePosOfBuildingProject = 0;
             ErrorNavigationService.BuildErrorNavigated = false;
-            _buildOutputLogger.Attach();
+            //_buildOutputLogger.Attach();
 
             ResetBuildInformationModel();
             ReloadCurrentProjects();

@@ -88,6 +88,7 @@
     <Compile Include="Extensions\IServiceProviderExtensions.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="Services\BuildInformationProvider.cs" />
+    <Compile Include="Services\BuildLoggerProvider.cs" />
     <Compile Include="Services\ErrorNavigationService.cs" />
     <Compile Include="Interfaces\IWindowStateService.cs" />
     <Compile Include="Services\SolutionProvider.cs" />

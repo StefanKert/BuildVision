@@ -50,11 +50,11 @@ namespace BuildVision.UI.Models
             set => SetProperty(ref _failedProjectsCount, value);
         }
 
-        private int _projectsToBuildCount = 0;
+        private int _pendingProjectsCount = 0;
         public int PendingProjectsCount
         {
-            get => _projectsToBuildCount;
-            set => SetProperty(ref _projectsToBuildCount, value);
+            get => _pendingProjectsCount;
+            set => SetProperty(ref _pendingProjectsCount, value);
         }
 
         private int _builtProjectsCount = 0;

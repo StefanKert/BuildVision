@@ -50,11 +50,18 @@ namespace BuildVision.UI.Models
             set => SetProperty(ref _failedProjectsCount, value);
         }
 
-        private int _warnedProjectsCount = 0;
-        public int WarnedProjectsCount
+        private int _projectsToBuildCount = 0;
+        public int PendingProjectsCount
         {
-            get => _warnedProjectsCount;
-            set => SetProperty(ref _warnedProjectsCount, value);
+            get => _projectsToBuildCount;
+            set => SetProperty(ref _projectsToBuildCount, value);
+        }
+
+        private int _builtProjectsCount = 0;
+        public int BuiltProjectsCount
+        {
+            get => _builtProjectsCount;
+            set => SetProperty(ref _builtProjectsCount, value);
         }
 
         private string _stateMessage = Resources.BuildDoneText_BuildNotStarted;
@@ -62,6 +69,13 @@ namespace BuildVision.UI.Models
         {
             get => _stateMessage;
             set => SetProperty(ref _stateMessage, value);
+        }
+
+        private int _warnedProjectsCount = 0;
+        public int WarnedProjectsCount
+        {
+            get => _warnedProjectsCount;
+            set => SetProperty(ref _warnedProjectsCount, value);
         }
 
         private BuildState _currentBuildState = BuildState.NotStarted;
@@ -73,8 +87,11 @@ namespace BuildVision.UI.Models
                 SetProperty(ref _currentBuildState, value);
                 OnPropertyChanged(nameof(StateIconKey));
                 OnPropertyChanged(nameof(IsFinished));
+                OnPropertyChanged(nameof(IsProgressBarVisible));
             }
         }
+
+        public bool IsProgressBarVisible { get { return CurrentBuildState == BuildState.InProgress; } }
 
         public BuildResultState ResultState => GetBuildResultState();
 
@@ -275,6 +292,8 @@ namespace BuildVision.UI.Models
             BuildScope = BuildScope.Unknown;
             BuildStartTime = null;
             BuildFinishTime = null;
+            BuiltProjectsCount = 0;
+            PendingProjectsCount = 0;
         }
     }
 }

@@ -193,6 +193,8 @@ namespace BuildVision.Core
             BuildInformationModel.BuildAction = buildAction;
             BuildInformationModel.BuildScope = buildScope;
             BuildInformationModel.BuildId = Guid.NewGuid();
+            BuildInformationModel.BuiltProjectsCount = 0;
+            BuildInformationModel.PendingProjectsCount = Projects.Count(x => x.State == ProjectState.Pending);
 
             _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildBegin);
             _timer = new Timer(state => BuildUpdate(), null, BuildInProcessQuantumSleep, Timeout.Infinite);
@@ -267,6 +269,7 @@ namespace BuildVision.Core
             BuildInformationModel.MessagesCount = Projects.Sum(x => x.MessagesCount);
             BuildInformationModel.ErrorCount = Projects.Sum(x => x.ErrorsCount);
             BuildInformationModel.WarningsCount = Projects.Sum(x => x.WarningsCount);
+            BuildInformationModel.BuiltProjectsCount++;
 
             if (BuildInformationModel.CurrentProject == null)
             {

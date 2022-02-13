@@ -37,6 +37,7 @@
             <converters:InProgressToCollapsedConverter x:Key="InProgressToCollapsedConverter" />
             <converters:InProgressToVisibleConverter x:Key="InProgressToVisibleConverter" />
             <converters:InProgressToBoolConverter x:Key="InProgressToBoolConverter" />
+            <converters:NumbersToPercentageConverter x:Key="NumbersToPercentageConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid>
@@ -65,6 +66,8 @@
                 <controls:BuildVisionProgressBar DataContext="{Binding BuildInformationModel}" />
                 <Grid Visibility="{Binding ControlSettings.GeneralSettings.IndicatorsPanelVisible, Converter={StaticResource BoolToVisibilityConverter}}">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="auto" />
                         <ColumnDefinition Width="auto" />
@@ -150,6 +153,24 @@
                         <indicators:ErrorProjectsIndicator Value="{Binding BuildInformationModel.FailedProjectsCount, UpdateSourceTrigger=PropertyChanged}" />
                         <Label Margin="-6,0,0,0" Content="{Binding BuildInformationModel.FailedProjectsCount}" Foreground="{DynamicResource ToolWindowTextKey}" Opacity="0.4" />
                     </ListBox>
+                    <Grid Grid.Column="5" Visibility="{Binding ControlSettings.GeneralSettings.ShowProgressBar, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Width="2" BorderThickness="2" BorderBrush="{DynamicResource CommandBarMenuSeparatorBrushKey}" Margin="10,2,10,2" />
+                        <Grid Grid.Column="1" Visibility="{Binding BuildInformationModel.IsProgressBarVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <ProgressBar Minimum="0" Maximum="100" Name="buildProgress" Width="100" Height="12">
+                                <ProgressBar.Value>
+                                    <MultiBinding Converter="{StaticResource NumbersToPercentageConverter}">
+                                        <Binding Path="BuildInformationModel.BuiltProjectsCount" />
+                                        <Binding Path="BuildInformationModel.PendingProjectsCount" />
+                                    </MultiBinding>
+                                </ProgressBar.Value>
+                            </ProgressBar>
+                            <TextBlock Text="{Binding ElementName=buildProgress, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Grid>
+                    </Grid>
                 </Grid>
             </StackPanel>
             <components:ProjectGrid DataContext="{Binding}" Grid.Row="1" />

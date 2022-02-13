@@ -711,6 +711,15 @@ namespace BuildVision.UI {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show solution build progress bar.
+        /// </summary>
+        public static string GeneralSettings_ShowProgressBar {
+            get {
+                return ResourceManager.GetString("GeneralSettings_ShowProgressBar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stop building on the first error.
         /// </summary>
         public static string GeneralSettings_StopBuildAfterFirstErrorCheckBox {

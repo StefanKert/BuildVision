@@ -134,6 +134,10 @@
                       Content="{x:Static res:Resources.GeneralSettings_ParticipateInTelemetry}"
                       IsChecked="{Binding ParticipateInTelemetry}" />
 
+                <CheckBox Margin="8"
+                      Content="{x:Static res:Resources.GeneralSettings_ShowProgressBar}"
+                      IsChecked="{Binding ShowProgressBar}" />
+
                 <Grid Margin="4,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />

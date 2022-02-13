@@ -610,4 +610,7 @@ on build done</value>
   <data name="GeneralSettings_ParticipateInTelemetry" xml:space="preserve">
     <value>Help improve BuildVision by providing anynonymous usage data and crash reports</value>
   </data>
+  <data name="GeneralSettings_ShowProgressBar" xml:space="preserve">
+    <value>Show solution build progress bar</value>
+  </data>
 </root>

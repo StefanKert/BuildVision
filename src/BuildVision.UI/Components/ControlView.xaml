@@ -168,7 +168,10 @@
                                     </MultiBinding>
                                 </ProgressBar.Value>
                             </ProgressBar>
-                            <TextBlock Text="{Binding ElementName=buildProgress, Path=Value, StringFormat={}{0:0}%}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <TextBlock Foreground="#212121"
+                                       Text="{Binding ElementName=buildProgress, Path=Value, StringFormat={}{0:0}%}" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" />
                         </Grid>
                     </Grid>
                 </Grid>

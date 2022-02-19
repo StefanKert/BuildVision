@@ -50,11 +50,18 @@ namespace BuildVision.UI.Models
             set => SetProperty(ref _failedProjectsCount, value);
         }
 
-        private int _warnedProjectsCount = 0;
-        public int WarnedProjectsCount
+        private int _pendingProjectsCount = 0;
+        public int PendingProjectsCount
         {
-            get => _warnedProjectsCount;
-            set => SetProperty(ref _warnedProjectsCount, value);
+            get => _pendingProjectsCount;
+            set => SetProperty(ref _pendingProjectsCount, value);
+        }
+
+        private int _builtProjectsCount = 0;
+        public int BuiltProjectsCount
+        {
+            get => _builtProjectsCount;
+            set => SetProperty(ref _builtProjectsCount, value);
         }
 
         private string _stateMessage = Resources.BuildDoneText_BuildNotStarted;
@@ -62,6 +69,13 @@ namespace BuildVision.UI.Models
         {
             get => _stateMessage;
             set => SetProperty(ref _stateMessage, value);
+        }
+
+        private int _warnedProjectsCount = 0;
+        public int WarnedProjectsCount
+        {
+            get => _warnedProjectsCount;
+            set => SetProperty(ref _warnedProjectsCount, value);
         }
 
         private BuildState _currentBuildState = BuildState.NotStarted;
@@ -73,8 +87,11 @@ namespace BuildVision.UI.Models
                 SetProperty(ref _currentBuildState, value);
                 OnPropertyChanged(nameof(StateIconKey));
                 OnPropertyChanged(nameof(IsFinished));
+                OnPropertyChanged(nameof(IsProgressBarVisible));
             }
         }
+
+        public bool IsProgressBarVisible { get { return CurrentBuildState == BuildState.InProgress; } }
 
         public BuildResultState ResultState => GetBuildResultState();
 
@@ -164,97 +181,80 @@ namespace BuildVision.UI.Models
 
         private BuildResultState GetBuildResultState()
         {
-            if (CurrentBuildState == BuildState.InProgress)
+            switch (CurrentBuildState)
             {
-                return BuildResultState.Unknown;
+                case BuildState.InProgress:
+                    return BuildResultState.Unknown;
+                case BuildState.Cancelled:
+                    return GetBuildResultStateForCanceledState();
+                case BuildState.Failed:
+                    return GetBuildResultStateForFailedState();
+                case BuildState.ErrorDone:
+                    return GetBuildResultStateForErrorDoneState();
+                case BuildState.Done:
+                    return GetBuildResultStateForDoneState();
+                default:
+                    return BuildResultState.Unknown;
             }
-            else if (CurrentBuildState == BuildState.Cancelled)
+        }
+
+        private BuildResultState GetBuildResultStateForCanceledState()
+        {
+            switch (BuildAction)
             {
-                if (BuildAction == BuildAction.RebuildAll)
-                {
+                case BuildAction.RebuildAll:
                     return BuildResultState.RebuildCancelled;
-                }
-
-                if (BuildAction == BuildAction.Clean)
-                {
+                case BuildAction.Clean:
                     return BuildResultState.CleanCancelled;
-                }
-
-                if (BuildAction == BuildAction.Build)
-                {
+                case BuildAction.Build:
                     return BuildResultState.BuildCancelled;
-                }
-                else
-                {
+                default:
                     return BuildResultState.Unknown;
-                }
             }
-            else if (CurrentBuildState == BuildState.Failed)
+        }
+
+        private BuildResultState GetBuildResultStateForFailedState()
+        {
+            switch (BuildAction)
             {
-                if (BuildAction == BuildAction.RebuildAll)
-                {
+                case BuildAction.RebuildAll:
                     return BuildResultState.RebuildFailed;
-                }
-
-                if (BuildAction == BuildAction.Clean)
-                {
+                case BuildAction.Clean:
                     return BuildResultState.CleanFailed;
-                }
-
-                if (BuildAction == BuildAction.Build)
-                {
+                case BuildAction.Build:
                     return BuildResultState.BuildFailed;
-                }
-                else
-                {
+                default:
                     return BuildResultState.Unknown;
-                }
             }
-            else if (CurrentBuildState == BuildState.ErrorDone)
+        }
+
+        private BuildResultState GetBuildResultStateForErrorDoneState()
+        {
+            switch (BuildAction)
             {
-                if (BuildAction == BuildAction.RebuildAll)
-                {
+                case BuildAction.RebuildAll:
                     return BuildResultState.RebuildErrorDone;
-                }
-
-                if (BuildAction == BuildAction.Clean)
-                {
+                case BuildAction.Clean:
                     return BuildResultState.CleanErrorDone;
-                }
-
-                if (BuildAction == BuildAction.Build)
-                {
+                case BuildAction.Build:
                     return BuildResultState.BuildErrorDone;
-                }
-                else
-                {
+                default:
                     return BuildResultState.Unknown;
-                }
             }
-            else if (CurrentBuildState == BuildState.Done)
+        }
+
+        private BuildResultState GetBuildResultStateForDoneState()
+        {
+            switch (BuildAction)
             {
-                if (BuildAction == BuildAction.RebuildAll)
-                {
+                case BuildAction.RebuildAll:
                     return BuildResultState.RebuildDone;
-                }
-
-                if (BuildAction == BuildAction.Clean)
-                {
+                case BuildAction.Clean:
                     return BuildResultState.CleanDone;
-                }
-
-                if (BuildAction == BuildAction.Build)
-                {
+                case BuildAction.Build:
                     return BuildResultState.BuildDone;
-                }
-                else
-                {
+                default:
                     return BuildResultState.Unknown;
-                }
-            }
-            else
-            {
-                return BuildResultState.Unknown;
             }
         }
 
@@ -275,6 +275,8 @@ namespace BuildVision.UI.Models
             BuildScope = BuildScope.Unknown;
             BuildStartTime = null;
             BuildFinishTime = null;
+            BuiltProjectsCount = 0;
+            PendingProjectsCount = 0;
         }
     }
 }

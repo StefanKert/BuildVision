@@ -21,6 +21,8 @@ namespace BuildVision.Contracts.Models
         int UpToDateProjectsCount { get; set; }
         int WarnedProjectsCount { get; set; }
         int WarningsCount { get; set; }
+        int PendingProjectsCount { get; set; }
+        int BuiltProjectsCount { get; set; }
 
         BuildResultState ResultState { get; }
         string StateIconKey { get; }

@@ -2,6 +2,7 @@
 using BuildVision.Contracts;
 using BuildVision.Exports.Providers;
 using BuildVision.Helpers;
+using BuildVision.Tool.Building;
 using BuildVision.Tool.Models;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -31,6 +32,7 @@ namespace BuildVision.Core
             try
             {
                 _solutionProvider.ReloadSolution();
+                BuildLoggerProvider.BuildOutputLogger?.Clear();
                 _currentBuildAction = StateConverterHelper.ConvertSolutionBuildFlagsToBuildAction(dwAction, (VSSOLNBUILDUPDATEFLAGS)dwAction);
                 _buildInformationProvider.BuildStarted(_currentBuildAction, BuildScope.Solution);
                 _buildInformationProvider.ReloadCurrentProjects();

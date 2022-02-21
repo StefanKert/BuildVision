@@ -27,6 +27,8 @@ namespace BuildVision.Tool.Building
             Verbosity = loggerVerbosity;
         }
 
+        public void Clear() => _projectsLookup.Clear();
+
         public override void Initialize(IEventSource eventSource)
         {
             _projectsLookup = new Dictionary<string, BuildProjectContextEntry>();

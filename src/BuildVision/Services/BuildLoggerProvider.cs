@@ -39,10 +39,16 @@ namespace BuildVision.Tool.Building
 
         public ILogger GetLogger(string projectPath, IEnumerable<string> targets, IDictionary<string, string> properties, bool isDesignTimeBuild)
         {
-            var buildOutputLogger = new BuildOutputLogger(Guid.NewGuid(), Verbosity);
-            buildOutputLogger.OnErrorRaised += OnErrorRaised;
-            return buildOutputLogger;
+            if (BuildOutputLogger == null)
+            {
+                BuildOutputLogger = new BuildOutputLogger(Guid.NewGuid(), Verbosity);
+                BuildOutputLogger.OnErrorRaised += OnErrorRaised;
+            }
+            BuildOutputLogger.Clear();
+            return BuildOutputLogger;
         }
+
+        public static BuildOutputLogger BuildOutputLogger { get; set; }
 
         public static event Action<BuildProjectContextEntry, object, ErrorLevel> OnErrorRaised;
     }

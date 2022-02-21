@@ -3,7 +3,7 @@
                     xmlns:ui="clr-namespace:BuildVision.UI.Controls.Buttons"
                     xmlns:indicators="clr-namespace:BuildVision.UI.Controls.Indicators"
                     xmlns:res="clr-namespace:BuildVision.UI"
-                    xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0">
+                    xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="/BuildVision.UI;component/Resources/CommonResources.xaml" />
         <ResourceDictionary Source="/BuildVision.UI;component/Resources/BuildAction.Resources.xaml" />

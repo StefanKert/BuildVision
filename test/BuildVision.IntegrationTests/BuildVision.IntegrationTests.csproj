@@ -1,43 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
-    <IsTestProject>true</IsTestProject>
-    <Configurations>Debug;Release;Marketplace;VsixGallery</Configurations>
-  </PropertyGroup>
-  
-   <ItemGroup>
-    <PackageReference Include="EnvDTE" Version="8.0.2" />
-    <PackageReference Include="EnvDTE80" Version="8.0.3" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" Version="15.0.27" />
-    <PackageReference Include="Microsoft.VSSDK.UnitTestLibrary" Version="14.3.25407" />
-    <PackageReference Include="stdole" Version="7.0.3303" />
-    <PackageReference Include="xunit.runner.console" Version="2.4.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="xunit.vsix" Version="0.4.0-alpha.17" />
-    <PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" PrivateAssets="all" Version="1.16.30" />
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+        <IsTestProject>true</IsTestProject>
+        <Configurations>Debug;Release;Marketplace;VsixGallery</Configurations>
+    </PropertyGroup>
 
-   <ItemGroup>
-     <ProjectReference Include="..\..\src\BuildVision.Common\BuildVision.Common.csproj" />
-     <ProjectReference Include="..\..\src\BuildVision.Contracts\BuildVision.Contracts.csproj" />
-     <ProjectReference Include="..\..\src\BuildVision.UI\BuildVision.UI.csproj" />
-     <ProjectReference Include="..\..\src\BuildVision\BuildVision.csproj" />
-   </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.VSSDK.UnitTestLibrary" Version="14.3.25407" />
+        <PackageReference Include="xunit.runner.console" Version="2.4.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="xunit.vsix" Version="0.4.0-alpha.17" />
+        <PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" PrivateAssets="all" Version="1.16.30" />
+        <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.206" />
+    </ItemGroup>
 
-   <ItemGroup>
-     <Reference Include="Microsoft.CSharp" />
-     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
-       <HintPath>..\..\libs\2017\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
-     </Reference>
-     <Reference Include="Microsoft.VSSDK.TestHostFramework">
-       <HintPath>..\..\libs\2017\Microsoft.VSSDK.TestHostFramework.dll</HintPath>
-     </Reference>
-   </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\BuildVision.Common\BuildVision.Common.csproj" />
+        <ProjectReference Include="..\..\src\BuildVision.Contracts\BuildVision.Contracts.csproj" />
+        <ProjectReference Include="..\..\src\BuildVision.UI\BuildVision.UI.csproj" />
+        <ProjectReference Include="..\..\src\BuildVision\BuildVision.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework">
+            <HintPath>..\..\libs\2017\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.VSSDK.TestHostFramework">
+            <HintPath>..\..\libs\2017\Microsoft.VSSDK.TestHostFramework.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 
 </Project>

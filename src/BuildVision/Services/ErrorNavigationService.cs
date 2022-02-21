@@ -71,8 +71,8 @@ namespace BuildVision.Services
                 }
 
                 try
-                {
-                    var window = project.DTE.ItemOperations.OpenFile(fullPath, Constants.vsViewKindAny);
+                {           
+                    var window = Core.Services.Dte2.ItemOperations.OpenFile(fullPath, Constants.vsViewKindAny);
                     if (window == null)
                     {
                         throw new NullReferenceException("Associated window is null reference.");

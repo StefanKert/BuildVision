@@ -88,6 +88,7 @@
     <Compile Include="Extensions\IServiceProviderExtensions.cs" />
     <Compile Include="Properties\GlobalSuppressions.cs" />
     <Compile Include="Services\BuildInformationProvider.cs" />
+    <Compile Include="Services\BuildLoggerProvider.cs" />
     <Compile Include="Services\ErrorNavigationService.cs" />
     <Compile Include="Interfaces\IWindowStateService.cs" />
     <Compile Include="Services\SolutionProvider.cs" />
@@ -221,8 +222,8 @@
     <PackageReference Include="AppInsights.WindowsDesktop">
       <Version>2.10.55</Version>
     </PackageReference>
-    <PackageReference Include="Madskristensen.VisualStudio.SDK">
-      <Version>14.3.81-pre</Version>
+    <PackageReference Include="Community.VisualStudio.Toolkit.15">
+      <Version>15.0.339</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
       <Version>16.0.461</Version>
@@ -241,12 +242,17 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.Analyzers">
-      <Version>16.6.11</Version>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
+      <Version>6.0.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK">
+      <Version>16.0.206</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
-      <Version>16.7.3069</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <Version>17.0.5232</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Serilog">

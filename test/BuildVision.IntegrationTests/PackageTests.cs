@@ -8,6 +8,7 @@ using Xunit;
 using System.Linq;
 using System.Diagnostics;
 using EnvDTE;
+using EnvDTE80;
 
 [assembly: VsixRunner(TraceLevel = SourceLevels.All)]
 namespace BuildVision.IntegrationTests
@@ -16,7 +17,7 @@ namespace BuildVision.IntegrationTests
     {
         private static IVsShell ShellService => GlobalServices.GetService<SVsShell>() as IVsShell;
         private static IVsUIShell UiShellService => GlobalServices.GetService<SVsUIShell>() as IVsUIShell;
-        private static DTE DTE => GlobalServices.GetService<DTE>() as DTE;
+        private static DTE2 DTE => GlobalServices.GetService<DTE2>() as DTE2;
 
         [Trait("Category", "SkipWhenLiveUnitTesting")]
         [VsixFact(VisualStudioVersion.Current, RootSuffix = "Exp", RunOnUIThread = true)]

@@ -36,7 +36,7 @@ namespace BuildVision.Core
         public static IComponentModel ComponentModel => GetGlobalService<SComponentModel, IComponentModel>();
         public static ExportProvider DefaultExportProvider => ComponentModel.DefaultExportProvider;
 
-        public static DTE Dte => GetGlobalService<DTE, DTE>();
+        public static DTE2 Dte => GetGlobalService<DTE, DTE2>();
 
         public static DTE2 Dte2 => Dte as DTE2;
 

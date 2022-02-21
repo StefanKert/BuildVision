@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using BuildVision.Core;
 using BuildVision.UI.Settings.Models.ToolWindow;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -15,7 +16,7 @@ namespace BuildVision.Tool.Building
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class WindowStateService : IWindowStateService
     {
-        private DTE _dte;
+        private DTE2 _dte;
         private IVsWindowFrame _windowFrame;
         private Window _window;
         private Window _currentActiveWindow;
@@ -85,7 +86,7 @@ namespace BuildVision.Tool.Building
             }
         }
 
-        private static Window GetWindowInstance(DTE dte, Guid windowGuid)
+        private static Window GetWindowInstance(DTE2 dte, Guid windowGuid)
         {
             var windows = dte.Windows;
             for (int i = 1; i <= windows.Count; i++)
@@ -135,7 +136,7 @@ namespace BuildVision.Tool.Building
             if (_window == null || _windowFrame == null)
             {
                 ThreadHelper.ThrowIfNotOnUIThread();
-                _dte = _serviceProvider.GetService(typeof(DTE)) as DTE;
+                _dte = _serviceProvider.GetService(typeof(DTE)) as DTE2;
                 Assumes.Present(_dte);
                 _windowFrame = (IVsWindowFrame)toolWindowPane.Frame;
                 _window = GetWindowInstance(_dte, typeof(BuildVisionPane).GUID);

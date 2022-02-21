@@ -13,6 +13,7 @@ using BuildVision.UI.ViewModels;
 using BuildVision.Views.Settings;
 using Microsoft;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.BuildLogging;
 using Task = System.Threading.Tasks.Task;
 
 namespace BuildVision.Core
@@ -24,6 +25,7 @@ namespace BuildVision.Core
     [ProvideService(typeof(ISolutionProvider), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildMessagesFactory), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildOutputLogger), IsAsyncQueryable = true)]
+    [ProvideService(typeof(IVsBuildLoggerProvider), IsAsyncQueryable = true)]
     [ProvideService(typeof(IBuildService), IsAsyncQueryable = true)]
     [ProvideService(typeof(IStatusBarNotificationService), IsAsyncQueryable = true)]
     [ProvideService(typeof(IWindowStateService), IsAsyncQueryable = true)]
@@ -46,6 +48,7 @@ namespace BuildVision.Core
             AddService(typeof(IWindowStateService), CreateServiceAsync, true);
             AddService(typeof(ITaskBarInfoService), CreateServiceAsync, true);
             AddService(typeof(IErrorNavigationService), CreateServiceAsync, true);
+            AddService(typeof(IVsBuildLoggerProvider), CreateServiceAsync, true);
         }
 
         async Task<object> CreateServiceAsync(IAsyncServiceContainer container, CancellationToken cancellation, Type serviceType)
@@ -68,6 +71,10 @@ namespace BuildVision.Core
             else if (serviceType == typeof(IBuildOutputLogger))
             {
                 return new BuildOutputLogger(_parsingErrorsLoggerId, Microsoft.Build.Framework.LoggerVerbosity.Quiet);
+            }
+            else if (serviceType == typeof(IVsBuildLoggerProvider))
+            {
+                return new BuildLoggerProvider();
             }
             else if (serviceType == typeof(IErrorNavigationService))
             {

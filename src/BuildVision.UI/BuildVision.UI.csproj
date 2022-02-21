@@ -393,13 +393,18 @@
     <PackageReference Include="AppInsights.WindowsDesktop">
       <Version>2.10.55</Version>
     </PackageReference>
-    <PackageReference Include="Madskristensen.VisualStudio.SDK">
-      <Version>14.3.81-pre</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
       <Version>3.0.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
+      <Version>6.0.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.SDK">
+      <Version>16.0.206</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup />

@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+using System.Linq;
 using BuildVision.Common.Logging;
 using BuildVision.Contracts.Models;
 using BuildVision.Exports.Providers;
 using BuildVision.Exports.Services;
+using BuildVision.Extensions;
 using BuildVision.Helpers;
 using BuildVision.UI;
 using BuildVision.UI.Models;
-using EnvDTE;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Serilog;
 
 namespace BuildVision.Core
@@ -22,8 +23,7 @@ namespace BuildVision.Core
     {
         private ILogger _logger = LogManager.ForContext<SolutionProvider>();
         private readonly IServiceProvider _serviceProvider;
-
-        private Solution _solution;
+        private IVsSolution _vsSolution;
         private SolutionModel _solutionModel;
 
         [ImportingConstructor]
@@ -34,7 +34,7 @@ namespace BuildVision.Core
 
         public void ReloadSolution()
         {
-            _solution = Services.Dte2.Solution;
+            _vsSolution = _serviceProvider.GetService<SVsSolution>() as IVsSolution;
             RefrehSolutionModel();
         }
 
@@ -45,6 +45,7 @@ namespace BuildVision.Core
 
         private void RefrehSolutionModel()
         {
+            ThreadHelper.ThrowIfNotOnUIThread();
             if (_solutionModel == null)
             {
                 _solutionModel = new SolutionModel();
@@ -52,19 +53,24 @@ namespace BuildVision.Core
 
             try
             {
-                if (_solution == null)
+                if (_vsSolution == null)
                 {
                     _solutionModel.Name = Resources.GridCellNATextInBrackets;
                     _solutionModel.FullName = Resources.GridCellNATextInBrackets;
                     _solutionModel.IsEmpty = true;
+                    return;
                 }
-                else if (string.IsNullOrEmpty(_solution.FileName))
+
+                _vsSolution.GetProperty((int)__VSPROPID.VSPROPID_SolutionFileName, out object fileName);
+                _vsSolution.GetProperty((int)__VSPROPID.VSPROPID_SolutionBaseName, out object fullName);
+                if (string.IsNullOrEmpty((string)fileName))
                 {
-                    if (_solution.Count != 0)
+                    var solutionItems = _vsSolution.ToSolutionItemAsync().Result;
+                    if (solutionItems.Children.Any())
                     {
-                        var project = _solution.Item(1);
-                        _solutionModel.Name = Path.GetFileNameWithoutExtension(project.FileName);
-                        _solutionModel.FullName = project.FullName;
+                        var project = solutionItems.Children.First();
+                        _solutionModel.Name = Path.GetFileNameWithoutExtension(project.FullPath);
+                        _solutionModel.FullName = project.Name;
                         _solutionModel.IsEmpty = false;
                     }
                     else
@@ -76,8 +82,8 @@ namespace BuildVision.Core
                 }
                 else
                 {
-                    _solutionModel.Name = Path.GetFileNameWithoutExtension(_solution.FileName);
-                    _solutionModel.FullName = _solution.FullName;
+                    _solutionModel.Name = Path.GetFileNameWithoutExtension((string)fileName);
+                    _solutionModel.FullName = (string)fullName;
                     _solutionModel.IsEmpty = false;
                 }
             }
@@ -92,12 +98,12 @@ namespace BuildVision.Core
 
         public IEnumerable<IProjectItem> GetProjects()
         {
-            if (_solution == null)
+            if (_vsSolution == null)
             {
                 ReloadSolution();
             }
 
-            return _solution.GetProjectItems();
+            return _vsSolution.GetProjectItems();
         }
     }
 }

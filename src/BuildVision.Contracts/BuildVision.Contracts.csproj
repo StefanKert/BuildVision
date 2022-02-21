@@ -13,7 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Microsoft.Build.Framework" />
+      <PackageReference Include="Microsoft.Build.Framework" Version="16.0.461"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="PresentationFramework" />
   </ItemGroup>
 

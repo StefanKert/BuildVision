@@ -51,7 +51,6 @@ namespace BuildVision.Core
         private SolutionBuildEvents _solutionBuildEvents;
         private ISolutionProvider _solutionProvider;
         private ILogger _logger = LogManager.ForContext<BuildVisionPackage>();
-        private IVsWindowFrame _activeProjectContext;
 
         public static BuildVisionPackage BuildVisionPackageInstance { get; set; }
 
@@ -119,39 +118,11 @@ namespace BuildVision.Core
             Community.VisualStudio.Toolkit.VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_Opened;
             Community.VisualStudio.Toolkit.VS.Events.SolutionEvents.OnBeforeCloseSolution += SolutionEvents_AfterClosing;
 
-            //_commandEvents = _dte.Events.CommandEvents;
-            //_commandEvents.AfterExecute += CommandEvents_AfterExecute;
-
-            //Community.VisualStudio.Toolkit.VS.Events.WindowEvents.ActiveFrameChanged += WindowEvents_WindowActivated;
             if (_dte.Solution?.IsOpen == true)
             {
                 SolutionEvents_Opened();
             }
         }
-
-        //private void WindowEvents_WindowActivated(Community.VisualStudio.Toolkit.ActiveFrameChangeEventArgs args)
-        //{
-        //    if (args.NewFrame == null)
-        //        return;
-
-        //    switch (args.NewFrame.)
-        //    {
-        //        case vsWindowType.vsWindowTypeSolutionExplorer:
-        //            _activeProjectContext = args.NewFrame;
-        //            break;
-
-        //        case vsWindowType.vsWindowTypeDocument:
-        //        case vsWindowType.vsWindowTypeDesigner:
-        //        case vsWindowType.vsWindowTypeCodeWindow:
-        //            if (args.NewFrame.Project != null && !args.NewFrame.Project.IsHidden())
-        //                _activeProjectContext = args.NewFrame;
-        //            break;
-
-        //        default:
-        //            return;
-        //    }
-        //}
-
         private void SolutionEvents_Opened(string solutionFileName = "")
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -177,17 +148,6 @@ namespace BuildVision.Core
             _solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
 
             DiagnosticsClient.Flush();
-        }
-
-        private void CommandEvents_AfterExecute(string guid, int id, object customIn, object customOut)
-        {
-            if (id == (int)VSConstants.VSStd97CmdID.CancelBuild
-                && Guid.Parse(guid) == VSConstants.GUID_VSStandardCommandSet97)
-            {
-                //_buildCancelled = true;
-                //if (!_buildCancelledInternally)
-                //    OnBuildCancelled();
-            }
         }
     }
 }

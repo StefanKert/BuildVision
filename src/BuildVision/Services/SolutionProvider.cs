@@ -63,9 +63,9 @@ namespace BuildVision.Core
 
                 _vsSolution.GetProperty((int)__VSPROPID.VSPROPID_SolutionFileName, out object fileName);
                 _vsSolution.GetProperty((int)__VSPROPID.VSPROPID_SolutionBaseName, out object fullName);
-                var solutionItems = _vsSolution.ToSolutionItemAsync().Result;
                 if (string.IsNullOrEmpty((string)fileName))
                 {
+                    var solutionItems = _vsSolution.ToSolutionItemAsync().Result;
                     if (solutionItems.Children.Any())
                     {
                         var project = solutionItems.Children.First();

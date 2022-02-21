@@ -11,11 +11,6 @@ namespace BuildVision.Tool.Building
     [Export(typeof(IVsBuildLoggerProvider))]
     public class BuildLoggerProvider : IVsBuildLoggerProvider
     {
-        public BuildLoggerProvider()
-        {
-
-        }
-
         public LoggerVerbosity Verbosity => LoggerVerbosity.Diagnostic;
 
         public BuildLoggerEvents Events =>

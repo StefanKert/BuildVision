@@ -10,4 +10,8 @@
     <ProjectReference Include="..\BuildVision.Contracts\BuildVision.Contracts.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Update="Nerdbank.GitVersioning" Version="3.5.104" />
+  </ItemGroup>
+
 </Project>

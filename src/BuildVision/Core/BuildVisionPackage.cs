@@ -44,7 +44,7 @@ namespace BuildVision.Core
     {
         private DTE2 _dte;
         private IVsSolutionBuildManager2 _solutionBuildManager;
-        private IVsSolutionBuildManager5 _solutionBuildManager5;
+        private IVsSolutionBuildManager5 _solutionBuildManager4;
         private IBuildInformationProvider _buildInformationProvider;
         private uint _updateSolutionEventsCookie;
         private uint _updateSolutionEvents4Cookie;
@@ -108,8 +108,8 @@ namespace BuildVision.Core
             Assumes.Present(_dte);
             _solutionBuildManager = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager2;
             Assumes.Present(_solutionBuildManager);
-            _solutionBuildManager5 = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager5;
-            Assumes.Present(_solutionBuildManager5);
+            _solutionBuildManager4 = await GetServiceAsync(typeof(SVsSolutionBuildManager)) as IVsSolutionBuildManager5;
+            Assumes.Present(_solutionBuildManager4);
             _buildInformationProvider = await GetServiceAsync(typeof(IBuildInformationProvider)) as IBuildInformationProvider;
             Assumes.Present(_buildInformationProvider);
             _solutionProvider = await GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
@@ -133,7 +133,9 @@ namespace BuildVision.Core
 
             _solutionBuildEvents = new SolutionBuildEvents(_solutionProvider, _buildInformationProvider, LogManager.ForContext<SolutionBuildEvents>());
             _solutionBuildManager.AdviseUpdateSolutionEvents(_solutionBuildEvents, out _updateSolutionEventsCookie);
-            _solutionBuildManager5.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
+
+            var method = _solutionBuildManager4.GetType().GetMethods();
+            //_solutionBuildManager5.AdviseUpdateSolutionEvents4(_solutionBuildEvents, out _updateSolutionEvents4Cookie);
         }
 
         private void SolutionEvents_AfterClosing()
@@ -145,7 +147,7 @@ namespace BuildVision.Core
             _buildInformationProvider.ResetBuildInformationModel();
 
             _solutionBuildManager.UnadviseUpdateSolutionEvents(_updateSolutionEventsCookie);
-            //_solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
+            _solutionBuildManager4.UnadviseUpdateSolutionEvents4(_updateSolutionEvents4Cookie);
 
             DiagnosticsClient.Flush();
         }

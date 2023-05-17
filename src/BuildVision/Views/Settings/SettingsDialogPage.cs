@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Windows;
 using Microsoft.VisualStudio.Shell;
 using BuildVision.Common;
@@ -11,6 +12,7 @@ using BuildVision.Common.Diagnostics;
 
 namespace BuildVision.Views.Settings
 {
+    [ComVisible(true)]
     public abstract class SettingsDialogPage<TControl, TSettings> : UIElementDialogPage
         where TControl : FrameworkElement, new()
         where TSettings : SettingsBase, new()

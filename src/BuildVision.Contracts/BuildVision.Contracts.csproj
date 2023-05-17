@@ -13,11 +13,19 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="Microsoft.Build.Framework" Version="16.0.461"/>
+      <PackageReference Include="Microsoft.Build.Framework" Version="17.6.3" />
+      <PackageReference Include="Nerdbank.GitVersioning" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="PresentationFramework" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Nerdbank.GitVersioning" Version="3.6.132">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

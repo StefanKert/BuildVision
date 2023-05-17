@@ -6,6 +6,7 @@ namespace BuildVision.Views.Settings
 {
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [Guid("F7BF1C16-A1D4-4E93-9A10-9AE106D656EE")]
+    [ComVisible(true)]
     public class GeneralSettingsDialogPage : SettingsDialogPage<GeneralSettingsControl, GeneralSettings>
     {
         protected override GeneralSettings Settings

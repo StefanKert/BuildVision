@@ -15,9 +15,9 @@ namespace BuildVision.IntegrationTests
 {
     public class PackageTests
     {
-        private static IVsShell ShellService => GlobalServices.GetService<SVsShell>() as IVsShell;
-        private static IVsUIShell UiShellService => GlobalServices.GetService<SVsUIShell>() as IVsUIShell;
-        private static DTE2 DTE => GlobalServices.GetService<DTE2>() as DTE2;
+        private static IVsShell ShellService =>  VsIdeTestHostContext.ServiceProvider.GetService<SVsShell>() as IVsShell;
+        private static IVsUIShell UiShellService => VsIdeTestHostContext.ServiceProvider.GetService<SVsUIShell>() as IVsUIShell;
+        private static DTE2 DTE => VsIdeTestHostContext.ServiceProvider.GetService<DTE2>() as DTE2;
 
         [Trait("Category", "SkipWhenLiveUnitTesting")]
         [VsixFact(VisualStudioVersion.Current, RootSuffix = "Exp", RunOnUIThread = true)]

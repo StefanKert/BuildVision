@@ -295,7 +295,9 @@ namespace BuildVision.Core
                         }
                         else
                         {
-                            projectState = BuildLoggerProvider.BuildOutputLogger.IsProjectUpToDate(currentProject) ? ProjectState.UpToDate : ProjectState.BuildDone;
+                            projectState = (BuildLoggerProvider.BuildOutputLogger?.IsProjectUpToDate(currentProject) ?? false) ?
+                                           ProjectState.UpToDate :
+                                           ProjectState.BuildDone;
                         }
                     }
                     else

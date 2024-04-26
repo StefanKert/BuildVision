@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "Launch VS": {
+      "commandName": "Executable",
+      "executablePath": "$(DevEnvDir)devenv.exe",
+      "commandLineArgs": "/rootsuffix Exp /log"
+    }
+  }
+}

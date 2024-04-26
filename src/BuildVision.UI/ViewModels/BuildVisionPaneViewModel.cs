@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
@@ -230,6 +232,8 @@ namespace BuildVision.UI.ViewModels
             SolutionModel = solutionProvider.GetSolutionModel();
             ControlSettings = settingsProvider.Settings;
             Projects = _buildInformationProvider.Projects;
+            var temp = (Projects as ObservableRangeCollection<IProjectItem>);
+            temp.InternalPropertyChanged += (sender, e) => Application.Current.Dispatcher.Invoke(() => temp.OnCollectionChanged());
             GroupedProjectsList = CollectionViewSource.GetDefaultView(Projects) as ListCollectionView;
             ResetProjectListFilter();
             if (!string.IsNullOrWhiteSpace(GridGroupPropertyName))

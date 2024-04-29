@@ -30,7 +30,7 @@ Indicators Panel, which is located above the table of projects, displays total n
 You can configure BuildVision via "Tools → Options... → BuildVision".
 
 ### Preview Builds for BuildVision 
-If you want to have the latest development state of BuildVision you can subscribe to the [VSIXGallery feed for BuildVision](http://vsixgallery.com/extension/837c3c3b-8382-4839-9c9a-807b758a929f/).
+If you want to have the latest development state of BuildVision you can subscribe to the [VSIXGallery feed for BuildVision](https://www.vsixgallery.com/feed/extension/837c3c3b-8382-4839-9c9a-807b758a929f).
 
 #### Setup Visual Studio for Preview Channel
 
@@ -38,7 +38,7 @@ If you want to have the latest development state of BuildVision you can subscrib
 2. Click the *Add* button
 3. Confiure the right values for BuildVision Preview Feed as shown in the screenshot bellow
   - Name: *BuildVision Preview-Feed* (can be whatever fits you best) 
-  - Url: http://vsixgallery.com/feed/extension/837c3c3b-8382-4839-9c9a-807b758a929f
+  - Url: https://www.vsixgallery.com/feed/extension/837c3c3b-8382-4839-9c9a-807b758a929f
 4. Click apply
 
 ![Add Preview Feed](Screenshots/PreviewFeedInstall.png)

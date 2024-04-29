@@ -7,8 +7,8 @@
         <PackageReference Include="FluentAssertions" Version="6.12.0" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
         <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.133">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="xunit" Version="2.7.1" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.5.8">
@@ -17,9 +17,14 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Build.Framework" Version="17.9.5" />
     </ItemGroup>
-
+    
+    <ItemGroup>
+        <Reference Include="PresentationFramework" />
+    </ItemGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\..\src\BuildVision.Common\BuildVision.Common.csproj" />
         <ProjectReference Include="..\..\src\BuildVision\BuildVision.csproj" />
+        <ProjectReference Include="..\..\src\BuildVision.UI\BuildVision.UI.csproj" />
     </ItemGroup>
 </Project>

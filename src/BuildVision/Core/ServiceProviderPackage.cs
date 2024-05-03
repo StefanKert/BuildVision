@@ -12,6 +12,7 @@ using BuildVision.UI.Helpers;
 using BuildVision.UI.ViewModels;
 using BuildVision.Views.Settings;
 using Microsoft;
+using Microsoft.VisualStudio.ProjectSystem.Build;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.BuildLogging;
 using Task = System.Threading.Tasks.Task;
@@ -31,6 +32,7 @@ namespace BuildVision.Core
     [ProvideService(typeof(IWindowStateService), IsAsyncQueryable = true)]
     [ProvideService(typeof(ITaskBarInfoService), IsAsyncQueryable = true)]
     [ProvideService(typeof(IErrorNavigationService), IsAsyncQueryable = true)]
+    [ProvideService(typeof(IBuildLoggerProviderAsync), IsAsyncQueryable = true)]
     public sealed class ServiceProviderPackage : AsyncPackage
     {
         private readonly Guid _parsingErrorsLoggerId = new Guid("{64822131-DC4D-4087-B292-61F7E06A7B39}");
@@ -49,6 +51,7 @@ namespace BuildVision.Core
             AddService(typeof(ITaskBarInfoService), CreateServiceAsync, true);
             AddService(typeof(IErrorNavigationService), CreateServiceAsync, true);
             AddService(typeof(IVsBuildLoggerProvider), CreateServiceAsync, true);
+            AddService(typeof(IBuildLoggerProviderAsync), CreateServiceAsync, true);          
         }
 
         async Task<object> CreateServiceAsync(IAsyncServiceContainer container, CancellationToken cancellation, Type serviceType)
@@ -72,7 +75,7 @@ namespace BuildVision.Core
             {
                 return new BuildOutputLogger(_parsingErrorsLoggerId, Microsoft.Build.Framework.LoggerVerbosity.Quiet);
             }
-            else if (serviceType == typeof(IVsBuildLoggerProvider))
+            else if (serviceType == typeof(IVsBuildLoggerProvider) || serviceType == typeof(IBuildLoggerProviderAsync))
             {
                 return new BuildLoggerProvider();
             }

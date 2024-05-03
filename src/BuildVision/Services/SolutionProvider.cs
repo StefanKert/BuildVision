@@ -66,7 +66,7 @@ namespace BuildVision.Core
                 if (string.IsNullOrEmpty((string)fileName))
                 {
                     var solutionItems = _vsSolution.ToSolutionItemAsync().Result;
-                    if (solutionItems.Children.Any())
+                    if (solutionItems != null && solutionItems.Children != null && solutionItems.Children.Any())
                     {
                         var project = solutionItems.Children.First();
                         _solutionModel.Name = Path.GetFileNameWithoutExtension(project.FullPath);

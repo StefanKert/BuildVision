@@ -151,6 +151,13 @@ namespace BuildVision.UI.Models
             set => SetProperty(ref _buildId, value);
         }
 
+        private string _solutionName = "";
+        public string SolutionName
+        {
+            get => _solutionName;
+            set => SetProperty(ref _solutionName, value);
+        }
+
         private string GetStateIconKey()
         {
             var resultState = GetBuildResultState();

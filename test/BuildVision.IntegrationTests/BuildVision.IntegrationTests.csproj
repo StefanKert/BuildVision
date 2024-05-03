@@ -1,23 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net472</TargetFramework>
+        <TargetFramework>net8</TargetFramework>
         <IsTestProject>true</IsTestProject>
         <Configurations>Debug;Release;Marketplace;VsixGallery</Configurations>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.VSSDK.UnitTestLibrary" Version="14.3.25407" />
-        <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.132">
+        <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.133">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="xunit.runner.console" Version="2.4.2">
+        <PackageReference Include="xunit.runner.console" Version="2.7.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="xunit.vsix" Version="0.9.3" />
-        <PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" PrivateAssets="all" Version="3.6.2115" />
-        <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.6.36389" />
+        <PackageReference Include="Microsoft.VisualStudio.Setup.Configuration.Interop" PrivateAssets="all" Version="3.9.2164" />
+        <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.9.37000" />
     </ItemGroup>
 
     <ItemGroup>

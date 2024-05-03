@@ -14,6 +14,7 @@ namespace BuildVision.UI.Helpers
         public BuildMessagesFactory(IPackageSettingsProvider packageSettingsProvider)
         {
             _packageSettingsProvider = packageSettingsProvider;
+            
         }
 
         public string GetBuildBeginMajorMessage(IBuildInformationModel buildInformationModel)
@@ -24,7 +25,7 @@ namespace BuildVision.UI.Helpers
 
         private string GetMainString(IBuildInformationModel buildInformationModel)
         {
-            var unitName = GetUnitName(buildInformationModel.BuildScope);
+            var unitName = GetUnitName(buildInformationModel);
             var actionName = GetActionName(buildInformationModel.BuildAction);
             var beginAtString = GetBeginAtString(buildInformationModel.BuildAction);
             var timeString = GetTimeString(buildInformationModel.BuildStartTime);
@@ -92,15 +93,18 @@ namespace BuildVision.UI.Helpers
             }
         }
 
-        private static string GetUnitName(BuildScope buildScope)
+        private string GetUnitName(IBuildInformationModel buildInformationModel)
         {
             string unitName = "";
-            switch (buildScope)
+            switch (buildInformationModel.BuildScope)
             {
                 case BuildScope.Solution:
                     unitName = Resources.BuildScopeSolution_UnitName;
-                    //if (_labelSettings.ShowSolutionName)
-                    //unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, solutionItem.Name);
+                    if (_packageSettingsProvider.Settings.BuildMessagesSettings.ShowSolutionName)
+                    {
+                        unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, buildInformationModel.SolutionName);
+                    }
+
                     break;
 
                 case BuildScope.Batch:
@@ -113,7 +117,7 @@ namespace BuildVision.UI.Helpers
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(buildScope));
+                    throw new ArgumentOutOfRangeException(nameof(buildInformationModel.BuildScope));
             }
 
             return unitName;
@@ -165,8 +169,11 @@ namespace BuildVision.UI.Helpers
             {
                 case BuildScope.Solution:
                     unitName = Resources.BuildScopeSolution_UnitName;
-                    //if (_labelSettings.ShowSolutionName)
-                    //unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, solutionItem.Name);
+                    if (_packageSettingsProvider.Settings.BuildMessagesSettings.ShowSolutionName)
+                    {
+                        unitName += string.Format(Resources.BuildScopeSolution_SolutionNameTemplate, buildInformationModel.SolutionName);
+                    }
+
                     break;
 
                 case BuildScope.Batch:
@@ -206,8 +213,7 @@ namespace BuildVision.UI.Helpers
                     throw new ArgumentOutOfRangeException(nameof(_packageSettingsProvider.Settings.BuildMessagesSettings.MajorMessageFormat));
             }
 
-            string resultMainString = string.Format(_packageSettingsProvider.Settings.BuildMessagesSettings.BuildDoneMajorMessageStringFormat, mainString);
-            return resultMainString;
+            return string.Format(_packageSettingsProvider.Settings.BuildMessagesSettings.BuildDoneMajorMessageStringFormat, mainString);
         }
 
         private static string GetResultName(BuildResultState resultState)

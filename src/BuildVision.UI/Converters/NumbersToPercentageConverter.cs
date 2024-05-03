@@ -15,8 +15,9 @@ namespace BuildVision.UI.Converters
             }
 
             _ = Double.TryParse(values[0].ToString(), out double currentValue);
-            _ = Double.TryParse(values[1].ToString(), out double maxValue);
+            _ = Double.TryParse(values[1].ToString(), out double pendingValue);
 
+            var maxValue = currentValue + pendingValue;
             if (currentValue > maxValue)
             {
                 throw new InvalidOperationException();

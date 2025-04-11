@@ -34,9 +34,12 @@ namespace BuildVision.Common.Logging
                     .Enrich.WithThreadId()
                     .MinimumLevel.ControlledBy(LoggingLevelSwitch)
                     .WriteTo.File(logPath,
-                        fileSizeLimitBytes: null,
                         outputTemplate: outputTemplate,
-                        shared: true)
+                        shared: true,
+                        fileSizeLimitBytes: 10 * 1024 * 1024,
+                        rollOnFileSizeLimit: true,
+                        retainedFileCountLimit: 10,
+                        rollingInterval: RollingInterval.Day)
                     .CreateLogger();
             }
             catch(Exception ex)

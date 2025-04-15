@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-      <PackageReference Include="Microsoft.Build.Framework" Version="17.6.3" />
+      <PackageReference Include="Microsoft.Build.Framework" Version="17.9.5" />
       <PackageReference Include="Nerdbank.GitVersioning" />
   </ItemGroup>
 
@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Update="Nerdbank.GitVersioning" Version="3.6.132">
+    <PackageReference Update="Nerdbank.GitVersioning" Version="3.6.133">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

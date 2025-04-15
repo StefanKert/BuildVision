@@ -15,7 +15,7 @@ namespace BuildVision.UnitTests
         public void TruncateDateTime_ForZeroTimeStamp_ShouldReturn_DateTime()
         {
             var dateTime = DateTime.Now;
-            var truncatedDateTime = DateTime.Now.Truncate(TimeSpan.Zero);
+            var truncatedDateTime = dateTime.Truncate(TimeSpan.Zero);
             truncatedDateTime.Should().Be(dateTime);
         }
 
@@ -23,7 +23,7 @@ namespace BuildVision.UnitTests
         public void TruncateDateTime_ForNegativeTimestamp_ShouldReturn_DateTime()
         {
             var dateTime = DateTime.Now;
-            var truncatedDateTime = DateTime.Now.Truncate(TimeSpan.FromMinutes(-1));
+            var truncatedDateTime = dateTime.Truncate(TimeSpan.FromMinutes(-1));
             truncatedDateTime.Should().Be(dateTime);
         }
 

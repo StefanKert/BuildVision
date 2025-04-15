@@ -155,6 +155,7 @@ namespace BuildVision.Helpers
 
                     UpdateNameProperties(project, projectItem);
                     projectItem.Language = project.GetLanguageName();
+                    
                     projectItem.CommonType = ProjectExtensions.GetProjectType(project.Kind, Community.VisualStudio.Toolkit.VS.Shell.GetVsVersionAsync().Result.ToString()/* "12.0" */);
                 }
                 catch (Exception ex)

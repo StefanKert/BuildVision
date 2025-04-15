@@ -13,7 +13,7 @@
     <AssemblyName>BuildVision</AssemblyName>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -223,46 +223,46 @@
     <PackageReference Include="AppInsights.WindowsDesktop">
       <Version>2.18.1</Version>
     </PackageReference>
-    <PackageReference Include="Community.VisualStudio.Toolkit.15">
-      <Version>15.0.492</Version>
+    <PackageReference Include="Community.VisualStudio.Toolkit.17">
+      <Version>17.0.507</Version>
+    </PackageReference>
+    <PackageReference Include="Community.VisualStudio.VSCT">
+      <Version>16.0.29.6</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Build">
-      <Version>17.6.3</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Build.Engine">
-      <Version>17.6.3</Version>
+      <Version>17.9.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Framework">
-      <Version>17.6.3</Version>
+      <Version>17.9.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Build.Utilities.Core">
-      <Version>17.6.3</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers">
-      <Version>3.3.2</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
+      <Version>17.9.5</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers">
-      <Version>7.0.1</Version>
+      <Version>8.0.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.ProjectSystem.SDK">
+      <Version>17.9.380</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK">
-      <Version>17.6.36389</Version>
+      <Version>17.9.37000</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools">
-      <Version>17.6.2164</Version>
+      <Version>17.9.3184</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Nerdbank.GitVersioning">
-      <Version>3.6.132</Version>
+      <Version>3.6.133</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Serilog">
-      <Version>2.12.0</Version>
+      <Version>3.1.1</Version>
     </PackageReference>
     <PackageReference Include="Serilog.Enrichers.Process">
       <Version>2.0.2</Version>

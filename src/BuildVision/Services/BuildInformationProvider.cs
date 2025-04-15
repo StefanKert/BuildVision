@@ -195,6 +195,7 @@ namespace BuildVision.Core
             BuildInformationModel.BuildId = Guid.NewGuid();
             BuildInformationModel.BuiltProjectsCount = 0;
             BuildInformationModel.PendingProjectsCount = Projects.Count(x => x.State == ProjectState.Pending);
+            BuildInformationModel.SolutionName = _solutionProvider.GetSolutionModel().Name;
 
             _windowStateService.ApplyToolWindowStateAction(_packageSettingsProvider.Settings.WindowSettings.WindowActionOnBuildBegin);
             _timer = new Timer(state => BuildUpdate(), null, BuildInProcessQuantumSleep, Timeout.Infinite);

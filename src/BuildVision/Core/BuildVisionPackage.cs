@@ -24,6 +24,7 @@ using Serilog;
 using Task = System.Threading.Tasks.Task;
 using ui = Microsoft.VisualStudio.VSConstants.UICONTEXT;
 using Window = EnvDTE.Window;
+using Community.VisualStudio.Toolkit;
 
 namespace BuildVision.Core
 {
@@ -114,6 +115,8 @@ namespace BuildVision.Core
             Assumes.Present(_buildInformationProvider);
             _solutionProvider = await GetServiceAsync(typeof(ISolutionProvider)) as ISolutionProvider;
             Assumes.Present(_solutionProvider);
+
+            
 
             Community.VisualStudio.Toolkit.VS.Events.SolutionEvents.OnBeforeOpenSolution += SolutionEvents_Opened;
             Community.VisualStudio.Toolkit.VS.Events.SolutionEvents.OnAfterOpenSolution += sln => SolutionEvents_Opened();
